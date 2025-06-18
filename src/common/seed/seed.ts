@@ -33,12 +33,12 @@ async function main() {
       return await prisma.permission.create({
         data: permission,
       });
-    })
+    }),
   );
 
   // Helper function to get permission ID by code
   const getPermissionId = (code: string) => {
-    const permission = createdPermissions.find(p => p.code === code);
+    const permission = createdPermissions.find((p) => p.code === code);
     if (!permission) {
       throw new Error(`Permission with code ${code} not found`);
     }
@@ -87,7 +87,7 @@ async function main() {
 
   // Create users
   const hashedPassword = await bcrypt.hash('password123', 10);
-  
+
   const [adminUser, regularUser] = await prisma.$transaction([
     prisma.user.create({
       data: {
