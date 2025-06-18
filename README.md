@@ -35,7 +35,7 @@ This project provides a robust authentication framework built with NestJS, Mongo
 - npm (8+)
 - MongoDB (if running locally without Docker)
 
-## Project Structure
+```plaintext
 base-be/
 ├── .github/ # GitHub workflows for CI/CD
 ├── .husky/ # Git hooks
@@ -46,10 +46,12 @@ base-be/
 │   ├── prisma/ # Prisma service
 │   └── main.ts # Application entry point
 ├── test/ # Test files
+├── commitlint.config.js / # Commitlint file for better git commit
 ├── docker-compose.yml # Docker configuration
 ├── Dockerfile # Backend Docker configuration
 ├── .env.example # Environment variables template
 └── package.json
+```
 
 ## Getting Started
 
