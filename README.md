@@ -1,98 +1,242 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# NestJS Authentication Base Framework Documentation
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Overview
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This project provides a robust authentication framework built with NestJS, MongoDB, and Docker, designed to serve as a foundation for backend applications. It includes:
 
-## Description
+- JWT authentication
+- Local (email/password) login
+- OAuth integration (Google, Facebook)
+- Role-based permissions
+- Password reset functionality
+- Dockerized environment
+- CI/CD pipeline
+- Git hooks with Husky
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Table of Contents
 
-## Project setup
+1. [Prerequisites](#prerequisites)
+2. [Project Structure](#project-structure)
+3. [Getting Started](#getting-started)
+4. [API Documentation](#api-documentation)
+5. [Development Workflow](#development-workflow)
+6. [CI/CD Pipeline](#cicd-pipeline)
+7. [Git Hooks](#git-hooks)
+8. [Deployment](#deployment)
+9. [Monitoring](#monitoring)
+10. [Troubleshooting](#troubleshooting)
+11. [Maintenance](#maintenance)
+12. [Makefile Commands](#makefile-commands)
 
+## Prerequisites
+
+- Docker (20.10+) and Docker Compose
+- Node.js (16+)
+- npm (8+)
+- MongoDB (if running locally without Docker)
+
+## Project Structure
+base-be/
+├── .github/ # GitHub workflows for CI/CD
+├── .husky/ # Git hooks
+├── prisma/ # Database schema and migrations
+├── src/
+│   ├── auth/ # Authentication module
+│   ├── common/ # Shared utilities and decorators
+│   ├── prisma/ # Prisma service
+│   └── main.ts # Application entry point
+├── test/ # Test files
+├── docker-compose.yml # Docker configuration
+├── Dockerfile # Backend Docker configuration
+├── .env.example # Environment variables template
+└── package.json
+
+## Getting Started
+
+### 1. Clone the repository
 ```bash
-$ npm install
+git clone https://github.com/your-repo/base-be.git
+cd base-be
 ```
 
-## Compile and run the project
-
+### 2. Set up environment variables
 ```bash
-# development
-$ npm run start
+cp .env.example .env
+```
+Edit the `.env` file with your configuration.
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+### 3. Start the application with Docker
+```bash
+docker-compose up -d --build
 ```
 
-## Run tests
-
+### 4. Initialize the database
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker-compose exec backend npm run seed
 ```
+
+## API Documentation
+After starting the application, access the Swagger UI at:  
+http://localhost:8000/api
+
+### Authentication Endpoints
+| Method | Endpoint                      | Description                     |
+|--------|-------------------------------|---------------------------------|
+| POST   | /auth/register                | Register new user               |
+| POST   | /auth/login                   | Login with email/password       |
+| GET    | /auth/google                  | Initiate Google OAuth login     |
+| GET    | /auth/facebook                | Initiate Facebook OAuth login   |
+| POST   | /auth/request-password-reset | Request password reset email    |
+| POST   | /auth/reset-password          | Reset password with token       |
+| GET    | /auth/profile                 | Get current user profile (protected) |
+
+## Development Workflow
+
+### Running without Docker
+```bash
+npm install
+npm run start:dev
+```
+
+### Running tests
+```bash
+npm test
+```
+
+### Linting
+```bash
+npm run lint
+```
+
+### Formatting
+```bash
+npm run format
+```
+
+## CI/CD Pipeline
+
+The project includes GitHub Actions workflows for:
+
+**CI Pipeline:**
+
+- Runs on every push to any branch
+- Checks out code
+- Sets up Node.js
+- Installs dependencies
+- Runs linting
+- Executes tests
+
+**CD Pipeline:**
+
+- Runs on push to main branch
+- Builds and pushes Docker image to registry
+- Deploys to production environment
+
+## Git Hooks
+
+Husky is configured with:
+
+- `pre-commit`: Runs lint-staged (formats and lints staged files)
+- `pre-push`: Runs tests
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### Production Environment Variables
+Create a `.env.prod` file with production values.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
+### Building for Production
 ```bash
-$ npm install -g mau
-$ mau deploy
+docker-compose -f docker-compose.prod.yml up -d --build
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Monitoring
 
-## Resources
+Access MongoDB admin interface at:  
+http://localhost:8081
 
-Check out a few resources that may come in handy when working with NestJS:
+## Troubleshooting
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Common Issues
 
-## Support
+**MongoDB connection errors:**
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- Ensure MongoDB is running
+- Check connection string in `.env`
+- For Docker, wait for MongoDB to fully initialize
 
-## Stay in touch
+**OAuth not working:**
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- Verify callback URLs match provider configurations
+- Check client IDs and secrets
+- Ensure redirect URIs are whitelisted in provider dashboards
+
+## Maintenance
+
+### Updating Dependencies
+```bash
+npm outdated
+npm update
+```
+
+### Database Migrations
+When changing the Prisma schema:
+```bash
+npx prisma migrate dev --name your_migration_name
+npx prisma migrate deploy
+```
+
+## Makefile Commands
+
+```makefile
+# Makefile for E-Learning Backend Project
+
+APP_NAME = Base-Be
+
+up:
+	@echo "Stopping docker images (if running)..."
+	docker-compose down
+	@echo "Building (when required) and starting docker images..."
+	docker compose up --build -d
+	@echo "Docker images built and started!"
+
+down:
+	@echo "Stopping docker compose..."
+	docker compose down --volumes --remove-orphans
+	@echo "Done!"
+
+start:
+	docker compose up
+
+stop:
+	docker compose stop
+
+restart: down up
+
+logs:
+	docker compose logs -f $(APP_NAME)
+
+exec:
+	docker exec -it $(APP_NAME) sh
+
+prisma-generate:
+	docker compose exec $(APP_NAME) npx prisma generate
+
+prisma-push:
+	docker compose exec $(APP_NAME) npx prisma db push
+
+prisma-studio:
+	docker compose exec $(APP_NAME) npx prisma studio
+
+clean:
+	docker system prune -af --volumes
+
+rebuild: clean up
+```
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+MIT License
+
+## Support
+
+For issues or questions, please open an issue in the GitHub repository.
