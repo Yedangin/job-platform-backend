@@ -1,0 +1,24 @@
+// Log Domain Schema - MongoDB
+// Includes: system_logs
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma-log"
+}
+
+model SystemLog {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      Int?     @map("user_id")
+  actionType  String?  @map("action_type") @db.String
+  description String?  @db.String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([actionType])
+  @@index([createdAt])
+  @@map("system_logs")
+}

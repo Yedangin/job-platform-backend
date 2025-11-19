@@ -1,0 +1,148 @@
+// Job Domain Schema - PostgreSQL
+// Includes: job_posts, categories, applies, reviews, reports, interviews
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma-job"
+}
+
+enum JobPostStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum AppliedStatus {
+  PENDING
+  CONFIRMED
+  INTERVIEW
+  SUCCESS
+  REJECTED
+}
+
+enum InterviewStatus {
+  PENDING
+  STARTING
+  SUCCESS
+  REJECTED
+  PENALTY
+}
+
+model Category {
+  id               Int      @id @default(cuid()) @map("id")
+  name             String?  @db.VarChar(50)
+  description      String?  @db.VarChar(255)
+  parentCategoryId Int?     @map("parent_category_id")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  jobPosts JobPost[]
+
+  @@index([name])
+  @@map("categories")
+}
+
+model JobPost {
+  id           Int           @id @default(cuid()) @map("id")
+  corporateId  Int           @map("corporate_id")
+  title        String?       @db.VarChar(255)
+  description  String?       @db.Text
+  location     String?       @db.VarChar(255)
+  salaryRange  String?       @map("salary_range") @db.VarChar(255)
+  categoryId   Int?          @map("category_id")
+  feeType      String?       @map("fee_type") @db.VarChar(50)
+  status       JobPostStatus @default(PENDING)
+  approvedBy   Int?          @map("approved_by")
+  appliesCount Int?          @default(0) @map("applies_count")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  expiredAt    DateTime?     @map("expired_at")
+
+  category   Category?   @relation(fields: [categoryId], references: [id])
+  applies    Apply[]
+  interviews Interview[]
+
+  @@index([categoryId])
+  @@index([title, description], name: "Job Search")
+  @@index([corporateId])
+  @@index([feeType])
+  @@map("job_posts")
+}
+
+model Apply {
+  id         Int           @id @default(cuid()) @map("id")
+  jobPostId  Int           @map("job_post_id")
+  userId     Int           @map("user_id")
+  userInfoId Int?          @map("user_info_id")
+  isReviewed Boolean       @default(false) @map("is_reviewed")
+  status     AppliedStatus @default(PENDING)
+  appliedAt  DateTime      @default(now()) @map("applied_at")
+
+  jobPost JobPost @relation(fields: [jobPostId], references: [id])
+
+  @@index([status])
+  @@index([jobPostId])
+  @@map("applies")
+}
+
+model Interview {
+  id            Int             @id @default(cuid()) @map("id")
+  jobPostId     Int             @map("job_post_id")
+  memberId      Int             @map("member_id")
+  corporateId   Int             @map("corporate_id")
+  roomId        Int?            @map("room_id")
+  interviewDate DateTime?       @map("interview_date")
+  status        InterviewStatus @default(PENDING)
+  failureReason String?         @map("failure_reason") @db.VarChar(255)
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+
+  jobPost JobPost  @relation(fields: [jobPostId], references: [id])
+  reviews Review[]
+
+  @@index([interviewDate])
+  @@index([status])
+  @@index([failureReason])
+  @@index([memberId])
+  @@index([jobPostId])
+  @@index([corporateId])
+  @@index([createdAt])
+  @@map("interviews")
+}
+
+model Review {
+  id          Int      @id @default(cuid()) @map("id")
+  interviewId Int      @map("interview_id")
+  reviewerId  Int      @map("reviewer_id")
+  rating      Int?
+  comment     String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  interview Interview @relation(fields: [interviewId], references: [id])
+
+  @@index([rating])
+  @@index([interviewId])
+  @@index([reviewerId])
+  @@index([createdAt])
+  @@map("reviews")
+}
+
+model Report {
+  id             Int      @id @default(cuid()) @map("id")
+  title          String?  @db.VarChar(255)
+  reporterId     Int      @map("reporter_id")
+  reportedUserId Int      @map("reported_user_id")
+  reason         String?  @db.Text
+  status         String?  @db.VarChar(50)
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@index([status])
+  @@index([reason])
+  @@index([createdAt])
+  @@map("reports")
+}

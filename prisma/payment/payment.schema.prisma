@@ -1,0 +1,124 @@
+// Payment Domain Schema - PostgreSQL
+// Includes: wallets, deposits, transactions, transaction_logs
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma-payment"
+}
+
+enum PaymentMethod {
+  CARD
+  VIRTUAL_ACCOUNT
+  SIMPLE_PAY
+  MOBILE_PHONE
+  ACCOUNT_TRANSFER
+  CULTURE_GIFT_CERTIFICATE
+  BOOK_CULTURE_GIFT_CERTIFICATE
+  GAME_CULTURE_GIFT_CERTIFICATE
+}
+
+enum TransactionStatus {
+  PENDING
+  READY
+  IN_PROGRESS
+  WAITING_FOR_DEPOSIT
+  DONE
+  CANCELED
+  PARTIAL_CANCELED
+  ABORTED
+  EXPIRED
+  FAILED
+}
+
+enum DepositStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Wallet {
+  id           Int      @id @default(cuid()) @map("id")
+  userId       Int      @unique @map("user_id")
+  beforeAmount String?  @map("before_amount") @db.VarChar(50)
+  balance      String?  @db.VarChar(50)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  deposits Deposit[]
+
+  @@index([createdAt])
+  @@index([userId])
+  @@map("wallets")
+}
+
+model Deposit {
+  id              Int           @id @default(cuid()) @map("id")
+  userId          Int           @map("user_id")
+  walletId        Int           @map("wallet_id")
+  depositedAmount Int?          @map("deposited_amount")
+  status          DepositStatus @default(PENDING)
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  wallet       Wallet        @relation(fields: [walletId], references: [id])
+  transactions Transaction[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("deposits")
+}
+
+model Transaction {
+  id             Int               @id @default(cuid()) @map("id")
+  tossOrderId    Int?              @map("toss_order_id")
+  tossPaymentKey String?           @map("toss_payment_key") @db.VarChar(255)
+  amount         Int?
+  currency       String?           @db.VarChar(25)
+  method         PaymentMethod?    @default(CARD)
+  status         TransactionStatus @default(PENDING)
+  failureReason  String?           @map("failure_reason") @db.VarChar(255)
+  userId         String?           @map("user_id") @db.VarChar(50)
+  userName       String?           @map("user_name") @db.VarChar(50)
+  userEmail      String?           @map("user_email") @db.VarChar(50)
+  userPhone      String?           @map("user_phone") @db.VarChar(50)
+  depositeName   String?           @map("deposite_name") @db.VarChar(50)
+  createdAt      DateTime          @default(now()) @map("created_at")
+  updatedAt      DateTime          @updatedAt @map("updated_at")
+  paidAt         DateTime?         @map("paid_at")
+
+  deposit         Deposit?         @relation(fields: [tossOrderId], references: [id])
+  transactionLogs TransactionLog[]
+
+  @@index([currency])
+  @@index([method])
+  @@index([status])
+  @@index([userEmail, userId, userName, userPhone], name: "User")
+  @@index([createdAt])
+  @@map("transactions")
+}
+
+model TransactionLog {
+  id            Int                @id @default(cuid()) @map("id")
+  transactionId String?            @map("transaction_id") @db.VarChar(50)
+  status        TransactionStatus?
+  message       String?            @db.VarChar(255)
+  requestData   Json?              @map("request_data")
+  responseData  Json?              @map("response_data")
+  errorData     Json?              @map("error_data")
+  source        String?            @db.VarChar(50)
+  transaction   Int?
+  createdAt     DateTime           @default(now()) @map("created_at")
+
+  transactionRef Transaction? @relation(fields: [transaction], references: [id])
+
+  @@index([transactionId])
+  @@index([createdAt])
+  @@index([status])
+  @@map("transaction_logs")
+}

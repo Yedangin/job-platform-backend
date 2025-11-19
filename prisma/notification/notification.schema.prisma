@@ -1,0 +1,76 @@
+// Notification Domain Schema - PostgreSQL
+// Includes: notifications, chats, messages
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma-notification"
+}
+
+enum NotificationType {
+  APPLICATION_ALERT
+  INTERVIEW_UPDATE
+  REMINDER
+  PROMOTION
+  EMAIL_VERIFICATION
+  FINANCIAL_ALERT
+  STATUS_ALERT
+}
+
+enum NotificationStatus {
+  PENDING
+  SENDING
+  FAILED
+}
+
+model Notification {
+  id                 Int                @id @default(cuid()) @map("id")
+  userId             Int                @map("user_id")
+  email              String?            @db.VarChar(50)
+  subject            String?            @db.VarChar(100)
+  content            String?            @db.VarChar(255)
+  notificationType   NotificationType   @default(REMINDER) @map("notification_type")
+  status             NotificationStatus @default(PENDING)
+  priority           Int?
+  attempts           Int?
+  maxAttempts        Int?               @map("max_attempts")
+  metadata           String?            @db.VarChar(255)
+  isRead             Boolean?           @map("is_read")
+  relatedInterviewId Int?               @map("related_interview_id")
+  relatedJobPostId   Int?               @map("related_job_post_id")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  sendedAt           DateTime?          @map("sended_at")
+  failedAt           DateTime?          @map("failed_at")
+  errorMessage       String?            @map("error_message") @db.Text
+
+  @@index([email])
+  @@index([subject])
+  @@index([notificationType])
+  @@index([metadata])
+  @@map("notifications")
+}
+
+model Chat {
+  id        Int      @id @default(cuid()) @map("id")
+  userOne   Int      @map("user_one")
+  userTwo   Int      @map("user_two")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("chats")
+}
+
+model Message {
+  id         Int      @id @default(cuid()) @map("id")
+  senderId   Int      @map("sender_id")
+  receiverId Int      @map("receiver_id")
+  room       String?  @db.VarChar(255)
+  message    String?  @db.VarChar(255)
+  isSeen     Boolean  @default(false) @map("is_seen")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("messages")
+}
