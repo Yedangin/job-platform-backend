@@ -1,8 +1,68 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/job-platform-backend/src",
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/job-platform-backend/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/job-platform-backend",
+  "projects": {
+    "auth-service": {
+      "type": "application",
+      "root": "apps/auth-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/auth-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/auth-service/tsconfig.app.json"
+      }
+    },
+    "chat-service": {
+      "type": "application",
+      "root": "apps/chat-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/chat-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/chat-service/tsconfig.app.json"
+      }
+    },
+    "job-platform-backend": {
+      "type": "application",
+      "root": "apps/job-platform-backend",
+      "entryFile": "main",
+      "sourceRoot": "apps/job-platform-backend/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/job-platform-backend/tsconfig.app.json"
+      }
+    },
+    "job-service": {
+      "type": "application",
+      "root": "apps/job-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/job-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/job-service/tsconfig.app.json"
+      }
+    },
+    "notification-service": {
+      "type": "application",
+      "root": "apps/notification-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/notification-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/notification-service/tsconfig.app.json"
+      }
+    },
+    "payment-services": {
+      "type": "application",
+      "root": "apps/payment-services",
+      "entryFile": "main",
+      "sourceRoot": "apps/payment-services/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/payment-services/tsconfig.app.json"
+      }
+    }
   }
 }
