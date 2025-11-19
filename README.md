@@ -6,9 +6,10 @@ This project provides a robust authentication framework built with NestJS, Mongo
 
 - JWT authentication
 - Local (email/password) login
-- OAuth integration (Google, Facebook)
-- Role-based permissions
+- OAuth integration (Google, Facebook, Kakao, Apple)
 - Password reset functionality
+- Job Searching Functionality
+- Caching for better performance
 - Dockerized environment
 - CI/CD pipeline
 - Git hooks with Husky
