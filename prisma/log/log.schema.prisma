@@ -8,7 +8,7 @@ datasource logDB {
 
 generator logClient {
   provider = "prisma-client-js"
-  output   = "../generated/prisma-log"
+  output   = "../../generated/prisma-log"
 }
 
 model SystemLog {

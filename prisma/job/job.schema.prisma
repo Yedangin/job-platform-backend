@@ -8,7 +8,7 @@ datasource jobDB {
 
 generator jobClient {
   provider = "prisma-client-js"
-  output   = "../generated/prisma-job"
+  output   = "../../generated/prisma-job"
 }
 
 enum JobPostStatus {

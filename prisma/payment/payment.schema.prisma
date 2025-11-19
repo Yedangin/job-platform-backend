@@ -8,7 +8,7 @@ datasource paymentDB {
 
 generator paymentClient {
   provider = "prisma-client-js"
-  output   = "../generated/prisma-payment"
+  output   = "../../generated/prisma-payment"
 }
 
 enum PaymentMethod {
