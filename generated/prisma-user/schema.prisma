@@ -1,0 +1,161 @@
+// User Domain Schema - PostgreSQL
+// Includes: users, user_informations, social_auths, verifications, sanctions
+
+datasource userDB {
+  provider = "postgresql"
+  url      = env("USER_DATABASE_URL")
+}
+
+generator userClient {
+  provider = "prisma-client-js"
+  output   = "../../generated/prisma-user"
+}
+
+model User {
+  id                String     @id @default(cuid()) @map("id")
+  role              UserRole   @default(GUEST)
+  email             String?    @userDB.VarChar(255)
+  password          String?    @userDB.VarChar(255)
+  phone             String?    @userDB.VarChar(50)
+  fullName          String?    @map("full_name") @userDB.VarChar(255)
+  status            UserStatus @default(PENDING)
+  isEmailedVerified Boolean    @default(false) @map("is_emailed_verified")
+  isPhoneVerified   Boolean    @default(false) @map("is_phone_verified")
+  walletId          String?    @unique @map("wallet_id")
+  userInfoId        String?    @unique @map("user_info_id")
+  createdAt         DateTime   @default(now()) @map("created_at")
+  updatedAt         DateTime   @updatedAt @map("updated_at")
+
+  memberIdentityVerifications    MemberIdentityVerification[] @relation("memberIdentities")
+  corporateRegistrations         CorporateRegistration[]      @relation("CoporateIdenities")
+  verifiedMemberIdentities       MemberIdentityVerification[] @relation("VerifiedBy")
+  verifiedCorporateRegistrations CorporateRegistration[]      @relation("VerifiedBy")
+  sanctions                      Sanction[]
+  userInformation                UserInformation?
+  socialAuths                    SocialAuth?
+
+  @@index([fullName])
+  @@index([email])
+  @@index([phone])
+  @@index([isEmailedVerified])
+  @@index([isPhoneVerified])
+  @@index([status])
+  @@index([role])
+  @@map("users")
+}
+
+model UserInformation {
+  id                    String   @id @default(cuid()) @map("id")
+  userId                String   @unique @map("user_id")
+  profileImage          String?  @map("profile_image") @userDB.VarChar(255)
+  gender                String?  @userDB.VarChar(50)
+  address               String?  @userDB.VarChar(255)
+  country               String?  @userDB.VarChar(50)
+  city                  String?  @userDB.VarChar(50)
+  cvForm                String?  @map("cv_form") @userDB.VarChar(255)
+  additionalInformation String?  @map("additional_information") @userDB.VarChar(255)
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([country, city], name: "Country")
+  @@map("user_informations")
+}
+
+model SocialAuth {
+  id         String         @default(cuid()) @map("id")
+  userId     String         @unique @map("user_id")
+  provider   SocialProvider
+  providerId String         @map("provider_id") @userDB.VarChar(255)
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("social_auths")
+}
+
+model MemberIdentityVerification {
+  id                 String             @id @default(cuid()) @map("id")
+  userId             String             @map("user_id")
+  passportPhoto      String?            @map("passport_photo") @userDB.VarChar(255)
+  selfiePhoto        String?            @map("selfie_photo") @userDB.VarChar(255)
+  verificationStatus VerificationStatus @default(PENDING) @map("verification_status")
+  isVerifiedBy       String?            @map("is_verified_by")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+  user               User               @relation("memberIdentities", fields: [userId], references: [id])
+  verifier           User?              @relation("VerifiedBy", fields: [isVerifiedBy], references: [id])
+
+  @@index([verificationStatus])
+  @@index([createdAt])
+  @@map("member_identity_verifications")
+}
+
+model CorporateRegistration {
+  id                  String             @id @default(cuid()) @map("id")
+  userId              String             @map("user_id")
+  companyName         String?            @map("company_name") @userDB.VarChar(255)
+  businessLicenseFile String?            @map("business_license_file") @userDB.VarChar(255)
+  verificationStatus  VerificationStatus @default(PENDING) @map("verification_status")
+  isVerifiedBy        String?            @map("is_verified_by")
+  createdAt           DateTime           @default(now()) @map("created_at")
+  updatedAt           DateTime           @updatedAt @map("updated_at")
+
+  user     User  @relation("CoporateIdenities", fields: [userId], references: [id])
+  verifier User? @relation("VerifiedBy", fields: [isVerifiedBy], references: [id])
+
+  @@index([verificationStatus])
+  @@index([createdAt])
+  @@map("corporate_registrations")
+}
+
+model Sanction {
+  id           String       @id @default(cuid()) @map("id")
+  userId       String       @map("user_id")
+  sanctionType SanctionType @map("sanction_type")
+  reason       String?      @userDB.Text
+  startDate    DateTime?    @map("start_date")
+  endDate      DateTime?    @map("end_date")
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([sanctionType])
+  @@map("sanctions")
+}
+
+enum UserRole {
+  GUEST
+  MEMBER
+  CORPORATE
+  ADMIN
+  SUPERADMIN
+}
+
+enum UserStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  REJECTED
+  INACTIVE
+}
+
+enum SocialProvider {
+  GOOGLE
+  FACEBOOK
+  KAKAO
+  APPLE
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum SanctionType {
+  SUSPENSION
+  WARNING
+  BANNED
+}
