@@ -1,12 +1,12 @@
 // Payment Domain Schema - PostgreSQL
 // Includes: wallets, deposits, transactions, transaction_logs
 
-datasource db {
+datasource paymentDB {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("PAYMENT_DATABASE_URL")
 }
 
-generator client {
+generator paymentClient {
   provider = "prisma-client-js"
   output   = "../generated/prisma-payment"
 }
@@ -42,10 +42,10 @@ enum DepositStatus {
 }
 
 model Wallet {
-  id           Int      @id @default(cuid()) @map("id")
-  userId       Int      @unique @map("user_id")
-  beforeAmount String?  @map("before_amount") @db.VarChar(50)
-  balance      String?  @db.VarChar(50)
+  id           String   @id @default(cuid()) @map("id")
+  userId       String   @unique @map("user_id")
+  beforeAmount String?  @map("before_amount") @paymentDB.VarChar(50)
+  balance      String?  @paymentDB.VarChar(50)
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
@@ -57,9 +57,9 @@ model Wallet {
 }
 
 model Deposit {
-  id              Int           @id @default(cuid()) @map("id")
-  userId          Int           @map("user_id")
-  walletId        Int           @map("wallet_id")
+  id              String        @id @default(cuid()) @map("id")
+  userId          String        @map("user_id")
+  walletId        String        @map("wallet_id")
   depositedAmount Int?          @map("deposited_amount")
   status          DepositStatus @default(PENDING)
   createdAt       DateTime      @default(now()) @map("created_at")
@@ -75,19 +75,19 @@ model Deposit {
 }
 
 model Transaction {
-  id             Int               @id @default(cuid()) @map("id")
-  tossOrderId    Int?              @map("toss_order_id")
-  tossPaymentKey String?           @map("toss_payment_key") @db.VarChar(255)
+  id             String            @id @default(cuid()) @map("id")
+  tossOrderId    String?           @map("toss_order_id")
+  tossPaymentKey String?           @map("toss_payment_key") @paymentDB.VarChar(255)
   amount         Int?
-  currency       String?           @db.VarChar(25)
+  currency       String?           @paymentDB.VarChar(25)
   method         PaymentMethod?    @default(CARD)
   status         TransactionStatus @default(PENDING)
-  failureReason  String?           @map("failure_reason") @db.VarChar(255)
-  userId         String?           @map("user_id") @db.VarChar(50)
-  userName       String?           @map("user_name") @db.VarChar(50)
-  userEmail      String?           @map("user_email") @db.VarChar(50)
-  userPhone      String?           @map("user_phone") @db.VarChar(50)
-  depositeName   String?           @map("deposite_name") @db.VarChar(50)
+  failureReason  String?           @map("failure_reason") @paymentDB.VarChar(255)
+  userId         String?           @map("user_id") @paymentDB.VarChar(50)
+  userName       String?           @map("user_name") @paymentDB.VarChar(50)
+  userEmail      String?           @map("user_email") @paymentDB.VarChar(50)
+  userPhone      String?           @map("user_phone") @paymentDB.VarChar(50)
+  depositeName   String?           @map("deposite_name") @paymentDB.VarChar(50)
   createdAt      DateTime          @default(now()) @map("created_at")
   updatedAt      DateTime          @updatedAt @map("updated_at")
   paidAt         DateTime?         @map("paid_at")
@@ -104,18 +104,17 @@ model Transaction {
 }
 
 model TransactionLog {
-  id            Int                @id @default(cuid()) @map("id")
-  transactionId String?            @map("transaction_id") @db.VarChar(50)
+  id            String             @id @default(cuid()) @map("id")
+  transactionId String?            @map("transaction_id")
   status        TransactionStatus?
-  message       String?            @db.VarChar(255)
+  message       String?            @paymentDB.VarChar(255)
   requestData   Json?              @map("request_data")
   responseData  Json?              @map("response_data")
   errorData     Json?              @map("error_data")
-  source        String?            @db.VarChar(50)
-  transaction   Int?
+  source        String?            @paymentDB.VarChar(50)
   createdAt     DateTime           @default(now()) @map("created_at")
 
-  transactionRef Transaction? @relation(fields: [transaction], references: [id])
+  transactionRef Transaction? @relation(fields: [transactionId], references: [id])
 
   @@index([transactionId])
   @@index([createdAt])
