@@ -1,12 +1,12 @@
 // User Domain Schema - PostgreSQL
 // Includes: users, user_informations, social_auths, verifications, sanctions
 
-datasource db {
+datasource userDB {
   provider = "postgresql"
   url      = env("USER_DATABASE_URL")
 }
 
-generator client {
+generator userClient {
   provider = "prisma-client-js"
   output   = "../generated/prisma-user"
 }
@@ -14,15 +14,15 @@ generator client {
 model User {
   id                String     @id @default(cuid()) @map("id")
   role              UserRole   @default(GUEST)
-  email             String?    @db.VarChar(255)
-  password          String?    @db.VarChar(255)
-  phone             String?    @db.VarChar(50)
-  fullName          String?    @map("full_name") @db.VarChar(255)
+  email             String?    @userDB.VarChar(255)
+  password          String?    @userDB.VarChar(255)
+  phone             String?    @userDB.VarChar(50)
+  fullName          String?    @map("full_name") @userDB.VarChar(255)
   status            UserStatus @default(PENDING)
   isEmailedVerified Boolean    @default(false) @map("is_emailed_verified")
   isPhoneVerified   Boolean    @default(false) @map("is_phone_verified")
-  walletId          Int?       @unique @map("wallet_id")
-  userInfoId        Int?       @unique @map("user_info_id")
+  walletId          String?    @unique @map("wallet_id")
+  userInfoId        String?    @unique @map("user_info_id")
   createdAt         DateTime   @default(now()) @map("created_at")
   updatedAt         DateTime   @updatedAt @map("updated_at")
 
@@ -40,19 +40,20 @@ model User {
   @@index([isEmailedVerified])
   @@index([isPhoneVerified])
   @@index([status])
+  @@index([role])
   @@map("users")
 }
 
 model UserInformation {
   id                    String   @id @default(cuid()) @map("id")
   userId                String   @unique @map("user_id")
-  profileImage          String?  @map("profile_image") @db.VarChar(255)
-  gender                String?  @db.VarChar(50)
-  address               String?  @db.VarChar(255)
-  country               String?  @db.VarChar(50)
-  city                  String?  @db.VarChar(50)
-  cvForm                String?  @map("cv_form") @db.VarChar(255)
-  additionalInformation String?  @map("additional_information") @db.VarChar(255)
+  profileImage          String?  @map("profile_image") @userDB.VarChar(255)
+  gender                String?  @userDB.VarChar(50)
+  address               String?  @userDB.VarChar(255)
+  country               String?  @userDB.VarChar(50)
+  city                  String?  @userDB.VarChar(50)
+  cvForm                String?  @map("cv_form") @userDB.VarChar(255)
+  additionalInformation String?  @map("additional_information") @userDB.VarChar(255)
   createdAt             DateTime @default(now()) @map("created_at")
   updatedAt             DateTime @updatedAt @map("updated_at")
 
@@ -66,7 +67,7 @@ model SocialAuth {
   id         String         @default(cuid()) @map("id")
   userId     String         @unique @map("user_id")
   provider   SocialProvider
-  providerId String         @map("provider_id") @db.VarChar(255)
+  providerId String         @map("provider_id") @userDB.VarChar(255)
 
   user User @relation(fields: [userId], references: [id])
 
@@ -76,8 +77,8 @@ model SocialAuth {
 model MemberIdentityVerification {
   id                 String             @id @default(cuid()) @map("id")
   userId             String             @map("user_id")
-  passportPhoto      String?            @map("passport_photo") @db.VarChar(255)
-  selfiePhoto        String?            @map("selfie_photo") @db.VarChar(255)
+  passportPhoto      String?            @map("passport_photo") @userDB.VarChar(255)
+  selfiePhoto        String?            @map("selfie_photo") @userDB.VarChar(255)
   verificationStatus VerificationStatus @default(PENDING) @map("verification_status")
   isVerifiedBy       String?            @map("is_verified_by")
   createdAt          DateTime           @default(now()) @map("created_at")
@@ -93,8 +94,8 @@ model MemberIdentityVerification {
 model CorporateRegistration {
   id                  String             @id @default(cuid()) @map("id")
   userId              String             @map("user_id")
-  companyName         String?            @map("company_name") @db.VarChar(255)
-  businessLicenseFile String?            @map("business_license_file") @db.VarChar(255)
+  companyName         String?            @map("company_name") @userDB.VarChar(255)
+  businessLicenseFile String?            @map("business_license_file") @userDB.VarChar(255)
   verificationStatus  VerificationStatus @default(PENDING) @map("verification_status")
   isVerifiedBy        String?            @map("is_verified_by")
   createdAt           DateTime           @default(now()) @map("created_at")
@@ -112,7 +113,7 @@ model Sanction {
   id           String       @id @default(cuid()) @map("id")
   userId       String       @map("user_id")
   sanctionType SanctionType @map("sanction_type")
-  reason       String?      @db.Text
+  reason       String?      @userDB.Text
   startDate    DateTime?    @map("start_date")
   endDate      DateTime?    @map("end_date")
   createdAt    DateTime     @default(now()) @map("created_at")
