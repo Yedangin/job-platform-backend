@@ -21,8 +21,8 @@ model User {
   status            UserStatus @default(PENDING)
   isEmailedVerified Boolean    @default(false) @map("is_emailed_verified")
   isPhoneVerified   Boolean    @default(false) @map("is_phone_verified")
-  walletId          Int?       @unique @map("wallet_id")
-  userInfoId        Int?       @unique @map("user_info_id")
+  walletId          String?    @unique @map("wallet_id")
+  userInfoId        String?    @unique @map("user_info_id")
   createdAt         DateTime   @default(now()) @map("created_at")
   updatedAt         DateTime   @updatedAt @map("updated_at")
 
@@ -40,6 +40,7 @@ model User {
   @@index([isEmailedVerified])
   @@index([isPhoneVerified])
   @@index([status])
+  @@index([role])
   @@map("users")
 }
 
