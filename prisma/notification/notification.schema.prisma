@@ -1,12 +1,12 @@
 // Notification Domain Schema - PostgreSQL
 // Includes: notifications, chats, messages
 
-datasource db {
+datasource notiDB {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
+generator notiClient {
   provider = "prisma-client-js"
   output   = "../generated/prisma-notification"
 }
@@ -28,24 +28,24 @@ enum NotificationStatus {
 }
 
 model Notification {
-  id                 Int                @id @default(cuid()) @map("id")
-  userId             Int                @map("user_id")
-  email              String?            @db.VarChar(50)
-  subject            String?            @db.VarChar(100)
-  content            String?            @db.VarChar(255)
+  id                 String             @id @default(cuid()) @map("id")
+  userId             String             @map("user_id")
+  email              String?            @notiDB.VarChar(50)
+  subject            String?            @notiDB.VarChar(100)
+  content            String?            @notiDB.VarChar(255)
   notificationType   NotificationType   @default(REMINDER) @map("notification_type")
   status             NotificationStatus @default(PENDING)
   priority           Int?
   attempts           Int?
   maxAttempts        Int?               @map("max_attempts")
-  metadata           String?            @db.VarChar(255)
+  metadata           String?            @notiDB.VarChar(255)
   isRead             Boolean?           @map("is_read")
-  relatedInterviewId Int?               @map("related_interview_id")
-  relatedJobPostId   Int?               @map("related_job_post_id")
+  relatedInterviewId String?            @map("related_interview_id")
+  relatedJobPostId   String?            @map("related_job_post_id")
   createdAt          DateTime           @default(now()) @map("created_at")
   sendedAt           DateTime?          @map("sended_at")
   failedAt           DateTime?          @map("failed_at")
-  errorMessage       String?            @map("error_message") @db.Text
+  errorMessage       String?            @map("error_message") @notiDB.Text
 
   @@index([email])
   @@index([subject])
@@ -55,20 +55,20 @@ model Notification {
 }
 
 model Chat {
-  id        Int      @id @default(cuid()) @map("id")
-  userOne   Int      @map("user_one")
-  userTwo   Int      @map("user_two")
+  id        String   @id @default(cuid()) @map("id")
+  userOne   String   @map("user_one")
+  userTwo   String   @map("user_two")
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("chats")
 }
 
 model Message {
-  id         Int      @id @default(cuid()) @map("id")
-  senderId   Int      @map("sender_id")
-  receiverId Int      @map("receiver_id")
-  room       String?  @db.VarChar(255)
-  message    String?  @db.VarChar(255)
+  id         String   @id @default(cuid()) @map("id")
+  senderId   String   @map("sender_id")
+  receiverId String   @map("receiver_id")
+  room       String?  @notiDB.VarChar(255)
+  message    String?  @notiDB.VarChar(255)
   isSeen     Boolean  @default(false) @map("is_seen")
   createdAt  DateTime @default(now()) @map("created_at")
 
