@@ -18,8 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/job-platform-backend/test/jest-e2e.json",
-    "prepare": "husky install",
-    "db:seed": "ts-node src/common/seed/seed.ts"
+    "prepare": "husky install"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
