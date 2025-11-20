@@ -6,4 +6,4 @@ import { PaymentPrismaService } from './payment-prisma.service';
   providers: [PaymentPrismaService],
   exports: [PaymentPrismaService],
 })
-export class PrismaModule {}
+export class PaymentPrismaModule {}

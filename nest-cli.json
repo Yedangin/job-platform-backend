@@ -5,6 +5,8 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
+    "assets": ["proto/**/*.proto"],
+    "watchAssets": true,
     "tsConfigPath": "apps/job-platform-backend/tsconfig.app.json"
   },
   "monorepo": true,
@@ -25,7 +27,9 @@
       "entryFile": "main",
       "sourceRoot": "apps/auth-service/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/auth-service/tsconfig.app.json"
+        "tsConfigPath": "apps/auth-service/tsconfig.app.json",
+        "assets": ["proto/**/*.proto"],
+        "watchAssets": true
       }
     },
     "chat-service": {

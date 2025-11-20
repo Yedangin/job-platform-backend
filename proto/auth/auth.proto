@@ -1,0 +1,108 @@
+syntax = "proto3";
+
+package auth;
+
+// -----------------------------
+//  Enums
+// -----------------------------
+enum UserRole {
+  USER_ROLE_UNSPECIFIED = 0; // Required: Default zero value
+  GUEST = 1;
+  MEMBER = 2;
+  CORPORATE = 3;
+  ADMIN = 4;
+  SUPERADMIN = 5;
+}
+
+enum UserStatus {
+  USER_STATUS_UNSPECIFIED = 0; // Required: Default zero value
+  PENDING = 1;
+  ACTIVE = 2;
+  INACTIVE = 3; // Placeholder, adjust as needed
+}
+
+// -----------------------------
+//  Core User Message
+// -----------------------------
+message User {
+  string id = 1;
+  UserRole role = 2;
+  optional string email = 3;
+  optional string phone = 4;
+  optional string full_name = 5;
+  UserStatus status = 6;
+  bool is_emailed_verified = 7;
+  bool is_phone_verified = 8;
+  optional string wallet_id = 9;
+  string created_at = 10;
+  string updated_at = 11;
+}
+
+// -----------------------------
+//  Core Response Messages
+// -----------------------------
+
+// A generic success response used by most mutations.
+message RegisterSuccessResponse {
+  bool success = 1;
+  optional string message = 2;
+}
+
+message LoginSuccessResponse {
+  bool success = 1;
+  string sessionId = 2;
+  string message = 3;
+}
+
+
+message UserResponse {
+  bool success = 1;
+  optional string message = 2;
+  User user = 3;
+}
+
+// -----------------------------
+//  Auth Request Message
+// -----------------------------
+
+// Registration request message
+message RegisterRequest {
+  string fullName = 1;
+  string email = 2;
+  string password = 3;
+  optional string role = 4;
+}
+
+// Login request message
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+// Used for GetProfile. The session/auth token is expected to be passed via gRPC metadata.
+message GetProfileRequest {
+  string sessionId = 1;
+}
+
+// Used for Logout. The session/auth token is expected to be passed via gRPC metadata for invalidation.
+message LogoutRequest {
+  string sessionId = 1;
+}
+
+// -----------------------------
+//  Service Definition
+// -----------------------------
+
+service AuthService {
+  // Registers a new user
+  rpc Register(RegisterRequest) returns (RegisterSuccessResponse);
+
+  // Logs in an existing user
+  rpc Login(LoginRequest) returns (LoginSuccessResponse);
+
+  // Retrieves the profile of the logged-in user
+  rpc GetProfile(GetProfileRequest) returns (UserResponse);
+
+  // Logs out the current user
+  rpc Logout(LogoutRequest) returns (RegisterSuccessResponse);
+}

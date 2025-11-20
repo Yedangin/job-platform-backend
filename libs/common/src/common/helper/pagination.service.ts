@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { BasicQuery } from '../dto/basic-query.dto';
-import { PrismaService } from '../prisma/prisma.service';
+import { AuthPrismaService } from '../prisma/auth/auth-prisma.service';
 
 @Injectable()
 export class PaginationService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: AuthPrismaService) {}
 
   buildWhereCondition(
     filterModel?: string,

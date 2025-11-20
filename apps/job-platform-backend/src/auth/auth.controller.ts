@@ -1,108 +1,118 @@
 import {
-  Controller,
-  Post,
   Body,
-  UseGuards,
-  Req,
+  Controller,
   Get,
-  NotFoundException,
+  HttpException,
+  Inject,
+  OnModuleInit,
+  Post,
+  Req,
+  Res,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
-import { AuthService } from './auth.service';
+import { ClientGrpc } from '@nestjs/microservices';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AUTH_PACKAGE_NAME, AuthServiceClient } from 'types/proto/auth/auth';
 import { LoginDto } from './dto/login.dto';
-import { TokenResponseDto } from 'src/common/dto/token-response.dto';
-import { User } from 'src/common/decorator/current-user.decorator';
 import { RegisterDto } from './dto/register.dto';
-import { ProfileResponseDto } from './dto/profile-response.dto';
-import { GoogleOAuthGuard } from 'src/common/guard/google-oauth.guard';
-import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
-import { ResetPasswordDto } from './dto/reset-password.dto';
+import { Request, Response } from 'express';
+import { firstValueFrom } from 'rxjs';
 
 @ApiTags('Authentication')
 @Controller('auth')
-export class AuthController {
-  constructor(private authService: AuthService) {}
+export class AuthController implements OnModuleInit {
+  private authService: AuthServiceClient;
 
-  @Post('login')
-  @UseGuards(AuthGuard('local'))
-  @ApiOperation({ summary: 'Login with email and password' })
-  @ApiBody({ type: LoginDto })
-  @ApiResponse({ status: 200, type: TokenResponseDto })
-  async login(@User() user) {
-    return this.authService.login(user);
+  constructor(@Inject(AUTH_PACKAGE_NAME) private authClient: ClientGrpc) {}
+
+  onModuleInit() {
+    this.authService =
+      this.authClient.getService<AuthServiceClient>('AuthService');
   }
 
   @Post('register')
   @ApiOperation({ summary: 'Register a new account' })
   @ApiBody({ type: RegisterDto })
-  @ApiResponse({ status: 201, type: TokenResponseDto })
+  @ApiResponse({
+    status: 201,
+    description: 'User registered successfully.',
+  })
   async register(@Body() registerDto: RegisterDto) {
-    const user = await this.authService.register(registerDto);
-    return this.authService.login(user);
+    try {
+      const result = await firstValueFrom(
+        this.authService.register(registerDto),
+      );
+      return result;
+    } catch (error) {
+      throw new HttpException(
+        error.details ?? 'Internal server error',
+        error.code ?? 500,
+      );
+    }
+  }
+
+  @Post('login')
+  @ApiOperation({ summary: 'Login with email and password' })
+  @ApiBody({ type: LoginDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Login successful. Session cookie set.',
+  })
+  async login(
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result: any = await firstValueFrom(this.authService.login(loginDto));
+
+    console.log('the result : ', result);
+    const sessionId = result.sessionId;
+
+    res.cookie('sessionId', sessionId, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: 2 * 60 * 60 * 1000,
+    });
+
+    return { message: 'Login successful' };
   }
 
   @Get('profile')
-  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Get current user profile' })
-  @ApiResponse({ status: 200, type: ProfileResponseDto })
-  async getProfile(@Req() req) {
-    const user = await this.authService.getProfile(req.user.userId);
-    if (!user) {
-      throw new NotFoundException('User not found');
+  @ApiResponse({
+    status: 200,
+    description: 'User profile retrieved successfully.',
+  })
+  async getProfile(@Req() req: Request) {
+    try {
+      // TODO: Forward cookies to gRPC service via metadata
+      // This requires custom gRPC interceptor or middleware
+
+      const result = await firstValueFrom(this.authService.getProfile({}));
+      return result;
+    } catch (error) {
+      throw error;
     }
-
-    // Safely handle passwordHash removal
-    const result = {
-      ...user,
-      passwordHash: undefined,
-      roles: user.roles.map((userRole) => userRole.role.name),
-    };
-    delete result.passwordHash;
-
-    return result;
   }
 
-  // Add to auth.controller.ts
-  @Post('request-password-reset')
-  @ApiOperation({ summary: 'Request password reset email' })
-  @ApiBody({ type: RequestPasswordResetDto })
-  async requestPasswordReset(@Body() { email }: RequestPasswordResetDto) {
-    await this.authService.requestPasswordReset(email);
-    return { message: 'If an account exists, you will receive a reset email' };
-  }
+  // @Post('logout')
+  // @ApiOperation({ summary: 'Logout current user' })
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Logout successful. Session cookie cleared.',
+  // })
+  // async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  //   try {
+  //     // TODO: Forward cookies to gRPC service via metadata
+  //     // This requires custom gRPC interceptor or middleware
 
-  @Post('reset-password')
-  @ApiOperation({ summary: 'Reset password with token' })
-  @ApiBody({ type: ResetPasswordDto })
-  async resetPassword(@Body() { token, newPassword }: ResetPasswordDto) {
-    await this.authService.resetPassword(token, newPassword);
-    return { message: 'Password has been reset successfully' };
-  }
+  //     const result = await firstValueFrom(this.authService.logout({}));
 
-  @Get('google')
-  @UseGuards(GoogleOAuthGuard)
-  @ApiOperation({ summary: 'Initiate Google OAuth login' })
-  async googleAuth() {}
+  //     // TODO: Clear session cookie
+  //     // res.clearCookie('sessionId');
 
-  @Get('google/callback')
-  @UseGuards(AuthGuard('google'))
-  @ApiOperation({ summary: 'Google OAuth callback' })
-  @ApiResponse({ status: 200, type: TokenResponseDto })
-  async googleAuthRedirect(@User() user) {
-    return this.authService.login(user);
-  }
-
-  @Get('facebook')
-  @UseGuards(AuthGuard('facebook'))
-  @ApiOperation({ summary: 'Initiate Facebook OAuth login' })
-  async facebookAuth() {}
-
-  @Get('facebook/callback')
-  @UseGuards(AuthGuard('facebook'))
-  @ApiOperation({ summary: 'Facebook OAuth callback' })
-  @ApiResponse({ status: 200, type: TokenResponseDto })
-  async facebookAuthRedirect(@User() user) {
-    return this.authService.login(user);
-  }
+  //     return result;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 }
