@@ -120,7 +120,7 @@ service TodoService {
 ## 4.  Run the following command to generate the proto file
 
 ```bash
-npx protoc --ts_proto_out=./types/ ./proto/*proto --ts_proto_opt=nestJs=true
+npx protoc --ts_proto_out=./types/ ./proto/**/*proto --ts_proto_opt=nestJs=true
 ```
 
 ---

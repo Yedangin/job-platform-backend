@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from './common/prisma/prisma.module';
-import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
-import { ThrottlerBehindProxyGuard } from './common/guard/throttler-behind-proxy.guard';
+import { ThrottlerBehindProxyGuard } from 'libs/common/src';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -32,7 +31,6 @@ import { ThrottlerBehindProxyGuard } from './common/guard/throttler-behind-proxy
       secret: process.env.JWT_SECRET || 'thisismyJwtSecretKey',
       signOptions: { expiresIn: process.env.JWT_SECRET_EXPIRES_IN },
     }),
-    PrismaModule,
     AuthModule,
   ],
   controllers: [],

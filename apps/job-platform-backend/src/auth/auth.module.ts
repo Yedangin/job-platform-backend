@@ -1,12 +1,24 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { GoogleStrategy } from 'src/common/strategies/google.strategy';
-import { FacebookStrategy } from 'src/common/strategies/facebook.strategy';
-import { LocalStrategy } from 'src/common/strategies/local.strategy';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { AUTH_PACKAGE_NAME } from 'types/proto/auth/auth';
+import { join } from 'path';
 
 @Module({
+  imports: [
+    ClientsModule.register([
+      {
+        name: AUTH_PACKAGE_NAME,
+        transport: Transport.GRPC,
+        options: {
+          package: AUTH_PACKAGE_NAME,
+          protoPath: join(process.cwd(), 'proto/auth/auth.proto'),
+          url: process.env.AUTH_SERVICE_URL || 'localhost:8001',
+        },
+      },
+    ]),
+  ],
   controllers: [AuthController],
-  providers: [AuthService, GoogleStrategy, FacebookStrategy, LocalStrategy],
+  providers: [],
 })
 export class AuthModule {}
