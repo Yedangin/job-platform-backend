@@ -6,9 +6,6 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { PrismaService } from './prisma/prisma.service';
-import { RedisService } from './redis/redis.service';
-import { SessionData } from './interfaces/session.interface';
 import { v4 as uuidv4 } from 'uuid';
 import {
   RegisterRequest,
@@ -19,16 +16,17 @@ import {
   UserStatus,
   RegisterSuccessResponse,
 } from 'types/proto/auth/auth';
+import { AuthPrismaService, RedisService, SessionData } from 'libs/common/src';
 
 @Injectable()
 export class AuthServiceService {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly prisma: AuthPrismaService,
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
   ) {}
 
-  async register(request: RegisterRequest): Promise<Success> {
+  async register(request: RegisterRequest): Promise<RegisterSuccessResponse> {
     const { email, password, fullName, role } = request;
 
     // Check if user already exists

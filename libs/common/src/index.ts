@@ -36,6 +36,10 @@ export * from './common/interceptor/success-transform-interceptor';
 
 // Interfaces
 export * from './common/interfaces/pagination-result.interface';
+export * from './common/interfaces/session.interface';
+
+// Redis
+export * from './common/redis/redis.service';
 
 // Prisma
 export * from './common/prisma/auth/auth-prisma.module';
@@ -62,7 +66,7 @@ export * from './common/prisma/payment/payment-prisma.service';
 // export * from './common/strategies/user.strategy';
 
 // Services
-// export * from './common/services/token.service';
+export * from './common/services/token.service';
 export * from './common/services/file.service';
 // export * from './common/services/auth-strategy.service';
 
