@@ -17,6 +17,7 @@ import {
   User,
   UserRole,
   UserStatus,
+  RegisterSuccessResponse,
 } from 'types/proto/auth/auth';
 
 @Injectable()
@@ -182,7 +183,7 @@ export class AuthServiceService {
     };
   }
 
-  async logout(sessionId: string): Promise<Success> {
+  async logout(sessionId: string): Promise<RegisterSuccessResponse> {
     // Check if session exists
     const exists = await this.redisService.exists(`session:${sessionId}`);
 

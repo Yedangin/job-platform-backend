@@ -3,13 +3,13 @@ import { AuthServiceService } from './auth-service.service';
 import {
   GetProfileRequest,
   LoginRequest,
+  LoginSuccessResponse,
   LogoutRequest,
   RegisterRequest,
   RegisterSuccessResponse,
-  Success,
   UserResponse,
 } from 'types/proto/auth/auth';
-import { Metadata, ServerUnaryCall } from '@grpc/grpc-js';
+import { Metadata } from '@grpc/grpc-js';
 import { RpcException } from '@nestjs/microservices';
 import { GrpcMethod } from '@nestjs/microservices';
 
@@ -31,7 +31,7 @@ export class AuthServiceController {
   }
 
   @GrpcMethod('AuthService', 'Login')
-  async login(request: LoginRequest): Promise<Success> {
+  async login(request: LoginRequest): Promise<LoginSuccessResponse> {
     try {
       return await this.authServiceService.login(request);
     } catch (error) {
@@ -43,22 +43,16 @@ export class AuthServiceController {
   }
 
   @GrpcMethod('AuthService', 'GetProfile')
-  async getProfile(
-    request: GetProfileRequest,
-    metadata: Metadata,
-  ): Promise<UserResponse> {
+  async getProfile(request: GetProfileRequest): Promise<UserResponse> {
     try {
-      // Extract session ID from metadata
-      const sessionId = this.extractSessionId(metadata);
-
-      if (!sessionId) {
+      if (!request.sessionId) {
         throw new RpcException({
           code: 401,
           message: 'Session ID not provided',
         });
       }
 
-      return await this.authServiceService.getProfile(sessionId);
+      return await this.authServiceService.getProfile(request.sessionId);
     } catch (error) {
       throw new RpcException({
         code: error.status || 500,
@@ -68,32 +62,16 @@ export class AuthServiceController {
   }
 
   @GrpcMethod('AuthService', 'Logout')
-  async logout(
-    request: LogoutRequest,
-    metadata: Metadata,
-    call: ServerUnaryCall<any, any>,
-  ): Promise<Success> {
+  async logout(request: LogoutRequest): Promise<RegisterSuccessResponse> {
     try {
-      // Extract session ID from metadata
-      const sessionId = this.extractSessionId(metadata);
-
-      if (!sessionId) {
+      if (!request.sessionId) {
         throw new RpcException({
           code: 401,
           message: 'Session ID not provided',
         });
       }
 
-      const result = await this.authServiceService.logout(sessionId);
-
-      // Clear session cookie
-      const responseMetadata = new Metadata();
-      responseMetadata.set(
-        'set-cookie',
-        `sessionId=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0`,
-      );
-      call.sendMetadata(responseMetadata);
-
+      const result = await this.authServiceService.logout(request.sessionId);
       return result;
     } catch (error) {
       throw new RpcException({

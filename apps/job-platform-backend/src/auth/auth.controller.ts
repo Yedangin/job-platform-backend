@@ -6,16 +6,17 @@ import {
   Inject,
   OnModuleInit,
   Post,
-  Req,
   Res,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AUTH_PACKAGE_NAME, AuthServiceClient } from 'types/proto/auth/auth';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { firstValueFrom } from 'rxjs';
+import { Session } from 'libs/common/src';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -63,14 +64,14 @@ export class AuthController implements OnModuleInit {
   ) {
     const result: any = await firstValueFrom(this.authService.login(loginDto));
 
-    console.log('the result : ', result);
-    const sessionId = result.sessionId;
+    const sessionId = String(result.sessionId);
 
     res.cookie('sessionId', sessionId, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
       maxAge: 2 * 60 * 60 * 1000,
+      domain: process.env.COOKIE_DOMAIN || 'localhost',
     });
 
     return { message: 'Login successful' };
@@ -82,37 +83,49 @@ export class AuthController implements OnModuleInit {
     status: 200,
     description: 'User profile retrieved successfully.',
   })
-  async getProfile(@Req() req: Request) {
+  async getProfile(@Session() sessionId: string) {
     try {
-      // TODO: Forward cookies to gRPC service via metadata
-      // This requires custom gRPC interceptor or middleware
+      if (!sessionId) {
+        throw new UnauthorizedException('Invalid or expired session');
+      }
 
-      const result = await firstValueFrom(this.authService.getProfile({}));
+      const result = await firstValueFrom(
+        this.authService.getProfile({ sessionId: sessionId }),
+      );
       return result;
     } catch (error) {
-      throw error;
+      throw new HttpException(
+        error.details ?? 'Internal server error',
+        error.code ?? 500,
+      );
     }
   }
 
-  // @Post('logout')
-  // @ApiOperation({ summary: 'Logout current user' })
-  // @ApiResponse({
-  //   status: 200,
-  //   description: 'Logout successful. Session cookie cleared.',
-  // })
-  // async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-  //   try {
-  //     // TODO: Forward cookies to gRPC service via metadata
-  //     // This requires custom gRPC interceptor or middleware
+  @Post('logout')
+  @ApiOperation({ summary: 'Logout current user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Logout successful. Session cookie cleared.',
+  })
+  async logout(
+    @Session() sessionId: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    try {
+      const result = await firstValueFrom(
+        this.authService.logout({ sessionId: sessionId }),
+      );
 
-  //     const result = await firstValueFrom(this.authService.logout({}));
+      res.clearCookie('sessionId', {
+        domain: process.env.COOKIE_DOMAIN || 'localhost',
+      });
 
-  //     // TODO: Clear session cookie
-  //     // res.clearCookie('sessionId');
-
-  //     return result;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
+      return result;
+    } catch (error) {
+      throw new HttpException(
+        error.details ?? 'Internal server error',
+        error.code ?? 500,
+      );
+    }
+  }
 }

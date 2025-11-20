@@ -5,6 +5,7 @@ export * from './common.service';
 export * from './common/decorator/current-user.decorator';
 export * from './common/decorator/public.decorator';
 export * from './common/decorator/role.decorator';
+export * from './common/decorator/session.decorator';
 
 // DTO
 export * from './common/dto/basic-query.dto';
