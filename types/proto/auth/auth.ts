@@ -75,6 +75,10 @@ export interface LoginSuccessResponse {
   message: string;
 }
 
+export interface PasswordResetResponse {
+  message: string;
+}
+
 export interface UserResponse {
   success: boolean;
   message?: string | undefined;
@@ -113,6 +117,16 @@ export interface LogoutRequest {
   sessionId: string;
 }
 
+/** Used for Reset Password. The reset token is expected to be passed via gRPC metadata. */
+export interface ResetPasswordRequest {
+  token: string;
+  newPassword: string;
+}
+
+export interface PasswordResetRequest {
+  email: string;
+}
+
 /** Used for SocialLogin. The session/auth token is expected to be passed via gRPC metadata for invalidation. */
 export interface SocialLoginRequest {
   email?: string | undefined;
@@ -142,6 +156,14 @@ export interface AuthServiceClient {
 
   logout(request: LogoutRequest): Observable<RegisterSuccessResponse>;
 
+  /** Password Reset for user */
+
+  resetPassword(request: ResetPasswordRequest): Observable<PasswordResetResponse>;
+
+  /** Reset Password Request for user */
+
+  passwordReset(request: PasswordResetRequest): Observable<PasswordResetResponse>;
+
   /** Social Login */
 
   socialLogin(request: SocialLoginRequest): Observable<LoginSuccessResponse>;
@@ -168,6 +190,18 @@ export interface AuthServiceController {
     request: LogoutRequest,
   ): Promise<RegisterSuccessResponse> | Observable<RegisterSuccessResponse> | RegisterSuccessResponse;
 
+  /** Password Reset for user */
+
+  resetPassword(
+    request: ResetPasswordRequest,
+  ): Promise<PasswordResetResponse> | Observable<PasswordResetResponse> | PasswordResetResponse;
+
+  /** Reset Password Request for user */
+
+  passwordReset(
+    request: PasswordResetRequest,
+  ): Promise<PasswordResetResponse> | Observable<PasswordResetResponse> | PasswordResetResponse;
+
   /** Social Login */
 
   socialLogin(
@@ -177,7 +211,15 @@ export interface AuthServiceController {
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["register", "login", "getProfile", "logout", "socialLogin"];
+    const grpcMethods: string[] = [
+      "register",
+      "login",
+      "getProfile",
+      "logout",
+      "resetPassword",
+      "passwordReset",
+      "socialLogin",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);

@@ -179,6 +179,16 @@ exports.Prisma.CorporateRegistrationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.VerificationTokenScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  token: 'token',
+  type: 'type',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SanctionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -244,6 +254,7 @@ exports.Prisma.ModelName = {
   SocialAuth: 'SocialAuth',
   MemberIdentityVerification: 'MemberIdentityVerification',
   CorporateRegistration: 'CorporateRegistration',
+  VerificationToken: 'VerificationToken',
   Sanction: 'Sanction'
 };
 

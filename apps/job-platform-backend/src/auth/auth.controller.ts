@@ -22,6 +22,8 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { Response } from 'express';
 import { firstValueFrom } from 'rxjs';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
 import {
   GoogleOAuthGuard,
   Session,
@@ -92,19 +94,28 @@ export class AuthController implements OnModuleInit {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result: any = await firstValueFrom(this.authService.login(loginDto));
+    try {
+      const result: any = await firstValueFrom(
+        this.authService.login(loginDto),
+      );
 
-    const sessionId = String(result.sessionId);
+      const sessionId = String(result.sessionId);
 
-    res.cookie('sessionId', sessionId, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 2 * 60 * 60 * 1000,
-      domain: process.env.COOKIE_DOMAIN || 'localhost',
-    });
+      res.cookie('sessionId', sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 2 * 60 * 60 * 1000,
+        domain: process.env.COOKIE_DOMAIN || 'localhost',
+      });
 
-    return { message: 'Login successful' };
+      return { message: 'Login successful' };
+    } catch (error) {
+      throw new HttpException(
+        error.details ?? 'Internal server error',
+        error.code ?? 500,
+      );
+    }
   }
 
   @Get('profile')
@@ -159,6 +170,40 @@ export class AuthController implements OnModuleInit {
     }
   }
 
+  @Post('request-password-reset')
+  @ApiOperation({ summary: 'Request password reset email' })
+  @ApiBody({ type: RequestPasswordResetDto })
+  async requestPasswordReset(@Body() { email }: RequestPasswordResetDto) {
+    try {
+      const result = await this.authService.passwordReset({ email });
+      return result;
+    } catch (error) {
+      throw new HttpException(
+        {
+          message: error.message || 'Internal server error',
+        },
+        error.status,
+      );
+    }
+  }
+
+  @Post('reset-password')
+  @ApiOperation({ summary: 'Reset password with token' })
+  @ApiBody({ type: ResetPasswordDto })
+  async resetPassword(@Body() { token, newPassword }: ResetPasswordDto) {
+    try {
+      const result = await this.authService.resetPassword({ token, newPassword });
+      return result;
+    } catch (error) {
+      throw new HttpException(
+        {
+          message: error.message || 'Internal server error',
+        },
+        error.status,
+      );
+    }
+  }
+
   @Get('google')
   @UseGuards(GoogleOAuthGuard)
   @ApiOperation({ summary: 'Initiate Google OAuth login' })
@@ -171,25 +216,32 @@ export class AuthController implements OnModuleInit {
     @Request() req: any,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const user = {
-      email: req.user.email,
-      firstName: req.user.firstName,
-      lastName: req.user.lastName,
-      picture: req.user.picture,
-      provider: SocialProvider.GOOGLE,
-      providerId: req.user.providerId,
-    };
+    try {
+      const user = {
+        email: req.user.email,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName,
+        picture: req.user.picture,
+        provider: SocialProvider.GOOGLE,
+        providerId: req.user.providerId,
+      };
 
-    const result = await firstValueFrom(this.authService.socialLogin(user));
+      const result = await firstValueFrom(this.authService.socialLogin(user));
 
-    res.cookie('sessionId', result.sessionId, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 2 * 60 * 60 * 1000,
-      domain: process.env.COOKIE_DOMAIN || 'localhost',
-    });
+      res.cookie('sessionId', result.sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 2 * 60 * 60 * 1000,
+        domain: process.env.COOKIE_DOMAIN || 'localhost',
+      });
 
-    return { message: result.message };
+      return { message: result.message };
+    } catch (error) {
+      throw new HttpException(
+        error.details ?? 'Internal server error',
+        error.code ?? 500,
+      );
+    }
   }
 }

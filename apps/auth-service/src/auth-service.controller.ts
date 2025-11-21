@@ -5,12 +5,14 @@ import {
   LoginRequest,
   LoginSuccessResponse,
   LogoutRequest,
+  PasswordResetRequest,
+  PasswordResetResponse,
   RegisterRequest,
   RegisterSuccessResponse,
+  ResetPasswordRequest,
   SocialLoginRequest,
   UserResponse,
 } from 'types/proto/auth/auth';
-import { Metadata } from '@grpc/grpc-js';
 import { RpcException } from '@nestjs/microservices';
 import { GrpcMethod } from '@nestjs/microservices';
 
@@ -82,6 +84,40 @@ export class AuthServiceController {
     }
   }
 
+  @GrpcMethod('AuthService', 'ResetPassword')
+  async resetPassword(
+    request: ResetPasswordRequest,
+  ): Promise<PasswordResetResponse> {
+    try {
+      console.log('Received reset password request:', request);
+      return await this.authServiceService.resetPassword(
+        request.token,
+        request.newPassword,
+      );
+    } catch (error) {
+      throw new RpcException({
+        code: error.status || 500,
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  @GrpcMethod('AuthService', 'PasswordReset')
+  async passwordReset(
+    request: PasswordResetRequest,
+  ): Promise<PasswordResetResponse> {
+    try {
+      console.log('Received new password request:', request);
+
+      return await this.authServiceService.requestPasswordReset(request.email);
+    } catch (error) {
+      throw new RpcException({
+        code: error.status || 500,
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
   @GrpcMethod('AuthService', 'SocialLogin')
   async socialLogin(
     request: SocialLoginRequest,
@@ -94,27 +130,5 @@ export class AuthServiceController {
         message: error.message || 'Internal server error',
       });
     }
-  }
-
-  private extractSessionId(metadata: Metadata): string | null {
-    if (!metadata) {
-      return null;
-    }
-
-    const cookies = metadata.get('cookie');
-    if (!cookies || cookies.length === 0) {
-      return null;
-    }
-
-    const cookieString = cookies[0].toString();
-    const sessionCookie = cookieString
-      .split(';')
-      .find((c) => c.trim().startsWith('sessionId='));
-
-    if (!sessionCookie) {
-      return null;
-    }
-
-    return sessionCookie.split('=')[1].trim();
   }
 }
