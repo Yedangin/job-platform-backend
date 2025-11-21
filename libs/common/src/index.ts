@@ -22,6 +22,8 @@ export * from './common/guard/google-oauth.guard';
 export * from './common/guard/kakao.guard';
 export * from './common/guard/throttler-behind-proxy.guard';
 export * from './common/guard/user-jwt-auth.guard';
+export * from './common/guard/session-auth.guard';
+export * from './common/guard/roles.guard';
 export * from './common/guard/staff-access.guard';
 export * from './common/guard/warehouse-access.guard';
 

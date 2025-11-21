@@ -31,6 +31,11 @@ import { GenerateStoreToken } from 'libs/common/src/common/helper/generate-store
     }),
   ],
   controllers: [AuthServiceController],
-  providers: [AuthServiceService, AuthPrismaService, RedisService, GenerateStoreToken],
+  providers: [
+    AuthServiceService,
+    AuthPrismaService,
+    RedisService,
+    GenerateStoreToken,
+  ],
 })
 export class AuthServiceModule {}

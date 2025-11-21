@@ -22,7 +22,13 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { Response } from 'express';
 import { firstValueFrom } from 'rxjs';
-import { GoogleOAuthGuard, Session, UserJwtAuthGuard } from 'libs/common/src';
+import {
+  GoogleOAuthGuard,
+  Session,
+  SessionAuthGuard,
+  RolesGuard,
+  Roles,
+} from 'libs/common/src';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -37,9 +43,21 @@ export class AuthController implements OnModuleInit {
   }
 
   @Get()
-  @UseGuards(UserJwtAuthGuard)
-  async getHello(): Promise<string> {
+  @UseGuards(SessionAuthGuard)
+  getHello(): string {
     return 'Auth Service is running';
+  }
+
+  @Get('admin')
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
+  @ApiOperation({ summary: 'Admin only endpoint (example)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Access granted for admin users.',
+  })
+  getAdminData(): string {
+    return 'This is admin-only data';
   }
 
   @Post('register')
