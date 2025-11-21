@@ -22,10 +22,9 @@ export * from './common/guard/google-oauth.guard';
 export * from './common/guard/kakao.guard';
 export * from './common/guard/throttler-behind-proxy.guard';
 export * from './common/guard/user-jwt-auth.guard';
-export * from './common/guard/admin-only.guard';
+export * from './common/guard/session-auth.guard';
+export * from './common/guard/roles.guard';
 export * from './common/guard/staff-access.guard';
-export * from './common/guard/admin-seller.guard';
-export * from './common/guard/admin-support.guard';
 export * from './common/guard/warehouse-access.guard';
 
 // Helpers
@@ -59,11 +58,11 @@ export * from './common/prisma/payment/payment-prisma.service';
 // Strategies
 // export * from './common/strategies/facebook.strategy';
 // export * from './common/strategies/apple.strategy';
-// export * from './common/strategies/google.strategy';
-// export * from './common/strategies/jwt.strategy';
+export * from './common/strategies/google.strategy';
+export * from './common/strategies/jwt.strategy';
 // export * from './common/strategies/kakao.strategy';
 // export * from './common/strategies/local.strategy';
-// export * from './common/strategies/user.strategy';
+export * from './common/strategies/user.strategy';
 
 // Services
 export * from './common/services/token.service';

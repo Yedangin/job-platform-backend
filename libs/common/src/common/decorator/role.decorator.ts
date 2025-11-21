@@ -8,7 +8,11 @@ export enum UserRole {
   WAREHOUSE_STAFF = 'WAREHOUSE_STAFF',
 }
 
-export const Roles = (...roles: UserRole[]) => SetMetadata('roles', roles);
+export const ROLES_KEY = 'roles';
+
+// Flexible Roles decorator that accepts both enum values and strings
+export const Roles = (...roles: (UserRole | string)[]) =>
+  SetMetadata(ROLES_KEY, roles);
 
 // Convenience decorators for common role combinations
 export const AdminOnly = () => Roles(UserRole.ADMIN);

@@ -36,6 +36,14 @@ export enum UserStatus {
   UNRECOGNIZED = -1,
 }
 
+export enum SocialProvider {
+  GOOGLE = 0,
+  FACEBOOK = 1,
+  KAKAO = 2,
+  APPLE = 3,
+  UNRECOGNIZED = -1,
+}
+
 /**
  * -----------------------------
  *  Core User Message
@@ -73,6 +81,14 @@ export interface UserResponse {
   user: User | undefined;
 }
 
+export interface SocialAuthResponse {
+  success: boolean;
+  message?: string | undefined;
+  prvider?: string | undefined;
+  picture?: string | undefined;
+  user: User | undefined;
+}
+
 /** Registration request message */
 export interface RegisterRequest {
   fullName: string;
@@ -97,6 +113,16 @@ export interface LogoutRequest {
   sessionId: string;
 }
 
+/** Used for SocialLogin. The session/auth token is expected to be passed via gRPC metadata for invalidation. */
+export interface SocialLoginRequest {
+  email?: string | undefined;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
+  picture?: string | undefined;
+  provider: SocialProvider;
+  providerId: string;
+}
+
 export const AUTH_PACKAGE_NAME = "auth";
 
 export interface AuthServiceClient {
@@ -115,6 +141,10 @@ export interface AuthServiceClient {
   /** Logs out the current user */
 
   logout(request: LogoutRequest): Observable<RegisterSuccessResponse>;
+
+  /** Social Login */
+
+  socialLogin(request: SocialLoginRequest): Observable<LoginSuccessResponse>;
 }
 
 export interface AuthServiceController {
@@ -137,11 +167,17 @@ export interface AuthServiceController {
   logout(
     request: LogoutRequest,
   ): Promise<RegisterSuccessResponse> | Observable<RegisterSuccessResponse> | RegisterSuccessResponse;
+
+  /** Social Login */
+
+  socialLogin(
+    request: SocialLoginRequest,
+  ): Promise<LoginSuccessResponse> | Observable<LoginSuccessResponse> | LoginSuccessResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["register", "login", "getProfile", "logout"];
+    const grpcMethods: string[] = ["register", "login", "getProfile", "logout", "socialLogin"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);

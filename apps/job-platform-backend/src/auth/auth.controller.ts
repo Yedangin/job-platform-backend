@@ -6,17 +6,29 @@ import {
   Inject,
   OnModuleInit,
   Post,
+  Request,
   Res,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AUTH_PACKAGE_NAME, AuthServiceClient } from 'types/proto/auth/auth';
+import {
+  AUTH_PACKAGE_NAME,
+  AuthServiceClient,
+  SocialProvider,
+} from 'types/proto/auth/auth';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { Response } from 'express';
 import { firstValueFrom } from 'rxjs';
-import { Session } from 'libs/common/src';
+import {
+  GoogleOAuthGuard,
+  Session,
+  SessionAuthGuard,
+  RolesGuard,
+  Roles,
+} from 'libs/common/src';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -28,6 +40,24 @@ export class AuthController implements OnModuleInit {
   onModuleInit() {
     this.authService =
       this.authClient.getService<AuthServiceClient>('AuthService');
+  }
+
+  @Get()
+  @UseGuards(SessionAuthGuard)
+  getHello(): string {
+    return 'Auth Service is running';
+  }
+
+  @Get('admin')
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
+  @ApiOperation({ summary: 'Admin only endpoint (example)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Access granted for admin users.',
+  })
+  getAdminData(): string {
+    return 'This is admin-only data';
   }
 
   @Post('register')
@@ -127,5 +157,39 @@ export class AuthController implements OnModuleInit {
         error.code ?? 500,
       );
     }
+  }
+
+  @Get('google')
+  @UseGuards(GoogleOAuthGuard)
+  @ApiOperation({ summary: 'Initiate Google OAuth login' })
+  async googleAuth() {}
+
+  @Get('google/callback')
+  @UseGuards(GoogleOAuthGuard)
+  @ApiOperation({ summary: 'Google OAuth callback' })
+  async googleAuthRedirect(
+    @Request() req: any,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const user = {
+      email: req.user.email,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      picture: req.user.picture,
+      provider: SocialProvider.GOOGLE,
+      providerId: req.user.providerId,
+    };
+
+    const result = await firstValueFrom(this.authService.socialLogin(user));
+
+    res.cookie('sessionId', result.sessionId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 2 * 60 * 60 * 1000,
+      domain: process.env.COOKIE_DOMAIN || 'localhost',
+    });
+
+    return { message: result.message };
   }
 }

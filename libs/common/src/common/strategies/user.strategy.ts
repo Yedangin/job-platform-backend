@@ -10,11 +10,12 @@ export class UserJwtStrategy extends PassportStrategy(Strategy, 'user-jwt') {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || 'thisismyJwtSecretKey',
+      secretOrKey: process.env.JWT_SECRET || 'your-super-secret-jwt-key-here',
     });
   }
 
   async validate(payload: JwtPayload) {
+    console.log('Validating JWT payload:', payload);
     const user = await this.prisma.user.findUnique({
       where: { id: payload.id, email: payload.email },
     });
@@ -28,9 +29,6 @@ export class UserJwtStrategy extends PassportStrategy(Strategy, 'user-jwt') {
       email: user.email,
       role: user.role,
       fullName: user.fullName,
-      // profileImageUrl: user.profileImageUrl,
-      // isEmailVerified: user.isEmailVerified,
-      isPhoneVerified: user.isPhoneVerified,
     };
   }
 }
