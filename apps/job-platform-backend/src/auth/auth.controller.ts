@@ -17,6 +17,8 @@ import { RegisterDto } from './dto/register.dto';
 import { Response } from 'express';
 import { firstValueFrom } from 'rxjs';
 import { Session } from 'libs/common/src';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -128,4 +130,46 @@ export class AuthController implements OnModuleInit {
       );
     }
   }
+
+  @Post('request-password-reset')
+  @ApiOperation({ summary: 'Request password reset email' })
+  @ApiBody({ type: RequestPasswordResetDto })
+  async requestPasswordReset(@Body() { email }: RequestPasswordResetDto) {
+    try {
+      const result = await this.authService.passwordReset({ email });
+      return result;
+    } catch (error) {
+      throw new HttpException(
+        {
+          message: error.message || 'Internal server error',
+        },
+        error.status,
+      );
+    }
+  }
+
+  @Post('reset-password')
+  @ApiOperation({ summary: 'Reset password with token' })
+  @ApiBody({ type: ResetPasswordDto })
+  async resetPassword(@Body() { token, newPassword }: ResetPasswordDto) {
+    try {
+      await this.authService.resetPassword({ token, newPassword });
+      return { message: 'Password has been reset successfully' };
+    } catch (error) {
+      throw new HttpException(
+        {
+          message: error.message || 'Internal server error',
+        },
+        error.status,
+      );
+    }
+  }
+
+  // @Post('reset-password')
+  // @ApiOperation({ summary: 'Reset password with token' })
+  // @ApiBody({ type: ResetPasswordDto })
+  // async resetPassword(@Body() { token, newPassword }: ResetPasswordDto) {
+  //   await this.authService.resetPassword(token, newPassword);
+  //   return { message: 'Password has been reset successfully' };
+  // }
 }

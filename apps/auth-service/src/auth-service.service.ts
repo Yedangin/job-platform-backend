@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import {
   RegisterRequest,
@@ -15,6 +16,7 @@ import {
   UserRole,
   UserStatus,
   RegisterSuccessResponse,
+  PasswordResetResponse,
 } from 'types/proto/auth/auth';
 import { AuthPrismaService, RedisService, SessionData } from 'libs/common/src';
 
@@ -179,6 +181,66 @@ export class AuthServiceService {
       message: 'Profile retrieved successfully',
       user: protoUser,
     };
+  }
+
+  async requestPasswordReset(email: string): Promise<PasswordResetResponse> {
+    const user = await this.prisma.user.findFirst({ where: { email } });
+
+    if (!user) {
+      throw new NotFoundException('User does not exist');
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 3600000); // 1 hour
+
+    await this.prisma.verificationToken.create({
+      data: {
+        userId: user.id,
+        token,
+        type: 'password_reset',
+        expiresAt,
+      },
+    });
+
+    // Implement your email sending logic here
+    console.log(
+      `Password reset link: http://yourapp.com/reset-password?token=${token}`,
+    );
+    return {
+      message: `Password reset link: http://yourapp.com/reset-password?token=${token}`,
+    };
+  }
+
+  async resetPassword(
+    token: string,
+    newPassword: string,
+  ): Promise<{ message: string }> {
+    const verificationToken = await this.prisma.verificationToken.findFirst({
+      where: {
+        token,
+        type: 'password_reset',
+        expiresAt: { gt: new Date() },
+        usedAt: null,
+      },
+    });
+
+    if (!verificationToken) {
+      throw new UnauthorizedException('Invalid or expired token');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: verificationToken.userId },
+        data: { password: hashedPassword },
+      }),
+      this.prisma.verificationToken.update({
+        where: { id: verificationToken.id },
+        data: { usedAt: new Date() },
+      }),
+    ]);
+    return { message: 'Password has been reset successfully' };
   }
 
   async logout(sessionId: string): Promise<RegisterSuccessResponse> {

@@ -54,6 +54,10 @@ message LoginSuccessResponse {
   string message = 3;
 }
 
+message PasswordResetResponse {
+  string message = 2;
+}
+
 
 message UserResponse {
   bool success = 1;
@@ -89,6 +93,17 @@ message LogoutRequest {
   string sessionId = 1;
 }
 
+// Used for Reset Password. The reset token is expected to be passed via gRPC metadata.
+message ResetPasswordRequest {
+  string token = 1;
+  string newPassword = 2;
+}
+
+message PasswordResetRequest {
+  string email = 1;
+}
+
+
 // -----------------------------
 //  Service Definition
 // -----------------------------
@@ -105,4 +120,10 @@ service AuthService {
 
   // Logs out the current user
   rpc Logout(LogoutRequest) returns (RegisterSuccessResponse);
+
+  // Password Reset for user
+  rpc ResetPassword(ResetPasswordRequest) returns (PasswordResetResponse);
+
+  //Reset Password Request for user
+  rpc PasswordReset(PasswordResetRequest) returns (PasswordResetResponse);
 }

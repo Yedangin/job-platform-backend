@@ -5,8 +5,11 @@ import {
   LoginRequest,
   LoginSuccessResponse,
   LogoutRequest,
+  PasswordResetRequest,
+  PasswordResetResponse,
   RegisterRequest,
   RegisterSuccessResponse,
+  ResetPasswordRequest,
   UserResponse,
 } from 'types/proto/auth/auth';
 import { Metadata } from '@grpc/grpc-js';
@@ -73,6 +76,30 @@ export class AuthServiceController {
 
       const result = await this.authServiceService.logout(request.sessionId);
       return result;
+    } catch (error) {
+      throw new RpcException({
+        code: error.status || 500,
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  @GrpcMethod('AuthService', 'ResetPassword')
+  async resetPassword(request: ResetPasswordRequest): Promise<PasswordResetResponse> {
+    try {
+    return await this.authServiceService.resetPassword(request.token, request.newPassword);
+    } catch (error) {
+      throw new RpcException({
+        code: error.status || 500,
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  @GrpcMethod('AuthService', 'PasswordReset')
+  async passwordReset (request : PasswordResetRequest): Promise<PasswordResetResponse> {
+    try {
+      return await this.authServiceService.requestPasswordReset(request.email);
     } catch (error) {
       throw new RpcException({
         code: error.status || 500,
