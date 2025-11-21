@@ -85,9 +85,14 @@ export class AuthServiceController {
   }
 
   @GrpcMethod('AuthService', 'ResetPassword')
-  async resetPassword(request: ResetPasswordRequest): Promise<PasswordResetResponse> {
+  async resetPassword(
+    request: ResetPasswordRequest,
+  ): Promise<PasswordResetResponse> {
     try {
-    return await this.authServiceService.resetPassword(request.token, request.newPassword);
+      return await this.authServiceService.resetPassword(
+        request.token,
+        request.newPassword,
+      );
     } catch (error) {
       throw new RpcException({
         code: error.status || 500,
@@ -97,7 +102,9 @@ export class AuthServiceController {
   }
 
   @GrpcMethod('AuthService', 'PasswordReset')
-  async passwordReset (request : PasswordResetRequest): Promise<PasswordResetResponse> {
+  async passwordReset(
+    request: PasswordResetRequest,
+  ): Promise<PasswordResetResponse> {
     try {
       return await this.authServiceService.requestPasswordReset(request.email);
     } catch (error) {
