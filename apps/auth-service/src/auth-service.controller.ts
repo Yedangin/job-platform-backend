@@ -10,9 +10,9 @@ import {
   RegisterRequest,
   RegisterSuccessResponse,
   ResetPasswordRequest,
+  SocialLoginRequest,
   UserResponse,
 } from 'types/proto/auth/auth';
-import { Metadata } from '@grpc/grpc-js';
 import { RpcException } from '@nestjs/microservices';
 import { GrpcMethod } from '@nestjs/microservices';
 
@@ -89,6 +89,7 @@ export class AuthServiceController {
     request: ResetPasswordRequest,
   ): Promise<PasswordResetResponse> {
     try {
+      console.log('Received reset password request:', request);
       return await this.authServiceService.resetPassword(
         request.token,
         request.newPassword,
@@ -106,6 +107,8 @@ export class AuthServiceController {
     request: PasswordResetRequest,
   ): Promise<PasswordResetResponse> {
     try {
+      console.log('Received new password request:', request);
+
       return await this.authServiceService.requestPasswordReset(request.email);
     } catch (error) {
       throw new RpcException({
@@ -115,25 +118,17 @@ export class AuthServiceController {
     }
   }
 
-  private extractSessionId(metadata: Metadata): string | null {
-    if (!metadata) {
-      return null;
+  @GrpcMethod('AuthService', 'SocialLogin')
+  async socialLogin(
+    request: SocialLoginRequest,
+  ): Promise<LoginSuccessResponse> {
+    try {
+      return await this.authServiceService.findOrCreateOAuthUser(request);
+    } catch (error) {
+      throw new RpcException({
+        code: error.status || 500,
+        message: error.message || 'Internal server error',
+      });
     }
-
-    const cookies = metadata.get('cookie');
-    if (!cookies || cookies.length === 0) {
-      return null;
-    }
-
-    const cookieString = cookies[0].toString();
-    const sessionCookie = cookieString
-      .split(';')
-      .find((c) => c.trim().startsWith('sessionId='));
-
-    if (!sessionCookie) {
-      return null;
-    }
-
-    return sessionCookie.split('=')[1].trim();
   }
 }

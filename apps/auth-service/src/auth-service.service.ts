@@ -4,10 +4,9 @@ import {
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 import {
   RegisterRequest,
   LoginRequest,
@@ -17,14 +16,20 @@ import {
   UserStatus,
   RegisterSuccessResponse,
   PasswordResetResponse,
+  SocialProvider as ProtoSocialProvider,
 } from 'types/proto/auth/auth';
 import { AuthPrismaService, RedisService, SessionData } from 'libs/common/src';
+import {
+  SocialProvider as PrismaSocialProvider,
+  User as PrismaUser,
+} from 'generated/prisma-user';
+import { GenerateStoreToken } from 'libs/common/src/common/helper/generate-store-token';
 
 @Injectable()
 export class AuthServiceService {
   constructor(
     private readonly prisma: AuthPrismaService,
-    private readonly jwtService: JwtService,
+    private readonly generateToken: GenerateStoreToken,
     private readonly redisService: RedisService,
   ) {}
 
@@ -105,35 +110,7 @@ export class AuthServiceService {
     // Generate tokens
     const payload = { userId: user.id, email: user.email, role: user.role };
 
-    const accessToken = this.jwtService.sign(payload, {
-      expiresIn: '15m',
-    });
-
-    const refreshToken = this.jwtService.sign(payload, {
-      expiresIn: '7d',
-    });
-
-    // Generate session ID (also as JWT for security)
-    const sessionId = this.jwtService.sign(
-      { sessionUuid: uuidv4(), userId: user.id },
-      { expiresIn: '7d' },
-    );
-
-    // Store session data in Redis
-    const sessionData: SessionData = {
-      userId: user.id,
-      email: user.email || '',
-      role: user.role,
-      accessToken,
-      refreshToken,
-    };
-
-    // Store with 7 days TTL (same as refresh token)
-    await this.redisService.set(
-      `session:${sessionId}`,
-      JSON.stringify(sessionData),
-      7 * 24 * 60 * 60, // 7 days in seconds
-    );
+    const sessionId = await this.generateToken.generate(payload);
 
     return {
       success: true,
@@ -230,7 +207,7 @@ export class AuthServiceService {
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    await this.prisma.$transaction([
+    const [user, tokenUpdate] = await this.prisma.$transaction([
       this.prisma.user.update({
         where: { id: verificationToken.userId },
         data: { password: hashedPassword },
@@ -260,6 +237,208 @@ export class AuthServiceService {
     };
   }
 
+  async findOrCreateOAuthUser(profile: {
+    email?: string;
+    firstName?: string;
+    lastName?: string;
+    picture?: string;
+    provider: ProtoSocialProvider;
+    providerId: string;
+  }) {
+    // Convert proto enum to Prisma enum
+    const prismaProvider = this.mapProtoToPrismaSocialProvider(
+      profile.provider,
+    );
+    // Check if OAuth account exists
+    const existingSocialAuth = await this.prisma.socialAuth.findFirst({
+      where: {
+        provider: prismaProvider,
+        providerId: profile.providerId,
+      },
+      include: { user: true },
+    });
+
+    if (existingSocialAuth) {
+      // Generate session for existing user
+      const payload = {
+        userId: existingSocialAuth.user.id,
+        email: existingSocialAuth.user.email,
+        role: existingSocialAuth.user.role,
+      };
+      const sessionId = await this.generateToken.generate(payload);
+
+      return {
+        success: true,
+        sessionId,
+        message: 'Login successful',
+      };
+    }
+
+    // Find or create user by email if provided
+    let user: PrismaUser | null = null;
+    if (profile.email) {
+      user = await this.prisma.user.findFirst({
+        where: { email: profile.email },
+      });
+    }
+
+    if (!user) {
+      // Create new user
+      const fullName =
+        [profile.firstName, profile.lastName].filter(Boolean).join(' ') || null;
+
+      // Generate unique email if not provided by OAuth provider
+      let email = profile.email;
+      if (!email) {
+        const timestamp = Date.now();
+        const randomSuffix = Math.random().toString(36).substring(2, 8);
+        email = `${prismaProvider}_${profile.providerId}_${timestamp}_${randomSuffix}@oauth.local`;
+
+        // Ensure email is unique (very unlikely collision, but just in case)
+        let emailExists = await this.prisma.user.findFirst({
+          where: { email },
+        });
+
+        while (emailExists) {
+          const newRandomSuffix = Math.random().toString(36).substring(2, 8);
+          email = `${prismaProvider}_${profile.providerId}_${timestamp}_${newRandomSuffix}@oauth.local`;
+          emailExists = await this.prisma.user.findFirst({
+            where: { email },
+          });
+        }
+      }
+
+      user = await this.prisma.user.create({
+        data: {
+          email,
+          fullName,
+          role: 'GUEST',
+          status: 'PENDING',
+        },
+      });
+    }
+
+    // Create OAuth connection
+    if (!user) {
+      throw new Error('Failed to create user');
+    }
+
+    await this.prisma.userInformation.create({
+      data: {
+        userId: user.id,
+        profileImage: profile.picture || null,
+      },
+    });
+
+    await this.prisma.socialAuth.create({
+      data: {
+        userId: user.id,
+        provider: prismaProvider,
+        providerId: profile.providerId,
+      },
+    });
+
+    const payload = { userId: user.id, email: user.email, role: user.role };
+
+    const sessionId = await this.generateToken.generate(payload);
+
+    return {
+      success: true,
+      sessionId,
+      message: 'Login successful',
+    };
+  }
+
+  // async findOrCreateOAuthUser(profile: {
+  //   email?: string;
+  //   firstName?: string;
+  //   lastName?: string;
+  //   picture?: string;
+  //   provider: SocialProvider;
+  //   providerId: string;
+  // }): Promise<PrismaUser> {
+  //   // 1. CHECK FOR EXISTING SOCIAL ACCOUNT (Read-only, outside transaction)
+  //   // Find the socialAuth record and eagerly load the associated User
+  //   const existingSocialAuth: SocialAuthWithUser | null = await this.prisma.socialAuth.findFirst({
+  //     where: {
+  //       provider: profile.provider,
+  //       providerId: profile.providerId,
+  //     },
+  //     include: { user: true },
+  //   });
+
+  //   if (existingSocialAuth) {
+  //     return existingSocialAuth.user;
+  //   }
+
+  //   // 2. FIND OR CREATE USER BY EMAIL (Read-only check outside transaction)
+  //   let user: PrismaUser | null = null;
+  //   if (profile.email) {
+  //     user = await this.prisma.user.findFirst({
+  //       where: { email: profile.email },
+  //     });
+  //   }
+
+  //   // 3. ATOMIC CREATION/LINKING (Starts transaction if modification is required)
+  //   return this.prisma.$transaction(async (tx) => {
+  //     // Use 'tx' (the transaction client) for all DB operations within this block
+
+  //     // A. If user was not found by email or no email was provided, create a new user.
+  //     if (!user) {
+  //       const fullName =
+  //         [profile.firstName, profile.lastName].filter(Boolean).join(' ') || null;
+
+  //       // Generate unique email if not provided by OAuth provider
+  //       let email = profile.email;
+  //       if (!email) {
+  //         const timestamp = Date.now();
+  //         // The email uniqueness check loop is kept here. Since this is a read
+  //         // (findFirst) and the subsequent create (tx.user.create) is inside the
+  //         // transaction, the risk of a race condition leading to a constraint violation
+  //         // is minimal, but the database constraint is the final safeguard.
+  //         let emailExists = true;
+  //         do {
+  //           const randomSuffix = Math.random().toString(36).substring(2, 8);
+  //           email = `${profile.provider}_${profile.providerId}_${timestamp}_${randomSuffix}@oauth.local`;
+  //           emailExists = await tx.user.findFirst({ where: { email } }).then(Boolean);
+  //         } while (emailExists);
+  //       }
+
+  //       // Create new user inside the transaction
+  //       user = await tx.user.create({
+  //         data: {
+  //           email: email!, // Assert non-null after generation logic
+  //           fullName,
+  //           role: 'GUEST',
+  //           status: 'PENDING',
+  //         },
+  //       });
+  //     }
+
+  //     // B. Create OAuth connection and User Information for the (new or existing) user
+
+  //     // Create User Information (e.g., profile picture)
+  //     await tx.userInformation.create({
+  //       data: {
+  //         userId: user.id,
+  //         profileImage: profile.picture || null,
+  //       },
+  //     });
+
+  //     // Create SocialAuth record (linking the social provider to the user)
+  //     await tx.socialAuth.create({
+  //       data: {
+  //         userId: user.id,
+  //         provider: profile.provider,
+  //         providerId: profile.providerId,
+  //       },
+  //     });
+
+  //     // Return the user object
+  //     return user;
+  //   });
+  // }
+
   private mapUserRole(role: string): UserRole {
     const roleMap: Record<string, UserRole> = {
       GUEST: UserRole.GUEST,
@@ -280,5 +459,18 @@ export class AuthServiceService {
       REJECTED: UserStatus.INACTIVE,
     };
     return statusMap[status] || UserStatus.USER_STATUS_UNSPECIFIED;
+  }
+
+  private mapProtoToPrismaSocialProvider(
+    protoProvider: ProtoSocialProvider,
+  ): PrismaSocialProvider {
+    const providerMap: Record<ProtoSocialProvider, PrismaSocialProvider> = {
+      [ProtoSocialProvider.GOOGLE]: 'GOOGLE' as PrismaSocialProvider,
+      [ProtoSocialProvider.FACEBOOK]: 'FACEBOOK' as PrismaSocialProvider,
+      [ProtoSocialProvider.KAKAO]: 'KAKAO' as PrismaSocialProvider,
+      [ProtoSocialProvider.APPLE]: 'APPLE' as PrismaSocialProvider,
+      [ProtoSocialProvider.UNRECOGNIZED]: 'GOOGLE' as PrismaSocialProvider, // Default fallback
+    };
+    return providerMap[protoProvider] || ('GOOGLE' as PrismaSocialProvider);
   }
 }

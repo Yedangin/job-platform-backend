@@ -3,6 +3,14 @@ import { AuthController } from './auth.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { AUTH_PACKAGE_NAME } from 'types/proto/auth/auth';
 import { join } from 'path';
+import {
+  AuthPrismaService,
+  GoogleStrategy,
+  UserJwtStrategy,
+  SessionAuthGuard,
+  RolesGuard,
+  RedisService,
+} from 'libs/common/src';
 
 @Module({
   imports: [
@@ -19,6 +27,13 @@ import { join } from 'path';
     ]),
   ],
   controllers: [AuthController],
-  providers: [],
+  providers: [
+    GoogleStrategy,
+    UserJwtStrategy,
+    AuthPrismaService,
+    SessionAuthGuard,
+    RolesGuard,
+    RedisService,
+  ],
 })
 export class AuthModule {}

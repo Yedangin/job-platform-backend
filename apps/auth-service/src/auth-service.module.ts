@@ -6,6 +6,7 @@ import { redisStore } from 'cache-manager-redis-yet';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { AuthPrismaService, RedisService } from 'libs/common/src';
+import { GenerateStoreToken } from 'libs/common/src/common/helper/generate-store-token';
 
 @Module({
   imports: [
@@ -30,6 +31,11 @@ import { AuthPrismaService, RedisService } from 'libs/common/src';
     }),
   ],
   controllers: [AuthServiceController],
-  providers: [AuthServiceService, AuthPrismaService, RedisService],
+  providers: [
+    AuthServiceService,
+    AuthPrismaService,
+    RedisService,
+    GenerateStoreToken,
+  ],
 })
 export class AuthServiceModule {}
