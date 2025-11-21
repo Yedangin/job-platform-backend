@@ -21,6 +21,13 @@ enum UserStatus {
   INACTIVE = 3; // Placeholder, adjust as needed
 }
 
+enum SocialProvider {
+  GOOGLE = 0;
+  FACEBOOK = 1;
+  KAKAO = 2;
+  APPLE = 3;
+}
+
 // -----------------------------
 //  Core User Message
 // -----------------------------
@@ -61,6 +68,14 @@ message UserResponse {
   User user = 3;
 }
 
+message SocialAuthResponse {
+  bool success = 1;
+  optional string message = 2;
+  optional string prvider = 3;
+  optional string picture = 4;
+  User user = 5;
+}
+
 // -----------------------------
 //  Auth Request Message
 // -----------------------------
@@ -89,6 +104,16 @@ message LogoutRequest {
   string sessionId = 1;
 }
 
+// Used for SocialLogin. The session/auth token is expected to be passed via gRPC metadata for invalidation.
+message SocialLoginRequest {
+  optional string email = 1;
+  optional string firstName = 2;
+  optional string lastName = 3;
+  optional string picture = 4;
+  SocialProvider provider = 5;
+  string providerId = 6;
+}
+
 // -----------------------------
 //  Service Definition
 // -----------------------------
@@ -105,4 +130,7 @@ service AuthService {
 
   // Logs out the current user
   rpc Logout(LogoutRequest) returns (RegisterSuccessResponse);
+
+  // Social Login
+  rpc SocialLogin(SocialLoginRequest) returns (LoginSuccessResponse);
 }

@@ -7,6 +7,7 @@ import {
   LogoutRequest,
   RegisterRequest,
   RegisterSuccessResponse,
+  SocialLoginRequest,
   UserResponse,
 } from 'types/proto/auth/auth';
 import { Metadata } from '@grpc/grpc-js';
@@ -73,6 +74,20 @@ export class AuthServiceController {
 
       const result = await this.authServiceService.logout(request.sessionId);
       return result;
+    } catch (error) {
+      throw new RpcException({
+        code: error.status || 500,
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  @GrpcMethod('AuthService', 'SocialLogin')
+  async socialLogin(
+    request: SocialLoginRequest,
+  ): Promise<LoginSuccessResponse> {
+    try {
+      return await this.authServiceService.findOrCreateOAuthUser(request);
     } catch (error) {
       throw new RpcException({
         code: error.status || 500,
