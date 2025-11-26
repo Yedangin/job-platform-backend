@@ -11,6 +11,9 @@ import {
   RolesGuard,
   RedisService,
 } from 'libs/common/src';
+import { KakaoStrategy } from 'libs/common/src/common/strategies/kakao.strategy';
+import { FacebookStrategy } from 'libs/common/src/common/strategies/facebook.strategy';
+import { AppleStrategy } from 'libs/common/src/common/strategies/apple.strategy';
 
 @Module({
   imports: [
@@ -29,6 +32,9 @@ import {
   controllers: [AuthController],
   providers: [
     GoogleStrategy,
+    KakaoStrategy,
+    FacebookStrategy,
+    AppleStrategy,
     UserJwtStrategy,
     AuthPrismaService,
     SessionAuthGuard,
