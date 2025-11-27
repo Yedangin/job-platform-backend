@@ -26,7 +26,7 @@ import {
 import { GenerateStoreToken } from 'libs/common/src/common/helper/generate-store-token';
 
 @Injectable()
-export class AuthServiceService {
+export class AuthService {
   constructor(
     private readonly prisma: AuthPrismaService,
     private readonly generateToken: GenerateStoreToken,
