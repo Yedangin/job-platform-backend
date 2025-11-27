@@ -30,6 +30,9 @@ import {
   SessionAuthGuard,
   RolesGuard,
   Roles,
+  Facebook0AuthGuard,
+  KakaoAuthGuard,
+  Apple0AuthGuard,
 } from 'libs/common/src';
 
 @ApiTags('Authentication')
@@ -216,6 +219,129 @@ export class AuthController implements OnModuleInit {
   @UseGuards(GoogleOAuthGuard)
   @ApiOperation({ summary: 'Google OAuth callback' })
   async googleAuthRedirect(
+    @Request() req: any,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    try {
+      const user = {
+        email: req.user.email,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName,
+        picture: req.user.picture,
+        provider: SocialProvider.GOOGLE,
+        providerId: req.user.providerId,
+      };
+
+      const result = await firstValueFrom(this.authService.socialLogin(user));
+
+      res.cookie('sessionId', result.sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 2 * 60 * 60 * 1000,
+        domain: process.env.COOKIE_DOMAIN || 'localhost',
+      });
+
+      return { message: result.message };
+    } catch (error) {
+      throw new HttpException(
+        error.details ?? 'Internal server error',
+        error.code ?? 500,
+      );
+    }
+  }
+
+  @Get('facebook')
+  @UseGuards(Facebook0AuthGuard)
+  @ApiOperation({ summary: 'Initiate Facebook OAuth login' })
+  async facebookAuth() {}
+
+  @Get('facebook/callback')
+  @UseGuards(Facebook0AuthGuard)
+  @ApiOperation({ summary: 'Facebook OAuth callback' })
+  async facebookAuthRedirect(
+    @Request() req: any,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    try {
+      const user = {
+        email: req.user.email,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName,
+        picture: req.user.picture,
+        provider: SocialProvider.GOOGLE,
+        providerId: req.user.providerId,
+      };
+
+      const result = await firstValueFrom(this.authService.socialLogin(user));
+
+      res.cookie('sessionId', result.sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 2 * 60 * 60 * 1000,
+        domain: process.env.COOKIE_DOMAIN || 'localhost',
+      });
+
+      return { message: result.message };
+    } catch (error) {
+      throw new HttpException(
+        error.details ?? 'Internal server error',
+        error.code ?? 500,
+      );
+    }
+  }
+
+  @Get('kakao')
+  @UseGuards(KakaoAuthGuard)
+  @ApiOperation({ summary: 'Initiate Kakao OAuth login' })
+  async kakaoAuth() {}
+
+  @Get('kakao/callback')
+  @UseGuards(KakaoAuthGuard)
+  @ApiOperation({ summary: 'Kakao OAuth callback' })
+  async kakaoOAuthRedirect(
+    @Request() req: any,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    try {
+      const user = {
+        email: req.user.email,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName,
+        picture: req.user.picture,
+        provider: SocialProvider.GOOGLE,
+        providerId: req.user.providerId,
+      };
+
+      const result = await firstValueFrom(this.authService.socialLogin(user));
+
+      res.cookie('sessionId', result.sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 2 * 60 * 60 * 1000,
+        domain: process.env.COOKIE_DOMAIN || 'localhost',
+      });
+
+      return { message: result.message };
+    } catch (error) {
+      throw new HttpException(
+        error.details ?? 'Internal server error',
+        error.code ?? 500,
+      );
+    }
+  }
+
+  @Get('apple')
+  @UseGuards(Apple0AuthGuard)
+  @ApiOperation({ summary: 'Initiate Apple OAuth Login' })
+  async appleAuth() {}
+
+  @Get('apple/callback')
+  @UseGuards(Apple0AuthGuard)
+  @ApiOperation({ summary: 'Apple OAuth callback' })
+  async AppleOAuthRedirect(
     @Request() req: any,
     @Res({ passthrough: true }) res: Response,
   ) {
