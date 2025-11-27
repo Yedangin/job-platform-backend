@@ -1,5 +1,4 @@
 import { Controller, Logger } from '@nestjs/common';
-import { AuthServiceService } from './auth-service.service';
 import {
   GetProfileRequest,
   LoginRequest,
@@ -15,16 +14,17 @@ import {
 } from 'types/proto/auth/auth';
 import { RpcException } from '@nestjs/microservices';
 import { GrpcMethod } from '@nestjs/microservices';
+import { AuthService } from './auth.service';
 
 @Controller()
-export class AuthServiceController {
-  private logger = new Logger(AuthServiceController.name);
-  constructor(private readonly authServiceService: AuthServiceService) {}
+export class AuthController {
+  private logger = new Logger(AuthController.name);
+  constructor(private readonly authService: AuthService) {}
 
   @GrpcMethod('AuthService', 'Register')
   async register(request: RegisterRequest): Promise<RegisterSuccessResponse> {
     try {
-      return await this.authServiceService.register(request);
+      return await this.authService.register(request);
     } catch (error) {
       throw new RpcException({
         code: error.status || 500,
@@ -36,7 +36,7 @@ export class AuthServiceController {
   @GrpcMethod('AuthService', 'Login')
   async login(request: LoginRequest): Promise<LoginSuccessResponse> {
     try {
-      return await this.authServiceService.login(request);
+      return await this.authService.login(request);
     } catch (error) {
       throw new RpcException({
         code: error.status || 500,
@@ -55,7 +55,7 @@ export class AuthServiceController {
         });
       }
 
-      return await this.authServiceService.getProfile(request.sessionId);
+      return await this.authService.getProfile(request.sessionId);
     } catch (error) {
       throw new RpcException({
         code: error.status || 500,
@@ -74,7 +74,7 @@ export class AuthServiceController {
         });
       }
 
-      const result = await this.authServiceService.logout(request.sessionId);
+      const result = await this.authService.logout(request.sessionId);
       return result;
     } catch (error) {
       throw new RpcException({
@@ -90,7 +90,7 @@ export class AuthServiceController {
   ): Promise<PasswordResetResponse> {
     try {
       console.log('Received reset password request:', request);
-      return await this.authServiceService.resetPassword(
+      return await this.authService.resetPassword(
         request.token,
         request.newPassword,
       );
@@ -109,7 +109,7 @@ export class AuthServiceController {
     try {
       console.log('Received new password request:', request);
 
-      return await this.authServiceService.requestPasswordReset(request.email);
+      return await this.authService.requestPasswordReset(request.email);
     } catch (error) {
       throw new RpcException({
         code: error.status || 500,
@@ -123,7 +123,7 @@ export class AuthServiceController {
     request: SocialLoginRequest,
   ): Promise<LoginSuccessResponse> {
     try {
-      return await this.authServiceService.findOrCreateOAuthUser(request);
+      return await this.authService.findOrCreateOAuthUser(request);
     } catch (error) {
       throw new RpcException({
         code: error.status || 500,
