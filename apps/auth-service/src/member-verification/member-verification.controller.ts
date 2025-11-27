@@ -6,7 +6,9 @@ import { UpdateMemberVerificationDto } from './dto/update-member-verification.dt
 
 @Controller()
 export class MemberVerificationController {
-  constructor(private readonly memberVerificationService: MemberVerificationService) {}
+  constructor(
+    private readonly memberVerificationService: MemberVerificationService,
+  ) {}
 
   @MessagePattern('createMemberVerification')
   create(@Payload() createMemberVerificationDto: CreateMemberVerificationDto) {
@@ -25,7 +27,10 @@ export class MemberVerificationController {
 
   @MessagePattern('updateMemberVerification')
   update(@Payload() updateMemberVerificationDto: UpdateMemberVerificationDto) {
-    return this.memberVerificationService.update(updateMemberVerificationDto.id, updateMemberVerificationDto);
+    return this.memberVerificationService.update(
+      updateMemberVerificationDto.id,
+      updateMemberVerificationDto,
+    );
   }
 
   @MessagePattern('removeMemberVerification')

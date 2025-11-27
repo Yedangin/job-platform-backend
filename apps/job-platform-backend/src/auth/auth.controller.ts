@@ -192,7 +192,10 @@ export class AuthController implements OnModuleInit {
   @ApiBody({ type: ResetPasswordDto })
   async resetPassword(@Body() { token, newPassword }: ResetPasswordDto) {
     try {
-      const result = await this.authService.resetPassword({ token, newPassword });
+      const result = await this.authService.resetPassword({
+        token,
+        newPassword,
+      });
       return result;
     } catch (error) {
       throw new HttpException(
