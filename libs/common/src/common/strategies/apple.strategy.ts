@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-apple';
-import { AuthStrategyService } from '../services/auth-strategy.service';
+// import { AuthStrategyService } from '../services/auth-strategy.service';
 
 @Injectable()
 export class AppleStrategy extends PassportStrategy(Strategy, 'apple') {
-  constructor(private authService: AuthStrategyService) {
+  constructor(private configService: ConfigService) {
     super({
       clientID: process.env.APPLE_CLIENT_ID,
       teamID: process.env.APPLE_TEAM_ID,
@@ -22,14 +23,14 @@ export class AppleStrategy extends PassportStrategy(Strategy, 'apple') {
     idToken: any,
     profile: any,
   ): Promise<any> {
-    const user = await this.authService.findOrCreateOAuthUser({
+    const user = {
       email: profile.email,
       firstName: profile.name?.firstName,
       lastName: profile.name?.lastName,
       picture: undefined, // Apple doesn't provide profile pictures
       provider: 'apple',
       providerId: profile.id,
-    });
+    };
 
     return user;
   }
