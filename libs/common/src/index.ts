@@ -29,6 +29,7 @@ export * from './common/guard/warehouse-access.guard';
 
 // Helpers
 export * from './common/helper/pagination.service';
+export * from './common/helper/grpc-to-http.helper';
 
 // Interceptors
 export * from './common/interceptor/success-transform-interceptor';

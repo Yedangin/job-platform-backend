@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package memberVerfication;
+
+// Import standard types for an empty response and timestamp
+import "google/protobuf/timestamp.proto";
+
+message Empyt {}
+
+message SuccessResponse {
+  string message = 1;
+}
+
+enum VerificationStatus {
+  VERIFICATION_STATUS_UNSPECIFIED = 0; // Default zero value (must be first)
+  PENDING = 1;
+  APPROVED = 2;
+  REJECTED = 3;
+}
+
+//------------------------
+// Message
+//------------------------
+
+message MemberVerificationRequest {
+  string id = 1;
+  string userId = 2;
+  string passportPhoto = 3;
+  string selfiePhoto = 4;
+  VerificationStatus verificationStatus = 5;
+  string isVerifiedBy = 6;
+  google.protobuf.Timestamp createAt = 7;
+  google.protobuf.Timestamp updatedAt = 8;
+}
+
+// Create Requst
+message UpsertMemberVerificationRequest {
+  string userId = 1;
+  optional string passportPhoto = 2;
+  optional string selfiePhoto = 3;
+  optional VerificationStatus verificationStatus = 4;
+  optional string isVerifiedby = 5;
+}
+
+// Delete Request
+message DeleteMemberVerificationRequest {
+  string id = 1;
+}
+
+// ----------------------------
+// Sevices
+// ----------------------------
+
+service MemberVerificationService {
+  rpc UpsertVerification(UpsertMemberVerificationRequest) returns (SuccessResponse);
+  rpc DeleteVerification(DeleteMemberVerificationRequest) returns (SuccessResponse);
+}

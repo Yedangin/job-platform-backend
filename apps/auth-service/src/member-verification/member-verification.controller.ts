@@ -1,8 +1,12 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { GrpcMethod, MessagePattern, Payload } from '@nestjs/microservices';
 import { MemberVerificationService } from './member-verification.service';
 import { CreateMemberVerificationDto } from './dto/create-member-verification.dto';
 import { UpdateMemberVerificationDto } from './dto/update-member-verification.dto';
+import {
+  DeleteMemberVerificationRequest,
+  SuccessResponse,
+} from 'types/proto/auth/member-verification';
 
 @Controller()
 export class MemberVerificationController {
@@ -33,8 +37,11 @@ export class MemberVerificationController {
     );
   }
 
-  @MessagePattern('removeMemberVerification')
-  remove(@Payload() id: number) {
-    return this.memberVerificationService.remove(id);
+  @GrpcMethod('MemberVerificationService', 'DeleteVerification')
+  async remove(
+    request: DeleteMemberVerificationRequest,
+  ): Promise<SuccessResponse> {
+    console.log('the request from member verification: ', request);
+    return { message: 'successfully deleted' };
   }
 }

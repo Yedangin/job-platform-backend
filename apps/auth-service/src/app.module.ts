@@ -4,6 +4,8 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { redisStore } from 'cache-manager-redis-yet';
 import { AuthPrismaModule } from 'libs/common/src';
+import { MemberVerificationModule } from './member-verification/member-verification.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { AuthPrismaModule } from 'libs/common/src';
       }),
     }),
     AuthPrismaModule,
+    AuthModule,
+    MemberVerificationModule,
   ],
   controllers: [],
   providers: [],
