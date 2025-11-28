@@ -5,6 +5,6 @@ import { AuthPrismaService, PaginationService } from 'libs/common/src';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService, AuthPrismaService , PaginationService],
+  providers: [UsersService, AuthPrismaService, PaginationService],
 })
 export class UsersModule {}
