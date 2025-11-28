@@ -6,7 +6,7 @@ import { UpdateMemberVerificationDto } from './dto/update-member-verification.dt
 import {
   DeleteMemberVerificationRequest,
   SuccessResponse,
-} from 'types/proto/auth/member-verification';
+} from 'types/auth/member-verification';
 
 @Controller()
 export class MemberVerificationController {

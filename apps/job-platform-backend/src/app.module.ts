@@ -8,6 +8,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerBehindProxyGuard } from 'libs/common/src';
 import { AuthModule } from './auth/auth.module';
 import { MemberVerificationModule } from './member-verification/member-verification.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { MemberVerificationModule } from './member-verification/member-verificat
     }),
     AuthModule,
     MemberVerificationModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [

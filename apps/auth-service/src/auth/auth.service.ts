@@ -17,7 +17,7 @@ import {
   RegisterSuccessResponse,
   PasswordResetResponse,
   SocialProvider as ProtoSocialProvider,
-} from 'types/proto/auth/auth';
+} from 'types/auth/auth';
 import { AuthPrismaService, RedisService, SessionData } from 'libs/common/src';
 import {
   SocialProvider as PrismaSocialProvider,

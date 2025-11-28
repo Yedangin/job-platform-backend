@@ -1,25 +1,36 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { AUTH_PACKAGE_NAME } from 'types/proto/auth/auth';
-import { MEMBER_VERFICATION_PACKAGE_NAME } from 'types/proto/auth/member-verification';
+import { MEMBER_VERFICATION_PACKAGE_NAME } from 'types/auth/member-verification';
+import { AUTH_PACKAGE_NAME } from 'types/auth/auth';
 import { join } from 'path';
 import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { COMMON_BASIC_QUERY_PACKAGE_NAME } from 'types/common/basic-query';
+import { COMMON_BASIC_USAGE_PACKAGE_NAME } from 'types/common/basic';
+import { USERS_PACKAGE_NAME } from 'types/auth/users';
 
 async function bootstrap() {
   const port = process.env.AUTH_SERVICE_PORT || 8001;
 
-  const protoDir = join(process.cwd(), 'proto/auth');
-
+  const protoDir = join(process.cwd(), 'proto/');
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
       transport: Transport.GRPC,
       options: {
-        package: [AUTH_PACKAGE_NAME, MEMBER_VERFICATION_PACKAGE_NAME],
+        package: [
+          AUTH_PACKAGE_NAME,
+          USERS_PACKAGE_NAME,
+          COMMON_BASIC_QUERY_PACKAGE_NAME,
+          COMMON_BASIC_USAGE_PACKAGE_NAME,
+          MEMBER_VERFICATION_PACKAGE_NAME,
+        ],
         protoPath: [
-          join(protoDir, 'auth.proto'),
-          join(protoDir, 'member-verification.proto'),
+          join(protoDir, 'auth/auth.proto'),
+          join(protoDir, 'auth/users.proto'),
+          join(protoDir, 'auth/member-verification.proto'),
+          join(protoDir, 'common/basic-query.proto'),
+          join(protoDir, 'common/basic.proto'),
         ],
         url: `0.0.0.0:${port}`,
         loader: {

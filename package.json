@@ -29,7 +29,7 @@
     "prisma:gen:payment": "prisma generate --schema=prisma/payment/payment.schema.prisma",
     "prisma:gen:user": "prisma generate --schema=prisma/user/user.schema.prisma",
     "prisma:generate": "npm run prisma:gen:job && npm run prisma:gen:log && npm run prisma:gen:notification && npm run prisma:gen:payment && npm run prisma:gen:user",
-    "protoc:generate": "npx protoc --ts_proto_out=./types/ ./proto/**/*proto --ts_proto_opt=nestJs=true",
+    "protoc:generate": "npx protoc --proto_path=./proto --ts_proto_out=./types/ ./proto/**/*proto --ts_proto_opt=nestJs=true",
     "prepare": "husky install"
   },
   "dependencies": {

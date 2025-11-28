@@ -12,7 +12,7 @@ import { UpdateMemberVerificationDto } from './dto/update-member-verification.dt
 import {
   MEMBER_VERFICATION_PACKAGE_NAME,
   MemberVerificationServiceClient,
-} from 'types/proto/auth/member-verification';
+} from 'types/auth/member-verification';
 import { ClientGrpc } from '@nestjs/microservices';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { firstValueFrom } from 'rxjs';
@@ -39,7 +39,7 @@ export class MemberVerificationController implements OnModuleInit {
     status: 201,
     description: 'Deleted Successfully',
   })
-  async delete(@Param('id') id: string): Promise<{ message: string }> {
+  async delete(@Param('id') id: string) {
     try {
       console.log('the id: ', id);
       const result = await firstValueFrom(

@@ -3,8 +3,6 @@ syntax = "proto3";
 package memberVerfication;
 
 // Import standard types for an empty response and timestamp
-import "google/protobuf/timestamp.proto";
-
 message Empyt {}
 
 message SuccessResponse {
@@ -29,8 +27,8 @@ message MemberVerificationRequest {
   string selfiePhoto = 4;
   VerificationStatus verificationStatus = 5;
   string isVerifiedBy = 6;
-  google.protobuf.Timestamp createAt = 7;
-  google.protobuf.Timestamp updatedAt = 8;
+  string createAt = 7;
+  string updatedAt = 8;
 }
 
 // Create Requst

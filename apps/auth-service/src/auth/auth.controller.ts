@@ -11,10 +11,29 @@ import {
   ResetPasswordRequest,
   SocialLoginRequest,
   UserResponse,
-} from 'types/proto/auth/auth';
+} from 'types/auth/auth';
 import { RpcException } from '@nestjs/microservices';
 import { GrpcMethod } from '@nestjs/microservices';
 import { AuthService } from './auth.service';
+
+// Helper function to convert HTTP status codes to gRPC status codes
+function httpToGrpcStatus(httpStatus: number): number {
+  const statusMap: Record<number, number> = {
+    200: 0, // OK
+    201: 0, // OK
+    400: 3, // INVALID_ARGUMENT
+    401: 16, // UNAUTHENTICATED
+    403: 7, // PERMISSION_DENIED
+    404: 5, // NOT_FOUND
+    408: 4, // DEADLINE_EXCEEDED
+    409: 6, // ALREADY_EXISTS
+    429: 8, // RESOURCE_EXHAUSTED
+    500: 13, // INTERNAL
+    501: 12, // UNIMPLEMENTED
+    503: 14, // UNAVAILABLE
+  };
+  return statusMap[httpStatus] ?? 2; // Default to UNKNOWN
+}
 
 @Controller()
 export class AuthController {
@@ -25,9 +44,9 @@ export class AuthController {
   async register(request: RegisterRequest): Promise<RegisterSuccessResponse> {
     try {
       return await this.authService.register(request);
-    } catch (error) {
+    } catch (error: any) {
       throw new RpcException({
-        code: error.status || 500,
+        code: httpToGrpcStatus(error.status ?? 500),
         message: error.message || 'Internal server error',
       });
     }
@@ -37,9 +56,9 @@ export class AuthController {
   async login(request: LoginRequest): Promise<LoginSuccessResponse> {
     try {
       return await this.authService.login(request);
-    } catch (error) {
+    } catch (error: any) {
       throw new RpcException({
-        code: error.status || 500,
+        code: httpToGrpcStatus(error.status ?? 500),
         message: error.message || 'Internal server error',
       });
     }
@@ -56,9 +75,9 @@ export class AuthController {
       }
 
       return await this.authService.getProfile(request.sessionId);
-    } catch (error) {
+    } catch (error: any) {
       throw new RpcException({
-        code: error.status || 500,
+        code: httpToGrpcStatus(error.status ?? 500),
         message: error.message || 'Internal server error',
       });
     }
@@ -76,9 +95,9 @@ export class AuthController {
 
       const result = await this.authService.logout(request.sessionId);
       return result;
-    } catch (error) {
+    } catch (error: any) {
       throw new RpcException({
-        code: error.status || 500,
+        code: httpToGrpcStatus(error.status ?? 500),
         message: error.message || 'Internal server error',
       });
     }
@@ -94,9 +113,9 @@ export class AuthController {
         request.token,
         request.newPassword,
       );
-    } catch (error) {
+    } catch (error: any) {
       throw new RpcException({
-        code: error.status || 500,
+        code: httpToGrpcStatus(error.status ?? 500),
         message: error.message || 'Internal server error',
       });
     }
@@ -110,9 +129,9 @@ export class AuthController {
       console.log('Received new password request:', request);
 
       return await this.authService.requestPasswordReset(request.email);
-    } catch (error) {
+    } catch (error: any) {
       throw new RpcException({
-        code: error.status || 500,
+        code: httpToGrpcStatus(error.status ?? 500),
         message: error.message || 'Internal server error',
       });
     }
@@ -124,9 +143,9 @@ export class AuthController {
   ): Promise<LoginSuccessResponse> {
     try {
       return await this.authService.findOrCreateOAuthUser(request);
-    } catch (error) {
+    } catch (error: any) {
       throw new RpcException({
-        code: error.status || 500,
+        code: httpToGrpcStatus(error.status ?? 500),
         message: error.message || 'Internal server error',
       });
     }

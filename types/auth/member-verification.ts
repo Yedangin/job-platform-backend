@@ -2,12 +2,11 @@
 // versions:
 //   protoc-gen-ts_proto  v2.8.3
 //   protoc               v6.33.1
-// source: proto/auth/member-verification.proto
+// source: auth/member-verification.proto
 
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { Timestamp } from "../../google/protobuf/timestamp";
 
 export const protobufPackage = "memberVerfication";
 
@@ -20,6 +19,7 @@ export enum VerificationStatus {
   UNRECOGNIZED = -1,
 }
 
+/** Import standard types for an empty response and timestamp */
 export interface Empyt {
 }
 
@@ -34,8 +34,8 @@ export interface MemberVerificationRequest {
   selfiePhoto: string;
   verificationStatus: VerificationStatus;
   isVerifiedBy: string;
-  createAt: Timestamp | undefined;
-  updatedAt: Timestamp | undefined;
+  createAt: string;
+  updatedAt: string;
 }
 
 /** Create Requst */

@@ -1,4 +1,5 @@
 {
   "java.project.sourcePaths": ["src/common/seed"],
-  "prisma.pinToPrisma6": true
+  "prisma.pinToPrisma6": true,
+  "kiroAgent.configureMCP": "Disabled"
 }

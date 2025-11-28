@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MemberVerificationController } from './member-verification.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { MEMBER_VERFICATION_PACKAGE_NAME } from 'types/proto/auth/member-verification';
+import { MEMBER_VERFICATION_PACKAGE_NAME } from 'types/auth/member-verification';
 import { join } from 'path';
 
 @Module({
