@@ -1,0 +1,10 @@
+syntax="proto3";
+
+package common.basic.usage;
+
+message PaginationMeta {
+	int32 count = 1;
+	int32 page = 2;
+	int32 pageCount = 3;
+	int32 limit = 4;
+}
