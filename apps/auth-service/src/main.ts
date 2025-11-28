@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { MEMBER_VERFICATION_PACKAGE_NAME } from 'types/auth/member-verification';
 import { AUTH_PACKAGE_NAME } from 'types/auth/auth';
 import { join } from 'path';
 import { Logger } from '@nestjs/common';
@@ -11,13 +12,6 @@ import { USERS_PACKAGE_NAME } from 'types/auth/users';
 async function bootstrap() {
   const port = process.env.AUTH_SERVICE_PORT || 8001;
 
-  // Use absolute path from project root (works in both dev and prod)
-  // const protoPath = [
-  //   join(process.cwd(), 'proto/auth/auth.proto'),
-  //   join(process.cwd(), 'proto/auth/users.proto'),
-  //   join(process.cwd(), 'proto/common/basic.proto'),
-  //   join(process.cwd(), 'proto/common/basic-query.proto'),
-  // ];
   const protoDir = join(process.cwd(), 'proto/');
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
@@ -29,10 +23,12 @@ async function bootstrap() {
           USERS_PACKAGE_NAME,
           COMMON_BASIC_QUERY_PACKAGE_NAME,
           COMMON_BASIC_USAGE_PACKAGE_NAME,
+          MEMBER_VERFICATION_PACKAGE_NAME,
         ],
         protoPath: [
           join(protoDir, 'auth/auth.proto'),
           join(protoDir, 'auth/users.proto'),
+          join(protoDir, 'auth/member-verification.proto'),
           join(protoDir, 'common/basic-query.proto'),
           join(protoDir, 'common/basic.proto'),
         ],
@@ -53,7 +49,9 @@ async function bootstrap() {
   await app.listen();
 
   Logger.log(`🚀 Auth Service is running on: localhost:${port}`);
-  Logger.log(`📦 Package: ${AUTH_PACKAGE_NAME}`);
+  Logger.log(
+    `📦 Packages: ${AUTH_PACKAGE_NAME}, ${MEMBER_VERFICATION_PACKAGE_NAME}`,
+  );
 }
 
-bootstrap();
+void bootstrap();

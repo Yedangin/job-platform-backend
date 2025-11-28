@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerBehindProxyGuard } from 'libs/common/src';
 import { AuthModule } from './auth/auth.module';
+import { MemberVerificationModule } from './member-verification/member-verification.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -33,6 +34,7 @@ import { UsersModule } from './users/users.module';
       signOptions: { expiresIn: process.env.JWT_SECRET_EXPIRES_IN },
     }),
     AuthModule,
+    MemberVerificationModule,
     UsersModule,
   ],
   controllers: [],

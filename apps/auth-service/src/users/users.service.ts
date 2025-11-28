@@ -53,11 +53,11 @@ export class UsersService {
       phone: user?.phone ?? undefined,
       status: this.mapUserStatus(user.status as string),
       role: this.mapUserRole(user.role as string),
-      is_emailed_verified: user.isEmailedVerified,
-      is_phone_verified: user.isPhoneVerified,
+      isEmailedVerified: user.isEmailedVerified,
+      isPhoneVerified: user.isPhoneVerified,
       walletId: user.walletId || undefined,
-      created_at: user.createdAt.toISOString(),
-      updated_at: user.updatedAt.toISOString(),
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
     };
   }
 
