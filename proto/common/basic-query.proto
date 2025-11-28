@@ -1,0 +1,32 @@
+syntax="proto3";
+
+package common.basic.query;
+
+
+// Defines the structure for basic query parameters,
+// typically used for pagination, sorting, and filtering
+// in an API request.
+message BasicQuery {
+  // page number (default: "1"
+  optional string page = 1;
+
+  // limit (default: "10")
+  optional string limit = 2;
+
+  // search keyword (default: "")
+  optional string searchKeyword = 3;
+
+  // sorting field (default: "id")
+  optional string sortField = 4;
+
+  // asc or desc (default: "desc").
+  // Validation for 'asc' or 'desc' must be handled by the server logic
+  // after parsing the proto message.
+  optional string sortType = 5;
+
+  // filter model (default: "")
+  optional string filterModel = 6;
+
+  // filter keyword (default: "")
+  optional string filterKeyword = 7;
+}

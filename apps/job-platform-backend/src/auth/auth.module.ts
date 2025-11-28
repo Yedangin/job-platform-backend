@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AUTH_PACKAGE_NAME } from 'types/proto/auth/auth';
+import { AUTH_PACKAGE_NAME } from 'types/auth/auth';
 import { join } from 'path';
 import {
   AuthPrismaService,

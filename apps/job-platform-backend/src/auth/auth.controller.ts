@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   HttpException,
+  HttpStatus,
   Inject,
   OnModuleInit,
   Post,
@@ -17,7 +18,7 @@ import {
   AUTH_PACKAGE_NAME,
   AuthServiceClient,
   SocialProvider,
-} from 'types/proto/auth/auth';
+} from 'types/auth/auth';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { Response } from 'express';
@@ -34,6 +35,30 @@ import {
   KakaoAuthGuard,
   Apple0AuthGuard,
 } from 'libs/common/src';
+
+// Helper function to map gRPC status codes to HTTP status codes
+function grpcToHttpStatus(grpcCode: number): number {
+  const statusMap: Record<number, number> = {
+    0: HttpStatus.OK, // OK
+    1: HttpStatus.INTERNAL_SERVER_ERROR, // CANCELLED
+    2: HttpStatus.INTERNAL_SERVER_ERROR, // UNKNOWN
+    3: HttpStatus.BAD_REQUEST, // INVALID_ARGUMENT
+    4: HttpStatus.REQUEST_TIMEOUT, // DEADLINE_EXCEEDED
+    5: HttpStatus.NOT_FOUND, // NOT_FOUND
+    6: HttpStatus.CONFLICT, // ALREADY_EXISTS
+    7: HttpStatus.FORBIDDEN, // PERMISSION_DENIED
+    8: HttpStatus.TOO_MANY_REQUESTS, // RESOURCE_EXHAUSTED
+    9: HttpStatus.BAD_REQUEST, // FAILED_PRECONDITION
+    10: HttpStatus.CONFLICT, // ABORTED
+    11: HttpStatus.BAD_REQUEST, // OUT_OF_RANGE
+    12: HttpStatus.NOT_IMPLEMENTED, // UNIMPLEMENTED
+    13: HttpStatus.INTERNAL_SERVER_ERROR, // INTERNAL
+    14: HttpStatus.SERVICE_UNAVAILABLE, // UNAVAILABLE
+    15: HttpStatus.INTERNAL_SERVER_ERROR, // DATA_LOSS
+    16: HttpStatus.UNAUTHORIZED, // UNAUTHENTICATED
+  };
+  return statusMap[grpcCode] ?? HttpStatus.INTERNAL_SERVER_ERROR;
+}
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -78,10 +103,10 @@ export class AuthController implements OnModuleInit {
         this.authService.register(registerDto),
       );
       return result;
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(
-        error.details ?? 'Internal server error',
-        error.code ?? 500,
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
       );
     }
   }
@@ -113,10 +138,10 @@ export class AuthController implements OnModuleInit {
       });
 
       return { message: 'Login successful' };
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(
-        error.details ?? 'Internal server error',
-        error.code ?? 500,
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
       );
     }
   }
@@ -137,10 +162,10 @@ export class AuthController implements OnModuleInit {
         this.authService.getProfile({ sessionId: sessionId }),
       );
       return result;
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(
-        error.details ?? 'Internal server error',
-        error.code ?? 500,
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
       );
     }
   }
@@ -165,10 +190,10 @@ export class AuthController implements OnModuleInit {
       });
 
       return result;
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(
-        error.details ?? 'Internal server error',
-        error.code ?? 500,
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
       );
     }
   }
@@ -178,14 +203,14 @@ export class AuthController implements OnModuleInit {
   @ApiBody({ type: RequestPasswordResetDto })
   async requestPasswordReset(@Body() { email }: RequestPasswordResetDto) {
     try {
-      const result = await this.authService.passwordReset({ email });
+      const result = await firstValueFrom(
+        this.authService.passwordReset({ email }),
+      );
       return result;
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(
-        {
-          message: error.message || 'Internal server error',
-        },
-        error.status,
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
       );
     }
   }
@@ -195,17 +220,17 @@ export class AuthController implements OnModuleInit {
   @ApiBody({ type: ResetPasswordDto })
   async resetPassword(@Body() { token, newPassword }: ResetPasswordDto) {
     try {
-      const result = await this.authService.resetPassword({
-        token,
-        newPassword,
-      });
+      const result = await firstValueFrom(
+        this.authService.resetPassword({
+          token,
+          newPassword,
+        }),
+      );
       return result;
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(
-        {
-          message: error.message || 'Internal server error',
-        },
-        error.status,
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
       );
     }
   }
@@ -243,10 +268,10 @@ export class AuthController implements OnModuleInit {
       });
 
       return { message: result.message };
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(
-        error.details ?? 'Internal server error',
-        error.code ?? 500,
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
       );
     }
   }
@@ -284,10 +309,10 @@ export class AuthController implements OnModuleInit {
       });
 
       return { message: result.message };
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(
-        error.details ?? 'Internal server error',
-        error.code ?? 500,
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
       );
     }
   }
@@ -325,10 +350,10 @@ export class AuthController implements OnModuleInit {
       });
 
       return { message: result.message };
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(
-        error.details ?? 'Internal server error',
-        error.code ?? 500,
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
       );
     }
   }
@@ -366,10 +391,10 @@ export class AuthController implements OnModuleInit {
       });
 
       return { message: result.message };
-    } catch (error) {
+    } catch (error: any) {
       throw new HttpException(
-        error.details ?? 'Internal server error',
-        error.code ?? 500,
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
       );
     }
   }
