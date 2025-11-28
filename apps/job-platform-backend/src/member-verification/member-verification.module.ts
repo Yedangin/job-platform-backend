@@ -3,6 +3,7 @@ import { MemberVerificationController } from './member-verification.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { MEMBER_VERFICATION_PACKAGE_NAME } from 'types/auth/member-verification';
 import { join } from 'path';
+import { RedisService, SessionAuthGuard } from 'libs/common/src';
 
 @Module({
   imports: [
@@ -22,6 +23,6 @@ import { join } from 'path';
     ]),
   ],
   controllers: [MemberVerificationController],
-  providers: [],
+  providers: [SessionAuthGuard, RedisService],
 })
 export class MemberVerificationModule {}

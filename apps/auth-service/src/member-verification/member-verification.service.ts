@@ -1,26 +1,103 @@
-import { Injectable } from '@nestjs/common';
-import { CreateMemberVerificationDto } from './dto/create-member-verification.dto';
-import { UpdateMemberVerificationDto } from './dto/update-member-verification.dto';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { AuthPrismaService } from 'libs/common/src';
+import {
+  UpdateMemberVerificationRequest,
+  UpsertMemberVerificationRequest,
+} from 'types/auth/member-verification';
+import { UserRole, VerificationStatus } from 'generated/prisma-user';
 
 @Injectable()
 export class MemberVerificationService {
-  create(createMemberVerificationDto: CreateMemberVerificationDto) {
-    return 'This action adds a new memberVerification';
+  constructor(private readonly prisma: AuthPrismaService) {}
+  async create(createDto: UpsertMemberVerificationRequest) {
+    // Check if user exists
+    const user = await this.prisma.user.findUnique({
+      where: { id: createDto.userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${createDto.userId} not found`);
+    }
+
+    // Check if verification already exists for this user
+    const existingVerification =
+      await this.prisma.memberIdentityVerification.findFirst({
+        where: { userId: createDto.userId },
+      });
+
+    if (existingVerification) {
+      throw new ConflictException(
+        'Identity verification already exists for this user',
+      );
+    }
+
+    const verify = await this.prisma.memberIdentityVerification.create({
+      data: {
+        userId: createDto.userId,
+        passportPhoto: createDto.passportPhoto,
+        selfiePhoto: createDto.selfiePhoto,
+      },
+    });
+
+    const userRole = await this.prisma.user.update({
+      where: { id: createDto.userId },
+      data: { role: UserRole.MEMBER },
+    });
+    return verify;
   }
 
-  findAll() {
-    return `This action returns all memberVerification`;
+  async findOne(id: string) {
+    const verification =
+      await this.prisma.memberIdentityVerification.findUnique({
+        where: { id },
+      });
+
+    if (!verification) {
+      throw new NotFoundException(
+        `Member identity verification with ID ${id} not found`,
+      );
+    }
+
+    return verification;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} memberVerification`;
+  async update(updateDto: UpdateMemberVerificationRequest) {
+    const { id, ...dto } = updateDto;
+    await this.findOne(id);
+    // If verifier is being set, check if verifier exists
+    if (updateDto.isVerifiedby) {
+      const verifier = await this.prisma.user.findUnique({
+        where: { id: updateDto.isVerifiedby },
+      });
+
+      if (!verifier) {
+        throw new NotFoundException(
+          `Verifier with ID ${updateDto.isVerifiedby} not found`,
+        );
+      }
+    }
+
+    return this.prisma.memberIdentityVerification.update({
+      where: { id },
+      data: {
+        passportPhoto: updateDto.passportPhoto,
+        selfiePhoto: updateDto.selfiePhoto,
+        isVerifiedBy: updateDto.isVerifiedby,
+        verificationStatus:
+          (updateDto.verificationStatus as any) || VerificationStatus.PENDING,
+      },
+    });
   }
 
-  update(id: number, updateMemberVerificationDto: UpdateMemberVerificationDto) {
-    return `This action updates a #${id} memberVerification`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} memberVerification`;
+  async remove(id: string) {
+    // Check if verification exists
+    await this.findOne(id);
+    return this.prisma.memberIdentityVerification.delete({
+      where: { id },
+    });
   }
 }

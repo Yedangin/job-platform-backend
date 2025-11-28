@@ -6,6 +6,8 @@ import { UpdateMemberVerificationDto } from './dto/update-member-verification.dt
 import {
   DeleteMemberVerificationRequest,
   SuccessResponse,
+  UpdateMemberVerificationRequest,
+  UpsertMemberVerificationRequest,
 } from 'types/auth/member-verification';
 
 @Controller()
@@ -14,34 +16,27 @@ export class MemberVerificationController {
     private readonly memberVerificationService: MemberVerificationService,
   ) {}
 
-  @MessagePattern('createMemberVerification')
-  create(@Payload() createMemberVerificationDto: CreateMemberVerificationDto) {
-    return this.memberVerificationService.create(createMemberVerificationDto);
+  @GrpcMethod('MemberVerificationService', 'UpsertVerification')
+  async create(
+    request: UpsertMemberVerificationRequest,
+  ): Promise<SuccessResponse> {
+    const result = await this.memberVerificationService.create(request);
+    return { message: 'successfully created.' };
   }
 
-  @MessagePattern('findAllMemberVerification')
-  findAll() {
-    return this.memberVerificationService.findAll();
-  }
-
-  @MessagePattern('findOneMemberVerification')
-  findOne(@Payload() id: number) {
-    return this.memberVerificationService.findOne(id);
-  }
-
-  @MessagePattern('updateMemberVerification')
-  update(@Payload() updateMemberVerificationDto: UpdateMemberVerificationDto) {
-    return this.memberVerificationService.update(
-      updateMemberVerificationDto.id,
-      updateMemberVerificationDto,
-    );
+  @GrpcMethod('MemberVerificationService', 'UpdateVerification')
+  async update(
+    request: UpdateMemberVerificationRequest,
+  ): Promise<SuccessResponse> {
+    const result = await this.memberVerificationService.update(request);
+    return { message: 'successfully updated.' };
   }
 
   @GrpcMethod('MemberVerificationService', 'DeleteVerification')
   async remove(
     request: DeleteMemberVerificationRequest,
   ): Promise<SuccessResponse> {
-    console.log('the request from member verification: ', request);
+    const result = await this.memberVerificationService.remove(request.id);
     return { message: 'successfully deleted' };
   }
 }
