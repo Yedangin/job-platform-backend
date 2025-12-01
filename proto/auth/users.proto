@@ -4,6 +4,7 @@ package users;
 
 import "common/basic.proto";
 import "common/basic-query.proto";
+import "auth/user-information.proto";
 
 // Enums
 enum UserRole {
@@ -38,6 +39,7 @@ message User {
   optional string wallet_id = 9;
   string created_at = 10;
   string updated_at = 11;
+  optional userInformations.UserInformation user_information = 12;
 }
 
 

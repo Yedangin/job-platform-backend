@@ -8,6 +8,7 @@ import { AppModule } from './app.module';
 import { COMMON_BASIC_QUERY_PACKAGE_NAME } from 'types/common/basic-query';
 import { COMMON_BASIC_USAGE_PACKAGE_NAME } from 'types/common/basic';
 import { USERS_PACKAGE_NAME } from 'types/auth/users';
+import { USER_INFORMATIONS_PACKAGE_NAME } from 'types/auth/user-information';
 
 async function bootstrap() {
   const port = process.env.AUTH_SERVICE_PORT || 8001;
@@ -24,10 +25,12 @@ async function bootstrap() {
           COMMON_BASIC_QUERY_PACKAGE_NAME,
           COMMON_BASIC_USAGE_PACKAGE_NAME,
           MEMBER_VERFICATION_PACKAGE_NAME,
+          USER_INFORMATIONS_PACKAGE_NAME,
         ],
         protoPath: [
           join(protoDir, 'auth/auth.proto'),
           join(protoDir, 'auth/users.proto'),
+          join(protoDir, 'auth/user-information.proto'),
           join(protoDir, 'auth/member-verification.proto'),
           join(protoDir, 'common/basic-query.proto'),
           join(protoDir, 'common/basic.proto'),

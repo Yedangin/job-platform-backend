@@ -1,0 +1,113 @@
+syntax = "proto3";
+
+package userInformations;
+
+import "common/basic.proto";
+import "common/basic-query.proto";
+
+// Enums
+enum Gender {
+  GENDER_UNSPECIFIED = 0;
+}
+
+
+// --- User Information Message ---
+message UserInformation {
+  string id = 1;
+  string userId = 2; // Was user_id
+  optional string profileImage = 3; // Was profile_image
+  optional string gender = 4;
+  optional string address = 5;
+  optional string country = 6;
+  optional string city = 7;
+  optional string cvForm = 8; // Was cv_form
+  optional string additionalInformation = 9; // Was additional_information
+  string createdAt = 10; // Was created_at
+  string updatedAt = 11; // Was updated_at
+}
+
+
+// ---------------------
+// CRUD Responses
+// ---------------------
+message UserInformationResponse {
+  bool success = 1;
+  optional string message = 2;
+  UserInformation userInformation = 3; // Was user_information
+}
+
+message ListUserInformationsResponse {
+  repeated UserInformation userInformations = 1; // Was user_informations
+  int32 total = 2;
+  int32 page = 3;
+  int32 limit = 4;
+}
+
+message DeleteUserInformationResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message AllUserInformationsWithMetaResponse {
+  repeated UserInformation data = 1;
+  common.basic.usage.PaginationMeta meta = 2;
+}
+
+
+// ---------------------
+// CRUD Requests
+// ---------------------
+
+message GetUserInformationRequest {
+  string userId = 1;
+}
+
+message ListUserInformationsRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  optional string country = 3;
+  optional string city = 4;
+}
+
+message GetAllUserInformationsRequest {
+  common.basic.query.BasicQuery basicQuery = 1;
+}
+
+message CreateUserInformationRequest {
+  string userId = 1;
+  optional string profileImage = 2;
+  optional string gender = 3;
+  optional string address = 4;
+  optional string country = 5;
+  optional string city = 6;
+  optional string cvForm = 7;
+  optional string additionalInformation = 8;
+}
+
+message UpdateUserInformationRequest {
+  string userId = 1;
+  optional string profileImage = 2;
+  optional string gender = 3;
+  optional string address = 4;
+  optional string country = 5;
+  optional string city = 6;
+  optional string cvForm = 7;
+  optional string additionalInformation = 8;
+}
+
+message DeleteUserInformationRequest {
+  string userId = 1;
+}
+
+
+// ---------------------
+// CRUD Service
+// ---------------------
+service UserInformationService {
+  rpc CreateUserInformation (CreateUserInformationRequest) returns (UserInformationResponse);
+  rpc GetUserInformation (GetUserInformationRequest) returns (UserInformationResponse);
+  rpc GetAllUserInformations (GetAllUserInformationsRequest) returns (AllUserInformationsWithMetaResponse);
+  rpc UpdateUserInformation (UpdateUserInformationRequest) returns (UserInformationResponse);
+  rpc DeleteUserInformation (DeleteUserInformationRequest) returns (DeleteUserInformationResponse);
+  rpc ListUserInformations (ListUserInformationsRequest) returns (ListUserInformationsResponse);
+}
