@@ -4,6 +4,6 @@ import { CorporateRegistrationService } from './corporate-registration.service';
 
 @Module({
   controllers: [CorporateRegistrationController],
-  providers: [CorporateRegistrationService]
+  providers: [CorporateRegistrationService],
 })
 export class CorporateRegistrationModule {}

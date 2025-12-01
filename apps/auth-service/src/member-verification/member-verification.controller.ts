@@ -37,5 +37,4 @@ export class MemberVerificationController {
     const result = await this.memberVerificationService.remove(request.id);
     return { message: 'successfully deleted' };
   }
-
 }
