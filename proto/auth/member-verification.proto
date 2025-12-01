@@ -36,6 +36,12 @@ message UpsertMemberVerificationRequest {
   string userId = 1;
   optional string passportPhoto = 2;
   optional string selfiePhoto = 3;
+}
+
+message UpdateMemberVerificationRequest {
+  string id = 1;
+  optional string passportPhoto = 2;
+  optional string selfiePhoto = 3;
   optional VerificationStatus verificationStatus = 4;
   optional string isVerifiedby = 5;
 }
@@ -51,5 +57,6 @@ message DeleteMemberVerificationRequest {
 
 service MemberVerificationService {
   rpc UpsertVerification(UpsertMemberVerificationRequest) returns (SuccessResponse);
+  rpc UpdateVerification(UpdateMemberVerificationRequest) returns (SuccessResponse);
   rpc DeleteVerification(DeleteMemberVerificationRequest) returns (SuccessResponse);
 }

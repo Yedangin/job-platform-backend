@@ -40,6 +40,7 @@ export * from './common/interfaces/session.interface';
 
 // Redis
 export * from './common/redis/redis.service';
+export * from './common/redis/redis.module';
 
 // Prisma
 export * from './common/prisma/auth/auth-prisma.module';
