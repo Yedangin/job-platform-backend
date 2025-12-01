@@ -1,0 +1,43 @@
+syntax="proto3";
+
+package corporateRegistration;
+
+import "common/response.proto";
+
+enum VerificationStatus {
+  VERIFICATION_STATUS_UNSPECIFIED = 0; // Default zero value (must be first)
+  PENDING = 1;
+  APPROVED = 2;
+  REJECTED = 3;
+}
+
+// Message
+
+message CreateCorporateRegistrationRequest {
+  string userId = 1;
+  string companyName = 2;
+  string businessLicenseFile = 3;
+}
+
+message UpdateCoporateRegistrationReqeust {
+  string id = 1;
+  optional string companyName = 2;
+  optional string businessLicenseFile = 3;
+  optional VerificationStatus verificationStatus = 4;
+  optional string isVerifiedby = 5;
+}
+
+message DeleteCorporateRegistrationRequest {
+  string id = 1;
+}
+
+// ----------------------------
+// Sevices
+// ----------------------------
+
+service CorporateRegistration {
+  rpc CreateCorporateRegistration(CreateCorporateRegistrationRequest) returns (common.basic.response.SuccessResponse);
+  rpc UpdateCorporateRegistration(UpdateCoporateRegistrationReqeust) returns (common.basic.response.SuccessResponse);
+  rpc DeleteCorporateRegistration(DeleteCorporateRegistrationRequest) returns (common.basic.response.SuccessResponse);
+}
+

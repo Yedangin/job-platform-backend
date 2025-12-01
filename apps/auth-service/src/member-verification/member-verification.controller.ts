@@ -1,8 +1,6 @@
 import { Controller } from '@nestjs/common';
-import { GrpcMethod, MessagePattern, Payload } from '@nestjs/microservices';
+import { GrpcMethod } from '@nestjs/microservices';
 import { MemberVerificationService } from './member-verification.service';
-import { CreateMemberVerificationDto } from './dto/create-member-verification.dto';
-import { UpdateMemberVerificationDto } from './dto/update-member-verification.dto';
 import {
   DeleteMemberVerificationRequest,
   SuccessResponse,
@@ -39,4 +37,5 @@ export class MemberVerificationController {
     const result = await this.memberVerificationService.remove(request.id);
     return { message: 'successfully deleted' };
   }
+
 }
