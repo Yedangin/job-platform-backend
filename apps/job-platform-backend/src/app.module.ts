@@ -5,6 +5,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 import {
   RedisModule,
   SessionAuthGuard,
@@ -23,6 +25,18 @@ import { ReportModule } from './report/report.module';
       isGlobal: true,
       envFilePath: '.env',
       cache: true,
+    }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: async () => ({
+        store: await redisStore({
+          socket: {
+            host: process.env.REDIS_HOST || 'localhost',
+            port: parseInt(process.env.REDIS_PORT || '6379'),
+          },
+          ttl: 300000, // 5 minutes default TTL
+        }),
+      }),
     }),
     ThrottlerModule.forRoot({
       throttlers: [

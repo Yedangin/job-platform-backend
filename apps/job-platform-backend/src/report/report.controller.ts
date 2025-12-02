@@ -11,6 +11,8 @@ import {
   HttpException,
   Query,
 } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 import { CreateReportDto } from './dto/create-report.dto';
 import { UpdateReportDto } from './dto/update-report.dto';
 import {
@@ -38,6 +40,7 @@ export class ReportController {
 
   constructor(
     @Inject(REPORTS_PACKAGE_NAME) private readonly client: ClientGrpc,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   onModuleInit() {
@@ -67,6 +70,9 @@ export class ReportController {
         }),
       );
 
+      // Invalidate all reports cache
+      await this.invalidateReportsCache();
+
       return result as unknown as ReportResponse;
     } catch (error: any) {
       throw new HttpException(
@@ -84,6 +90,15 @@ export class ReportController {
     @Query() query: BasicQuery,
   ): Promise<AllReportsWithMetaResponse> {
     try {
+      const cacheKey = `reports:all:${JSON.stringify(query)}`;
+
+      // Check cache first
+      const cachedData =
+        await this.cacheManager.get<AllReportsWithMetaResponse>(cacheKey);
+      if (cachedData) {
+        return cachedData;
+      }
+
       const result = await firstValueFrom(
         this.reportService.getAllReports({
           basicQuery: {
@@ -98,7 +113,12 @@ export class ReportController {
         }),
       );
 
-      return result as unknown as AllReportsWithMetaResponse;
+      const response = result as unknown as AllReportsWithMetaResponse;
+
+      // Cache for 5 minutes
+      await this.cacheManager.set(cacheKey, response, 300000);
+
+      return response;
     } catch (error: any) {
       console.error('the error : ', error);
       throw new HttpException(
@@ -116,11 +136,25 @@ export class ReportController {
   @ApiResponse({ status: 404, description: 'Report not found' })
   async findOne(@Param('id') id: string): Promise<SingleReportResponse> {
     try {
+      const cacheKey = `report:${id}`;
+
+      // Check cache first
+      const cachedData =
+        await this.cacheManager.get<SingleReportResponse>(cacheKey);
+      if (cachedData) {
+        return cachedData;
+      }
+
       const result = await firstValueFrom(
         this.reportService.getReport({ reportId: id }),
       );
 
-      return result as unknown as SingleReportResponse;
+      const response = result as unknown as SingleReportResponse;
+
+      // Cache for 5 minutes
+      await this.cacheManager.set(cacheKey, response, 300000);
+
+      return response;
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
@@ -153,6 +187,10 @@ export class ReportController {
         }),
       );
 
+      // Invalidate specific report and all reports cache
+      await this.cacheManager.del(`report:${id}`);
+      await this.invalidateReportsCache();
+
       return result as unknown as ReportResponse;
     } catch (error: any) {
       throw new HttpException(
@@ -178,12 +216,24 @@ export class ReportController {
         this.reportService.deleteReport({ reportId: id }),
       );
 
+      // Invalidate specific report and all reports cache
+      await this.cacheManager.del(`report:${id}`);
+      await this.invalidateReportsCache();
+
       return result;
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
         grpcToHttpStatus(error.code ?? 2),
       );
+    }
+  }
+
+  // Helper method to invalidate all reports cache
+  private async invalidateReportsCache(): Promise<void> {
+    const keys = await this.cacheManager.store.keys('reports:all:*');
+    if (keys && keys.length > 0) {
+      await Promise.all(keys.map((key) => this.cacheManager.del(key)));
     }
   }
 }
