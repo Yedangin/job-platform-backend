@@ -7,7 +7,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import {
   RedisModule,
-  RedisService,
   SessionAuthGuard,
   ThrottlerBehindProxyGuard,
 } from 'libs/common/src';
@@ -16,6 +15,7 @@ import { MemberVerificationModule } from './member-verification/member-verificat
 import { UsersModule } from './users/users.module';
 import { UserInformationsModule } from './user-informations/user-informations.module';
 import { CorporateRegistrationModule } from './corporate-registration/corporate-registration.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
@@ -46,6 +46,7 @@ import { CorporateRegistrationModule } from './corporate-registration/corporate-
     UserInformationsModule,
     RedisModule,
     CorporateRegistrationModule,
+    ReportModule,
   ],
   controllers: [],
   providers: [

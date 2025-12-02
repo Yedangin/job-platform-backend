@@ -241,7 +241,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/abed/Work/JobPlatform/job-platform-backend/generated/prisma-user",
+      "value": "/Users/lord/Desktop/Yedanginn/Job-Platform/api-gateway/generated/prisma-user",
       "fromEnvVar": null
     },
     "config": {
@@ -255,7 +255,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/abed/Work/JobPlatform/job-platform-backend/prisma/user/user.schema.prisma",
+    "sourceFilePath": "/Users/lord/Desktop/Yedanginn/Job-Platform/api-gateway/prisma/user/user.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {

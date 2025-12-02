@@ -46,7 +46,6 @@ export class UsersService {
   }
 
   private mapUserToResponse(user: User) {
-    console.log('the map users : ', user);
     return {
       id: user.id,
       full_name: user?.fullName ?? undefined,
