@@ -141,10 +141,8 @@ export class ReportService {
     };
   }
 
-  async update(
-    reportId: string,
-    updateReportDto: UpdateReportRequest,
-  ): Promise<ReportResponse> {
+  async update(updateReportDto: UpdateReportRequest): Promise<ReportResponse> {
+    const { reportId } = updateReportDto;
     const existingReport = await this.prisma.report.findUnique({
       where: { id: reportId },
     });

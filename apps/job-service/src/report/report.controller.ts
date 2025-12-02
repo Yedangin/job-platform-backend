@@ -60,7 +60,7 @@ export class ReportController {
   @GrpcMethod('ReportService', 'UpdateReport')
   async UpdateReport(request: UpdateReportRequest): Promise<ReportResponse> {
     try {
-      return this.reportService.update(request.reportId, {
+      return this.reportService.update({
         reportId: request.reportId,
         title: request.title,
         reason: request.reason,

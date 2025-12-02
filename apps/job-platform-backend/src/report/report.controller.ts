@@ -37,6 +37,7 @@ import { firstValueFrom } from 'rxjs';
 @Controller('report')
 export class ReportController {
   private reportService: ReportServiceClient;
+  private cacheVersion = 'v1'; // Increment this when you want to invalidate all caches
 
   constructor(
     @Inject(REPORTS_PACKAGE_NAME) private readonly client: ClientGrpc,
@@ -90,7 +91,9 @@ export class ReportController {
     @Query() query: BasicQuery,
   ): Promise<AllReportsWithMetaResponse> {
     try {
-      const cacheKey = `reports:all:${JSON.stringify(query)}`;
+      // Get current cache version
+      const version = await this.getCacheVersion();
+      const cacheKey = `reports:all:${version}:${JSON.stringify(query)}`;
 
       // Check cache first
       const cachedData =
@@ -178,6 +181,7 @@ export class ReportController {
     @Body() updateReportDto: UpdateReportDto,
   ): Promise<ReportResponse> {
     try {
+      console.log('Updating report with ID:', id);
       const result = await firstValueFrom(
         this.reportService.updateReport({
           reportId: id,
@@ -187,12 +191,15 @@ export class ReportController {
         }),
       );
 
+      console.log('Update result:', result);
+
       // Invalidate specific report and all reports cache
       await this.cacheManager.del(`report:${id}`);
       await this.invalidateReportsCache();
 
       return result as unknown as ReportResponse;
     } catch (error: any) {
+      console.error('the error : ', error);
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
         grpcToHttpStatus(error.code ?? 2),
@@ -229,11 +236,23 @@ export class ReportController {
     }
   }
 
-  // Helper method to invalidate all reports cache
+  // Helper method to get cache version
+  private async getCacheVersion(): Promise<string> {
+    const version = await this.cacheManager.get<string>('reports:version');
+    if (!version) {
+      await this.cacheManager.set('reports:version', this.cacheVersion, 0); // No expiry
+      return this.cacheVersion;
+    }
+    return version;
+  }
+
+  // Helper method to invalidate all reports cache by incrementing version
   private async invalidateReportsCache(): Promise<void> {
-    const keys = await this.cacheManager.store.keys('reports:all:*');
-    if (keys && keys.length > 0) {
-      await Promise.all(keys.map((key) => this.cacheManager.del(key)));
+    try {
+      const newVersion = `v${Date.now()}`;
+      await this.cacheManager.set('reports:version', newVersion, 0); // No expiry
+    } catch (error) {
+      console.error('Error invalidating cache:', error);
     }
   }
 }
