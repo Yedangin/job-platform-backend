@@ -27,7 +27,7 @@ export interface SuccessResponse {
   message: string;
 }
 
-export interface MemberVerificationRequest {
+export interface MemberVerification {
   id: string;
   userId: string;
   passportPhoto: string;

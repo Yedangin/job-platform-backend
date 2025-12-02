@@ -9,6 +9,9 @@ import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { PaginationMeta } from "../common/basic";
 import { BasicQuery } from "../common/basic-query";
+import { CorporateRegistrationModel } from "./corporate-registration";
+import { MemberVerification } from "./member-verification";
+import { UserInformation } from "./user-information";
 
 export const protobufPackage = "users";
 
@@ -46,6 +49,9 @@ export interface User {
   walletId?: string | undefined;
   createdAt: string;
   updatedAt: string;
+  userInformation?: UserInformation | undefined;
+  memberIdentityVerification?: MemberVerification | undefined;
+  corporateRegistration?: CorporateRegistrationModel | undefined;
 }
 
 /**

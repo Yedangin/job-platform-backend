@@ -1490,8 +1490,6 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
-    memberIdentityVerifications: number
-    corporateRegistrations: number
     verifiedMemberIdentities: number
     verifiedCorporateRegistrations: number
     sanctions: number
@@ -1499,8 +1497,6 @@ export namespace Prisma {
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    memberIdentityVerifications?: boolean | UserCountOutputTypeCountMemberIdentityVerificationsArgs
-    corporateRegistrations?: boolean | UserCountOutputTypeCountCorporateRegistrationsArgs
     verifiedMemberIdentities?: boolean | UserCountOutputTypeCountVerifiedMemberIdentitiesArgs
     verifiedCorporateRegistrations?: boolean | UserCountOutputTypeCountVerifiedCorporateRegistrationsArgs
     sanctions?: boolean | UserCountOutputTypeCountSanctionsArgs
@@ -1516,20 +1512,6 @@ export namespace Prisma {
      * Select specific fields to fetch from the UserCountOutputType
      */
     select?: UserCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
-  export type UserCountOutputTypeCountMemberIdentityVerificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MemberIdentityVerificationWhereInput
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
-  export type UserCountOutputTypeCountCorporateRegistrationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CorporateRegistrationWhereInput
   }
 
   /**
@@ -1793,8 +1775,8 @@ export namespace Prisma {
     userInfoId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    memberIdentityVerifications?: boolean | User$memberIdentityVerificationsArgs<ExtArgs>
-    corporateRegistrations?: boolean | User$corporateRegistrationsArgs<ExtArgs>
+    memberIdentityVerification?: boolean | User$memberIdentityVerificationArgs<ExtArgs>
+    corporateRegistration?: boolean | User$corporateRegistrationArgs<ExtArgs>
     verifiedMemberIdentities?: boolean | User$verifiedMemberIdentitiesArgs<ExtArgs>
     verifiedCorporateRegistrations?: boolean | User$verifiedCorporateRegistrationsArgs<ExtArgs>
     sanctions?: boolean | User$sanctionsArgs<ExtArgs>
@@ -1854,8 +1836,8 @@ export namespace Prisma {
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "role" | "email" | "password" | "phone" | "fullName" | "status" | "isEmailedVerified" | "isPhoneVerified" | "walletId" | "userInfoId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    memberIdentityVerifications?: boolean | User$memberIdentityVerificationsArgs<ExtArgs>
-    corporateRegistrations?: boolean | User$corporateRegistrationsArgs<ExtArgs>
+    memberIdentityVerification?: boolean | User$memberIdentityVerificationArgs<ExtArgs>
+    corporateRegistration?: boolean | User$corporateRegistrationArgs<ExtArgs>
     verifiedMemberIdentities?: boolean | User$verifiedMemberIdentitiesArgs<ExtArgs>
     verifiedCorporateRegistrations?: boolean | User$verifiedCorporateRegistrationsArgs<ExtArgs>
     sanctions?: boolean | User$sanctionsArgs<ExtArgs>
@@ -1870,8 +1852,8 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      memberIdentityVerifications: Prisma.$MemberIdentityVerificationPayload<ExtArgs>[]
-      corporateRegistrations: Prisma.$CorporateRegistrationPayload<ExtArgs>[]
+      memberIdentityVerification: Prisma.$MemberIdentityVerificationPayload<ExtArgs> | null
+      corporateRegistration: Prisma.$CorporateRegistrationPayload<ExtArgs> | null
       verifiedMemberIdentities: Prisma.$MemberIdentityVerificationPayload<ExtArgs>[]
       verifiedCorporateRegistrations: Prisma.$CorporateRegistrationPayload<ExtArgs>[]
       sanctions: Prisma.$SanctionPayload<ExtArgs>[]
@@ -2287,8 +2269,8 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    memberIdentityVerifications<T extends User$memberIdentityVerificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$memberIdentityVerificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    corporateRegistrations<T extends User$corporateRegistrationsArgs<ExtArgs> = {}>(args?: Subset<T, User$corporateRegistrationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    memberIdentityVerification<T extends User$memberIdentityVerificationArgs<ExtArgs> = {}>(args?: Subset<T, User$memberIdentityVerificationArgs<ExtArgs>>): Prisma__MemberIdentityVerificationClient<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    corporateRegistration<T extends User$corporateRegistrationArgs<ExtArgs> = {}>(args?: Subset<T, User$corporateRegistrationArgs<ExtArgs>>): Prisma__CorporateRegistrationClient<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     verifiedMemberIdentities<T extends User$verifiedMemberIdentitiesArgs<ExtArgs> = {}>(args?: Subset<T, User$verifiedMemberIdentitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     verifiedCorporateRegistrations<T extends User$verifiedCorporateRegistrationsArgs<ExtArgs> = {}>(args?: Subset<T, User$verifiedCorporateRegistrationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sanctions<T extends User$sanctionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sanctionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SanctionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2725,9 +2707,9 @@ export namespace Prisma {
   }
 
   /**
-   * User.memberIdentityVerifications
+   * User.memberIdentityVerification
    */
-  export type User$memberIdentityVerificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$memberIdentityVerificationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the MemberIdentityVerification
      */
@@ -2741,17 +2723,12 @@ export namespace Prisma {
      */
     include?: MemberIdentityVerificationInclude<ExtArgs> | null
     where?: MemberIdentityVerificationWhereInput
-    orderBy?: MemberIdentityVerificationOrderByWithRelationInput | MemberIdentityVerificationOrderByWithRelationInput[]
-    cursor?: MemberIdentityVerificationWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: MemberIdentityVerificationScalarFieldEnum | MemberIdentityVerificationScalarFieldEnum[]
   }
 
   /**
-   * User.corporateRegistrations
+   * User.corporateRegistration
    */
-  export type User$corporateRegistrationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$corporateRegistrationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the CorporateRegistration
      */
@@ -2765,11 +2742,6 @@ export namespace Prisma {
      */
     include?: CorporateRegistrationInclude<ExtArgs> | null
     where?: CorporateRegistrationWhereInput
-    orderBy?: CorporateRegistrationOrderByWithRelationInput | CorporateRegistrationOrderByWithRelationInput[]
-    cursor?: CorporateRegistrationWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: CorporateRegistrationScalarFieldEnum | CorporateRegistrationScalarFieldEnum[]
   }
 
   /**
@@ -9804,8 +9776,8 @@ export namespace Prisma {
     userInfoId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationListRelationFilter
-    corporateRegistrations?: CorporateRegistrationListRelationFilter
+    memberIdentityVerification?: XOR<MemberIdentityVerificationNullableScalarRelationFilter, MemberIdentityVerificationWhereInput> | null
+    corporateRegistration?: XOR<CorporateRegistrationNullableScalarRelationFilter, CorporateRegistrationWhereInput> | null
     verifiedMemberIdentities?: MemberIdentityVerificationListRelationFilter
     verifiedCorporateRegistrations?: CorporateRegistrationListRelationFilter
     sanctions?: SanctionListRelationFilter
@@ -9828,8 +9800,8 @@ export namespace Prisma {
     userInfoId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    memberIdentityVerifications?: MemberIdentityVerificationOrderByRelationAggregateInput
-    corporateRegistrations?: CorporateRegistrationOrderByRelationAggregateInput
+    memberIdentityVerification?: MemberIdentityVerificationOrderByWithRelationInput
+    corporateRegistration?: CorporateRegistrationOrderByWithRelationInput
     verifiedMemberIdentities?: MemberIdentityVerificationOrderByRelationAggregateInput
     verifiedCorporateRegistrations?: CorporateRegistrationOrderByRelationAggregateInput
     sanctions?: SanctionOrderByRelationAggregateInput
@@ -9855,8 +9827,8 @@ export namespace Prisma {
     isPhoneVerified?: BoolFilter<"User"> | boolean
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationListRelationFilter
-    corporateRegistrations?: CorporateRegistrationListRelationFilter
+    memberIdentityVerification?: XOR<MemberIdentityVerificationNullableScalarRelationFilter, MemberIdentityVerificationWhereInput> | null
+    corporateRegistration?: XOR<CorporateRegistrationNullableScalarRelationFilter, CorporateRegistrationWhereInput> | null
     verifiedMemberIdentities?: MemberIdentityVerificationListRelationFilter
     verifiedCorporateRegistrations?: CorporateRegistrationListRelationFilter
     sanctions?: SanctionListRelationFilter
@@ -10069,10 +10041,10 @@ export namespace Prisma {
 
   export type MemberIdentityVerificationWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    userId?: string
     AND?: MemberIdentityVerificationWhereInput | MemberIdentityVerificationWhereInput[]
     OR?: MemberIdentityVerificationWhereInput[]
     NOT?: MemberIdentityVerificationWhereInput | MemberIdentityVerificationWhereInput[]
-    userId?: StringFilter<"MemberIdentityVerification"> | string
     passportPhoto?: StringNullableFilter<"MemberIdentityVerification"> | string | null
     selfiePhoto?: StringNullableFilter<"MemberIdentityVerification"> | string | null
     verificationStatus?: EnumVerificationStatusFilter<"MemberIdentityVerification"> | $Enums.VerificationStatus
@@ -10081,7 +10053,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"MemberIdentityVerification"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     verifier?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
-  }, "id">
+  }, "id" | "userId">
 
   export type MemberIdentityVerificationOrderByWithAggregationInput = {
     id?: SortOrder
@@ -10142,10 +10114,10 @@ export namespace Prisma {
 
   export type CorporateRegistrationWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    userId?: string
     AND?: CorporateRegistrationWhereInput | CorporateRegistrationWhereInput[]
     OR?: CorporateRegistrationWhereInput[]
     NOT?: CorporateRegistrationWhereInput | CorporateRegistrationWhereInput[]
-    userId?: StringFilter<"CorporateRegistration"> | string
     companyName?: StringNullableFilter<"CorporateRegistration"> | string | null
     businessLicenseFile?: StringNullableFilter<"CorporateRegistration"> | string | null
     verificationStatus?: EnumVerificationStatusFilter<"CorporateRegistration"> | $Enums.VerificationStatus
@@ -10154,7 +10126,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"CorporateRegistration"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     verifier?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
-  }, "id">
+  }, "id" | "userId">
 
   export type CorporateRegistrationOrderByWithAggregationInput = {
     id?: SortOrder
@@ -10328,8 +10300,8 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationCreateNestedManyWithoutUserInput
-    corporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
+    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
     verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionCreateNestedManyWithoutUserInput
@@ -10352,8 +10324,8 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutUserInput
-    corporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
+    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
@@ -10376,8 +10348,8 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUpdateManyWithoutUserNestedInput
-    corporateRegistrations?: CorporateRegistrationUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUpdateManyWithoutUserNestedInput
@@ -10400,8 +10372,8 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedUpdateManyWithoutUserNestedInput
-    corporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
@@ -10610,7 +10582,7 @@ export namespace Prisma {
     verificationStatus?: $Enums.VerificationStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutMemberIdentityVerificationsInput
+    user: UserCreateNestedOneWithoutMemberIdentityVerificationInput
     verifier?: UserCreateNestedOneWithoutVerifiedMemberIdentitiesInput
   }
 
@@ -10632,7 +10604,7 @@ export namespace Prisma {
     verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutMemberIdentityVerificationsNestedInput
+    user?: UserUpdateOneRequiredWithoutMemberIdentityVerificationNestedInput
     verifier?: UserUpdateOneWithoutVerifiedMemberIdentitiesNestedInput
   }
 
@@ -10685,7 +10657,7 @@ export namespace Prisma {
     verificationStatus?: $Enums.VerificationStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutCorporateRegistrationsInput
+    user: UserCreateNestedOneWithoutCorporateRegistrationInput
     verifier?: UserCreateNestedOneWithoutVerifiedCorporateRegistrationsInput
   }
 
@@ -10707,7 +10679,7 @@ export namespace Prisma {
     verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutCorporateRegistrationsNestedInput
+    user?: UserUpdateOneRequiredWithoutCorporateRegistrationNestedInput
     verifier?: UserUpdateOneWithoutVerifiedCorporateRegistrationsNestedInput
   }
 
@@ -10949,6 +10921,16 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type MemberIdentityVerificationNullableScalarRelationFilter = {
+    is?: MemberIdentityVerificationWhereInput | null
+    isNot?: MemberIdentityVerificationWhereInput | null
+  }
+
+  export type CorporateRegistrationNullableScalarRelationFilter = {
+    is?: CorporateRegistrationWhereInput | null
+    isNot?: CorporateRegistrationWhereInput | null
   }
 
   export type MemberIdentityVerificationListRelationFilter = {
@@ -11407,18 +11389,16 @@ export namespace Prisma {
     _max?: NestedEnumSanctionTypeFilter<$PrismaModel>
   }
 
-  export type MemberIdentityVerificationCreateNestedManyWithoutUserInput = {
-    create?: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput> | MemberIdentityVerificationCreateWithoutUserInput[] | MemberIdentityVerificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutUserInput | MemberIdentityVerificationCreateOrConnectWithoutUserInput[]
-    createMany?: MemberIdentityVerificationCreateManyUserInputEnvelope
-    connect?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
+  export type MemberIdentityVerificationCreateNestedOneWithoutUserInput = {
+    create?: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput>
+    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutUserInput
+    connect?: MemberIdentityVerificationWhereUniqueInput
   }
 
-  export type CorporateRegistrationCreateNestedManyWithoutUserInput = {
-    create?: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput> | CorporateRegistrationCreateWithoutUserInput[] | CorporateRegistrationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutUserInput | CorporateRegistrationCreateOrConnectWithoutUserInput[]
-    createMany?: CorporateRegistrationCreateManyUserInputEnvelope
-    connect?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
+  export type CorporateRegistrationCreateNestedOneWithoutUserInput = {
+    create?: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutUserInput
+    connect?: CorporateRegistrationWhereUniqueInput
   }
 
   export type MemberIdentityVerificationCreateNestedManyWithoutVerifierInput = {
@@ -11461,18 +11441,16 @@ export namespace Prisma {
     connect?: VerificationTokenWhereUniqueInput | VerificationTokenWhereUniqueInput[]
   }
 
-  export type MemberIdentityVerificationUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput> | MemberIdentityVerificationCreateWithoutUserInput[] | MemberIdentityVerificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutUserInput | MemberIdentityVerificationCreateOrConnectWithoutUserInput[]
-    createMany?: MemberIdentityVerificationCreateManyUserInputEnvelope
-    connect?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
+  export type MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput>
+    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutUserInput
+    connect?: MemberIdentityVerificationWhereUniqueInput
   }
 
-  export type CorporateRegistrationUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput> | CorporateRegistrationCreateWithoutUserInput[] | CorporateRegistrationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutUserInput | CorporateRegistrationCreateOrConnectWithoutUserInput[]
-    createMany?: CorporateRegistrationCreateManyUserInputEnvelope
-    connect?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
+  export type CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutUserInput
+    connect?: CorporateRegistrationWhereUniqueInput
   }
 
   export type MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput = {
@@ -11539,32 +11517,24 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type MemberIdentityVerificationUpdateManyWithoutUserNestedInput = {
-    create?: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput> | MemberIdentityVerificationCreateWithoutUserInput[] | MemberIdentityVerificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutUserInput | MemberIdentityVerificationCreateOrConnectWithoutUserInput[]
-    upsert?: MemberIdentityVerificationUpsertWithWhereUniqueWithoutUserInput | MemberIdentityVerificationUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: MemberIdentityVerificationCreateManyUserInputEnvelope
-    set?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    disconnect?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    delete?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    connect?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    update?: MemberIdentityVerificationUpdateWithWhereUniqueWithoutUserInput | MemberIdentityVerificationUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: MemberIdentityVerificationUpdateManyWithWhereWithoutUserInput | MemberIdentityVerificationUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: MemberIdentityVerificationScalarWhereInput | MemberIdentityVerificationScalarWhereInput[]
+  export type MemberIdentityVerificationUpdateOneWithoutUserNestedInput = {
+    create?: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput>
+    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutUserInput
+    upsert?: MemberIdentityVerificationUpsertWithoutUserInput
+    disconnect?: MemberIdentityVerificationWhereInput | boolean
+    delete?: MemberIdentityVerificationWhereInput | boolean
+    connect?: MemberIdentityVerificationWhereUniqueInput
+    update?: XOR<XOR<MemberIdentityVerificationUpdateToOneWithWhereWithoutUserInput, MemberIdentityVerificationUpdateWithoutUserInput>, MemberIdentityVerificationUncheckedUpdateWithoutUserInput>
   }
 
-  export type CorporateRegistrationUpdateManyWithoutUserNestedInput = {
-    create?: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput> | CorporateRegistrationCreateWithoutUserInput[] | CorporateRegistrationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutUserInput | CorporateRegistrationCreateOrConnectWithoutUserInput[]
-    upsert?: CorporateRegistrationUpsertWithWhereUniqueWithoutUserInput | CorporateRegistrationUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: CorporateRegistrationCreateManyUserInputEnvelope
-    set?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    disconnect?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    delete?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    connect?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    update?: CorporateRegistrationUpdateWithWhereUniqueWithoutUserInput | CorporateRegistrationUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: CorporateRegistrationUpdateManyWithWhereWithoutUserInput | CorporateRegistrationUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: CorporateRegistrationScalarWhereInput | CorporateRegistrationScalarWhereInput[]
+  export type CorporateRegistrationUpdateOneWithoutUserNestedInput = {
+    create?: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutUserInput
+    upsert?: CorporateRegistrationUpsertWithoutUserInput
+    disconnect?: CorporateRegistrationWhereInput | boolean
+    delete?: CorporateRegistrationWhereInput | boolean
+    connect?: CorporateRegistrationWhereUniqueInput
+    update?: XOR<XOR<CorporateRegistrationUpdateToOneWithWhereWithoutUserInput, CorporateRegistrationUpdateWithoutUserInput>, CorporateRegistrationUncheckedUpdateWithoutUserInput>
   }
 
   export type MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput = {
@@ -11643,32 +11613,24 @@ export namespace Prisma {
     deleteMany?: VerificationTokenScalarWhereInput | VerificationTokenScalarWhereInput[]
   }
 
-  export type MemberIdentityVerificationUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput> | MemberIdentityVerificationCreateWithoutUserInput[] | MemberIdentityVerificationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutUserInput | MemberIdentityVerificationCreateOrConnectWithoutUserInput[]
-    upsert?: MemberIdentityVerificationUpsertWithWhereUniqueWithoutUserInput | MemberIdentityVerificationUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: MemberIdentityVerificationCreateManyUserInputEnvelope
-    set?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    disconnect?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    delete?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    connect?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    update?: MemberIdentityVerificationUpdateWithWhereUniqueWithoutUserInput | MemberIdentityVerificationUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: MemberIdentityVerificationUpdateManyWithWhereWithoutUserInput | MemberIdentityVerificationUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: MemberIdentityVerificationScalarWhereInput | MemberIdentityVerificationScalarWhereInput[]
+  export type MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput>
+    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutUserInput
+    upsert?: MemberIdentityVerificationUpsertWithoutUserInput
+    disconnect?: MemberIdentityVerificationWhereInput | boolean
+    delete?: MemberIdentityVerificationWhereInput | boolean
+    connect?: MemberIdentityVerificationWhereUniqueInput
+    update?: XOR<XOR<MemberIdentityVerificationUpdateToOneWithWhereWithoutUserInput, MemberIdentityVerificationUpdateWithoutUserInput>, MemberIdentityVerificationUncheckedUpdateWithoutUserInput>
   }
 
-  export type CorporateRegistrationUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput> | CorporateRegistrationCreateWithoutUserInput[] | CorporateRegistrationUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutUserInput | CorporateRegistrationCreateOrConnectWithoutUserInput[]
-    upsert?: CorporateRegistrationUpsertWithWhereUniqueWithoutUserInput | CorporateRegistrationUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: CorporateRegistrationCreateManyUserInputEnvelope
-    set?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    disconnect?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    delete?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    connect?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    update?: CorporateRegistrationUpdateWithWhereUniqueWithoutUserInput | CorporateRegistrationUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: CorporateRegistrationUpdateManyWithWhereWithoutUserInput | CorporateRegistrationUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: CorporateRegistrationScalarWhereInput | CorporateRegistrationScalarWhereInput[]
+  export type CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutUserInput
+    upsert?: CorporateRegistrationUpsertWithoutUserInput
+    disconnect?: CorporateRegistrationWhereInput | boolean
+    delete?: CorporateRegistrationWhereInput | boolean
+    connect?: CorporateRegistrationWhereUniqueInput
+    update?: XOR<XOR<CorporateRegistrationUpdateToOneWithWhereWithoutUserInput, CorporateRegistrationUpdateWithoutUserInput>, CorporateRegistrationUncheckedUpdateWithoutUserInput>
   }
 
   export type MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput = {
@@ -11779,9 +11741,9 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSocialAuthsInput, UserUpdateWithoutSocialAuthsInput>, UserUncheckedUpdateWithoutSocialAuthsInput>
   }
 
-  export type UserCreateNestedOneWithoutMemberIdentityVerificationsInput = {
-    create?: XOR<UserCreateWithoutMemberIdentityVerificationsInput, UserUncheckedCreateWithoutMemberIdentityVerificationsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutMemberIdentityVerificationsInput
+  export type UserCreateNestedOneWithoutMemberIdentityVerificationInput = {
+    create?: XOR<UserCreateWithoutMemberIdentityVerificationInput, UserUncheckedCreateWithoutMemberIdentityVerificationInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMemberIdentityVerificationInput
     connect?: UserWhereUniqueInput
   }
 
@@ -11795,12 +11757,12 @@ export namespace Prisma {
     set?: $Enums.VerificationStatus
   }
 
-  export type UserUpdateOneRequiredWithoutMemberIdentityVerificationsNestedInput = {
-    create?: XOR<UserCreateWithoutMemberIdentityVerificationsInput, UserUncheckedCreateWithoutMemberIdentityVerificationsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutMemberIdentityVerificationsInput
-    upsert?: UserUpsertWithoutMemberIdentityVerificationsInput
+  export type UserUpdateOneRequiredWithoutMemberIdentityVerificationNestedInput = {
+    create?: XOR<UserCreateWithoutMemberIdentityVerificationInput, UserUncheckedCreateWithoutMemberIdentityVerificationInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMemberIdentityVerificationInput
+    upsert?: UserUpsertWithoutMemberIdentityVerificationInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMemberIdentityVerificationsInput, UserUpdateWithoutMemberIdentityVerificationsInput>, UserUncheckedUpdateWithoutMemberIdentityVerificationsInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMemberIdentityVerificationInput, UserUpdateWithoutMemberIdentityVerificationInput>, UserUncheckedUpdateWithoutMemberIdentityVerificationInput>
   }
 
   export type UserUpdateOneWithoutVerifiedMemberIdentitiesNestedInput = {
@@ -11813,9 +11775,9 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutVerifiedMemberIdentitiesInput, UserUpdateWithoutVerifiedMemberIdentitiesInput>, UserUncheckedUpdateWithoutVerifiedMemberIdentitiesInput>
   }
 
-  export type UserCreateNestedOneWithoutCorporateRegistrationsInput = {
-    create?: XOR<UserCreateWithoutCorporateRegistrationsInput, UserUncheckedCreateWithoutCorporateRegistrationsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCorporateRegistrationsInput
+  export type UserCreateNestedOneWithoutCorporateRegistrationInput = {
+    create?: XOR<UserCreateWithoutCorporateRegistrationInput, UserUncheckedCreateWithoutCorporateRegistrationInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCorporateRegistrationInput
     connect?: UserWhereUniqueInput
   }
 
@@ -11825,12 +11787,12 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type UserUpdateOneRequiredWithoutCorporateRegistrationsNestedInput = {
-    create?: XOR<UserCreateWithoutCorporateRegistrationsInput, UserUncheckedCreateWithoutCorporateRegistrationsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCorporateRegistrationsInput
-    upsert?: UserUpsertWithoutCorporateRegistrationsInput
+  export type UserUpdateOneRequiredWithoutCorporateRegistrationNestedInput = {
+    create?: XOR<UserCreateWithoutCorporateRegistrationInput, UserUncheckedCreateWithoutCorporateRegistrationInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCorporateRegistrationInput
+    upsert?: UserUpsertWithoutCorporateRegistrationInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCorporateRegistrationsInput, UserUpdateWithoutCorporateRegistrationsInput>, UserUncheckedUpdateWithoutCorporateRegistrationsInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCorporateRegistrationInput, UserUpdateWithoutCorporateRegistrationInput>, UserUncheckedUpdateWithoutCorporateRegistrationInput>
   }
 
   export type UserUpdateOneWithoutVerifiedCorporateRegistrationsNestedInput = {
@@ -12136,11 +12098,6 @@ export namespace Prisma {
     create: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput>
   }
 
-  export type MemberIdentityVerificationCreateManyUserInputEnvelope = {
-    data: MemberIdentityVerificationCreateManyUserInput | MemberIdentityVerificationCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
   export type CorporateRegistrationCreateWithoutUserInput = {
     id?: string
     companyName?: string | null
@@ -12166,11 +12123,6 @@ export namespace Prisma {
     create: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput>
   }
 
-  export type CorporateRegistrationCreateManyUserInputEnvelope = {
-    data: CorporateRegistrationCreateManyUserInput | CorporateRegistrationCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
   export type MemberIdentityVerificationCreateWithoutVerifierInput = {
     id?: string
     passportPhoto?: string | null
@@ -12178,7 +12130,7 @@ export namespace Prisma {
     verificationStatus?: $Enums.VerificationStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutMemberIdentityVerificationsInput
+    user: UserCreateNestedOneWithoutMemberIdentityVerificationInput
   }
 
   export type MemberIdentityVerificationUncheckedCreateWithoutVerifierInput = {
@@ -12208,7 +12160,7 @@ export namespace Prisma {
     verificationStatus?: $Enums.VerificationStatus
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutCorporateRegistrationsInput
+    user: UserCreateNestedOneWithoutCorporateRegistrationInput
   }
 
   export type CorporateRegistrationUncheckedCreateWithoutVerifierInput = {
@@ -12335,64 +12287,66 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type MemberIdentityVerificationUpsertWithWhereUniqueWithoutUserInput = {
-    where: MemberIdentityVerificationWhereUniqueInput
+  export type MemberIdentityVerificationUpsertWithoutUserInput = {
     update: XOR<MemberIdentityVerificationUpdateWithoutUserInput, MemberIdentityVerificationUncheckedUpdateWithoutUserInput>
     create: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput>
+    where?: MemberIdentityVerificationWhereInput
   }
 
-  export type MemberIdentityVerificationUpdateWithWhereUniqueWithoutUserInput = {
-    where: MemberIdentityVerificationWhereUniqueInput
+  export type MemberIdentityVerificationUpdateToOneWithWhereWithoutUserInput = {
+    where?: MemberIdentityVerificationWhereInput
     data: XOR<MemberIdentityVerificationUpdateWithoutUserInput, MemberIdentityVerificationUncheckedUpdateWithoutUserInput>
   }
 
-  export type MemberIdentityVerificationUpdateManyWithWhereWithoutUserInput = {
-    where: MemberIdentityVerificationScalarWhereInput
-    data: XOR<MemberIdentityVerificationUpdateManyMutationInput, MemberIdentityVerificationUncheckedUpdateManyWithoutUserInput>
+  export type MemberIdentityVerificationUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    passportPhoto?: NullableStringFieldUpdateOperationsInput | string | null
+    selfiePhoto?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verifier?: UserUpdateOneWithoutVerifiedMemberIdentitiesNestedInput
   }
 
-  export type MemberIdentityVerificationScalarWhereInput = {
-    AND?: MemberIdentityVerificationScalarWhereInput | MemberIdentityVerificationScalarWhereInput[]
-    OR?: MemberIdentityVerificationScalarWhereInput[]
-    NOT?: MemberIdentityVerificationScalarWhereInput | MemberIdentityVerificationScalarWhereInput[]
-    id?: StringFilter<"MemberIdentityVerification"> | string
-    userId?: StringFilter<"MemberIdentityVerification"> | string
-    passportPhoto?: StringNullableFilter<"MemberIdentityVerification"> | string | null
-    selfiePhoto?: StringNullableFilter<"MemberIdentityVerification"> | string | null
-    verificationStatus?: EnumVerificationStatusFilter<"MemberIdentityVerification"> | $Enums.VerificationStatus
-    isVerifiedBy?: StringNullableFilter<"MemberIdentityVerification"> | string | null
-    createdAt?: DateTimeFilter<"MemberIdentityVerification"> | Date | string
-    updatedAt?: DateTimeFilter<"MemberIdentityVerification"> | Date | string
+  export type MemberIdentityVerificationUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    passportPhoto?: NullableStringFieldUpdateOperationsInput | string | null
+    selfiePhoto?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+    isVerifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CorporateRegistrationUpsertWithWhereUniqueWithoutUserInput = {
-    where: CorporateRegistrationWhereUniqueInput
+  export type CorporateRegistrationUpsertWithoutUserInput = {
     update: XOR<CorporateRegistrationUpdateWithoutUserInput, CorporateRegistrationUncheckedUpdateWithoutUserInput>
     create: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput>
+    where?: CorporateRegistrationWhereInput
   }
 
-  export type CorporateRegistrationUpdateWithWhereUniqueWithoutUserInput = {
-    where: CorporateRegistrationWhereUniqueInput
+  export type CorporateRegistrationUpdateToOneWithWhereWithoutUserInput = {
+    where?: CorporateRegistrationWhereInput
     data: XOR<CorporateRegistrationUpdateWithoutUserInput, CorporateRegistrationUncheckedUpdateWithoutUserInput>
   }
 
-  export type CorporateRegistrationUpdateManyWithWhereWithoutUserInput = {
-    where: CorporateRegistrationScalarWhereInput
-    data: XOR<CorporateRegistrationUpdateManyMutationInput, CorporateRegistrationUncheckedUpdateManyWithoutUserInput>
+  export type CorporateRegistrationUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    businessLicenseFile?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    verifier?: UserUpdateOneWithoutVerifiedCorporateRegistrationsNestedInput
   }
 
-  export type CorporateRegistrationScalarWhereInput = {
-    AND?: CorporateRegistrationScalarWhereInput | CorporateRegistrationScalarWhereInput[]
-    OR?: CorporateRegistrationScalarWhereInput[]
-    NOT?: CorporateRegistrationScalarWhereInput | CorporateRegistrationScalarWhereInput[]
-    id?: StringFilter<"CorporateRegistration"> | string
-    userId?: StringFilter<"CorporateRegistration"> | string
-    companyName?: StringNullableFilter<"CorporateRegistration"> | string | null
-    businessLicenseFile?: StringNullableFilter<"CorporateRegistration"> | string | null
-    verificationStatus?: EnumVerificationStatusFilter<"CorporateRegistration"> | $Enums.VerificationStatus
-    isVerifiedBy?: StringNullableFilter<"CorporateRegistration"> | string | null
-    createdAt?: DateTimeFilter<"CorporateRegistration"> | Date | string
-    updatedAt?: DateTimeFilter<"CorporateRegistration"> | Date | string
+  export type CorporateRegistrationUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    businessLicenseFile?: NullableStringFieldUpdateOperationsInput | string | null
+    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+    isVerifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MemberIdentityVerificationUpsertWithWhereUniqueWithoutVerifierInput = {
@@ -12411,6 +12365,20 @@ export namespace Prisma {
     data: XOR<MemberIdentityVerificationUpdateManyMutationInput, MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierInput>
   }
 
+  export type MemberIdentityVerificationScalarWhereInput = {
+    AND?: MemberIdentityVerificationScalarWhereInput | MemberIdentityVerificationScalarWhereInput[]
+    OR?: MemberIdentityVerificationScalarWhereInput[]
+    NOT?: MemberIdentityVerificationScalarWhereInput | MemberIdentityVerificationScalarWhereInput[]
+    id?: StringFilter<"MemberIdentityVerification"> | string
+    userId?: StringFilter<"MemberIdentityVerification"> | string
+    passportPhoto?: StringNullableFilter<"MemberIdentityVerification"> | string | null
+    selfiePhoto?: StringNullableFilter<"MemberIdentityVerification"> | string | null
+    verificationStatus?: EnumVerificationStatusFilter<"MemberIdentityVerification"> | $Enums.VerificationStatus
+    isVerifiedBy?: StringNullableFilter<"MemberIdentityVerification"> | string | null
+    createdAt?: DateTimeFilter<"MemberIdentityVerification"> | Date | string
+    updatedAt?: DateTimeFilter<"MemberIdentityVerification"> | Date | string
+  }
+
   export type CorporateRegistrationUpsertWithWhereUniqueWithoutVerifierInput = {
     where: CorporateRegistrationWhereUniqueInput
     update: XOR<CorporateRegistrationUpdateWithoutVerifierInput, CorporateRegistrationUncheckedUpdateWithoutVerifierInput>
@@ -12425,6 +12393,20 @@ export namespace Prisma {
   export type CorporateRegistrationUpdateManyWithWhereWithoutVerifierInput = {
     where: CorporateRegistrationScalarWhereInput
     data: XOR<CorporateRegistrationUpdateManyMutationInput, CorporateRegistrationUncheckedUpdateManyWithoutVerifierInput>
+  }
+
+  export type CorporateRegistrationScalarWhereInput = {
+    AND?: CorporateRegistrationScalarWhereInput | CorporateRegistrationScalarWhereInput[]
+    OR?: CorporateRegistrationScalarWhereInput[]
+    NOT?: CorporateRegistrationScalarWhereInput | CorporateRegistrationScalarWhereInput[]
+    id?: StringFilter<"CorporateRegistration"> | string
+    userId?: StringFilter<"CorporateRegistration"> | string
+    companyName?: StringNullableFilter<"CorporateRegistration"> | string | null
+    businessLicenseFile?: StringNullableFilter<"CorporateRegistration"> | string | null
+    verificationStatus?: EnumVerificationStatusFilter<"CorporateRegistration"> | $Enums.VerificationStatus
+    isVerifiedBy?: StringNullableFilter<"CorporateRegistration"> | string | null
+    createdAt?: DateTimeFilter<"CorporateRegistration"> | Date | string
+    updatedAt?: DateTimeFilter<"CorporateRegistration"> | Date | string
   }
 
   export type SanctionUpsertWithWhereUniqueWithoutUserInput = {
@@ -12559,8 +12541,8 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationCreateNestedManyWithoutUserInput
-    corporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
+    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
     verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionCreateNestedManyWithoutUserInput
@@ -12582,8 +12564,8 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutUserInput
-    corporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
+    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
@@ -12621,8 +12603,8 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUpdateManyWithoutUserNestedInput
-    corporateRegistrations?: CorporateRegistrationUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUpdateManyWithoutUserNestedInput
@@ -12644,8 +12626,8 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedUpdateManyWithoutUserNestedInput
-    corporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
@@ -12667,8 +12649,8 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationCreateNestedManyWithoutUserInput
-    corporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
+    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
     verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionCreateNestedManyWithoutUserInput
@@ -12690,8 +12672,8 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutUserInput
-    corporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
+    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
@@ -12729,8 +12711,8 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUpdateManyWithoutUserNestedInput
-    corporateRegistrations?: CorporateRegistrationUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUpdateManyWithoutUserNestedInput
@@ -12752,8 +12734,8 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedUpdateManyWithoutUserNestedInput
-    corporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
@@ -12761,7 +12743,7 @@ export namespace Prisma {
     verificationTokens?: VerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type UserCreateWithoutMemberIdentityVerificationsInput = {
+  export type UserCreateWithoutMemberIdentityVerificationInput = {
     id?: string
     role?: $Enums.UserRole
     email?: string | null
@@ -12775,7 +12757,7 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    corporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutUserInput
+    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
     verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionCreateNestedManyWithoutUserInput
@@ -12784,7 +12766,7 @@ export namespace Prisma {
     verificationTokens?: VerificationTokenCreateNestedManyWithoutUserInput
   }
 
-  export type UserUncheckedCreateWithoutMemberIdentityVerificationsInput = {
+  export type UserUncheckedCreateWithoutMemberIdentityVerificationInput = {
     id?: string
     role?: $Enums.UserRole
     email?: string | null
@@ -12798,7 +12780,7 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    corporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutUserInput
+    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
@@ -12807,9 +12789,9 @@ export namespace Prisma {
     verificationTokens?: VerificationTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type UserCreateOrConnectWithoutMemberIdentityVerificationsInput = {
+  export type UserCreateOrConnectWithoutMemberIdentityVerificationInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutMemberIdentityVerificationsInput, UserUncheckedCreateWithoutMemberIdentityVerificationsInput>
+    create: XOR<UserCreateWithoutMemberIdentityVerificationInput, UserUncheckedCreateWithoutMemberIdentityVerificationInput>
   }
 
   export type UserCreateWithoutVerifiedMemberIdentitiesInput = {
@@ -12826,8 +12808,8 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationCreateNestedManyWithoutUserInput
-    corporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
+    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
     verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionCreateNestedManyWithoutUserInput
     userInformation?: UserInformationCreateNestedOneWithoutUserInput
@@ -12849,8 +12831,8 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutUserInput
-    corporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
+    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
     userInformation?: UserInformationUncheckedCreateNestedOneWithoutUserInput
@@ -12863,18 +12845,18 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutVerifiedMemberIdentitiesInput, UserUncheckedCreateWithoutVerifiedMemberIdentitiesInput>
   }
 
-  export type UserUpsertWithoutMemberIdentityVerificationsInput = {
-    update: XOR<UserUpdateWithoutMemberIdentityVerificationsInput, UserUncheckedUpdateWithoutMemberIdentityVerificationsInput>
-    create: XOR<UserCreateWithoutMemberIdentityVerificationsInput, UserUncheckedCreateWithoutMemberIdentityVerificationsInput>
+  export type UserUpsertWithoutMemberIdentityVerificationInput = {
+    update: XOR<UserUpdateWithoutMemberIdentityVerificationInput, UserUncheckedUpdateWithoutMemberIdentityVerificationInput>
+    create: XOR<UserCreateWithoutMemberIdentityVerificationInput, UserUncheckedCreateWithoutMemberIdentityVerificationInput>
     where?: UserWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutMemberIdentityVerificationsInput = {
+  export type UserUpdateToOneWithWhereWithoutMemberIdentityVerificationInput = {
     where?: UserWhereInput
-    data: XOR<UserUpdateWithoutMemberIdentityVerificationsInput, UserUncheckedUpdateWithoutMemberIdentityVerificationsInput>
+    data: XOR<UserUpdateWithoutMemberIdentityVerificationInput, UserUncheckedUpdateWithoutMemberIdentityVerificationInput>
   }
 
-  export type UserUpdateWithoutMemberIdentityVerificationsInput = {
+  export type UserUpdateWithoutMemberIdentityVerificationInput = {
     id?: StringFieldUpdateOperationsInput | string
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12888,7 +12870,7 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    corporateRegistrations?: CorporateRegistrationUpdateManyWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUpdateManyWithoutUserNestedInput
@@ -12897,7 +12879,7 @@ export namespace Prisma {
     verificationTokens?: VerificationTokenUpdateManyWithoutUserNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutMemberIdentityVerificationsInput = {
+  export type UserUncheckedUpdateWithoutMemberIdentityVerificationInput = {
     id?: StringFieldUpdateOperationsInput | string
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -12911,7 +12893,7 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    corporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
@@ -12945,8 +12927,8 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUpdateManyWithoutUserNestedInput
-    corporateRegistrations?: CorporateRegistrationUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUpdateManyWithoutUserNestedInput
     userInformation?: UserInformationUpdateOneWithoutUserNestedInput
@@ -12968,8 +12950,8 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedUpdateManyWithoutUserNestedInput
-    corporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
     userInformation?: UserInformationUncheckedUpdateOneWithoutUserNestedInput
@@ -12977,7 +12959,7 @@ export namespace Prisma {
     verificationTokens?: VerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type UserCreateWithoutCorporateRegistrationsInput = {
+  export type UserCreateWithoutCorporateRegistrationInput = {
     id?: string
     role?: $Enums.UserRole
     email?: string | null
@@ -12991,7 +12973,7 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
     verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionCreateNestedManyWithoutUserInput
@@ -13000,7 +12982,7 @@ export namespace Prisma {
     verificationTokens?: VerificationTokenCreateNestedManyWithoutUserInput
   }
 
-  export type UserUncheckedCreateWithoutCorporateRegistrationsInput = {
+  export type UserUncheckedCreateWithoutCorporateRegistrationInput = {
     id?: string
     role?: $Enums.UserRole
     email?: string | null
@@ -13014,7 +12996,7 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
@@ -13023,9 +13005,9 @@ export namespace Prisma {
     verificationTokens?: VerificationTokenUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type UserCreateOrConnectWithoutCorporateRegistrationsInput = {
+  export type UserCreateOrConnectWithoutCorporateRegistrationInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutCorporateRegistrationsInput, UserUncheckedCreateWithoutCorporateRegistrationsInput>
+    create: XOR<UserCreateWithoutCorporateRegistrationInput, UserUncheckedCreateWithoutCorporateRegistrationInput>
   }
 
   export type UserCreateWithoutVerifiedCorporateRegistrationsInput = {
@@ -13042,8 +13024,8 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationCreateNestedManyWithoutUserInput
-    corporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
+    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionCreateNestedManyWithoutUserInput
     userInformation?: UserInformationCreateNestedOneWithoutUserInput
@@ -13065,8 +13047,8 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutUserInput
-    corporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
+    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
     userInformation?: UserInformationUncheckedCreateNestedOneWithoutUserInput
@@ -13079,18 +13061,18 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutVerifiedCorporateRegistrationsInput, UserUncheckedCreateWithoutVerifiedCorporateRegistrationsInput>
   }
 
-  export type UserUpsertWithoutCorporateRegistrationsInput = {
-    update: XOR<UserUpdateWithoutCorporateRegistrationsInput, UserUncheckedUpdateWithoutCorporateRegistrationsInput>
-    create: XOR<UserCreateWithoutCorporateRegistrationsInput, UserUncheckedCreateWithoutCorporateRegistrationsInput>
+  export type UserUpsertWithoutCorporateRegistrationInput = {
+    update: XOR<UserUpdateWithoutCorporateRegistrationInput, UserUncheckedUpdateWithoutCorporateRegistrationInput>
+    create: XOR<UserCreateWithoutCorporateRegistrationInput, UserUncheckedCreateWithoutCorporateRegistrationInput>
     where?: UserWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutCorporateRegistrationsInput = {
+  export type UserUpdateToOneWithWhereWithoutCorporateRegistrationInput = {
     where?: UserWhereInput
-    data: XOR<UserUpdateWithoutCorporateRegistrationsInput, UserUncheckedUpdateWithoutCorporateRegistrationsInput>
+    data: XOR<UserUpdateWithoutCorporateRegistrationInput, UserUncheckedUpdateWithoutCorporateRegistrationInput>
   }
 
-  export type UserUpdateWithoutCorporateRegistrationsInput = {
+  export type UserUpdateWithoutCorporateRegistrationInput = {
     id?: StringFieldUpdateOperationsInput | string
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13104,7 +13086,7 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUpdateManyWithoutUserNestedInput
@@ -13113,7 +13095,7 @@ export namespace Prisma {
     verificationTokens?: VerificationTokenUpdateManyWithoutUserNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutCorporateRegistrationsInput = {
+  export type UserUncheckedUpdateWithoutCorporateRegistrationInput = {
     id?: StringFieldUpdateOperationsInput | string
     role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13127,7 +13109,7 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
@@ -13161,8 +13143,8 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUpdateManyWithoutUserNestedInput
-    corporateRegistrations?: CorporateRegistrationUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUpdateManyWithoutUserNestedInput
     userInformation?: UserInformationUpdateOneWithoutUserNestedInput
@@ -13184,8 +13166,8 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedUpdateManyWithoutUserNestedInput
-    corporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
     userInformation?: UserInformationUncheckedUpdateOneWithoutUserNestedInput
@@ -13207,8 +13189,8 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationCreateNestedManyWithoutUserInput
-    corporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
+    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
     verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionCreateNestedManyWithoutUserInput
@@ -13230,8 +13212,8 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutUserInput
-    corporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
+    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
     sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
@@ -13269,8 +13251,8 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUpdateManyWithoutUserNestedInput
-    corporateRegistrations?: CorporateRegistrationUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUpdateManyWithoutUserNestedInput
@@ -13292,8 +13274,8 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedUpdateManyWithoutUserNestedInput
-    corporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
     sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
@@ -13315,8 +13297,8 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationCreateNestedManyWithoutUserInput
-    corporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
+    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
     verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
     userInformation?: UserInformationCreateNestedOneWithoutUserInput
@@ -13338,8 +13320,8 @@ export namespace Prisma {
     userInfoId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutUserInput
-    corporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutUserInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
+    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
     userInformation?: UserInformationUncheckedCreateNestedOneWithoutUserInput
@@ -13377,8 +13359,8 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUpdateManyWithoutUserNestedInput
-    corporateRegistrations?: CorporateRegistrationUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
     userInformation?: UserInformationUpdateOneWithoutUserNestedInput
@@ -13400,33 +13382,13 @@ export namespace Prisma {
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerifications?: MemberIdentityVerificationUncheckedUpdateManyWithoutUserNestedInput
-    corporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutUserNestedInput
+    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
+    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
     verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
     verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
     userInformation?: UserInformationUncheckedUpdateOneWithoutUserNestedInput
     socialAuths?: SocialAuthUncheckedUpdateOneWithoutUserNestedInput
     verificationTokens?: VerificationTokenUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type MemberIdentityVerificationCreateManyUserInput = {
-    id?: string
-    passportPhoto?: string | null
-    selfiePhoto?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    isVerifiedBy?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type CorporateRegistrationCreateManyUserInput = {
-    id?: string
-    companyName?: string | null
-    businessLicenseFile?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    isVerifiedBy?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
   export type MemberIdentityVerificationCreateManyVerifierInput = {
@@ -13467,66 +13429,6 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
-  export type MemberIdentityVerificationUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    passportPhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    selfiePhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    verifier?: UserUpdateOneWithoutVerifiedMemberIdentitiesNestedInput
-  }
-
-  export type MemberIdentityVerificationUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    passportPhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    selfiePhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    isVerifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MemberIdentityVerificationUncheckedUpdateManyWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    passportPhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    selfiePhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    isVerifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CorporateRegistrationUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    companyName?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLicenseFile?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    verifier?: UserUpdateOneWithoutVerifiedCorporateRegistrationsNestedInput
-  }
-
-  export type CorporateRegistrationUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    companyName?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLicenseFile?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    isVerifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CorporateRegistrationUncheckedUpdateManyWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    companyName?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLicenseFile?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    isVerifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type MemberIdentityVerificationUpdateWithoutVerifierInput = {
     id?: StringFieldUpdateOperationsInput | string
     passportPhoto?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13534,7 +13436,7 @@ export namespace Prisma {
     verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutMemberIdentityVerificationsNestedInput
+    user?: UserUpdateOneRequiredWithoutMemberIdentityVerificationNestedInput
   }
 
   export type MemberIdentityVerificationUncheckedUpdateWithoutVerifierInput = {
@@ -13564,7 +13466,7 @@ export namespace Prisma {
     verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutCorporateRegistrationsNestedInput
+    user?: UserUpdateOneRequiredWithoutCorporateRegistrationNestedInput
   }
 
   export type CorporateRegistrationUncheckedUpdateWithoutVerifierInput = {

@@ -7,6 +7,7 @@ import { AuthPrismaModule } from 'libs/common/src';
 import { MemberVerificationModule } from './member-verification/member-verification.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { UserInformationsModule } from './user-informations/user-informations.module';
 import { CorporateRegistrationModule } from './corporate-registration/corporate-registration.module';
 
 @Module({
@@ -34,6 +35,7 @@ import { CorporateRegistrationModule } from './corporate-registration/corporate-
     AuthModule,
     MemberVerificationModule,
     UsersModule,
+    UserInformationsModule,
     CorporateRegistrationModule,
   ],
   controllers: [],

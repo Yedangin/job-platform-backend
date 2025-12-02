@@ -20,6 +20,17 @@ export enum VerificationStatus {
   UNRECOGNIZED = -1,
 }
 
+/** Message */
+export interface CorporateRegistrationModel {
+  id: string;
+  userId: string;
+  companyName?: string | undefined;
+  businessLicenseFile?: string | undefined;
+  verificationStatus?: VerificationStatus | undefined;
+  createdAt?: string | undefined;
+  updatedAt?: string | undefined;
+}
+
 export interface CreateCorporateRegistrationRequest {
   userId: string;
   companyName: string;

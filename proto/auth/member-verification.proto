@@ -20,7 +20,7 @@ enum VerificationStatus {
 // Message
 //------------------------
 
-message MemberVerificationRequest {
+message MemberVerification {
   string id = 1;
   string userId = 2;
   string passportPhoto = 3;

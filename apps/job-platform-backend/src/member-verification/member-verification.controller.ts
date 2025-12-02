@@ -10,6 +10,7 @@ import {
   Delete,
   HttpCode,
   UseGuards,
+  HttpException,
 } from '@nestjs/common';
 import { CreateMemberVerificationDto } from './dto/create-member-verification.dto';
 import { UpdateMemberVerificationDto } from './dto/update-member-verification.dto';
@@ -33,6 +34,7 @@ import {
 import { firstValueFrom } from 'rxjs';
 import { CurrentSession } from 'libs/common/src/common/decorator/current-session.decorator';
 import {
+  grpcToHttpStatus,
   Roles,
   RolesGuard,
   SessionAuthGuard,
@@ -69,14 +71,21 @@ export class MemberVerificationController implements OnModuleInit {
     @Body()
     createMemberIdentityVerificationDto: CreateMemberVerificationDto,
   ) {
-    const result = await firstValueFrom(
-      this.memberSerice.upsertVerification({
-        userId: createMemberIdentityVerificationDto.userId,
-        passportPhoto: createMemberIdentityVerificationDto.passportPhoto,
-        selfiePhoto: createMemberIdentityVerificationDto.selfiePhoto,
-      }),
-    );
-    return result;
+    try {
+      const result = await firstValueFrom(
+        this.memberSerice.upsertVerification({
+          userId: createMemberIdentityVerificationDto.userId,
+          passportPhoto: createMemberIdentityVerificationDto.passportPhoto,
+          selfiePhoto: createMemberIdentityVerificationDto.selfiePhoto,
+        }),
+      );
+      return result;
+    } catch (error: any) {
+      throw new HttpException(
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
+      );
+    }
   }
 
   @Patch(':id')
@@ -98,18 +107,25 @@ export class MemberVerificationController implements OnModuleInit {
     updateMemberIdentityVerificationDto: UpdateMemberVerificationDto,
     @CurrentSession() session: SessionData,
   ) {
-    const result = await firstValueFrom(
-      this.memberSerice.updateVerification({
-        id: id,
-        passportPhoto: updateMemberIdentityVerificationDto.passportPhoto,
-        selfiePhoto: updateMemberIdentityVerificationDto.selfiePhoto,
-        verificationStatus:
-          updateMemberIdentityVerificationDto.verificationStatus as any,
-        isVerifiedby: session.userId,
-      }),
-    );
+    try {
+      const result = await firstValueFrom(
+        this.memberSerice.updateVerification({
+          id: id,
+          passportPhoto: updateMemberIdentityVerificationDto.passportPhoto,
+          selfiePhoto: updateMemberIdentityVerificationDto.selfiePhoto,
+          verificationStatus:
+            updateMemberIdentityVerificationDto.verificationStatus as any,
+          isVerifiedby: session.userId,
+        }),
+      );
 
-    return result;
+      return result;
+    } catch (error: any) {
+      throw new HttpException(
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
+      );
+    }
   }
 
   @Delete(':id')
@@ -123,9 +139,16 @@ export class MemberVerificationController implements OnModuleInit {
     description: 'Member identity verification not found',
   })
   async remove(@Param('id') id: string) {
-    const result = await firstValueFrom(
-      this.memberSerice.deleteVerification({ id }),
-    );
-    return result;
+    try {
+      const result = await firstValueFrom(
+        this.memberSerice.deleteVerification({ id }),
+      );
+      return result;
+    } catch (error: any) {
+      throw new HttpException(
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
+      );
+    }
   }
 }

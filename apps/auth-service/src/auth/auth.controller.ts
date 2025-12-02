@@ -15,25 +15,26 @@ import {
 import { RpcException } from '@nestjs/microservices';
 import { GrpcMethod } from '@nestjs/microservices';
 import { AuthService } from './auth.service';
+import { httpToGrpcStatus } from 'libs/common/src/common/helper/htto-to-grpc.helper';
 
 // Helper function to convert HTTP status codes to gRPC status codes
-function httpToGrpcStatus(httpStatus: number): number {
-  const statusMap: Record<number, number> = {
-    200: 0, // OK
-    201: 0, // OK
-    400: 3, // INVALID_ARGUMENT
-    401: 16, // UNAUTHENTICATED
-    403: 7, // PERMISSION_DENIED
-    404: 5, // NOT_FOUND
-    408: 4, // DEADLINE_EXCEEDED
-    409: 6, // ALREADY_EXISTS
-    429: 8, // RESOURCE_EXHAUSTED
-    500: 13, // INTERNAL
-    501: 12, // UNIMPLEMENTED
-    503: 14, // UNAVAILABLE
-  };
-  return statusMap[httpStatus] ?? 2; // Default to UNKNOWN
-}
+// function httpToGrpcStatus(httpStatus: number): number {
+//   const statusMap: Record<number, number> = {
+//     200: 0, // OK
+//     201: 0, // OK
+//     400: 3, // INVALID_ARGUMENT
+//     401: 16, // UNAUTHENTICATED
+//     403: 7, // PERMISSION_DENIED
+//     404: 5, // NOT_FOUND
+//     408: 4, // DEADLINE_EXCEEDED
+//     409: 6, // ALREADY_EXISTS
+//     429: 8, // RESOURCE_EXHAUSTED
+//     500: 13, // INTERNAL
+//     501: 12, // UNIMPLEMENTED
+//     503: 14, // UNAVAILABLE
+//   };
+//   return statusMap[httpStatus] ?? 2; // Default to UNKNOWN
+// }
 
 @Controller()
 export class AuthController {

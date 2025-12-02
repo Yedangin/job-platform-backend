@@ -105,17 +105,25 @@ export class CorporateRegistrationController implements OnModuleInit {
     @CurrentSession() session: SessionData,
     @Body() updateCorporateRegistrationDto: UpdateCorporateRegistrationDto,
   ) {
-    const result = await firstValueFrom(
-      this.corporateService.updateCorporateRegistration({
-        id: id,
-        companyName: updateCorporateRegistrationDto.companyName,
-        businessLicenseFile: updateCorporateRegistrationDto.businessLicenseFile,
-        verificationStatus:
-          updateCorporateRegistrationDto.verificationStatus as any,
-        isVerifiedby: session.userId,
-      }),
-    );
-    return result;
+    try {
+      const result = await firstValueFrom(
+        this.corporateService.updateCorporateRegistration({
+          id: id,
+          companyName: updateCorporateRegistrationDto.companyName,
+          businessLicenseFile:
+            updateCorporateRegistrationDto.businessLicenseFile,
+          verificationStatus:
+            updateCorporateRegistrationDto.verificationStatus as any,
+          isVerifiedby: session.userId,
+        }),
+      );
+      return result;
+    } catch (error: any) {
+      throw new HttpException(
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
+      );
+    }
   }
 
   @Delete(':id')
@@ -127,9 +135,16 @@ export class CorporateRegistrationController implements OnModuleInit {
   })
   @ApiNotFoundResponse({ description: 'Corporate registration not found' })
   async remove(@Param('id') id: string) {
-    const result = await firstValueFrom(
-      this.corporateService.deleteCorporateRegistration({ id }),
-    );
-    return result;
+    try {
+      const result = await firstValueFrom(
+        this.corporateService.deleteCorporateRegistration({ id }),
+      );
+      return result;
+    } catch (error: any) {
+      throw new HttpException(
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
+      );
+    }
   }
 }

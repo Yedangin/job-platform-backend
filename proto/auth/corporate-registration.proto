@@ -12,6 +12,15 @@ enum VerificationStatus {
 }
 
 // Message
+message CorporateRegistrationModel {
+  string id = 1;
+  string userId = 2;
+  optional string companyName = 3;
+  optional string businessLicenseFile = 4;
+  optional VerificationStatus verificationStatus = 5;
+  optional string createdAt = 6;
+  optional string updatedAt = 7;
+}
 
 message CreateCorporateRegistrationRequest {
   string userId = 1;

@@ -4,6 +4,9 @@ package users;
 
 import "common/basic.proto";
 import "common/basic-query.proto";
+import "auth/user-information.proto";
+import "auth/member-verification.proto";
+import "auth/corporate-registration.proto";
 
 // Enums
 enum UserRole {
@@ -38,6 +41,9 @@ message User {
   optional string wallet_id = 9;
   string created_at = 10;
   string updated_at = 11;
+  optional userInformation.UserInformation userInformation = 12;
+  optional memberVerfication.MemberVerification memberIdentityVerification = 13;
+  optional corporateRegistration.CorporateRegistrationModel corporateRegistration = 14;
 }
 
 

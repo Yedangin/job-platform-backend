@@ -26,8 +26,8 @@ model User {
   createdAt         DateTime   @default(now()) @map("created_at")
   updatedAt         DateTime   @updatedAt @map("updated_at")
 
-  memberIdentityVerifications    MemberIdentityVerification[] @relation("memberIdentities")
-  corporateRegistrations         CorporateRegistration[]      @relation("CoporateIdenities")
+  memberIdentityVerification     MemberIdentityVerification?  @relation("memberIdentities")
+  corporateRegistration          CorporateRegistration?       @relation("CoporateIdenities")
   verifiedMemberIdentities       MemberIdentityVerification[] @relation("VerifiedBy")
   verifiedCorporateRegistrations CorporateRegistration[]      @relation("VerifiedBy")
   sanctions                      Sanction[]
@@ -77,7 +77,7 @@ model SocialAuth {
 
 model MemberIdentityVerification {
   id                 String             @id @default(cuid()) @map("id")
-  userId             String             @map("user_id")
+  userId             String             @unique() @map("user_id")
   passportPhoto      String?            @map("passport_photo") @userDB.VarChar(255)
   selfiePhoto        String?            @map("selfie_photo") @userDB.VarChar(255)
   verificationStatus VerificationStatus @default(PENDING) @map("verification_status")
@@ -94,7 +94,7 @@ model MemberIdentityVerification {
 
 model CorporateRegistration {
   id                  String             @id @default(cuid()) @map("id")
-  userId              String             @map("user_id")
+  userId              String             @unique() @map("user_id")
   companyName         String?            @map("company_name") @userDB.VarChar(255)
   businessLicenseFile String?            @map("business_license_file") @userDB.VarChar(255)
   verificationStatus  VerificationStatus @default(PENDING) @map("verification_status")

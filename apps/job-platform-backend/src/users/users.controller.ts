@@ -9,6 +9,8 @@ import {
   Inject,
   OnModuleInit,
   Query,
+  UseGuards,
+  HttpException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -23,6 +25,12 @@ import {
 import { ClientGrpc } from '@nestjs/microservices';
 import { USERS_PACKAGE_NAME, UserServiceClient } from 'types/auth/users';
 import { firstValueFrom } from 'rxjs';
+import {
+  grpcToHttpStatus,
+  Roles,
+  RolesGuard,
+  SessionAuthGuard,
+} from 'libs/common/src';
 
 @ApiTags('Users')
 @Controller('users')
@@ -37,6 +45,8 @@ export class UsersController implements OnModuleInit {
     this.userService = this.client.getService<UserServiceClient>('UserService');
   }
 
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
   @Post()
   @ApiOperation({ summary: 'Create a new user' })
   @ApiResponse({
@@ -46,20 +56,29 @@ export class UsersController implements OnModuleInit {
   })
   @ApiResponse({ status: 400, description: 'Bad request' })
   async create(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
-    const result = await firstValueFrom(
-      this.userService.createUser({
-        email: createUserDto.email,
-        phone: createUserDto.phone,
-        fullName: createUserDto.fullName,
-        password: createUserDto.password,
-        role: createUserDto.role as any,
-        status: createUserDto.status as any,
-      }),
-    );
+    try {
+      const result = await firstValueFrom(
+        this.userService.createUser({
+          email: createUserDto.email,
+          phone: createUserDto.phone,
+          fullName: createUserDto.fullName,
+          password: createUserDto.password,
+          role: createUserDto.role as any,
+          status: createUserDto.status as any,
+        }),
+      );
 
-    return result as unknown as UserResponseDto;
+      return result as unknown as UserResponseDto;
+    } catch (error: any) {
+      throw new HttpException(
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
+      );
+    }
   }
 
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
   @Get()
   @ApiOperation({ summary: 'Get all users with pagination' })
   @ApiResponse({
@@ -70,23 +89,32 @@ export class UsersController implements OnModuleInit {
   async findAll(
     @Query() query: GetAllUsersDto,
   ): Promise<GetAllUsersResponseDto> {
-    const result = await firstValueFrom(
-      this.userService.getAllUsers({
-        basicQuery: {
-          page: query.page,
-          limit: query.limit,
-          searchKeyword: query.searchKeyword,
-          sortField: query.sortField,
-          sortType: query.sortType,
-          filterModel: query.filterModel,
-          filterKeyword: query.filterKeyword,
-        },
-      }),
-    );
+    try {
+      const result = await firstValueFrom(
+        this.userService.getAllUsers({
+          basicQuery: {
+            page: query.page,
+            limit: query.limit,
+            searchKeyword: query.searchKeyword,
+            sortField: query.sortField,
+            sortType: query.sortType,
+            filterModel: query.filterModel,
+            filterKeyword: query.filterKeyword,
+          },
+        }),
+      );
 
-    return result as unknown as GetAllUsersResponseDto;
+      return result as unknown as GetAllUsersResponseDto;
+    } catch (error: any) {
+      throw new HttpException(
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
+      );
+    }
   }
 
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
   @Get(':id')
   @ApiOperation({ summary: 'Get a user by ID' })
   @ApiParam({ name: 'id', description: 'User ID' })
@@ -97,13 +125,22 @@ export class UsersController implements OnModuleInit {
   })
   @ApiResponse({ status: 404, description: 'User not found' })
   async findOne(@Param('id') id: string): Promise<UserResponseDto> {
-    const result = await firstValueFrom(
-      this.userService.getUser({ userId: id }),
-    );
+    try {
+      const result = await firstValueFrom(
+        this.userService.getUser({ userId: id }),
+      );
 
-    return result as unknown as UserResponseDto;
+      return result as unknown as UserResponseDto;
+    } catch (error: any) {
+      throw new HttpException(
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
+      );
+    }
   }
 
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
   @Patch(':id')
   @ApiOperation({ summary: 'Update a user' })
   @ApiParam({ name: 'id', description: 'User ID' })
@@ -117,21 +154,29 @@ export class UsersController implements OnModuleInit {
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserResponseDto> {
-    const result = await firstValueFrom(
-      this.userService.updateUser({
-        userId: id,
-        fullName: updateUserDto.fullName,
-        email: updateUserDto.email,
-        phone: updateUserDto.phone,
-        password: updateUserDto.password,
-        role: updateUserDto.role as any,
-        status: updateUserDto.status as any,
-      }),
-    );
+    try {
+      const result = await firstValueFrom(
+        this.userService.updateUser({
+          userId: id,
+          fullName: updateUserDto.fullName,
+          email: updateUserDto.email,
+          phone: updateUserDto.phone,
+          password: updateUserDto.password,
+          role: updateUserDto.role as any,
+          status: updateUserDto.status as any,
+        }),
+      );
 
-    return result as unknown as UserResponseDto;
+      return result as unknown as UserResponseDto;
+    } catch (error: any) {
+      throw new HttpException(
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
+      );
+    }
   }
 
+  @UseGuards(SessionAuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a user' })
   @ApiParam({ name: 'id', description: 'User ID' })
@@ -142,10 +187,17 @@ export class UsersController implements OnModuleInit {
   })
   @ApiResponse({ status: 404, description: 'User not found' })
   async remove(@Param('id') id: string): Promise<DeleteUserResponseDto> {
-    const result = await firstValueFrom(
-      this.userService.deleteUser({ userId: id }),
-    );
+    try {
+      const result = await firstValueFrom(
+        this.userService.deleteUser({ userId: id }),
+      );
 
-    return result as DeleteUserResponseDto;
+      return result as DeleteUserResponseDto;
+    } catch (error: any) {
+      throw new HttpException(
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
+      );
+    }
   }
 }
