@@ -18,6 +18,7 @@ import { UsersModule } from './users/users.module';
 import { UserInformationsModule } from './user-informations/user-informations.module';
 import { CorporateRegistrationModule } from './corporate-registration/corporate-registration.module';
 import { ReportModule } from './report/report.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { ReportModule } from './report/report.module';
     RedisModule,
     CorporateRegistrationModule,
     ReportModule,
+    CategoryModule,
   ],
   controllers: [],
   providers: [

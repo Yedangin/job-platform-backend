@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { redisStore } from 'cache-manager-redis-yet';
 import { ReportModule } from './report/report.module';
 import { JobPrismaModule } from 'libs/common/src';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { JobPrismaModule } from 'libs/common/src';
     }),
     JobPrismaModule,
     ReportModule,
+    CategoryModule,
   ],
   controllers: [],
   providers: [],
