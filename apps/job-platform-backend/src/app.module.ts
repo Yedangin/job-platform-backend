@@ -5,11 +5,17 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
-import { ThrottlerBehindProxyGuard } from 'libs/common/src';
+import {
+  RedisModule,
+  RedisService,
+  SessionAuthGuard,
+  ThrottlerBehindProxyGuard,
+} from 'libs/common/src';
 import { AuthModule } from './auth/auth.module';
 import { MemberVerificationModule } from './member-verification/member-verification.module';
 import { UsersModule } from './users/users.module';
 import { UserInformationsModule } from './user-informations/user-informations.module';
+import { CorporateRegistrationModule } from './corporate-registration/corporate-registration.module';
 
 @Module({
   imports: [
@@ -38,6 +44,8 @@ import { UserInformationsModule } from './user-informations/user-informations.mo
     MemberVerificationModule,
     UsersModule,
     UserInformationsModule,
+    RedisModule,
+    CorporateRegistrationModule,
   ],
   controllers: [],
   providers: [
@@ -45,6 +53,7 @@ import { UserInformationsModule } from './user-informations/user-informations.mo
       provide: APP_GUARD,
       useClass: ThrottlerBehindProxyGuard,
     },
+    SessionAuthGuard,
   ],
 })
 export class AppModule {}

@@ -128,9 +128,10 @@
   },
   "lint-staged": {
     "*.ts": [
-      "eslint --fix",
-      "git add"
-    ]
+    "eslint --fix",
+    "prettier --write",
+    "git add"
+  ]
   },
   "husky": {
     "hooks": {

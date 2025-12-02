@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package common.basic.response;
+
+message SuccessResponse {
+  string message = 1;
+}

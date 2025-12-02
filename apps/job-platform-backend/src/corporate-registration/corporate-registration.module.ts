@@ -1,25 +1,24 @@
 import { Module } from '@nestjs/common';
-import { UserInformationsController } from './user-informations.controller';
+import { CorporateRegistrationController } from './corporate-registration.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { CORPORATE_REGISTRATION_PACKAGE_NAME } from 'types/auth/corporate-registration';
 import { join } from 'path';
-import { USER_INFORMATION_PACKAGE_NAME } from 'types/auth/user-information';
+import { COMMON_BASIC_RESPONSE_PACKAGE_NAME } from 'types/common/response';
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: USER_INFORMATION_PACKAGE_NAME,
+        name: CORPORATE_REGISTRATION_PACKAGE_NAME,
         transport: Transport.GRPC,
         options: {
           package: [
-            USER_INFORMATION_PACKAGE_NAME,
-            'common.basic.query',
-            'common.basic.usage',
+            CORPORATE_REGISTRATION_PACKAGE_NAME,
+            COMMON_BASIC_RESPONSE_PACKAGE_NAME,
           ],
           protoPath: [
-            join(process.cwd(), 'proto/auth/user-information.proto'),
-            join(process.cwd(), 'proto/common/basic-query.proto'),
-            join(process.cwd(), 'proto/common/basic.proto'),
+            join(process.cwd(), 'proto/auth/corporate-registration.proto'),
+            join(process.cwd(), 'proto/common/response.proto'),
           ],
           url: process.env.AUTH_SERVICE_URL || 'localhost:8001',
           loader: {
@@ -35,7 +34,7 @@ import { USER_INFORMATION_PACKAGE_NAME } from 'types/auth/user-information';
       },
     ]),
   ],
-  controllers: [UserInformationsController],
+  controllers: [CorporateRegistrationController],
   providers: [],
 })
-export class UserInformationsModule {}
+export class CorporateRegistrationModule {}

@@ -10,7 +10,7 @@ import { Observable } from "rxjs";
 import { PaginationMeta } from "../common/basic";
 import { BasicQuery } from "../common/basic-query";
 
-export const protobufPackage = "userInformations";
+export const protobufPackage = "userInformation";
 
 /** Enums */
 export enum Gender {
@@ -118,7 +118,7 @@ export interface DeleteUserInformationRequest {
   userId: string;
 }
 
-export const USER_INFORMATIONS_PACKAGE_NAME = "userInformations";
+export const USER_INFORMATION_PACKAGE_NAME = "userInformation";
 
 /**
  * ---------------------

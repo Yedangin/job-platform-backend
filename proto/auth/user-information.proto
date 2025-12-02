@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package userInformations;
+package userInformation;
 
 import "common/basic.proto";
 import "common/basic-query.proto";

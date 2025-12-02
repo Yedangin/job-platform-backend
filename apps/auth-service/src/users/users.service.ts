@@ -46,6 +46,7 @@ export class UsersService {
   }
 
   private mapUserToResponse(user: User) {
+    console.log('the map users : ', user);
     return {
       id: user.id,
       full_name: user?.fullName ?? undefined,
@@ -58,6 +59,9 @@ export class UsersService {
       walletId: user.walletId || undefined,
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
+      memberIdentityVerification: user.memberIdentityVerification,
+      userInformation: user?.userInformation,
+      corporateRegistration: user.corporateRegistration,
     };
   }
 
@@ -68,7 +72,11 @@ export class UsersService {
       basicQuery,
       this.prisma.user,
       searchColumn,
-      {},
+      {
+        userInformation: true,
+        corporateRegistration: true,
+        memberIdentityVerification: true,
+      },
     );
 
     const mappedData = (result as PaginationResult<User>)?.data.map((user) =>
@@ -81,7 +89,14 @@ export class UsersService {
   async findOne(userId: string): Promise<UserResponse> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
+      include: {
+        userInformation: true,
+        corporateRegistration: true,
+        memberIdentityVerification: true,
+      },
     });
+
+    console.log('the user : ', user);
 
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found`);

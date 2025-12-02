@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
+import { GrpcMethod, RpcException } from '@nestjs/microservices';
 import { UsersService } from './users.service';
 import {
   AllUsersWithMetaResponse,
@@ -11,6 +11,7 @@ import {
   UserResponse,
   DeleteUserResponse,
 } from 'types/auth/users';
+import { httpToGrpcStatus } from 'libs/common/src/common/helper/htto-to-grpc.helper';
 
 @Controller()
 export class UsersController {
@@ -18,43 +19,78 @@ export class UsersController {
 
   @GrpcMethod('UserService', 'CreateUser')
   async CreateUser(request: CreateUserRequest): Promise<UserResponse> {
-    return this.usersService.create({
-      email: request.email,
-      phone: request.phone,
-      fullName: request.fullName,
-      password: request.password,
-      role: request.role as any,
-      status: request.status as any,
-    });
+    try {
+      return this.usersService.create({
+        email: request.email,
+        phone: request.phone,
+        fullName: request.fullName,
+        password: request.password,
+        role: request.role as any,
+        status: request.status as any,
+      });
+    } catch (error: any) {
+      throw new RpcException({
+        code: httpToGrpcStatus(error.status ?? 500),
+        message: error.message || 'Internal server error',
+      });
+    }
   }
 
   @GrpcMethod('UserService', 'GetAllUsers')
   async GetAllUsers(
     request: GetAllUsersRequest,
   ): Promise<AllUsersWithMetaResponse> {
-    const users = await this.usersService.findAll(request.basicQuery);
-    return users;
+    try {
+      const users = await this.usersService.findAll(request.basicQuery);
+      return users;
+    } catch (error: any) {
+      throw new RpcException({
+        code: httpToGrpcStatus(error.status ?? 500),
+        message: error.message || 'Internal server error',
+      });
+    }
   }
 
   @GrpcMethod('UserService', 'GetUser')
   async GetUser(request: GetUserRequest): Promise<UserResponse> {
-    return this.usersService.findOne(request.userId);
+    try {
+      return this.usersService.findOne(request.userId);
+    } catch (error: any) {
+      throw new RpcException({
+        code: httpToGrpcStatus(error.status ?? 500),
+        message: error.message || 'Internal server error',
+      });
+    }
   }
 
   @GrpcMethod('UserService', 'UpdateUser')
   async UpdateUser(request: UpdateUserRequest): Promise<UserResponse> {
-    return this.usersService.update(request.userId, {
-      fullName: request.fullName,
-      email: request.email,
-      phone: request.phone,
-      password: request.password,
-      role: request.role as any,
-      status: request.status as any,
-    });
+    try {
+      return this.usersService.update(request.userId, {
+        fullName: request.fullName,
+        email: request.email,
+        phone: request.phone,
+        password: request.password,
+        role: request.role as any,
+        status: request.status as any,
+      });
+    } catch (error: any) {
+      throw new RpcException({
+        code: httpToGrpcStatus(error.status ?? 500),
+        message: error.message || 'Internal server error',
+      });
+    }
   }
 
   @GrpcMethod('UserService', 'DeleteUser')
   async DeleteUser(request: DeleteUserRequest): Promise<DeleteUserResponse> {
-    return this.usersService.remove(request.userId);
+    try {
+      return this.usersService.remove(request.userId);
+    } catch (error: any) {
+      throw new RpcException({
+        code: httpToGrpcStatus(error.status ?? 500),
+        message: error.message || 'Internal server error',
+      });
+    }
   }
 }

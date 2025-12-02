@@ -27,7 +27,7 @@ export interface SuccessResponse {
   message: string;
 }
 
-export interface MemberVerificationRequest {
+export interface MemberVerification {
   id: string;
   userId: string;
   passportPhoto: string;
@@ -41,6 +41,12 @@ export interface MemberVerificationRequest {
 /** Create Requst */
 export interface UpsertMemberVerificationRequest {
   userId: string;
+  passportPhoto?: string | undefined;
+  selfiePhoto?: string | undefined;
+}
+
+export interface UpdateMemberVerificationRequest {
+  id: string;
   passportPhoto?: string | undefined;
   selfiePhoto?: string | undefined;
   verificationStatus?: VerificationStatus | undefined;
@@ -57,12 +63,18 @@ export const MEMBER_VERFICATION_PACKAGE_NAME = "memberVerfication";
 export interface MemberVerificationServiceClient {
   upsertVerification(request: UpsertMemberVerificationRequest): Observable<SuccessResponse>;
 
+  updateVerification(request: UpdateMemberVerificationRequest): Observable<SuccessResponse>;
+
   deleteVerification(request: DeleteMemberVerificationRequest): Observable<SuccessResponse>;
 }
 
 export interface MemberVerificationServiceController {
   upsertVerification(
     request: UpsertMemberVerificationRequest,
+  ): Promise<SuccessResponse> | Observable<SuccessResponse> | SuccessResponse;
+
+  updateVerification(
+    request: UpdateMemberVerificationRequest,
   ): Promise<SuccessResponse> | Observable<SuccessResponse> | SuccessResponse;
 
   deleteVerification(
@@ -72,7 +84,7 @@ export interface MemberVerificationServiceController {
 
 export function MemberVerificationServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["upsertVerification", "deleteVerification"];
+    const grpcMethods: string[] = ["upsertVerification", "updateVerification", "deleteVerification"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("MemberVerificationService", method)(constructor.prototype[method], method, descriptor);
