@@ -215,7 +215,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/lord/Desktop/Yedanginn/Job-Platform/api-gateway/generated/prisma-job",
+      "value": "/Users/abed/Work/JobPlatform/job-platform-backend/generated/prisma-job",
       "fromEnvVar": null
     },
     "config": {
@@ -229,7 +229,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/lord/Desktop/Yedanginn/Job-Platform/api-gateway/prisma/job/job.schema.prisma",
+    "sourceFilePath": "/Users/abed/Work/JobPlatform/job-platform-backend/prisma/job/job.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -243,7 +243,6 @@ const config = {
     "jobDB"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "jobDB": {
       "url": {

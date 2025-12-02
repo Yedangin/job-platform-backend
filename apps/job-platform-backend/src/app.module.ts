@@ -16,6 +16,7 @@ import { MemberVerificationModule } from './member-verification/member-verificat
 import { UsersModule } from './users/users.module';
 import { UserInformationsModule } from './user-informations/user-informations.module';
 import { CorporateRegistrationModule } from './corporate-registration/corporate-registration.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { CorporateRegistrationModule } from './corporate-registration/corporate-
     UserInformationsModule,
     RedisModule,
     CorporateRegistrationModule,
+    CategoryModule,
   ],
   controllers: [],
   providers: [
