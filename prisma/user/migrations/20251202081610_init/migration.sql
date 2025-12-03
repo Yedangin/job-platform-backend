@@ -86,6 +86,19 @@ CREATE TABLE "corporate_registrations" (
 );
 
 -- CreateTable
+CREATE TABLE "verification_tokens" (
+    "id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "token" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "expires_at" TIMESTAMP(3) NOT NULL,
+    "used_at" TIMESTAMP(3),
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "verification_tokens_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "sanctions" (
     "id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
@@ -135,16 +148,25 @@ CREATE INDEX "Country" ON "user_informations"("country", "city");
 CREATE UNIQUE INDEX "social_auths_user_id_key" ON "social_auths"("user_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "member_identity_verifications_user_id_key" ON "member_identity_verifications"("user_id");
+
+-- CreateIndex
 CREATE INDEX "member_identity_verifications_verification_status_idx" ON "member_identity_verifications"("verification_status");
 
 -- CreateIndex
 CREATE INDEX "member_identity_verifications_created_at_idx" ON "member_identity_verifications"("created_at");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "corporate_registrations_user_id_key" ON "corporate_registrations"("user_id");
+
+-- CreateIndex
 CREATE INDEX "corporate_registrations_verification_status_idx" ON "corporate_registrations"("verification_status");
 
 -- CreateIndex
 CREATE INDEX "corporate_registrations_created_at_idx" ON "corporate_registrations"("created_at");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "verification_tokens_token_key" ON "verification_tokens"("token");
 
 -- CreateIndex
 CREATE INDEX "sanctions_user_id_idx" ON "sanctions"("user_id");
@@ -169,6 +191,9 @@ ALTER TABLE "corporate_registrations" ADD CONSTRAINT "corporate_registrations_us
 
 -- AddForeignKey
 ALTER TABLE "corporate_registrations" ADD CONSTRAINT "corporate_registrations_is_verified_by_fkey" FOREIGN KEY ("is_verified_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "verification_tokens" ADD CONSTRAINT "verification_tokens_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "sanctions" ADD CONSTRAINT "sanctions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

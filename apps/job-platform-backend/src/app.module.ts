@@ -5,9 +5,10 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 import {
   RedisModule,
-  RedisService,
   SessionAuthGuard,
   ThrottlerBehindProxyGuard,
 } from 'libs/common/src';
@@ -16,6 +17,8 @@ import { MemberVerificationModule } from './member-verification/member-verificat
 import { UsersModule } from './users/users.module';
 import { UserInformationsModule } from './user-informations/user-informations.module';
 import { CorporateRegistrationModule } from './corporate-registration/corporate-registration.module';
+import { ReportModule } from './report/report.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -23,6 +26,18 @@ import { CorporateRegistrationModule } from './corporate-registration/corporate-
       isGlobal: true,
       envFilePath: '.env',
       cache: true,
+    }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: async () => ({
+        store: await redisStore({
+          socket: {
+            host: process.env.REDIS_HOST || 'localhost',
+            port: parseInt(process.env.REDIS_PORT || '6379'),
+          },
+          ttl: 300000, // 5 minutes default TTL
+        }),
+      }),
     }),
     ThrottlerModule.forRoot({
       throttlers: [
@@ -46,6 +61,8 @@ import { CorporateRegistrationModule } from './corporate-registration/corporate-
     UserInformationsModule,
     RedisModule,
     CorporateRegistrationModule,
+    ReportModule,
+    CategoryModule,
   ],
   controllers: [],
   providers: [

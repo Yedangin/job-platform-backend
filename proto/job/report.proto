@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+package reports;
+
+import "common/basic.proto";
+import "common/basic-query.proto";
+
+// Enums
+enum ReportStatus {
+  REPORT_STATUS_UNSPECIFIED = 0;
+  PENDING = 1;
+  UNDER_REVIEW = 2;
+  RESOLVED = 3;
+  REJECTED = 4;
+  CLOSED = 5;
+}
+
+// Message
+message Report {
+  string id = 1;
+  optional string title = 2;
+  string reporterId = 3;
+  string reportedUserId = 4;
+  optional string reason = 5;
+  ReportStatus status = 6;
+  string createdAt = 7;
+}
+
+// ---------------------
+// CRUD Responses
+// ---------------------
+message ReportResponse {
+  bool success = 1;
+  optional string message = 2;
+}
+
+message ListReportsResponse {
+  repeated Report reports = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 limit = 4;
+}
+
+message DeleteReportResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message AllReportsWithMetaResponse {
+  repeated Report data = 1;
+  common.basic.usage.PaginationMeta meta = 2;
+}
+
+message SingleReportResponse {
+  optional string message = 1;
+  Report report = 2;
+}
+
+// ---------------------
+// CRUD Requests
+// ---------------------
+message ListReportsRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  optional ReportStatus status = 3;
+  optional string reporterId = 4;
+  optional string reportedUserId = 5;
+}
+
+message GetReportRequest {
+  string reportId = 1;
+}
+
+message UpdateReportRequest {
+  string reportId = 1;
+  optional string title = 2;
+  optional string reason = 3;
+  optional ReportStatus status = 4;
+}
+
+message DeleteReportRequest {
+  string reportId = 1;
+}
+
+message GetAllReportsRequest {
+  common.basic.query.BasicQuery basicQuery = 1;
+}
+
+message CreateReportRequest {
+  optional string title = 1;
+  string reporterId = 2;
+  string reportedUserId = 3;
+  optional string reason = 4;
+  optional ReportStatus status = 5;
+}
+
+// ---------------------
+// CRUD Service
+// ---------------------
+service ReportService {
+  rpc CreateReport (CreateReportRequest) returns (ReportResponse);
+  rpc GetReport (GetReportRequest) returns (SingleReportResponse);
+  rpc GetAllReports (GetAllReportsRequest) returns (AllReportsWithMetaResponse);
+  rpc UpdateReport (UpdateReportRequest) returns (ReportResponse);
+  rpc DeleteReport (DeleteReportRequest) returns (DeleteReportResponse);
+  rpc ListReports (ListReportsRequest) returns (ListReportsResponse);
+}
