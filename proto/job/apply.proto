@@ -1,0 +1,108 @@
+syntax = "proto3";
+
+package applies;
+
+import "common/basic.proto";
+import "common/basic-query.proto";
+
+// Enums
+enum AppliedStatus {
+  APPLIED_STATUS_UNSPECIFIED = 0;
+  PENDING = 1;
+  INTERVIEW = 2;
+  CONFIRMED = 3;
+  REJECTED = 4;
+  SUCCESS = 5;
+}
+
+// Message
+message Apply {
+  string id = 1;
+  string jobPostId = 2;
+  string userId = 3;
+  optional string userInfoId = 4;
+  bool isReviewed = 5;
+  AppliedStatus status = 6;
+  string appliedAt = 7;
+}
+
+// ---------------------
+// CRUD Responses
+// ---------------------
+message ApplyResponse {
+  bool success = 1;
+  optional string message = 2;
+}
+
+message ListAppliesResponse {
+  repeated Apply applies = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 limit = 4;
+}
+
+message DeleteApplyResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message AllAppliesWithMetaResponse {
+  repeated Apply data = 1;
+  common.basic.usage.PaginationMeta meta = 2;
+}
+
+message SingleApplyResponse {
+  optional string message = 1;
+  Apply apply = 2;
+}
+
+// ---------------------
+// CRUD Requests
+// ---------------------
+message ListAppliesRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  optional AppliedStatus status = 3;
+  optional string userId = 4;
+  optional string jobPostId = 5;
+  optional bool isReviewed = 6;
+}
+
+message GetApplyRequest {
+  string applyId = 1;
+}
+
+message UpdateApplyRequest {
+  string applyId = 1;
+  optional bool isReviewed = 2;
+  optional AppliedStatus status = 3;
+  optional string userInfoId = 4;
+}
+
+message DeleteApplyRequest {
+  string applyId = 1;
+}
+
+message GetAllAppliesRequest {
+  common.basic.query.BasicQuery basicQuery = 1;
+}
+
+message CreateApplyRequest {
+  string jobPostId = 1;
+  string userId = 2;
+  optional string userInfoId = 3;
+  optional bool isReviewed = 4;
+  optional AppliedStatus status = 5;
+}
+
+// ---------------------
+// CRUD Service
+// ---------------------
+service ApplyService {
+  rpc CreateApply (CreateApplyRequest) returns (ApplyResponse);
+  rpc GetApply (GetApplyRequest) returns (SingleApplyResponse);
+  rpc GetAllApplies (GetAllAppliesRequest) returns (AllAppliesWithMetaResponse);
+  rpc UpdateApply (UpdateApplyRequest) returns (ApplyResponse);
+  rpc DeleteApply (DeleteApplyRequest) returns (DeleteApplyResponse);
+  rpc ListApplies (ListAppliesRequest) returns (ListAppliesResponse);
+}
