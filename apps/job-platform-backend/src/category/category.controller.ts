@@ -24,24 +24,30 @@ import {
 
 import { ClientGrpc } from '@nestjs/microservices';
 import {
+  AllCategoriesWithMetaResponse,
   CATEGORY_PACKAGE_NAME,
   CategoryServiceClient,
 } from 'types/job/category';
 import { firstValueFrom } from 'rxjs';
 import {
+  BasicQuery,
   grpcToHttpStatus,
   Roles,
   RolesGuard,
   SessionAuthGuard,
 } from 'libs/common/src';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @ApiTags('Categories')
 @Controller('categories')
 export class CategoryController implements OnModuleInit {
   private categoryService: CategoryServiceClient;
+  private cacheVersion = 'v1';
 
   constructor(
     @Inject(CATEGORY_PACKAGE_NAME) private readonly client: ClientGrpc,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   onModuleInit() {
@@ -87,12 +93,25 @@ export class CategoryController implements OnModuleInit {
   @ApiResponse({
     status: 200,
     description: 'Categories retrieved successfully',
-    type: GetAllCategoriesResponseDto,
   })
   async findAll(
-    @Query() query: GetAllCategoriesDto,
+    @Query() query: BasicQuery,
   ): Promise<GetAllCategoriesResponseDto> {
     try {
+      // Get current cache version
+      const version = await this.getCacheVersion();
+      // FIXED: Changed from 'reports:all:' to 'categories:all:'
+      const cacheKey = `categories:all:${version}:${JSON.stringify(query)}`;
+
+      console.log('Cache Key :', cacheKey);
+
+      // Check cache first
+      const cachedData =
+        await this.cacheManager.get<GetAllCategoriesResponseDto>(cacheKey);
+      if (cachedData) {
+        return cachedData;
+      }
+
       const result = await firstValueFrom(
         this.categoryService.getAllCategories({
           basicQuery: {
@@ -107,8 +126,14 @@ export class CategoryController implements OnModuleInit {
         }),
       );
 
-      return result as unknown as GetAllCategoriesResponseDto;
+      const response = result as unknown as AllCategoriesWithMetaResponse;
+
+      // Cache for 5 minutes
+      await this.cacheManager.set(cacheKey, response, 300000);
+
+      return response;
     } catch (error: any) {
+      console.error('the error : ', error);
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
         grpcToHttpStatus(error.code ?? 2),
@@ -124,16 +149,29 @@ export class CategoryController implements OnModuleInit {
   @ApiResponse({
     status: 200,
     description: 'Category retrieved successfully',
-    type: CategoryResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Category not found' })
   async findOne(@Param('id') id: string): Promise<CategoryResponseDto> {
     try {
+      // FIXED: Consistent cache key - using plural 'categories:' throughout
+      const cacheKey = `categories:${id}`;
+
+      // Check cache first
+      const cachedData =
+        await this.cacheManager.get<CategoryResponseDto>(cacheKey);
+      if (cachedData) {
+        return cachedData;
+      }
       const result = await firstValueFrom(
         this.categoryService.getCategory({ categoryId: id }),
       );
 
-      return result as unknown as CategoryResponseDto;
+      const response = result as unknown as CategoryResponseDto;
+
+      // Cache for 5 minutes
+      await this.cacheManager.set(cacheKey, response, 300000);
+
+      return response;
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
@@ -150,7 +188,6 @@ export class CategoryController implements OnModuleInit {
   @ApiResponse({
     status: 200,
     description: 'Category updated successfully',
-    type: CategoryResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Category not found' })
   async update(
@@ -166,6 +203,10 @@ export class CategoryController implements OnModuleInit {
           parentCategoryId: updateCategoryDto.parentCategoryId,
         }),
       );
+
+      // FIXED: Changed from 'category:${id}' to 'categories:${id}' to match findOne()
+      await this.cacheManager.del(`categories:${id}`);
+      await this.invalidateCategoryCache();
 
       return result as unknown as CategoryResponseDto;
     } catch (error: any) {
@@ -193,12 +234,36 @@ export class CategoryController implements OnModuleInit {
         this.categoryService.deleteCategory({ categoryId: id }),
       );
 
+      // ADDED: Invalidate specific category and all categories cache
+      await this.cacheManager.del(`categories:${id}`);
+      await this.invalidateCategoryCache();
+
       return result as DeleteCategoryResponseDto;
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
         grpcToHttpStatus(error.code ?? 2),
       );
+    }
+  }
+
+  // Helper method to get cache version
+  private async getCacheVersion(): Promise<string> {
+    const version = await this.cacheManager.get<string>('categories:version');
+    if (!version) {
+      await this.cacheManager.set('categories:version', this.cacheVersion, 0);
+      return this.cacheVersion;
+    }
+    return version;
+  }
+
+  // Helper method to invalidate all categories cache by incrementing version
+  private async invalidateCategoryCache(): Promise<void> {
+    try {
+      const newVersion = `v${Date.now()}`;
+      await this.cacheManager.set('categories:version', newVersion, 0);
+    } catch (error) {
+      console.error('Error invalidating cache:', error);
     }
   }
 }

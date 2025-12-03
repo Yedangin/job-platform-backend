@@ -25,7 +25,11 @@ message Category {
 message CategoryResponse {
   bool success = 1;
   optional string message = 2;
-  Category category = 3;
+}
+
+message ListCategoryResponse {
+  optional string message = 1;
+  Category category = 2;
 }
 
 message AllCategoriesWithMetaResponse {
@@ -84,7 +88,7 @@ message ListCategoriesRequest {
 // ---------------------
 service CategoryService {
   rpc CreateCategory (CreateCategoryRequest) returns (CategoryResponse);
-  rpc GetCategory (GetCategoryRequest) returns (CategoryResponse);
+  rpc GetCategory (GetCategoryRequest) returns (ListCategoryResponse);
   rpc GetAllCategories (GetAllCategoriesRequest) returns (AllCategoriesWithMetaResponse);
   rpc UpdateCategory (UpdateCategoryRequest) returns (CategoryResponse);
   rpc DeleteCategory (DeleteCategoryRequest) returns (DeleteCategoryResponse);

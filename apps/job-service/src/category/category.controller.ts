@@ -9,6 +9,7 @@ import {
   DeleteCategoryRequest,
   CategoryResponse,
   DeleteCategoryResponse,
+  ListCategoryResponse,
 } from 'types/job/category';
 import { httpToGrpcStatus } from 'libs/common/src/common/helper/htto-to-grpc.helper';
 import { CategoryService } from './category.service';
@@ -50,7 +51,9 @@ export class CategoryController {
   }
 
   @GrpcMethod('CategoryService', 'GetCategory')
-  async GetCategory(request: GetCategoryRequest): Promise<CategoryResponse> {
+  async GetCategory(
+    request: GetCategoryRequest,
+  ): Promise<ListCategoryResponse> {
     try {
       return this.categoriesService.findOne(request.categoryId);
     } catch (error: any) {

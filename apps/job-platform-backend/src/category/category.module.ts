@@ -18,7 +18,11 @@ import { COMMON_BASIC_USAGE_PACKAGE_NAME } from 'types/common/basic';
             COMMON_BASIC_QUERY_PACKAGE_NAME,
             COMMON_BASIC_USAGE_PACKAGE_NAME,
           ],
-          protoPath: [join(process.cwd(), 'proto/job/category.proto')],
+          protoPath: [
+            join(process.cwd(), 'proto/job/category.proto'),
+            join(process.cwd(), 'proto/common/basic-query.proto'),
+            join(process.cwd(), 'proto/common/basic.proto'),
+          ],
           url: process.env.JOB_SERVICE_URL || 'localhost:8003',
           loader: {
             includeDirs: [join(process.cwd(), 'proto')],

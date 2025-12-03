@@ -10,6 +10,7 @@ import {
   AllCategoriesWithMetaResponse,
   CategoryResponse,
   DeleteCategoryResponse,
+  ListCategoryResponse,
 } from 'types/job/category';
 
 @Injectable()
@@ -58,7 +59,7 @@ export class CategoryService {
     return { data: mappedData, meta: result.meta };
   }
 
-  async findOne(categoryId: string): Promise<CategoryResponse> {
+  async findOne(categoryId: string): Promise<ListCategoryResponse> {
     const category = await this.prisma.category.findUnique({
       where: { id: categoryId },
       include: {
@@ -72,8 +73,6 @@ export class CategoryService {
     }
 
     return {
-      success: true,
-      message: 'Category retrieved successfully',
       category: this.mapCategoryToResponse(category as any),
     };
   }
@@ -107,7 +106,6 @@ export class CategoryService {
     return {
       success: true,
       message: 'Category created successfully',
-      category: this.mapCategoryToResponse(category),
     };
   }
 
@@ -174,7 +172,6 @@ export class CategoryService {
     return {
       success: true,
       message: 'Category updated successfully',
-      category: this.mapCategoryToResponse(category),
     };
   }
 

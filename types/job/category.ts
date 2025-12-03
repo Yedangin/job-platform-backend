@@ -36,6 +36,10 @@ export interface Category {
 export interface CategoryResponse {
   success: boolean;
   message?: string | undefined;
+}
+
+export interface ListCategoryResponse {
+  message?: string | undefined;
   category: Category | undefined;
 }
 
@@ -103,7 +107,7 @@ export const CATEGORY_PACKAGE_NAME = "category";
 export interface CategoryServiceClient {
   createCategory(request: CreateCategoryRequest): Observable<CategoryResponse>;
 
-  getCategory(request: GetCategoryRequest): Observable<CategoryResponse>;
+  getCategory(request: GetCategoryRequest): Observable<ListCategoryResponse>;
 
   getAllCategories(request: GetAllCategoriesRequest): Observable<AllCategoriesWithMetaResponse>;
 
@@ -125,7 +129,9 @@ export interface CategoryServiceController {
     request: CreateCategoryRequest,
   ): Promise<CategoryResponse> | Observable<CategoryResponse> | CategoryResponse;
 
-  getCategory(request: GetCategoryRequest): Promise<CategoryResponse> | Observable<CategoryResponse> | CategoryResponse;
+  getCategory(
+    request: GetCategoryRequest,
+  ): Promise<ListCategoryResponse> | Observable<ListCategoryResponse> | ListCategoryResponse;
 
   getAllCategories(
     request: GetAllCategoriesRequest,
