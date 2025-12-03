@@ -19,6 +19,7 @@ import { UserInformationsModule } from './user-informations/user-informations.mo
 import { CorporateRegistrationModule } from './corporate-registration/corporate-registration.module';
 import { ReportModule } from './report/report.module';
 import { CategoryModule } from './category/category.module';
+import { JobPostModule } from './job-post/job-post.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { CategoryModule } from './category/category.module';
     CorporateRegistrationModule,
     ReportModule,
     CategoryModule,
+    JobPostModule,
   ],
   controllers: [],
   providers: [

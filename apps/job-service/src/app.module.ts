@@ -5,6 +5,7 @@ import { redisStore } from 'cache-manager-redis-yet';
 import { ReportModule } from './report/report.module';
 import { JobPrismaModule } from 'libs/common/src';
 import { CategoryModule } from './category/category.module';
+import { JobPostModule } from './job-post/job-post.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CategoryModule } from './category/category.module';
     JobPrismaModule,
     ReportModule,
     CategoryModule,
+    JobPostModule,
   ],
   controllers: [],
   providers: [],

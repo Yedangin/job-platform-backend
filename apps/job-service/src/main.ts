@@ -8,6 +8,7 @@ import { COMMON_BASIC_QUERY_PACKAGE_NAME } from 'types/common/basic-query';
 import { COMMON_BASIC_RESPONSE_PACKAGE_NAME } from 'types/common/response';
 import { COMMON_BASIC_USAGE_PACKAGE_NAME } from 'types/common/basic';
 import { Logger } from '@nestjs/common';
+import { JOBPOST_PACKAGE_NAME } from 'types/job/job-post';
 
 async function bootstrap() {
   const port = process.env.JOB_SERVICE_PORT || 8003;
@@ -22,6 +23,7 @@ async function bootstrap() {
         package: [
           REPORTS_PACKAGE_NAME,
           CATEGORY_PACKAGE_NAME,
+          JOBPOST_PACKAGE_NAME,
           COMMON_BASIC_QUERY_PACKAGE_NAME,
           COMMON_BASIC_RESPONSE_PACKAGE_NAME,
           COMMON_BASIC_USAGE_PACKAGE_NAME,
@@ -29,6 +31,7 @@ async function bootstrap() {
         protoPath: [
           join(protoDir, 'job/report.proto'),
           join(protoDir, 'job/category.proto'),
+          join(protoDir, 'job/job-post.proto'),
           join(protoDir, 'common/basic-query.proto'),
           join(protoDir, 'common/basic.proto'),
           join(protoDir, 'common/response.proto'),
