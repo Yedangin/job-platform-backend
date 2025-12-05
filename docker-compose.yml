@@ -1,33 +1,94 @@
-version: '3.8'
+version: "3.8"
+
 services:
-  backend-service:
-    build: .
+  api-gateway:
+    build:
+      context: .
+      dockerfile: apps/api-gateway/Dockerfile
+    container_name: api-gateway
     ports:
       - "8000:8000"
-    restart: always
+    environment:
+      - NODE_ENV=production
+      - API_GATEWAY_PORT=8000
+      - AUTH_SERVICE_URL=auth-service:8001
+      - JOB_SERVICE_URL=job-service:8003
     env_file:
       - .env
     depends_on:
-      - mongo
+      - auth-service
+      - postgres
+      - redis
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: apps/auth-service/Dockerfile
+    container_name: auth-service
+    ports:
+      - "8001:8001"
+    environment:
+      - NODE_ENV=production
+      - AUTH_SERVICE_PORT=8001
+      - USER_DATABASE_URL=postgresql://postgres:password@postgres:5432/users
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_MULTIPLE_DATABASES: users,jobs,notifications,payments
+    ports:
+      - "5432:5432"
     volumes:
-      - .:/app
-      - /app/node_modules
-    deploy:
-      mode: replicated
-      replicas: 1
-    command: sh -c "npx prisma db push && npm run start:dev"
+      - postgres-data:/var/lib/postgresql/data
+      - ./scripts/init-databases.sh:/docker-entrypoint-initdb.d/init-databases.sh
+    restart: unless-stopped
+    networks:
+      - app-network
 
   mongo:
     image: mongo:6
-    restart: always
+    container_name: mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
-      MONGO_INITDB_DATABASE: base
+      MONGO_INITDB_DATABASE: logs
     ports:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - app-network
 
 volumes:
+  postgres-data:
   mongo-data:
+  redis-data:
+
+networks:
+  app-network:
+    driver: bridge
