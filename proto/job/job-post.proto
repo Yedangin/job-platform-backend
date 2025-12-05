@@ -1,0 +1,130 @@
+syntax = "proto3";
+
+package jobpost;
+
+import "common/basic.proto";
+import "common/basic-query.proto";
+
+// ---------------------
+// JobPost Messages
+// ---------------------
+message JobPost {
+  string id = 1;
+  string corporateId = 2;
+  optional string title = 3;
+  optional string description = 4;
+  optional string location = 5;
+  optional string salaryRange = 6;
+  optional string categoryId = 7;
+  optional string feeType = 8;
+  string status = 9;
+  optional string approvedBy = 10;
+  optional int32 appliesCount = 11;
+  string createdAt = 12;
+  string updatedAt = 13;
+  optional string expiredAt = 14;
+  optional Category category = 15;
+  repeated Apply applies = 16;
+}
+
+message Category {
+  string id = 1;
+  optional string name = 2;
+  optional string description = 3;
+}
+
+message Apply {
+  string id = 1;
+  string jobPostId = 2;
+  string userId = 3;
+  optional string userInfoId = 4;
+  bool isReviewed = 5;
+  string status = 6;
+  string appliedAt = 7;
+}
+
+// ---------------------
+// CRUD Responses
+// ---------------------
+message JobPostResponse {
+  bool success = 1;
+  optional string message = 2;
+  optional JobPost data = 3;
+}
+
+message ListJobPostResponse {
+  optional string message = 1;
+  JobPost jobPost = 2;
+}
+
+message AllJobPostsWithMetaResponse {
+  repeated JobPost data = 1;
+  common.basic.usage.PaginationMeta meta = 2;
+}
+
+message DeleteJobPostResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// ---------------------
+// CRUD Requests
+// ---------------------
+message CreateJobPostRequest {
+  optional string title = 1;
+  optional string description = 2;
+  optional string location = 3;
+  optional string salaryRange = 4;
+  optional string categoryId = 5;
+  optional string feeType = 6;
+  optional string status = 7;
+  optional string expiredAt = 8;
+  string corporateId = 9;
+}
+
+message GetJobPostRequest {
+  string jobPostId = 1;
+}
+
+message GetAllJobPostsRequest {
+  common.basic.query.BasicQuery basicQuery = 1;
+}
+
+message UpdateJobPostRequest {
+  string jobPostId = 1;
+  optional string title = 2;
+  optional string description = 3;
+  optional string location = 4;
+  optional string salaryRange = 5;
+  optional string categoryId = 6;
+  optional string feeType = 7;
+  optional string status = 8;
+  optional string expiredAt = 9;
+  optional string approvedBy = 10;
+  optional int32 appliesCount = 11;
+}
+
+message DeleteJobPostRequest {
+  string jobPostId = 1;
+}
+
+message ListJobPostsRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  optional string search = 3;
+  optional string corporateId = 4;
+  optional string categoryId = 5;
+  optional string status = 6;
+}
+
+// ---------------------
+// Service Definition
+// ---------------------
+service JobPostService {
+  rpc CreateJobPost (CreateJobPostRequest) returns (JobPostResponse);
+  rpc GetJobPost (GetJobPostRequest) returns (ListJobPostResponse);
+  rpc GetAllJobPosts (GetAllJobPostsRequest) returns (AllJobPostsWithMetaResponse);
+  rpc UpdateJobPost (UpdateJobPostRequest) returns (JobPostResponse);
+  rpc DeleteJobPost (DeleteJobPostRequest) returns (DeleteJobPostResponse);
+  rpc ListJobPosts (ListJobPostsRequest) returns (AllJobPostsWithMetaResponse);
+}

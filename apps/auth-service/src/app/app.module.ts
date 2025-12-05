@@ -1,8 +1,12 @@
-import { AuthPrismaModule } from '@in-job/common';
+import { AuthPrismaModule, RedisModule } from '@in-job/common';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
+import { MemberVerificationModule } from './member-verification/member-verification.module';
+import { UsersModule } from './users/users.module';
+import { UserInformationsModule } from './user-informations/user-informations.module';
+import { CorporateRegistrationModule } from './corporate-registration/corporate-registration.module';
 
 @Module({
   imports: [
@@ -16,6 +20,11 @@ import { AuthModule } from './auth/auth.module';
     }),
     AuthPrismaModule,
     AuthModule,
+    MemberVerificationModule,
+    RedisModule,
+    UsersModule,
+    UserInformationsModule,
+    CorporateRegistrationModule,
   ],
   controllers: [],
   providers: [],

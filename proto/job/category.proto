@@ -28,6 +28,11 @@ message CategoryResponse {
   Category category = 3;
 }
 
+message CreateCategoryResponse {
+  bool success = 1;
+  optional string message = 2;
+}
+
 message AllCategoriesWithMetaResponse {
   repeated Category data = 1;
   common.basic.usage.PaginationMeta meta = 2;
@@ -43,6 +48,11 @@ message ListCategoriesResponse {
   int32 total = 2;
   int32 page = 3;
   int32 limit = 4;
+}
+
+message ListCategoryResponse {
+  optional string message = 1;
+  Category category = 2;
 }
 
 // ---------------------
@@ -83,10 +93,10 @@ message ListCategoriesRequest {
 // Service Definition
 // ---------------------
 service CategoryService {
-  rpc CreateCategory (CreateCategoryRequest) returns (CategoryResponse);
+  rpc CreateCategory (CreateCategoryRequest) returns (CreateCategoryResponse);
   rpc GetCategory (GetCategoryRequest) returns (CategoryResponse);
   rpc GetAllCategories (GetAllCategoriesRequest) returns (AllCategoriesWithMetaResponse);
-  rpc UpdateCategory (UpdateCategoryRequest) returns (CategoryResponse);
+  rpc UpdateCategory (UpdateCategoryRequest) returns (CreateCategoryResponse);
   rpc DeleteCategory (DeleteCategoryRequest) returns (DeleteCategoryResponse);
   rpc ListCategories (ListCategoriesRequest) returns (ListCategoriesResponse);
 }

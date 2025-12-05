@@ -10,8 +10,9 @@ import {
   CategoryResponse,
   DeleteCategoryResponse,
   ListCategoryResponse,
+  CreateCategoryResponse,
 } from 'types/job/category';
-import { httpToGrpcStatus } from 'libs/common/src/common/helper/htto-to-grpc.helper';
+import { httpToGrpcStatus } from '@in-job/common';
 import { CategoryService } from './category.service';
 
 @Controller()
@@ -20,8 +21,8 @@ export class CategoryController {
 
   @GrpcMethod('CategoryService', 'CreateCategory')
   async CreateCategory(
-    request: CreateCategoryRequest,
-  ): Promise<CategoryResponse> {
+    request: CreateCategoryRequest
+  ): Promise<CreateCategoryResponse> {
     try {
       return this.categoriesService.create({
         name: request.name,
@@ -38,7 +39,7 @@ export class CategoryController {
 
   @GrpcMethod('CategoryService', 'GetAllCategories')
   async GetAllCategories(
-    request: GetAllCategoriesRequest,
+    request: GetAllCategoriesRequest
   ): Promise<AllCategoriesWithMetaResponse> {
     try {
       return this.categoriesService.findAll(request.basicQuery);
@@ -52,7 +53,7 @@ export class CategoryController {
 
   @GrpcMethod('CategoryService', 'GetCategory')
   async GetCategory(
-    request: GetCategoryRequest,
+    request: GetCategoryRequest
   ): Promise<ListCategoryResponse> {
     try {
       return this.categoriesService.findOne(request.categoryId);
@@ -66,8 +67,8 @@ export class CategoryController {
 
   @GrpcMethod('CategoryService', 'UpdateCategory')
   async UpdateCategory(
-    request: UpdateCategoryRequest,
-  ): Promise<CategoryResponse> {
+    request: UpdateCategoryRequest
+  ): Promise<CreateCategoryResponse> {
     try {
       return this.categoriesService.update(request.categoryId, {
         name: request.name,
@@ -84,7 +85,7 @@ export class CategoryController {
 
   @GrpcMethod('CategoryService', 'DeleteCategory')
   async DeleteCategory(
-    request: DeleteCategoryRequest,
+    request: DeleteCategoryRequest
   ): Promise<DeleteCategoryResponse> {
     try {
       return this.categoriesService.remove(request.categoryId);

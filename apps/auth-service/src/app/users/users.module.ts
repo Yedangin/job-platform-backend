@@ -1,41 +1,10 @@
 import { Module } from '@nestjs/common';
+import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { join } from 'path';
-import { USERS_PACKAGE_NAME } from 'types/auth/users';
+import { AuthPrismaService, PaginationService } from '@in-job/common';
 
 @Module({
-  imports: [
-    ClientsModule.register([
-      {
-        name: USERS_PACKAGE_NAME,
-        transport: Transport.GRPC,
-        options: {
-          package: [
-            USERS_PACKAGE_NAME,
-            'common.basic.query',
-            'common.basic.usage',
-          ],
-          protoPath: [
-            join(process.cwd(), 'proto/auth/users.proto'),
-            join(process.cwd(), 'proto/common/basic-query.proto'),
-            join(process.cwd(), 'proto/common/basic.proto'),
-          ],
-          url: process.env.AUTH_SERVICE_URL || 'localhost:8001',
-          loader: {
-            includeDirs: [join(process.cwd(), 'proto')],
-            keepCase: true,
-            longs: String,
-            enums: String,
-            defaults: true,
-            arrays: true,
-            objects: true,
-          },
-        },
-      },
-    ]),
-  ],
   controllers: [UsersController],
-  providers: [],
+  providers: [UsersService, AuthPrismaService, PaginationService],
 })
 export class UsersModule {}

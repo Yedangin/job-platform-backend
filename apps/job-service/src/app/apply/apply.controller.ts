@@ -12,7 +12,7 @@ import {
   SingleApplyResponse,
   UpdateApplyRequest,
 } from 'types/job/apply';
-import { httpToGrpcStatus } from 'libs/common/src';
+import { httpToGrpcStatus } from '@in-job/common';
 
 @Controller('apply')
 export class ApplyController {
@@ -32,7 +32,7 @@ export class ApplyController {
 
   @GrpcMethod('ApplyService', 'GetAllApplies')
   async GetAllApplies(
-    request: GetAllAppliesRequest,
+    request: GetAllAppliesRequest
   ): Promise<AllAppliesWithMetaResponse> {
     try {
       const applies = await this.applyService.findAll(request.basicQuery);
