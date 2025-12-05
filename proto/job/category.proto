@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+package category;
+
+import "common/basic.proto";
+import "common/basic-query.proto";
+
+// ---------------------
+// Category Messages
+// ---------------------
+message Category {
+  string id = 1;
+  optional string name = 2;
+  optional string description = 3;
+  optional string parentCategoryId = 4;
+  optional Category parent = 5;
+  repeated Category children = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+}
+
+// ---------------------
+// CRUD Responses
+// ---------------------
+message CategoryResponse {
+  bool success = 1;
+  optional string message = 2;
+  Category category = 3;
+}
+
+message AllCategoriesWithMetaResponse {
+  repeated Category data = 1;
+  common.basic.usage.PaginationMeta meta = 2;
+}
+
+message DeleteCategoryResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message ListCategoriesResponse {
+  repeated Category categories = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 limit = 4;
+}
+
+// ---------------------
+// CRUD Requests
+// ---------------------
+message CreateCategoryRequest {
+  optional string name = 1;
+  optional string description = 2;
+  optional string parentCategoryId = 3;
+}
+
+message GetCategoryRequest {
+  string categoryId = 1;
+}
+
+message GetAllCategoriesRequest {
+  common.basic.query.BasicQuery basicQuery = 1;
+}
+
+message UpdateCategoryRequest {
+  string categoryId = 1;
+  optional string name = 2;
+  optional string description = 3;
+  optional string parentCategoryId = 4;
+}
+
+message DeleteCategoryRequest {
+  string categoryId = 1;
+}
+
+message ListCategoriesRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  optional string search = 3;
+}
+
+// ---------------------
+// Service Definition
+// ---------------------
+service CategoryService {
+  rpc CreateCategory (CreateCategoryRequest) returns (CategoryResponse);
+  rpc GetCategory (GetCategoryRequest) returns (CategoryResponse);
+  rpc GetAllCategories (GetAllCategoriesRequest) returns (AllCategoriesWithMetaResponse);
+  rpc UpdateCategory (UpdateCategoryRequest) returns (CategoryResponse);
+  rpc DeleteCategory (DeleteCategoryRequest) returns (DeleteCategoryResponse);
+  rpc ListCategories (ListCategoriesRequest) returns (ListCategoriesResponse);
+}

@@ -1,0 +1,76 @@
+// Notification Domain Schema - PostgreSQL
+// Includes: notifications, chats, messages
+
+datasource notiDB {
+  provider = "postgresql"
+  url      = env("NOTIFICATION_DATABASE_URL")
+}
+
+generator notiClient {
+  provider = "prisma-client-js"
+  output   = "../../generated/prisma-notification"
+}
+
+enum NotificationType {
+  APPLICATION_ALERT
+  INTERVIEW_UPDATE
+  REMINDER
+  PROMOTION
+  EMAIL_VERIFICATION
+  FINANCIAL_ALERT
+  STATUS_ALERT
+}
+
+enum NotificationStatus {
+  PENDING
+  SENDING
+  FAILED
+}
+
+model Notification {
+  id                 String             @id @default(cuid()) @map("id")
+  userId             String             @map("user_id")
+  email              String?            @notiDB.VarChar(50)
+  subject            String?            @notiDB.VarChar(100)
+  content            String?            @notiDB.VarChar(255)
+  notificationType   NotificationType   @default(REMINDER) @map("notification_type")
+  status             NotificationStatus @default(PENDING)
+  priority           Int?
+  attempts           Int?
+  maxAttempts        Int?               @map("max_attempts")
+  metadata           String?            @notiDB.VarChar(255)
+  isRead             Boolean?           @map("is_read")
+  relatedInterviewId String?            @map("related_interview_id")
+  relatedJobPostId   String?            @map("related_job_post_id")
+  createdAt          DateTime           @default(now()) @map("created_at")
+  sendedAt           DateTime?          @map("sended_at")
+  failedAt           DateTime?          @map("failed_at")
+  errorMessage       String?            @map("error_message") @notiDB.Text
+
+  @@index([email])
+  @@index([subject])
+  @@index([notificationType])
+  @@index([metadata])
+  @@map("notifications")
+}
+
+model Chat {
+  id        String   @id @default(cuid()) @map("id")
+  userOne   String   @map("user_one")
+  userTwo   String   @map("user_two")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("chats")
+}
+
+model Message {
+  id         String   @id @default(cuid()) @map("id")
+  senderId   String   @map("sender_id")
+  receiverId String   @map("receiver_id")
+  room       String?  @notiDB.VarChar(255)
+  message    String?  @notiDB.VarChar(255)
+  isSeen     Boolean  @default(false) @map("is_seen")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("messages")
+}

@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+package users;
+
+import "common/basic.proto";
+import "common/basic-query.proto";
+import "auth/user-information.proto";
+import "auth/member-verification.proto";
+import "auth/corporate-registration.proto";
+
+// Enums
+enum UserRole {
+  USER_ROLE_UNSPECIFIED = 0;
+  GUEST = 1;
+  MEMBER = 2;
+  CORPORATE = 3;
+  ADMIN = 4;
+  SUPERADMIN = 5;
+}
+
+enum UserStatus {
+  USER_STATUS_UNSPECIFIED = 0;
+  PENDING = 1;
+  ACTIVE = 2;
+  SUSPENDED = 3;
+  REJECTED = 4;
+  INACTIVE = 5;
+}
+
+
+//Message
+message User {
+  string id = 1;
+  UserRole role = 2;
+  optional string email = 3;
+  optional string phone = 4;
+  optional string full_name = 5;
+  UserStatus status = 6;
+  bool is_emailed_verified = 7;
+  bool is_phone_verified = 8;
+  optional string wallet_id = 9;
+  string created_at = 10;
+  string updated_at = 11;
+  optional userInformation.UserInformation userInformation = 12;
+  optional memberVerfication.MemberVerification memberIdentityVerification = 13;
+  optional corporateRegistration.CorporateRegistrationModel corporateRegistration = 14;
+}
+
+
+// ---------------------
+// CRUD Responses
+// ---------------------
+message UserResponse {
+  bool success = 1;
+  optional string message = 2;
+  User user = 3;
+}
+
+message ListUsersResponse {
+  User users = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 limit = 4;
+}
+
+message DeleteUserResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message AllUsersWithMetaResponse {
+  repeated User data = 1;
+  common.basic.usage.PaginationMeta meta = 2;
+}
+
+// ---------------------
+// CRUD Requests
+// ---------------------
+
+message ListUsersRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  optional UserRole role = 3;
+  optional UserStatus status = 4;
+}
+
+message GetUserRequest {
+  string userId = 1;
+}
+
+message UpdateUserRequest {
+  string userId = 1;
+  optional string fullName = 2;
+  optional string email = 3;
+  optional string phone = 4;
+  optional string password = 5;
+  optional UserRole role = 6;
+  optional UserStatus status = 7;
+}
+
+message DeleteUserRequest {
+  string userId = 1;
+}
+
+message GetAllUsersRequest {
+  common.basic.query.BasicQuery basicQuery = 1;
+}
+
+message CreateUserRequest {
+  optional string email = 1;
+  optional string phone = 2;
+  optional string fullName = 3;
+  optional string password = 4;
+  optional UserRole role = 5;
+  optional UserStatus status = 6;
+}
+
+
+// ---------------------
+// CRUD Service
+// ---------------------
+service UserService {
+  rpc CreateUser (CreateUserRequest) returns (UserResponse);
+  rpc GetUser (GetUserRequest) returns (UserResponse);
+  rpc GetAllUsers (GetAllUsersRequest) returns (AllUsersWithMetaResponse);
+  rpc UpdateUser (UpdateUserRequest) returns (UserResponse);
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
+  rpc ListUsers (ListUsersRequest) returns (ListUsersResponse);
+}

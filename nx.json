@@ -38,7 +38,24 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": ["apps/IN-JOB-e2e/**/*"]
+      "exclude": [
+        "apps/api-gateway-e2e/**/*",
+        "apps/auth-service-e2e/**/*",
+        "apps/job-service-e2e/**/*"
+      ]
     }
-  ]
+  ],
+  "targetDefaults": {
+    "build": {
+      "options": {
+        "assets": [
+          {
+            "glob": "**/*.proto",
+            "input": "proto",
+            "output": "proto"
+          }
+        ]
+      }
+    }
+  }
 }
