@@ -9,6 +9,7 @@ datasource jobDB {
 generator jobClient {
   provider = "prisma-client-js"
   output   = "../../generated/prisma-job"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
 }
 
 enum JobPostStatus {
