@@ -17,7 +17,6 @@ import { CategoryModule } from './category/category.module';
 import { JobPostModule } from './job-post/job-post.module';
 import { ApplyModule } from './apply/apply.module';
 import { InterviewModule } from './interview/interview.module';
-import { ReviewModule } from './review.module';
 import { ReviewModule } from './review/review.module';
 
 @Module({
