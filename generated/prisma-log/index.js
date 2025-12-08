@@ -120,7 +120,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/lord/Desktop/Yedanginn/IN-JOB/generated/prisma-log",
+      "value": "/Users/abed/Work/Test/job-platform-backend/generated/prisma-log",
       "fromEnvVar": null
     },
     "config": {
@@ -134,11 +134,11 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/lord/Desktop/Yedanginn/IN-JOB/prisma/log/log.schema.prisma",
+    "sourceFilePath": "/Users/abed/Work/Test/job-platform-backend/prisma/log/log.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma/log",
@@ -148,6 +148,7 @@ const config = {
     "logDB"
   ],
   "activeProvider": "mongodb",
+  "postinstall": false,
   "inlineDatasources": {
     "logDB": {
       "url": {
@@ -156,8 +157,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// Log Domain Schema - MongoDB\n// Includes: system_logs\n\ndatasource logDB {\n  provider = \"mongodb\"\n  url      = env(\"LOG_MONGODB_URL\")\n}\n\ngenerator logClient {\n  provider = \"prisma-client-js\"\n  output   = \"../../generated/prisma-log\"\n}\n\nmodel SystemLog {\n  id          String   @id @default(auto()) @map(\"_id\") @logDB.ObjectId\n  userId      String?  @map(\"user_id\")\n  actionType  String?  @map(\"action_type\") @logDB.String\n  description String?  @logDB.String\n  createdAt   DateTime @default(now()) @map(\"created_at\")\n\n  @@index([actionType])\n  @@index([createdAt])\n  @@map(\"system_logs\")\n}\n",
-  "inlineSchemaHash": "2d0094d2331b2332102647807b2be313001f2b7f821b7c088ca7de91f558f99d",
+  "inlineSchema": "// Log Domain Schema - MongoDB\n// Includes: system_logs\n\ndatasource logDB {\n  provider = \"mongodb\"\n  url      = env(\"LOG_MONGODB_URL\")\n}\n\ngenerator logClient {\n  provider = \"prisma-client-js\"\n  output   = \"../../generated/prisma-log\"\n  // binaryTargets = [\"native\", \"linux-musl-arm64-openssl-3.0.x\"]\n}\n\nmodel SystemLog {\n  id          String   @id @default(auto()) @map(\"_id\") @logDB.ObjectId\n  userId      String?  @map(\"user_id\")\n  actionType  String?  @map(\"action_type\") @logDB.String\n  description String?  @logDB.String\n  createdAt   DateTime @default(now()) @map(\"created_at\")\n\n  @@index([actionType])\n  @@index([createdAt])\n  @@map(\"system_logs\")\n}\n",
+  "inlineSchemaHash": "02c1b8188a763133e5001f2db224557f4f31ce34610b7c0f35a916ca2b70d240",
   "copyEngine": true
 }
 

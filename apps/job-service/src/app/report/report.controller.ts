@@ -12,7 +12,7 @@ import {
   SingleReportResponse,
   UpdateReportRequest,
 } from 'types/job/report';
-import { httpToGrpcStatus } from 'libs/common/src/common/helper/htto-to-grpc.helper';
+import { httpToGrpcStatus } from '@in-job/common';
 
 @Controller('report')
 export class ReportController {

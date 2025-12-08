@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BasicQuery } from 'libs/common/src';
+import { BasicQuery } from '@in-job/common';
 
 export class GetAllUserInformationsDto extends BasicQuery {
   @ApiProperty({

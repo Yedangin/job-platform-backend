@@ -4,11 +4,12 @@ import {
   JobPrismaService,
   PaginationResult,
   PaginationService,
-} from 'libs/common/src';
+} from '@in-job/common';
 
 import {
   AllCategoriesWithMetaResponse,
   CategoryResponse,
+  CreateCategoryResponse,
   DeleteCategoryResponse,
   ListCategoryResponse,
 } from 'types/job/category';
@@ -17,11 +18,11 @@ import {
 export class CategoryService {
   constructor(
     private readonly prisma: JobPrismaService,
-    private readonly paginationService: PaginationService,
+    private readonly paginationService: PaginationService
   ) {}
 
   private mapCategoryToResponse(
-    category: Category & { parent?: Category; children?: Category[] },
+    category: Category & { parent?: Category; children?: Category[] }
   ) {
     return {
       id: category.id,
@@ -49,11 +50,11 @@ export class CategoryService {
       {
         parent: true,
         children: true,
-      },
+      }
     );
 
     const mappedData = (result as PaginationResult<Category>)?.data.map(
-      (category) => this.mapCategoryToResponse(category),
+      (category) => this.mapCategoryToResponse(category)
     );
 
     return { data: mappedData, meta: result.meta };
@@ -81,7 +82,7 @@ export class CategoryService {
     name?: string;
     description?: string;
     parentCategoryId?: string;
-  }): Promise<CategoryResponse> {
+  }): Promise<CreateCategoryResponse> {
     // Check if parent category exists if provided
     if (data.parentCategoryId) {
       const parentExists = await this.prisma.category.findUnique({
@@ -90,7 +91,7 @@ export class CategoryService {
 
       if (!parentExists) {
         throw new NotFoundException(
-          `Parent category with ID ${data.parentCategoryId} not found`,
+          `Parent category with ID ${data.parentCategoryId} not found`
         );
       }
     }
@@ -115,8 +116,8 @@ export class CategoryService {
       name?: string;
       description?: string;
       parentCategoryId?: string;
-    },
-  ): Promise<CategoryResponse> {
+    }
+  ): Promise<CreateCategoryResponse> {
     const existingCategory = await this.prisma.category.findUnique({
       where: { id: categoryId },
     });
@@ -136,7 +137,7 @@ export class CategoryService {
 
       if (!parentExists) {
         throw new NotFoundException(
-          `Parent category with ID ${data.parentCategoryId} not found`,
+          `Parent category with ID ${data.parentCategoryId} not found`
         );
       }
 
@@ -148,11 +149,11 @@ export class CategoryService {
       // Check for deeper circular references
       const isDescendant = await this.isDescendant(
         categoryId,
-        data.parentCategoryId,
+        data.parentCategoryId
       );
       if (isDescendant) {
         throw new Error(
-          'Circular reference detected: parent is a descendant of this category',
+          'Circular reference detected: parent is a descendant of this category'
         );
       }
     }
@@ -191,7 +192,7 @@ export class CategoryService {
 
     if (childrenCount > 0) {
       throw new Error(
-        'Cannot delete category with children. Please reassign or delete children first.',
+        'Cannot delete category with children. Please reassign or delete children first.'
       );
     }
 
@@ -207,7 +208,7 @@ export class CategoryService {
 
   private async isDescendant(
     parentId: string,
-    childId: string,
+    childId: string
   ): Promise<boolean> {
     const children = await this.prisma.category.findMany({
       where: { parentCategoryId: parentId },

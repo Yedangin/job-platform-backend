@@ -18,7 +18,7 @@ import { COMMON_BASIC_RESPONSE_PACKAGE_NAME } from 'types/common/response';
 import { USER_INFORMATION_PACKAGE_NAME } from 'types/auth/user-information';
 
 async function bootstrap() {
-const port = process.env.AUTH_SERVICE_PORT || 8001;
+  const port = process.env.AUTH_SERVICE_PORT || 8001;
 
   const protoDir = join(process.cwd(), 'proto/');
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
@@ -57,15 +57,12 @@ const port = process.env.AUTH_SERVICE_PORT || 8001;
           objects: true,
         },
       },
-    },
+    }
   );
 
   await app.listen();
-
   Logger.log(`🚀 Auth Service is running on: localhost:${port}`);
-  Logger.log(
-    `📦 Packages: auth,user, member and operate`,
-  );
+  Logger.log(`📦 Packages: auth,user, member and operate`);
 }
 
 bootstrap();

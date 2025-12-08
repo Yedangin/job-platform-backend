@@ -4,7 +4,7 @@ import {
   JobPrismaService,
   PaginationResult,
   PaginationService,
-} from 'libs/common/src';
+} from '@in-job/common';
 
 import {
   AllJobPostsWithMetaResponse,
@@ -17,11 +17,11 @@ import {
 export class JobPostService {
   constructor(
     private readonly prisma: JobPrismaService,
-    private readonly paginationService: PaginationService,
+    private readonly paginationService: PaginationService
   ) {}
 
   private mapJobPostToResponse(
-    jobPost: JobPost & { category?: any; applies?: any[] },
+    jobPost: JobPost & { category?: any; applies?: any[] }
   ) {
     const appliesArray =
       jobPost.applies?.map((apply) => ({
@@ -98,12 +98,12 @@ export class JobPostService {
             appliedAt: 'desc',
           },
         },
-      },
+      }
       // where,
     );
 
     const mappedData = (result as PaginationResult<JobPost>)?.data.map(
-      (jobPost) => this.mapJobPostToResponse(jobPost),
+      (jobPost) => this.mapJobPostToResponse(jobPost)
     );
 
     return { data: mappedData, meta: result.meta };
@@ -147,7 +147,7 @@ export class JobPostService {
 
       if (!categoryExists) {
         throw new NotFoundException(
-          `Category with ID ${data.categoryId} not found`,
+          `Category with ID ${data.categoryId} not found`
         );
       }
     }
@@ -188,7 +188,7 @@ export class JobPostService {
       expiredAt?: string;
       approvedBy?: string;
       appliesCount?: number;
-    },
+    }
   ): Promise<JobPostResponse> {
     const existingJobPost = await this.prisma.jobPost.findUnique({
       where: { id: jobPostId },
@@ -206,7 +206,7 @@ export class JobPostService {
 
       if (!categoryExists) {
         throw new NotFoundException(
-          `Category with ID ${data.categoryId} not found`,
+          `Category with ID ${data.categoryId} not found`
         );
       }
     }
@@ -257,7 +257,7 @@ export class JobPostService {
 
     if (appliesCount > 0) {
       throw new Error(
-        'Cannot delete job post with applications. Please delete applications first.',
+        'Cannot delete job post with applications. Please delete applications first.'
       );
     }
 
@@ -268,7 +268,7 @@ export class JobPostService {
 
     if (interviewsCount > 0) {
       throw new Error(
-        'Cannot delete job post with interviews. Please delete interviews first.',
+        'Cannot delete job post with interviews. Please delete interviews first.'
       );
     }
 
@@ -285,7 +285,7 @@ export class JobPostService {
   async listByCorporate(
     corporateId: string,
     page: number = 1,
-    limit: number = 10,
+    limit: number = 10
   ) {
     const skip = (page - 1) * limit;
 

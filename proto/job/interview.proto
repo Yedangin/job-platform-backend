@@ -1,0 +1,118 @@
+syntax = "proto3";
+
+package interview;
+
+import "common/basic.proto";
+import "common/basic-query.proto";
+
+// ---------------------
+// Interview Messages
+// ---------------------
+message Interview {
+  string id = 1;
+  string jobPostId = 2;
+  string memberId = 3;
+  string corporateId = 4;
+  optional string roomId = 5;
+  optional string interviewDate = 6;
+  string status = 7;
+  optional string failureReason = 8;
+  string createdAt = 9;
+  string updatedAt = 10;
+  optional JobPost jobPost = 11;
+  repeated Review reviews = 12;
+}
+
+message JobPost {
+  string id = 1;
+  optional string title = 2;
+  string corporateId = 3;
+}
+
+message Review {
+  string id = 1;
+  string interviewId = 2;
+  string reviewerId = 3;
+  optional int32 rating = 4;
+  optional string comment = 5;
+  string createdAt = 6;
+}
+
+// ---------------------
+// CRUD Responses
+// ---------------------
+message InterviewResponse {
+  bool success = 1;
+  optional string message = 2;
+  optional Interview data = 3;
+}
+
+message ListInterviewResponse {
+  optional string message = 1;
+  Interview interview = 2;
+}
+
+message AllInterviewsWithMetaResponse {
+  repeated Interview data = 1;
+  common.basic.usage.PaginationMeta meta = 2;
+}
+
+message DeleteInterviewResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// ---------------------
+// CRUD Requests
+// ---------------------
+message CreateInterviewRequest {
+  string jobPostId = 1;
+  string memberId = 2;
+  string corporateId = 3;
+  optional string roomId = 4;
+  optional string interviewDate = 5;
+  optional string status = 6;
+  optional string failureReason = 7;
+}
+
+message GetInterviewRequest {
+  string interviewId = 1;
+}
+
+message GetAllInterviewsRequest {
+  common.basic.query.BasicQuery basicQuery = 1;
+}
+
+message UpdateInterviewRequest {
+  string interviewId = 1;
+  optional string roomId = 2;
+  optional string interviewDate = 3;
+  optional string status = 4;
+  optional string failureReason = 5;
+}
+
+message DeleteInterviewRequest {
+  string interviewId = 1;
+}
+
+message ListInterviewsRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  optional string search = 3;
+  optional string jobPostId = 4;
+  optional string memberId = 5;
+  optional string corporateId = 6;
+  optional string status = 7;
+}
+
+// ---------------------
+// Service Definition
+// ---------------------
+service InterviewService {
+  rpc CreateInterview (CreateInterviewRequest) returns (InterviewResponse);
+  rpc GetInterview (GetInterviewRequest) returns (ListInterviewResponse);
+  rpc GetAllInterviews (GetAllInterviewsRequest) returns (AllInterviewsWithMetaResponse);
+  rpc UpdateInterview (UpdateInterviewRequest) returns (InterviewResponse);
+  rpc DeleteInterview (DeleteInterviewRequest) returns (DeleteInterviewResponse);
+  rpc ListInterviews (ListInterviewsRequest) returns (AllInterviewsWithMetaResponse);
+}

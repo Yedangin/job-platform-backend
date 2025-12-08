@@ -178,7 +178,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/lord/Desktop/Yedanginn/IN-JOB/generated/prisma-notification",
+      "value": "/Users/abed/Work/Test/job-platform-backend/generated/prisma-notification",
       "fromEnvVar": null
     },
     "config": {
@@ -192,11 +192,11 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/lord/Desktop/Yedanginn/IN-JOB/prisma/notification/notification.schema.prisma",
+    "sourceFilePath": "/Users/abed/Work/Test/job-platform-backend/prisma/notification/notification.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma/notification",
@@ -206,6 +206,7 @@ const config = {
     "notiDB"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "notiDB": {
       "url": {
@@ -214,8 +215,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// Notification Domain Schema - PostgreSQL\n// Includes: notifications, chats, messages\n\ndatasource notiDB {\n  provider = \"postgresql\"\n  url      = env(\"NOTIFICATION_DATABASE_URL\")\n}\n\ngenerator notiClient {\n  provider = \"prisma-client-js\"\n  output   = \"../../generated/prisma-notification\"\n}\n\nenum NotificationType {\n  APPLICATION_ALERT\n  INTERVIEW_UPDATE\n  REMINDER\n  PROMOTION\n  EMAIL_VERIFICATION\n  FINANCIAL_ALERT\n  STATUS_ALERT\n}\n\nenum NotificationStatus {\n  PENDING\n  SENDING\n  FAILED\n}\n\nmodel Notification {\n  id                 String             @id @default(cuid()) @map(\"id\")\n  userId             String             @map(\"user_id\")\n  email              String?            @notiDB.VarChar(50)\n  subject            String?            @notiDB.VarChar(100)\n  content            String?            @notiDB.VarChar(255)\n  notificationType   NotificationType   @default(REMINDER) @map(\"notification_type\")\n  status             NotificationStatus @default(PENDING)\n  priority           Int?\n  attempts           Int?\n  maxAttempts        Int?               @map(\"max_attempts\")\n  metadata           String?            @notiDB.VarChar(255)\n  isRead             Boolean?           @map(\"is_read\")\n  relatedInterviewId String?            @map(\"related_interview_id\")\n  relatedJobPostId   String?            @map(\"related_job_post_id\")\n  createdAt          DateTime           @default(now()) @map(\"created_at\")\n  sendedAt           DateTime?          @map(\"sended_at\")\n  failedAt           DateTime?          @map(\"failed_at\")\n  errorMessage       String?            @map(\"error_message\") @notiDB.Text\n\n  @@index([email])\n  @@index([subject])\n  @@index([notificationType])\n  @@index([metadata])\n  @@map(\"notifications\")\n}\n\nmodel Chat {\n  id        String   @id @default(cuid()) @map(\"id\")\n  userOne   String   @map(\"user_one\")\n  userTwo   String   @map(\"user_two\")\n  createdAt DateTime @default(now()) @map(\"created_at\")\n\n  @@map(\"chats\")\n}\n\nmodel Message {\n  id         String   @id @default(cuid()) @map(\"id\")\n  senderId   String   @map(\"sender_id\")\n  receiverId String   @map(\"receiver_id\")\n  room       String?  @notiDB.VarChar(255)\n  message    String?  @notiDB.VarChar(255)\n  isSeen     Boolean  @default(false) @map(\"is_seen\")\n  createdAt  DateTime @default(now()) @map(\"created_at\")\n\n  @@map(\"messages\")\n}\n",
-  "inlineSchemaHash": "b1edbec04686cae32f6f1d4fed7b9c002790a138c042a086a6a66b0047b1f300",
+  "inlineSchema": "// Notification Domain Schema - PostgreSQL\n// Includes: notifications, chats, messages\n\ndatasource notiDB {\n  provider = \"postgresql\"\n  url      = env(\"NOTIFICATION_DATABASE_URL\")\n}\n\ngenerator notiClient {\n  provider = \"prisma-client-js\"\n  output   = \"../../generated/prisma-notification\"\n  // binaryTargets = [\"native\", \"linux-musl-arm64-openssl-3.0.x\"]\n}\n\nenum NotificationType {\n  APPLICATION_ALERT\n  INTERVIEW_UPDATE\n  REMINDER\n  PROMOTION\n  EMAIL_VERIFICATION\n  FINANCIAL_ALERT\n  STATUS_ALERT\n}\n\nenum NotificationStatus {\n  PENDING\n  SENDING\n  FAILED\n}\n\nmodel Notification {\n  id                 String             @id @default(cuid()) @map(\"id\")\n  userId             String             @map(\"user_id\")\n  email              String?            @notiDB.VarChar(50)\n  subject            String?            @notiDB.VarChar(100)\n  content            String?            @notiDB.VarChar(255)\n  notificationType   NotificationType   @default(REMINDER) @map(\"notification_type\")\n  status             NotificationStatus @default(PENDING)\n  priority           Int?\n  attempts           Int?\n  maxAttempts        Int?               @map(\"max_attempts\")\n  metadata           String?            @notiDB.VarChar(255)\n  isRead             Boolean?           @map(\"is_read\")\n  relatedInterviewId String?            @map(\"related_interview_id\")\n  relatedJobPostId   String?            @map(\"related_job_post_id\")\n  createdAt          DateTime           @default(now()) @map(\"created_at\")\n  sendedAt           DateTime?          @map(\"sended_at\")\n  failedAt           DateTime?          @map(\"failed_at\")\n  errorMessage       String?            @map(\"error_message\") @notiDB.Text\n\n  @@index([email])\n  @@index([subject])\n  @@index([notificationType])\n  @@index([metadata])\n  @@map(\"notifications\")\n}\n\nmodel Chat {\n  id        String   @id @default(cuid()) @map(\"id\")\n  userOne   String   @map(\"user_one\")\n  userTwo   String   @map(\"user_two\")\n  createdAt DateTime @default(now()) @map(\"created_at\")\n\n  @@map(\"chats\")\n}\n\nmodel Message {\n  id         String   @id @default(cuid()) @map(\"id\")\n  senderId   String   @map(\"sender_id\")\n  receiverId String   @map(\"receiver_id\")\n  room       String?  @notiDB.VarChar(255)\n  message    String?  @notiDB.VarChar(255)\n  isSeen     Boolean  @default(false) @map(\"is_seen\")\n  createdAt  DateTime @default(now()) @map(\"created_at\")\n\n  @@map(\"messages\")\n}\n",
+  "inlineSchemaHash": "867caba2e0666e2de594006ec32bda0539bd8f400e2ffe7b4f6722db9d44ecc9",
   "copyEngine": true
 }
 

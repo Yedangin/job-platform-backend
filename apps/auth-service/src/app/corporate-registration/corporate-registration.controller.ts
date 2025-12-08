@@ -1,150 +1,59 @@
+import { Controller } from '@nestjs/common';
+import { GrpcMethod, RpcException } from '@nestjs/microservices';
 import {
-  Controller,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  OnModuleInit,
-  Inject,
-  HttpCode,
-  HttpStatus,
-  UseGuards,
-  HttpException,
-} from '@nestjs/common';
-import { CreateCorporateRegistrationDto } from './dto/create-corporate-registration.dto';
-import { UpdateCorporateRegistrationDto } from './dto/update-corporate-registration.dto';
-import {
-  CORPORATE_REGISTRATION_PACKAGE_NAME,
-  CORPORATE_REGISTRATION_SERVICE_NAME,
-  CorporateRegistrationClient,
+  CreateCorporateRegistrationRequest,
+  DeleteCorporateRegistrationRequest,
+  UpdateCoporateRegistrationReqeust,
 } from 'types/auth/corporate-registration';
-import { ClientGrpc } from '@nestjs/microservices';
-import {
-  ApiBadRequestResponse,
-  ApiBody,
-  ApiConflictResponse,
-  ApiCreatedResponse,
-  ApiNoContentResponse,
-  ApiNotFoundResponse,
-  ApiOkResponse,
-  ApiOperation,
-  ApiParam,
-} from '@nestjs/swagger';
-import { firstValueFrom } from 'rxjs';
-import {
-  CurrentSession,
-  grpcToHttpStatus,
-  Roles,
-  RolesGuard,
-  SessionAuthGuard,
-  SessionData,
-} from '@in-job/common';
+import { SuccessResponse } from 'types/common/response';
+import { CorporateRegistrationService } from './corporate-registration.service';
+import { httpToGrpcStatus } from '@in-job/common';
 
 @Controller('corporate-registration')
-export class CorporateRegistrationController implements OnModuleInit {
-  private corporateService: CorporateRegistrationClient;
-  constructor(
-    @Inject(CORPORATE_REGISTRATION_PACKAGE_NAME)
-    private corporateRegistrationClient: ClientGrpc,
-  ) {}
-  onModuleInit() {
-    this.corporateService =
-      this.corporateRegistrationClient.getService<CorporateRegistrationClient>(
-        CORPORATE_REGISTRATION_SERVICE_NAME,
-      );
-  }
-
-  @Post()
-  @ApiOperation({ summary: 'Create a new corporate registration' })
-  @ApiCreatedResponse({
-    description: 'Corporate registration created successfully',
-  })
-  @ApiBadRequestResponse({ description: 'Invalid input data' })
-  @ApiNotFoundResponse({ description: 'User not found' })
-  @ApiConflictResponse({
-    description: 'Corporate registration already exists for this user',
-  })
-  @ApiBody({ type: CreateCorporateRegistrationDto })
+export class CorporateRegistrationController {
+  constructor(private corporateService: CorporateRegistrationService) {}
+  @GrpcMethod('CorporateRegistration', 'CreateCorporateRegistration')
   async create(
-    @Body() createCorporateRegistrationDto: CreateCorporateRegistrationDto,
-  ) {
+    request: CreateCorporateRegistrationRequest
+  ): Promise<SuccessResponse> {
     try {
-      const result = await firstValueFrom(
-        this.corporateService.createCorporateRegistration({
-          userId: createCorporateRegistrationDto.userId,
-          companyName: createCorporateRegistrationDto.companyName,
-          businessLicenseFile:
-            createCorporateRegistrationDto.businessLicenseFile,
-        }),
-      );
-      return result;
+      const result = await this.corporateService.create(request);
+      return { message: 'Corporate registration created successfully' };
     } catch (error: any) {
-      throw new HttpException(
-        error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
-      );
+      throw new RpcException({
+        code: httpToGrpcStatus(error.status ?? 500),
+        message: error.message || 'Internal server error',
+      });
     }
   }
 
-  @Patch(':id')
-  @UseGuards(SessionAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SUPERADMIN')
-  @ApiOperation({ summary: 'Update corporate registration' })
-  @ApiParam({ name: 'id', description: 'Registration record ID' })
-  @ApiOkResponse({
-    description: 'Corporate registration updated successfully',
-  })
-  @ApiNotFoundResponse({
-    description: 'Corporate registration or verifier not found',
-  })
-  @ApiBadRequestResponse({ description: 'Invalid input data' })
-  @ApiBody({ type: UpdateCorporateRegistrationDto })
+  @GrpcMethod('CorporateRegistration', 'UpdateCorporateRegistration')
   async update(
-    @Param('id') id: string,
-    @CurrentSession() session: SessionData,
-    @Body() updateCorporateRegistrationDto: UpdateCorporateRegistrationDto,
-  ) {
+    request: UpdateCoporateRegistrationReqeust
+  ): Promise<SuccessResponse> {
     try {
-      const result = await firstValueFrom(
-        this.corporateService.updateCorporateRegistration({
-          id: id,
-          companyName: updateCorporateRegistrationDto.companyName,
-          businessLicenseFile:
-            updateCorporateRegistrationDto.businessLicenseFile,
-          verificationStatus:
-            updateCorporateRegistrationDto.verificationStatus as any,
-          isVerifiedby: session.userId,
-        }),
-      );
-      return result;
+      const result = await this.corporateService.update(request);
+      return { message: 'Corporate registration udpated successfully' };
     } catch (error: any) {
-      throw new HttpException(
-        error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
-      );
+      throw new RpcException({
+        code: httpToGrpcStatus(error.status ?? 500),
+        message: error.message || 'Internal server error',
+      });
     }
   }
 
-  @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Delete corporate registration' })
-  @ApiParam({ name: 'id', description: 'Registration record ID' })
-  @ApiNoContentResponse({
-    description: 'Corporate registration deleted successfully',
-  })
-  @ApiNotFoundResponse({ description: 'Corporate registration not found' })
-  async remove(@Param('id') id: string) {
+  @GrpcMethod('CorporateRegistration', 'DeleteCorporateRegistration')
+  async remove(
+    request: DeleteCorporateRegistrationRequest
+  ): Promise<SuccessResponse> {
     try {
-      const result = await firstValueFrom(
-        this.corporateService.deleteCorporateRegistration({ id }),
-      );
-      return result;
+      const result = this.corporateService.remove(request.id);
+      return { message: 'Corporate registration deleted successfully' };
     } catch (error: any) {
-      throw new HttpException(
-        error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
-      );
+      throw new RpcException({
+        code: httpToGrpcStatus(error.status ?? 500),
+        message: error.message || 'Internal server error',
+      });
     }
   }
 }

@@ -9,6 +9,7 @@ datasource notiDB {
 generator notiClient {
   provider = "prisma-client-js"
   output   = "../../generated/prisma-notification"
+  // binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
 }
 
 enum NotificationType {
