@@ -10,16 +10,16 @@ import {
   WsException,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { WsAuthGuard } from '@in-job/common';
+import { WsAuthGuard, RedisService } from '@in-job/common';
 import { ChatService } from './chat.service';
-import { JwtService } from '@nestjs/jwt';
+import * as cookie from 'cookie';
 
 interface AuthenticatedSocket extends Socket {
   data: {
     user: {
       userId: string;
       email: string;
-      roles?: string[];
+      role?: string;
     };
   };
 }
@@ -40,36 +40,54 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(
     private readonly chatService: ChatService,
-    private readonly jwtService: JwtService
+    private readonly redisService: RedisService
   ) {}
 
   // ============================================================
-  // CONNECTION HANDLING WITH JWT AUTHENTICATION
+  // CONNECTION HANDLING WITH SESSION COOKIE AUTHENTICATION
   // ============================================================
   async handleConnection(client: AuthenticatedSocket) {
     try {
-      // Extract token from query params or auth header
-      const token =
-        client.handshake.auth?.token ||
-        client.handshake.headers?.authorization?.replace('Bearer ', '');
+      // Extract sessionId from cookies
+      const rawCookie = client.handshake.headers.cookie;
 
-      if (!token) {
-        this.logger.warn('Connection rejected: No token provided');
+      if (!rawCookie) {
+        this.logger.warn('Connection rejected: No cookies provided');
         client.emit('error', { message: 'Authentication required' });
         client.disconnect();
         return;
       }
 
-      // Verify JWT token
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.JWT_SECRET,
-      });
+      const cookies = cookie.parse(rawCookie);
+      const sessionId = cookies['sessionId'];
+
+      if (!sessionId) {
+        this.logger.warn('Connection rejected: No sessionId cookie');
+        client.emit('error', { message: 'Authentication required' });
+        client.disconnect();
+        return;
+      }
+
+      // Get session data from Redis
+      const sessionDataStr = await this.redisService.get(
+        `session:${sessionId}`
+      );
+
+      if (!sessionDataStr) {
+        this.logger.warn('Connection rejected: Invalid or expired session');
+        client.emit('error', { message: 'Invalid or expired session' });
+        client.disconnect();
+        return;
+      }
+
+      // Parse session data
+      const sessionData = JSON.parse(sessionDataStr);
 
       // Attach user data to socket
       client.data.user = {
-        userId: payload.sub || payload.userId,
-        email: payload.email,
-        roles: payload.roles,
+        userId: sessionData.userId,
+        email: sessionData.email,
+        role: sessionData.role,
       };
 
       // Track connected user
@@ -82,11 +100,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // Notify user of successful connection
       client.emit('connected', {
         userId: client.data.user.userId,
+        email: client.data.user.email,
         message: 'Successfully connected to chat',
       });
     } catch (error) {
       this.logger.error('Authentication failed:', error.message);
-      client.emit('error', { message: 'Invalid or expired token' });
+      client.emit('error', { message: 'Authentication failed' });
       client.disconnect();
     }
   }

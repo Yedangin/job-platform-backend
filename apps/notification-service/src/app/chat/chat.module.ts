@@ -1,18 +1,12 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
 import { ChatService } from './chat.service';
 import { ChatGateway } from './chat.gateway';
 import { ChatController } from './chat.controller';
+import { RedisService } from '@in-job/common';
 
 @Module({
-  imports: [
-    JwtModule.register({
-      secret: process.env.JWT_SECRET || 'your-secret-key',
-      signOptions: { expiresIn: '7d' },
-    }),
-  ],
   controllers: [ChatController],
-  providers: [ChatGateway, ChatService],
+  providers: [ChatGateway, ChatService, RedisService],
   exports: [ChatService],
 })
 export class ChatModule {}

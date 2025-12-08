@@ -1,34 +1,42 @@
-# Chat Gateway Usage Guide
+# Chat Gateway Usage Guide - Session Cookie Authentication
 
 ## Overview
-This WebSocket gateway handles real-time chat functionality for both **one-to-one** and **group conversations** with JWT authentication.
+This WebSocket gateway handles real-time chat functionality for both **one-to-one** and **group conversations** with **session cookie authentication**.
 
 ## Authentication
 
+### How It Works
+1. User logs in via REST API (`POST /auth/login`)
+2. Server sets `sessionId` cookie (httpOnly, secure)
+3. Cookie is automatically sent with WebSocket connection
+4. Gateway validates session from Redis
+5. User data is attached to socket connection
+
 ### Connection
-Connect to the WebSocket with JWT token:
+Connect to the WebSocket - cookies are sent automatically:
 
 ```javascript
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:3000/chat', {
-  auth: {
-    token: 'your-jwt-token-here'
-  }
+// First, login via REST API
+const loginResponse = await fetch('http://localhost:3000/auth/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  credentials: 'include', // Important: Include cookies
+  body: JSON.stringify({ email: 'user@example.com', password: 'password' })
 });
 
-// Or via authorization header
+// Then connect to WebSocket - session cookie is sent automatically
 const socket = io('http://localhost:3000/chat', {
-  extraHeaders: {
-    authorization: 'Bearer your-jwt-token-here'
-  }
+  withCredentials: true, // Important: Send cookies
+  transports: ['websocket', 'polling']
 });
 ```
 
 ### Events on Connection
 - `connected` - Emitted when successfully authenticated
 - `error` - Emitted when authentication fails
-- Socket will disconnect if no valid token provided
+- Socket will disconnect if no valid session cookie
 
 ## Available Events
 
@@ -50,7 +58,7 @@ socket.on('joined-conversation', (data) => {
 });
 
 socket.on('user-joined', (data) => {
-  console.log(`User ${data.userId} joined the conversation`);
+  console.log(`User ${data.email} joined the conversation`);
 });
 ```
 
@@ -167,9 +175,30 @@ socket.on('online-users', (data) => {
 import { io } from 'socket.io-client';
 
 class ChatClient {
-  constructor(token) {
+  constructor() {
+    this.socket = null;
+  }
+
+  async login(email, password) {
+    // Login via REST API
+    const response = await fetch('http://localhost:3000/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ email, password })
+    });
+
+    if (!response.ok) {
+      throw new Error('Login failed');
+    }
+
+    // Connect to WebSocket
+    this.connect();
+  }
+
+  connect() {
     this.socket = io('http://localhost:3000/chat', {
-      auth: { token }
+      withCredentials: true
     });
 
     this.setupListeners();
@@ -217,13 +246,20 @@ class ChatClient {
     this.socket.emit('mark-seen', { messageId, conversationId });
   }
 
-  disconnect() {
+  async logout() {
+    // Logout via REST API
+    await fetch('http://localhost:3000/auth/logout', {
+      method: 'POST',
+      credentials: 'include'
+    });
+
     this.socket.disconnect();
   }
 }
 
 // Usage
-const chat = new ChatClient('your-jwt-token');
+const chat = new ChatClient();
+await chat.login('user@example.com', 'password');
 chat.joinConversation('conv-123');
 chat.sendMessage('conv-123', 'Hello!');
 ```
@@ -233,40 +269,73 @@ chat.sendMessage('conv-123', 'Hello!');
 These methods are available in the ChatService for REST endpoints:
 
 ### Create One-to-One Conversation
-```typescript
-await chatService.createOneToOneConversation(userId1, userId2);
+```bash
+POST /chat/conversations/one-to-one
+Content-Type: application/json
+Cookie: sessionId=...
+
+{
+  "userId1": "user-1",
+  "userId2": "user-2"
+}
 ```
 
 ### Create Group Conversation
-```typescript
-await chatService.createGroupConversation(
-  'Group Name',
-  creatorId,
-  [memberId1, memberId2, memberId3]
-);
+```bash
+POST /chat/conversations/group
+Content-Type: application/json
+Cookie: sessionId=...
+
+{
+  "name": "Group Name",
+  "creatorId": "user-1",
+  "memberIds": ["user-2", "user-3"]
+}
 ```
 
 ### Get User Conversations
-```typescript
-await chatService.getUserConversations(userId);
+```bash
+GET /chat/conversations/user/{userId}
+Cookie: sessionId=...
+```
+
+### Get Conversation Details
+```bash
+GET /chat/conversations/{conversationId}
+Cookie: sessionId=...
 ```
 
 ### Add Member to Group
-```typescript
-await chatService.addMemberToGroup(conversationId, newUserId, adminUserId);
+```bash
+POST /chat/conversations/{conversationId}/members
+Content-Type: application/json
+Cookie: sessionId=...
+
+{
+  "userId": "new-user-id",
+  "addedBy": "admin-user-id"
+}
 ```
 
 ### Remove Member from Group
-```typescript
-await chatService.removeMemberFromGroup(conversationId, userIdToRemove, adminUserId);
+```bash
+POST /chat/conversations/{conversationId}/members/remove
+Content-Type: application/json
+Cookie: sessionId=...
+
+{
+  "userId": "user-to-remove",
+  "removedBy": "admin-user-id"
+}
 ```
 
 ## Security Features
 
-1. **JWT Authentication**: All connections require valid JWT token
-2. **Membership Verification**: Users can only join conversations they're members of
-3. **Admin Controls**: Only admins can add/remove members in groups
-4. **Automatic Disconnection**: Invalid tokens result in immediate disconnect
+1. **Session Cookie Authentication**: Secure, httpOnly cookies
+2. **Redis Session Storage**: Fast session validation
+3. **Membership Verification**: Users can only join conversations they're members of
+4. **Admin Controls**: Only admins can add/remove members in groups
+5. **Automatic Disconnection**: Invalid sessions result in immediate disconnect
 
 ## Database Schema
 
@@ -274,6 +343,31 @@ The gateway uses these Prisma models:
 - `Conversation` - Chat rooms (one-to-one or group)
 - `ConversationMember` - User membership in conversations
 - `Message` - Chat messages
+
+## Session Cookie Details
+
+The session cookie is set by your API Gateway on login:
+```javascript
+{
+  name: 'sessionId',
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax',
+  maxAge: 2 * 60 * 60 * 1000, // 2 hours
+  domain: process.env.COOKIE_DOMAIN || 'localhost'
+}
+```
+
+Session data stored in Redis:
+```javascript
+{
+  userId: 'user-123',
+  email: 'user@example.com',
+  role: 'MEMBER',
+  accessToken: '...',
+  refreshToken: '...'
+}
+```
 
 ## Error Handling
 
@@ -286,7 +380,40 @@ socket.on('error', (error) => {
 ```
 
 Common errors:
-- "Authentication required" - No token provided
-- "Invalid or expired token" - Token verification failed
+- "Authentication required" - No session cookie provided
+- "Invalid or expired session" - Session not found in Redis
 - "You are not a member of this conversation" - Access denied
 - "Only admins can add/remove members" - Permission denied
+
+## CORS Configuration
+
+Make sure your gateway has CORS enabled with credentials:
+
+```typescript
+@WebSocketGateway({
+  cors: {
+    origin: 'http://localhost:8080', // Your client URL
+    credentials: true, // Important!
+  },
+  namespace: '/chat',
+})
+```
+
+Also configure your API Gateway:
+```typescript
+app.enableCors({
+  origin: 'http://localhost:8080',
+  credentials: true,
+});
+```
+
+## Testing
+
+Use the provided test client in `test-client/` directory:
+1. Open `index.html` with Live Server
+2. Login with your credentials
+3. Session cookie is automatically set
+4. WebSocket connects automatically
+5. Start chatting!
+
+See `QUICKSTART.md` for detailed testing instructions.
