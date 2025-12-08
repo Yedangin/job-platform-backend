@@ -15,6 +15,7 @@ import { APPLIES_PACKAGE_NAME } from 'types/job/apply';
 import { INTERVIEW_PACKAGE_NAME } from 'types/job/interview';
 import { COMMON_BASIC_QUERY_PACKAGE_NAME } from 'types/common/basic-query';
 import { COMMON_BASIC_USAGE_PACKAGE_NAME } from 'types/common/basic';
+import { REVIEWS_PACKAGE_NAME } from 'types/job/review';
 
 async function bootstrap() {
   const port = process.env.JOB_SERVICE_PORT || 8003;
@@ -32,6 +33,7 @@ async function bootstrap() {
           JOBPOST_PACKAGE_NAME,
           APPLIES_PACKAGE_NAME,
           INTERVIEW_PACKAGE_NAME,
+          REVIEWS_PACKAGE_NAME,
           COMMON_BASIC_QUERY_PACKAGE_NAME,
           COMMON_BASIC_QUERY_PACKAGE_NAME,
           COMMON_BASIC_USAGE_PACKAGE_NAME,
@@ -40,6 +42,7 @@ async function bootstrap() {
           join(protoDir, 'job/report.proto'),
           join(protoDir, 'job/category.proto'),
           join(protoDir, 'job/interview.proto'),
+          join(protoDir, 'job/review.proto'),
           join(protoDir, 'job/job-post.proto'),
           join(protoDir, 'job/apply.proto'),
           join(protoDir, 'common/basic-query.proto'),
