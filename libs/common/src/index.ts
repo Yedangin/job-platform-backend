@@ -21,6 +21,7 @@ export * from './lib/guard/kakao.guard';
 export * from './lib/guard/throttler-behind-proxy.guard';
 export * from './lib/guard/user-jwt-auth.guard';
 export * from './lib/guard/session-auth.guard';
+export * from './lib/guard/ws-auth.guard';
 export * from './lib/guard/roles.guard';
 export * from './lib/guard/staff-access.guard';
 export * from './lib/guard/warehouse-access.guard';
