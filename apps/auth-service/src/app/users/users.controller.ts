@@ -10,6 +10,7 @@ import {
   DeleteUserRequest,
   UserResponse,
   DeleteUserResponse,
+  CreateUserResponse,
 } from 'types/auth/users';
 import { httpToGrpcStatus } from '@in-job/common';
 
@@ -18,15 +19,15 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @GrpcMethod('UserService', 'CreateUser')
-  async CreateUser(request: CreateUserRequest): Promise<UserResponse> {
+  async CreateUser(request: CreateUserRequest): Promise<CreateUserResponse> {
     try {
       return this.usersService.create({
         email: request.email,
         phone: request.phone,
         fullName: request.fullName,
         password: request.password,
-        role: request.role as any,
-        status: request.status as any,
+        role: request.role,
+        status: request.status,
       });
     } catch (error: any) {
       throw new RpcException({
@@ -64,15 +65,15 @@ export class UsersController {
   }
 
   @GrpcMethod('UserService', 'UpdateUser')
-  async UpdateUser(request: UpdateUserRequest): Promise<UserResponse> {
+  async UpdateUser(request: UpdateUserRequest): Promise<CreateUserResponse> {
     try {
       return this.usersService.update(request.userId, {
         fullName: request.fullName,
         email: request.email,
         phone: request.phone,
         password: request.password,
-        role: request.role as any,
-        status: request.status as any,
+        role: request.role,
+        status: request.status,
       });
     } catch (error: any) {
       throw new RpcException({

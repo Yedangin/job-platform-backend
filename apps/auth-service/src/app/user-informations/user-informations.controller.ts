@@ -10,6 +10,7 @@ import {
   DeleteUserInformationRequest,
   UserInformationResponse,
   DeleteUserInformationResponse,
+  CreateUserInformationResponse,
 } from 'types/auth/user-information';
 import { httpToGrpcStatus } from '@in-job/common';
 
@@ -22,7 +23,7 @@ export class UserInformationsController {
   @GrpcMethod('UserInformationService', 'CreateUserInformation')
   async CreateUserInformation(
     request: CreateUserInformationRequest
-  ): Promise<UserInformationResponse> {
+  ): Promise<CreateUserInformationResponse> {
     try {
       return this.userInformationsService.create({
         userId: request.userId,
@@ -78,7 +79,7 @@ export class UserInformationsController {
   @GrpcMethod('UserInformationService', 'UpdateUserInformation')
   async UpdateUserInformation(
     request: UpdateUserInformationRequest
-  ): Promise<UserInformationResponse> {
+  ): Promise<CreateUserInformationResponse> {
     try {
       return this.userInformationsService.update(request.userId, {
         userId: request.userId,

@@ -50,6 +50,12 @@ message User {
 // ---------------------
 // CRUD Responses
 // ---------------------
+message CreateUserResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+
 message UserResponse {
   bool success = 1;
   optional string message = 2;

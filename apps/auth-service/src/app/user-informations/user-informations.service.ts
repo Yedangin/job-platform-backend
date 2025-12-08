@@ -1,6 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserInformationDto } from './dto/create-user-information.dto';
-import { UpdateUserInformationDto } from './dto/update-user-information.dto';
 import {
   AuthPrismaService,
   PaginationResult,
@@ -11,6 +9,7 @@ import {
   AllUserInformationsWithMetaResponse,
   UserInformationResponse,
   DeleteUserInformationResponse,
+  CreateUserInformationResponse,
 } from 'types/auth/user-information';
 
 @Injectable()
@@ -71,33 +70,48 @@ export class UserInformationsService {
     };
   }
 
-  async create(
-    createUserInformationDto: CreateUserInformationDto
-  ): Promise<UserInformationResponse> {
+  async create(data: {
+    userId: string;
+    profileImage?: string;
+    gender?: string;
+    address?: string;
+    country?: string;
+    city?: string;
+    cvForm?: string;
+    additionalInformation?: string;
+  }): Promise<CreateUserInformationResponse> {
     const userInfo = await this.prisma.userInformation.create({
       data: {
-        userId: createUserInformationDto.userId,
-        profileImage: createUserInformationDto.profileImage,
-        gender: createUserInformationDto.gender,
-        address: createUserInformationDto.address,
-        country: createUserInformationDto.country,
-        city: createUserInformationDto.city,
-        cvForm: createUserInformationDto.cvForm,
-        additionalInformation: createUserInformationDto.additionalInformation,
+        userId: data.userId,
+        profileImage: data.profileImage,
+        gender: data.gender,
+        address: data.address,
+        country: data.country,
+        city: data.city,
+        cvForm: data.cvForm,
+        additionalInformation: data.additionalInformation,
       },
     });
 
     return {
       success: true,
       message: 'User information created successfully',
-      userInformation: this.mapUserInformationToResponse(userInfo),
     };
   }
 
   async update(
     userId: string,
-    updateUserInformationDto: UpdateUserInformationDto
-  ): Promise<UserInformationResponse> {
+    data: {
+      userId?: string;
+      profileImage?: string;
+      gender?: string;
+      address?: string;
+      country?: string;
+      city?: string;
+      cvForm?: string;
+      additionalInformation?: string;
+    }
+  ): Promise<CreateUserInformationResponse> {
     const existingUserInfo = await this.prisma.userInformation.findUnique({
       where: { userId },
     });
@@ -108,23 +122,17 @@ export class UserInformationsService {
       );
     }
 
-    const updateData: any = {};
+    const updateData: Record<string, any> = {};
 
-    if (updateUserInformationDto.profileImage !== undefined)
-      updateData.profileImage = updateUserInformationDto.profileImage;
-    if (updateUserInformationDto.gender !== undefined)
-      updateData.gender = updateUserInformationDto.gender;
-    if (updateUserInformationDto.address !== undefined)
-      updateData.address = updateUserInformationDto.address;
-    if (updateUserInformationDto.country !== undefined)
-      updateData.country = updateUserInformationDto.country;
-    if (updateUserInformationDto.city !== undefined)
-      updateData.city = updateUserInformationDto.city;
-    if (updateUserInformationDto.cvForm !== undefined)
-      updateData.cvForm = updateUserInformationDto.cvForm;
-    if (updateUserInformationDto.additionalInformation !== undefined)
-      updateData.additionalInformation =
-        updateUserInformationDto.additionalInformation;
+    if (data.profileImage !== undefined)
+      updateData.profileImage = data.profileImage;
+    if (data.gender !== undefined) updateData.gender = data.gender;
+    if (data.address !== undefined) updateData.address = data.address;
+    if (data.country !== undefined) updateData.country = data.country;
+    if (data.city !== undefined) updateData.city = data.city;
+    if (data.cvForm !== undefined) updateData.cvForm = data.cvForm;
+    if (data.additionalInformation !== undefined)
+      updateData.additionalInformation = data.additionalInformation;
 
     const userInfo = await this.prisma.userInformation.update({
       where: { userId },
@@ -134,7 +142,6 @@ export class UserInformationsService {
     return {
       success: true,
       message: 'User information updated successfully',
-      userInformation: this.mapUserInformationToResponse(userInfo),
     };
   }
 
