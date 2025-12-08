@@ -11,7 +11,7 @@ import {
   DeleteJobPostResponse,
   ListJobPostResponse,
 } from 'types/job/job-post';
-import { httpToGrpcStatus } from 'libs/common/src/common/helper/htto-to-grpc.helper';
+import { httpToGrpcStatus } from '@in-job/common';
 import { JobPostService } from './job-post.service';
 
 @Controller()
@@ -42,7 +42,7 @@ export class JobPostController {
 
   @GrpcMethod('JobPostService', 'GetAllJobPosts')
   async GetAllJobPosts(
-    request: GetAllJobPostsRequest,
+    request: GetAllJobPostsRequest
   ): Promise<AllJobPostsWithMetaResponse> {
     try {
       return this.jobPostService.findAll(request.basicQuery);
@@ -91,7 +91,7 @@ export class JobPostController {
 
   @GrpcMethod('JobPostService', 'DeleteJobPost')
   async DeleteJobPost(
-    request: DeleteJobPostRequest,
+    request: DeleteJobPostRequest
   ): Promise<DeleteJobPostResponse> {
     try {
       return this.jobPostService.remove(request.jobPostId);

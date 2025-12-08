@@ -30,6 +30,13 @@ message UserInformation {
 // ---------------------
 // CRUD Responses
 // ---------------------
+
+message CreateUserInformationResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+
 message UserInformationResponse {
   bool success = 1;
   optional string message = 2;
@@ -104,10 +111,10 @@ message DeleteUserInformationRequest {
 // CRUD Service
 // ---------------------
 service UserInformationService {
-  rpc CreateUserInformation (CreateUserInformationRequest) returns (UserInformationResponse);
+  rpc CreateUserInformation (CreateUserInformationRequest) returns (CreateUserInformationResponse);
   rpc GetUserInformation (GetUserInformationRequest) returns (UserInformationResponse);
   rpc GetAllUserInformations (GetAllUserInformationsRequest) returns (AllUserInformationsWithMetaResponse);
-  rpc UpdateUserInformation (UpdateUserInformationRequest) returns (UserInformationResponse);
+  rpc UpdateUserInformation (UpdateUserInformationRequest) returns (CreateUserInformationResponse);
   rpc DeleteUserInformation (DeleteUserInformationRequest) returns (DeleteUserInformationResponse);
   rpc ListUserInformations (ListUserInformationsRequest) returns (ListUserInformationsResponse);
 }

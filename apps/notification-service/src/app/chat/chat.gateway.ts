@@ -41,12 +41,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly chatService: ChatService,
     private readonly redisService: RedisService
-  ) {}
+  ) {
+    // super();
+  }
 
   // ============================================================
   // CONNECTION HANDLING WITH SESSION COOKIE AUTHENTICATION
   // ============================================================
   async handleConnection(client: AuthenticatedSocket) {
+    this.logger.log('Client connected is working on chat gateway');
     try {
       // Extract sessionId from cookies
       const rawCookie = client.handshake.headers.cookie;
@@ -127,6 +130,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: { conversationId: string },
     @ConnectedSocket() client: AuthenticatedSocket
   ) {
+    this.logger.log('message received', data);
+    this.logger.log('handleJoinConversation called');
     try {
       const user = client.data.user;
 
@@ -179,6 +184,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: { conversationId: string },
     @ConnectedSocket() client: AuthenticatedSocket
   ) {
+    this.logger.log('message received', data);
+    this.logger.log('handleLeaveConversation called');
     try {
       const user = client.data.user;
       const room = `conversation_${data.conversationId}`;
@@ -215,6 +222,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     },
     @ConnectedSocket() client: AuthenticatedSocket
   ) {
+    this.logger.log('message received', data);
+    this.logger.log('handleSendMessage called');
     try {
       const user = client.data.user;
 
@@ -256,6 +265,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
+  @SubscribeMessage('test')
+  handleTestingMessage(client: Socket, message: any): void {
+    this.logger.log('Test message received:', message);
+    this.server.emit('test-response', { message: 'Test message received' });
+  }
+
   // ============================================================
   // TYPING INDICATOR
   // ============================================================
@@ -266,6 +281,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: AuthenticatedSocket
   ) {
     try {
+      this.logger.log('message received', data);
+      this.logger.log('handleTyping called');
       const user = client.data.user;
       const room = `conversation_${data.conversationId}`;
 
@@ -289,6 +306,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: { messageId: string; conversationId: string },
     @ConnectedSocket() client: AuthenticatedSocket
   ) {
+    this.logger.log('message received', data);
+    this.logger.log('handleMarkSeen called');
     try {
       const user = client.data.user;
 
@@ -317,6 +336,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: { conversationId: string },
     @ConnectedSocket() client: AuthenticatedSocket
   ) {
+    this.logger.log('message received', data);
+    this.logger.log('handleGetOnlineUsers called');
     try {
       const room = `conversation_${data.conversationId}`;
       const sockets = await this.server.in(room).fetchSockets();

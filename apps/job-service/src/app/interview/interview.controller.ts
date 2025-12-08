@@ -11,7 +11,7 @@ import {
   DeleteInterviewResponse,
   ListInterviewResponse,
 } from 'types/job/interview';
-import { httpToGrpcStatus } from 'libs/common/src/common/helper/htto-to-grpc.helper';
+import { httpToGrpcStatus } from '@in-job/common';
 import { InterviewService } from './interview.service';
 
 @Controller()
@@ -20,7 +20,7 @@ export class InterviewController {
 
   @GrpcMethod('InterviewService', 'CreateInterview')
   async CreateInterview(
-    request: CreateInterviewRequest,
+    request: CreateInterviewRequest
   ): Promise<InterviewResponse> {
     try {
       return this.interviewService.create({
@@ -42,7 +42,7 @@ export class InterviewController {
 
   @GrpcMethod('InterviewService', 'GetAllInterviews')
   async GetAllInterviews(
-    request: GetAllInterviewsRequest,
+    request: GetAllInterviewsRequest
   ): Promise<AllInterviewsWithMetaResponse> {
     try {
       return this.interviewService.findAll(request.basicQuery);
@@ -56,7 +56,7 @@ export class InterviewController {
 
   @GrpcMethod('InterviewService', 'GetInterview')
   async GetInterview(
-    request: GetInterviewRequest,
+    request: GetInterviewRequest
   ): Promise<ListInterviewResponse> {
     try {
       return this.interviewService.findOne(request.interviewId);
@@ -70,7 +70,7 @@ export class InterviewController {
 
   @GrpcMethod('InterviewService', 'UpdateInterview')
   async UpdateInterview(
-    request: UpdateInterviewRequest,
+    request: UpdateInterviewRequest
   ): Promise<InterviewResponse> {
     try {
       return this.interviewService.update(request.interviewId, {
@@ -89,7 +89,7 @@ export class InterviewController {
 
   @GrpcMethod('InterviewService', 'DeleteInterview')
   async DeleteInterview(
-    request: DeleteInterviewRequest,
+    request: DeleteInterviewRequest
   ): Promise<DeleteInterviewResponse> {
     try {
       return this.interviewService.remove(request.interviewId);

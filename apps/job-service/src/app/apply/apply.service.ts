@@ -4,7 +4,7 @@ import {
   JobPrismaService,
   PaginationResult,
   PaginationService,
-} from 'libs/common/src';
+} from '@in-job/common';
 import {
   AllAppliesWithMetaResponse,
   CreateApplyRequest,

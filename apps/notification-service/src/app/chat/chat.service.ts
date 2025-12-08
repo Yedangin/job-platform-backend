@@ -1,13 +1,9 @@
+import { NotificationPrismaService } from '@in-job/common';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaClient as NotificationPrismaClient } from '@prisma-notification/client';
 
 @Injectable()
 export class ChatService {
-  private prisma: NotificationPrismaClient;
-
-  constructor() {
-    this.prisma = new NotificationPrismaClient();
-  }
+  constructor(private readonly prisma: NotificationPrismaService) {}
 
   // ============================================================
   // VERIFY CONVERSATION MEMBERSHIP
