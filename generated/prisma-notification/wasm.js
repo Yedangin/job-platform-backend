@@ -212,6 +212,7 @@ const config = {
     "notiDB"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "notiDB": {
       "url": {

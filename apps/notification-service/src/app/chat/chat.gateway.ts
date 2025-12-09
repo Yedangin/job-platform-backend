@@ -1,4 +1,4 @@
-import { UseGuards, Logger } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -7,22 +7,11 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsException,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { WsAuthGuard, RedisService } from '@in-job/common';
-import { ChatService } from './chat.service';
 import * as cookie from 'cookie';
-
-interface AuthenticatedSocket extends Socket {
-  data: {
-    user: {
-      userId: string;
-      email: string;
-      role?: string;
-    };
-  };
-}
+import { ChatService } from './chat.service';
+import { RedisService, SessionData, WsAuthGuard } from '@in-job/common';
 
 @WebSocketGateway({
   cors: {
@@ -33,10 +22,9 @@ interface AuthenticatedSocket extends Socket {
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
-  server: Server;
-
+  private server: Server;
   private readonly logger = new Logger(ChatGateway.name);
-  private connectedUsers: Map<string, string> = new Map(); // userId -> socketId
+  private connectedUsers: Map<string, string> = new Map(); // mapping userId with socketId
 
   constructor(
     private readonly chatService: ChatService,
@@ -45,14 +33,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // super();
   }
 
-  // ============================================================
-  // CONNECTION HANDLING WITH SESSION COOKIE AUTHENTICATION
-  // ============================================================
-  async handleConnection(client: AuthenticatedSocket) {
-    this.logger.log('Client connected is working on chat gateway');
+  async handleConnection(client: Socket) {
     try {
-      // Extract sessionId from cookies
-      const rawCookie = client.handshake.headers.cookie;
+      const rawCookie = client.handshake.headers?.cookie;
 
       if (!rawCookie) {
         this.logger.warn('Connection rejected: No cookies provided');
@@ -71,7 +54,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return;
       }
 
-      // Get session data from Redis
       const sessionDataStr = await this.redisService.get(
         `session:${sessionId}`
       );
@@ -84,7 +66,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
 
       // Parse session data
-      const sessionData = JSON.parse(sessionDataStr);
+      const sessionData = JSON.parse(sessionDataStr) as SessionData;
 
       // Attach user data to socket
       client.data.user = {
@@ -112,8 +94,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.disconnect();
     }
   }
-
-  handleDisconnect(client: AuthenticatedSocket) {
+  handleDisconnect(client: Socket) {
     const user = client.data?.user;
     if (user) {
       this.connectedUsers.delete(user.userId);
@@ -121,238 +102,65 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  // ============================================================
-  // JOIN CONVERSATION (ONE-TO-ONE OR GROUP)
-  // ============================================================
   @UseGuards(WsAuthGuard)
-  @SubscribeMessage('join-conversation')
-  async handleJoinConversation(
-    @MessageBody() data: { conversationId: string },
-    @ConnectedSocket() client: AuthenticatedSocket
+  @SubscribeMessage('join-conservation')
+  async handleJoinConversaton(
+    @MessageBody() data: { recipientId: string },
+    @ConnectedSocket() client: Socket
   ) {
-    this.logger.log('message received', data);
-    this.logger.log('handleJoinConversation called');
+    this.logger.log('the data : ', data)
+    this.logger.log('the data recipientId: ', data?.recipientId);
     try {
       const user = client.data.user;
 
-      // Verify user is a member of this conversation
-      const isMember = await this.chatService.verifyConversationMember(
-        data.conversationId,
-        user.userId
-      );
-
-      if (!isMember) {
-        throw new WsException('You are not a member of this conversation');
+      // Validate recipientId
+      if (!data.recipientId) {
+        client.emit('error', { message: 'recipientId is required' });
+        return;
       }
 
-      const room = `conversation_${data.conversationId}`;
+      const conversation = await this.chatService.createOrVerifyConversation(
+        user.userId,
+        data.recipientId
+      );
+
+      // Both users join the conversation room
+      const room = `conversation_${conversation.id}`;
       await client.join(room);
 
-      this.logger.log(
-        `User ${user.userId} joined conversation ${data.conversationId}`
+      // Get conversation with messages
+      const conversationWithMessages = await this.chatService.getConversation(
+        conversation.id
       );
 
-      // Get conversation details
-      const conversation = await this.chatService.getConversation(
-        data.conversationId
-      );
-
-      // Notify user they joined
-      client.emit('joined-conversation', {
-        conversationId: data.conversationId,
-        conversation,
+      client.emit('conversation-started', {
+        conversation: conversationWithMessages,
+        recipientId: data.recipientId,
       });
 
-      // Notify other members in the room
-      client.to(room).emit('user-joined', {
-        conversationId: data.conversationId,
-        userId: user.userId,
-        email: user.email,
-      });
-    } catch (error) {
-      this.logger.error('Error joining conversation:', error.message);
-      client.emit('error', { message: error.message });
-    }
-  }
-
-  // ============================================================
-  // LEAVE CONVERSATION
-  // ============================================================
-  @UseGuards(WsAuthGuard)
-  @SubscribeMessage('leave-conversation')
-  async handleLeaveConversation(
-    @MessageBody() data: { conversationId: string },
-    @ConnectedSocket() client: AuthenticatedSocket
-  ) {
-    this.logger.log('message received', data);
-    this.logger.log('handleLeaveConversation called');
-    try {
-      const user = client.data.user;
-      const room = `conversation_${data.conversationId}`;
-
-      await client.leave(room);
-
-      this.logger.log(
-        `User ${user.userId} left conversation ${data.conversationId}`
-      );
-
-      client.emit('left-conversation', { conversationId: data.conversationId });
-
-      // Notify other members
-      client.to(room).emit('user-left', {
-        conversationId: data.conversationId,
-        userId: user.userId,
-      });
-    } catch (error) {
-      this.logger.error('Error leaving conversation:', error.message);
-      client.emit('error', { message: error.message });
-    }
-  }
-
-  // ============================================================
-  // SEND MESSAGE (ONE-TO-ONE OR GROUP)
-  // ============================================================
-  @UseGuards(WsAuthGuard)
-  @SubscribeMessage('send-message')
-  async handleSendMessage(
-    @MessageBody()
-    data: {
-      conversationId: string;
-      message: string;
-    },
-    @ConnectedSocket() client: AuthenticatedSocket
-  ) {
-    this.logger.log('message received', data);
-    this.logger.log('handleSendMessage called');
-    try {
-      const user = client.data.user;
-
-      // Verify user is a member of this conversation
-      const isMember = await this.chatService.verifyConversationMember(
-        data.conversationId,
-        user.userId
-      );
-
-      if (!isMember) {
-        throw new WsException('You are not a member of this conversation');
+      if (this.connectedUsers && this.connectedUsers.has(data.recipientId)) {
+        const recipientSocketId = this.connectedUsers.get(data?.recipientId);
+        if (recipientSocketId && this.server) {
+          try {
+            const allSockets = await this.server.fetchSockets();
+            const recipientSocket = allSockets.find(
+              (s) => s.id === recipientSocketId
+            );
+            if (recipientSocket) {
+              await recipientSocket.join(room);
+              recipientSocket.emit('conversation-started', {
+                conversation: conversationWithMessages,
+                recipientId: user.userId,
+              });
+              this.logger.log(`Notified recipient ${data.recipientId}`);
+            }
+          } catch (err) {
+            this.logger.warn(`Could not notify recipient: ${err.message}`);
+          }
+        }
       }
-
-      // Save message to database
-      const savedMessage = await this.chatService.createMessage({
-        conversationId: data.conversationId,
-        senderId: user.userId,
-        message: data.message,
-      });
-
-      const room = `conversation_${data.conversationId}`;
-
-      // Broadcast message to all members in the conversation
-      this.server.to(room).emit('new-message', {
-        id: savedMessage.id,
-        conversationId: data.conversationId,
-        message: data.message,
-        senderId: user.userId,
-        senderEmail: user.email,
-        createdAt: savedMessage.createdAt,
-      });
-
-      this.logger.log(
-        `Message sent by ${user.userId} in conversation ${data.conversationId}`
-      );
     } catch (error) {
-      this.logger.error('Error sending message:', error.message);
-      client.emit('error', { message: error.message });
-    }
-  }
-
-  @SubscribeMessage('test')
-  handleTestingMessage(client: Socket, message: any): void {
-    this.logger.log('Test message received:', message);
-    this.server.emit('test-response', { message: 'Test message received' });
-  }
-
-  // ============================================================
-  // TYPING INDICATOR
-  // ============================================================
-  @UseGuards(WsAuthGuard)
-  @SubscribeMessage('typing')
-  async handleTyping(
-    @MessageBody() data: { conversationId: string; isTyping: boolean },
-    @ConnectedSocket() client: AuthenticatedSocket
-  ) {
-    try {
-      this.logger.log('message received', data);
-      this.logger.log('handleTyping called');
-      const user = client.data.user;
-      const room = `conversation_${data.conversationId}`;
-
-      // Broadcast typing status to other members (not to sender)
-      client.to(room).emit('user-typing', {
-        conversationId: data.conversationId,
-        userId: user.userId,
-        isTyping: data.isTyping,
-      });
-    } catch (error) {
-      this.logger.error('Error handling typing:', error.message);
-    }
-  }
-
-  // ============================================================
-  // MARK MESSAGE AS SEEN
-  // ============================================================
-  @UseGuards(WsAuthGuard)
-  @SubscribeMessage('mark-seen')
-  async handleMarkSeen(
-    @MessageBody() data: { messageId: string; conversationId: string },
-    @ConnectedSocket() client: AuthenticatedSocket
-  ) {
-    this.logger.log('message received', data);
-    this.logger.log('handleMarkSeen called');
-    try {
-      const user = client.data.user;
-
-      await this.chatService.markMessageAsSeen(data.messageId);
-
-      const room = `conversation_${data.conversationId}`;
-
-      // Notify other members that message was seen
-      client.to(room).emit('message-seen', {
-        messageId: data.messageId,
-        conversationId: data.conversationId,
-        seenBy: user.userId,
-      });
-    } catch (error) {
-      this.logger.error('Error marking message as seen:', error.message);
-      client.emit('error', { message: error.message });
-    }
-  }
-
-  // ============================================================
-  // GET ONLINE USERS IN CONVERSATION
-  // ============================================================
-  @UseGuards(WsAuthGuard)
-  @SubscribeMessage('get-online-users')
-  async handleGetOnlineUsers(
-    @MessageBody() data: { conversationId: string },
-    @ConnectedSocket() client: AuthenticatedSocket
-  ) {
-    this.logger.log('message received', data);
-    this.logger.log('handleGetOnlineUsers called');
-    try {
-      const room = `conversation_${data.conversationId}`;
-      const sockets = await this.server.in(room).fetchSockets();
-
-      const onlineUsers = sockets.map((socket: any) => ({
-        userId: socket.data.user?.userId,
-        email: socket.data.user?.email,
-      }));
-
-      client.emit('online-users', {
-        conversationId: data.conversationId,
-        users: onlineUsers,
-      });
-    } catch (error) {
-      this.logger.error('Error getting online users:', error.message);
+      this.logger.error('Error starting direct chat:', error.message);
       client.emit('error', { message: error.message });
     }
   }

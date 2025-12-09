@@ -74,6 +74,80 @@ export class ChatService {
     });
   }
 
+  async createOrVerifyConversation(userId1: string, userId2: string) {
+    try {
+      console.log('createOrVerifyConversation called with:', {
+        userId1,
+        userId2,
+      });
+
+      // Validate inputs
+      if (!userId1 || !userId2) {
+        throw new Error('Both userId1 and userId2 are required');
+      }
+
+      // Check if conversation already exists between these two users
+      const existingConversations = await this.prisma.conversation.findMany({
+        where: {
+          isGroup: false,
+          members: {
+            some: {
+              userId: {
+                in: [userId1, userId2],
+              },
+            },
+          },
+        },
+        include: {
+          members: true,
+        },
+      });
+
+      console.log(
+        'Found existing conversations:',
+        existingConversations.length
+      );
+
+      // Find a conversation where both users are members
+      const existingConversation = existingConversations.find((conv) => {
+        const memberIds = conv.members.map((m) => m.userId);
+        return (
+          conv.members.length === 2 &&
+          memberIds.includes(userId1) &&
+          memberIds.includes(userId2)
+        );
+      });
+
+      if (existingConversation) {
+        console.log(
+          'Returning existing conversation:',
+          existingConversation.id
+        );
+        return existingConversation;
+      }
+
+      console.log('Creating new conversation...');
+      // Create new conversation
+      const newConversation = await this.prisma.conversation.create({
+        data: {
+          isGroup: false,
+          members: {
+            create: [{ userId: userId1 }, { userId: userId2 }],
+          },
+        },
+        include: {
+          members: true,
+        },
+      });
+
+      console.log('Created new conversation:', newConversation.id);
+      return newConversation;
+    } catch (error) {
+      console.error('Error in createOrVerifyConversation:', error);
+      throw error;
+    }
+  }
+
   // ============================================================
   // CREATE ONE-TO-ONE CONVERSATION
   // ============================================================
