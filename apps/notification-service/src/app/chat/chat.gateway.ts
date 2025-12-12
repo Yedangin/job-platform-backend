@@ -108,7 +108,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @MessageBody() data: { recipientId: string },
     @ConnectedSocket() client: Socket
   ) {
-    this.logger.log('the data : ', data)
+    this.logger.log('the data : ', data);
     this.logger.log('the data recipientId: ', data?.recipientId);
     try {
       const user = client.data.user;
@@ -161,6 +161,43 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
     } catch (error) {
       this.logger.error('Error starting direct chat:', error.message);
+      client.emit('error', { message: error.message });
+    }
+  }
+
+  @UseGuards(WsAuthGuard)
+  @SubscribeMessage('send-message')
+  async handleMessage(
+    @MessageBody()
+    data: { conversationId: string; message: string },
+    @ConnectedSocket() client: Socket
+  ) {
+    try {
+      const user = client.data.user;
+
+      // Validate message data
+      if (!data.conversationId || !data.message) {
+        client.emit('error', {
+          message: 'conversationId and content are required',
+        });
+        return;
+      }
+
+      const message = await this.chatService.createMessage({
+        conversationId: data.conversationId,
+        senderId: user.userId,
+        message: data.message,
+      });
+
+      // Emit the new message to all participants in the conversation room
+      const room = `conversation_${data.conversationId}`;
+      this.server.to(room).emit('new-message', { message });
+
+      this.logger.log(
+        `User ${user.userId} sent message to conversation ${data.conversationId}`
+      );
+    } catch (error) {
+      this.logger.error('Error sending message:', error.message);
       client.emit('error', { message: error.message });
     }
   }
