@@ -3,6 +3,8 @@ import { UsersController } from './users.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { USERS_PACKAGE_NAME } from 'types/auth/users';
+import { GrpcMetadataStorage, GrpcClientInterceptor } from '@in-job/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -36,6 +38,12 @@ import { USERS_PACKAGE_NAME } from 'types/auth/users';
     ]),
   ],
   controllers: [UsersController],
-  providers: [],
+  providers: [
+    GrpcMetadataStorage,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: GrpcClientInterceptor,
+    },
+  ],
 })
 export class UsersModule {}

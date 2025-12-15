@@ -25,19 +25,26 @@ export * from './lib/guard/ws-auth.guard';
 export * from './lib/guard/roles.guard';
 export * from './lib/guard/staff-access.guard';
 export * from './lib/guard/warehouse-access.guard';
+export * from './lib/guard/grpc-auth.guard';
 
 // Helpers
 export * from './lib/helper/pagination.service';
 export * from './lib/helper/grpc-to-http.helper';
 export * from './lib/helper/htto-to-grpc.helper';
 export * from './lib/helper/generate-store-token';
+export * from './lib/helper/grpc-client.helper';
 
 // Interceptors
 export * from './lib/interceptor/success-transform-interceptor';
+export * from './lib/interceptor/grpc-metadata.interceptor';
+export * from './lib/interceptor/grpc-client.interceptor';
 
 // Interfaces
 export * from './lib/interfaces/pagination-result.interface';
 export * from './lib/interfaces/session.interface';
+
+// Storage
+export * from './lib/storage/grpc-metadata.storage';
 
 // Redis
 export * from './lib/redis/redis.service';
