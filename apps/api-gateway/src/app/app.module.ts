@@ -18,6 +18,7 @@ import { JobPostModule } from './job-post/job-post.module';
 import { ApplyModule } from './apply/apply.module';
 import { InterviewModule } from './interview/interview.module';
 import { ReviewModule } from './review/review.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { ReviewModule } from './review/review.module';
     ApplyModule,
     InterviewModule,
     ReviewModule,
+    PaymentModule,
   ],
   controllers: [],
   providers: [],

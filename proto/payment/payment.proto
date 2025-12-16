@@ -1,0 +1,138 @@
+// payment.proto
+
+syntax = "proto3";
+
+package payment;
+
+
+import "common/basic.proto";
+import "common/basic-query.proto";
+import "common/response.proto";
+
+enum DepositStatus {
+  APPLIED_STATUS_UNSPECIFIED = 0;
+  PENDING = 1;
+  APPROVED = 2;
+  REJECTED = 3;
+}
+
+message Deposit {
+   string id = 1;             
+  string userId  =2;        
+  string walletId  = 3;      
+  optional string depositedAmount =4 ;    
+  optional string beforeAmount = 5;    
+  DepositStatus status   = 6;
+  string createdAt = 7;
+  string updatedAt = 8;
+}
+
+message Wallet {
+  string id = 1;
+  string userId = 2;
+  string balance = 3;
+  string createdAt = 4;
+  string updatedAt = 5;
+  repeated Deposit deposits = 6;
+}
+
+message CreatePaymentRequest {
+  string userId = 1;
+  string depositedAmount = 2;
+}
+
+message CreatePaymentResponse {
+  optional string message = 1;
+  string checkoutUrl = 2;
+}
+
+message GetAllWalletsRequest {
+  common.basic.query.BasicQuery basicQuery = 1;
+}
+
+message AllWalletsWithMetaResponse {
+  repeated Wallet data = 1;
+  common.basic.usage.PaginationMeta meta = 2;
+}
+
+message ConfirmPaymentRequest {
+  string orderId = 1;
+  string paymentKey =2 ;
+  string amount =3; 
+}
+
+message FailPaymentRequest {
+  string code = 1;
+  string message = 2;
+  string orderId = 3;
+}
+
+
+
+service PaymentService {
+  // 1. Called by API Gateway to initiate the deposit/payment flow
+  rpc PrepareDeposit(PrepareDepositRequest) returns (PrepareDepositResponse);
+
+  // 2. Called by API Gateway after a successful redirect from Toss Payments
+  rpc VerifyAndExecutePayment(ConfirmPaymentRequest) returns (ConfirmPaymentResponse);
+
+  // 3. Optional: Called by API Gateway after a failed redirect from Toss Payments
+  rpc HandlePaymentFailure(HandlePaymentFailureRequest) returns (HandlePaymentFailureResponse);
+
+  rpc GetAllWallets(GetAllWalletsRequest) returns (AllWalletsWithMetaResponse);
+
+  rpc CreatePayment(CreatePaymentRequest) returns (CreatePaymentResponse);
+
+  rpc ConfirmPayment(ConfirmPaymentRequest) returns (
+  common.basic.response.SuccessResponse
+  );
+  
+  rpc FailPayment(FailPaymentRequest) returns (
+  common.basic.response.SuccessResponse
+  );
+}
+
+// Request to prepare for a payment
+message PrepareDepositRequest {
+  string userId = 1;
+  int64 amount = 2; // Use int64 for money
+  string orderName = 3;
+  string depositeName = 4; // From your Deposit model
+  string userEmail = 5;
+  string userPhone = 6;
+}
+
+// Response containing the data needed for the client to redirect to Toss
+message PrepareDepositResponse {
+  string tossOrderId = 1;
+  int64 amount = 2;
+  string customerKey = 3; // The userId
+  string checkoutUrl = 4; // If using the checkout method
+}
+
+// Request to confirm the payment after redirect
+// message ConfirmPaymentRequest {
+//   string paymentKey = 1;
+//   string orderId = 2; // Your Deposit ID
+//   int64 amount = 3;
+// }
+
+// Response after confirmation and execution
+message ConfirmPaymentResponse {
+  bool success = 1;
+  string transactionId = 2;
+  string message = 3;
+  // Can include the updated wallet balance here
+}
+
+// Request to handle payment failure (optional)
+message HandlePaymentFailureRequest {
+  string orderId = 1;
+  string errorCode = 2;
+  string errorMessage = 3;
+}
+
+message HandlePaymentFailureResponse {
+  bool success = 1;
+  string message = 2;
+}
