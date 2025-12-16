@@ -7,7 +7,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
-import { RedisModule } from '@in-job/common';
+import { GrpcMetadataInterceptor, RedisModule } from '@in-job/common';
 import { MemberVerificationModule } from './member-verification/member-verification.module';
 import { UsersModule } from './users/users.module';
 import { UserInformationsModule } from './user-informations/user-informations.module';
@@ -18,6 +18,7 @@ import { JobPostModule } from './job-post/job-post.module';
 import { ApplyModule } from './apply/apply.module';
 import { InterviewModule } from './interview/interview.module';
 import { ReviewModule } from './review/review.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -70,6 +71,11 @@ import { ReviewModule } from './review/review.module';
     ReviewModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: GrpcMetadataInterceptor
+    }
+  ],
 })
 export class AppModule {}

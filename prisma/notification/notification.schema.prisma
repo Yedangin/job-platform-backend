@@ -55,23 +55,46 @@ model Notification {
   @@map("notifications")
 }
 
-model Chat {
-  id        String   @id @default(cuid()) @map("id")
-  userOne   String   @map("user_one")
-  userTwo   String   @map("user_two")
-  createdAt DateTime @default(now()) @map("created_at")
+// --- Chatting Models (Updated) ---
 
-  @@map("chats")
+// 1. Represents a single chat room (either 1-on-1 or group).
+model Conversation {
+  id             String                @id @default(cuid()) @map("id")
+  name           String?               @notiDB.VarChar(255) // Only needed for Group chats (optional for 1-on-1)
+  isGroup        Boolean               @default(false)      // True for group chats, false for 1-on-1
+  createdAt      DateTime              @default(now()) @map("created_at")
+
+  members        ConversationMember[]
+  messages       Message[]
+
+  @@map("conversations")
 }
 
+// 2. Links Users to Conversations (Many-to-Many Relationship).
+// This replaces your old 'Chat' model.
+model ConversationMember {
+  id             String         @id @default(cuid()) @map("id")
+  conversationId String         @map("conversation_id")
+  userId         String         @map("user_id") // The user ID for this member
+  isAdmin        Boolean        @default(false) // For group management
+
+  conversation   Conversation   @relation(fields: [conversationId], references: [id])
+
+  @@unique([conversationId, userId]) // A user can only be a member once per conversation
+  @@map("conversation_members")
+}
+
+
+// 3. Updated to reference the Conversation ID instead of a receiver ID.
 model Message {
-  id         String   @id @default(cuid()) @map("id")
-  senderId   String   @map("sender_id")
-  receiverId String   @map("receiver_id")
-  room       String?  @notiDB.VarChar(255)
-  message    String?  @notiDB.VarChar(255)
-  isSeen     Boolean  @default(false) @map("is_seen")
-  createdAt  DateTime @default(now()) @map("created_at")
+  id             String     @id @default(cuid()) @map("id")
+  conversationId String     @map("conversation_id") // References the chat room/conversation
+  senderId       String     @map("sender_id") // The user who sent the message
+  message        String?    @notiDB.VarChar(255)
+  isSeen         Boolean    @default(false) @map("is_seen")
+  createdAt      DateTime   @default(now()) @map("created_at")
+
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
 
   @@map("messages")
 }

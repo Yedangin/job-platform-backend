@@ -11,6 +11,7 @@ import {
   Query,
   UseGuards,
   HttpException,
+  Req,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -26,11 +27,15 @@ import { ClientGrpc } from '@nestjs/microservices';
 import { USERS_PACKAGE_NAME, UserServiceClient } from 'types/auth/users';
 import { firstValueFrom } from 'rxjs';
 import {
+  GrpcMetadataStorage,
   grpcToHttpStatus,
   Roles,
   RolesGuard,
   SessionAuthGuard,
+  wrapGrpcClient,
 } from '@in-job/common';
+import { Metadata } from '@grpc/grpc-js';
+import { Request } from 'express';
 
 @ApiTags('Users')
 @Controller('users')
@@ -38,11 +43,13 @@ export class UsersController implements OnModuleInit {
   private userService: UserServiceClient;
 
   constructor(
-    @Inject(USERS_PACKAGE_NAME) private readonly client: ClientGrpc
+    @Inject(USERS_PACKAGE_NAME) private readonly client: ClientGrpc,
+    private readonly metadataStorage: GrpcMetadataStorage,
   ) {}
 
   onModuleInit() {
-    this.userService = this.client.getService<UserServiceClient>('UserService');
+    const rawService = this.client.getService<UserServiceClient>('UserService');
+    this.userService = wrapGrpcClient(rawService, this.metadataStorage);
   }
 
   @UseGuards(SessionAuthGuard, RolesGuard)
@@ -55,17 +62,22 @@ export class UsersController implements OnModuleInit {
     type: UserResponseDto,
   })
   @ApiResponse({ status: 400, description: 'Bad request' })
-  async create(@Body() createUserDto: CreateUserDto): Promise<UserResponseDto> {
+  async create(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserResponseDto> {
     try {
+
       const result = await firstValueFrom(
-        this.userService.createUser({
-          email: createUserDto.email,
-          phone: createUserDto.phone,
-          fullName: createUserDto.fullName,
-          password: createUserDto.password,
-          role: createUserDto.role as any,
-          status: createUserDto.status as any,
-        })
+        this.userService.createUser(
+          {
+            email: createUserDto.email,
+            phone: createUserDto.phone,
+            fullName: createUserDto.fullName,
+            password: createUserDto.password,
+            role: createUserDto.role as any,
+            status: createUserDto.status as any,
+          },
+        )
       );
 
       return result as unknown as UserResponseDto;
@@ -87,21 +99,25 @@ export class UsersController implements OnModuleInit {
     type: GetAllUsersResponseDto,
   })
   async findAll(
-    @Query() query: GetAllUsersDto
+    @Query() query: GetAllUsersDto,
+    @Req() request: Request
   ): Promise<GetAllUsersResponseDto> {
     try {
+
       const result = await firstValueFrom(
-        this.userService.getAllUsers({
-          basicQuery: {
-            page: query.page,
-            limit: query.limit,
-            searchKeyword: query.searchKeyword,
-            sortField: query.sortField,
-            sortType: query.sortType,
-            filterModel: query.filterModel,
-            filterKeyword: query.filterKeyword,
+        this.userService.getAllUsers(
+          {
+            basicQuery: {
+              page: query.page,
+              limit: query.limit,
+              searchKeyword: query.searchKeyword,
+              sortField: query.sortField,
+              sortType: query.sortType,
+              filterModel: query.filterModel,
+              filterKeyword: query.filterKeyword,
+            },
           },
-        })
+        )
       );
 
       return result as unknown as GetAllUsersResponseDto;
@@ -124,8 +140,11 @@ export class UsersController implements OnModuleInit {
     type: UserResponseDto,
   })
   @ApiResponse({ status: 404, description: 'User not found' })
-  async findOne(@Param('id') id: string): Promise<UserResponseDto> {
+  async findOne(
+    @Param('id') id: string,
+  ): Promise<UserResponseDto> {
     try {
+
       const result = await firstValueFrom(
         this.userService.getUser({ userId: id })
       );
@@ -152,19 +171,23 @@ export class UsersController implements OnModuleInit {
   @ApiResponse({ status: 404, description: 'User not found' })
   async update(
     @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto
+    @Body() updateUserDto: UpdateUserDto,
+    @Req() request: Request
   ): Promise<UserResponseDto> {
     try {
+
       const result = await firstValueFrom(
-        this.userService.updateUser({
-          userId: id,
-          fullName: updateUserDto.fullName,
-          email: updateUserDto.email,
-          phone: updateUserDto.phone,
-          password: updateUserDto.password,
-          role: updateUserDto.role as any,
-          status: updateUserDto.status as any,
-        })
+        this.userService.updateUser(
+          {
+            userId: id,
+            fullName: updateUserDto.fullName,
+            email: updateUserDto.email,
+            phone: updateUserDto.phone,
+            password: updateUserDto.password,
+            role: updateUserDto.role as any,
+            status: updateUserDto.status as any,
+          },
+        )
       );
 
       return result as unknown as UserResponseDto;
@@ -186,8 +209,11 @@ export class UsersController implements OnModuleInit {
     type: DeleteUserResponseDto,
   })
   @ApiResponse({ status: 404, description: 'User not found' })
-  async remove(@Param('id') id: string): Promise<DeleteUserResponseDto> {
+  async remove(
+    @Param('id') id: string,
+  ): Promise<DeleteUserResponseDto> {
     try {
+
       const result = await firstValueFrom(
         this.userService.deleteUser({ userId: id })
       );

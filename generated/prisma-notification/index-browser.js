@@ -142,18 +142,24 @@ exports.Prisma.NotificationScalarFieldEnum = {
   errorMessage: 'errorMessage'
 };
 
-exports.Prisma.ChatScalarFieldEnum = {
+exports.Prisma.ConversationScalarFieldEnum = {
   id: 'id',
-  userOne: 'userOne',
-  userTwo: 'userTwo',
+  name: 'name',
+  isGroup: 'isGroup',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.ConversationMemberScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  userId: 'userId',
+  isAdmin: 'isAdmin'
 };
 
 exports.Prisma.MessageScalarFieldEnum = {
   id: 'id',
+  conversationId: 'conversationId',
   senderId: 'senderId',
-  receiverId: 'receiverId',
-  room: 'room',
   message: 'message',
   isSeen: 'isSeen',
   createdAt: 'createdAt'
@@ -191,7 +197,8 @@ exports.NotificationStatus = exports.$Enums.NotificationStatus = {
 
 exports.Prisma.ModelName = {
   Notification: 'Notification',
-  Chat: 'Chat',
+  Conversation: 'Conversation',
+  ConversationMember: 'ConversationMember',
   Message: 'Message'
 };
 

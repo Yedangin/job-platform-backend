@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { GrpcMethod, RpcException } from '@nestjs/microservices';
 import { UsersService } from './users.service';
 import {
@@ -12,7 +12,7 @@ import {
   DeleteUserResponse,
   CreateUserResponse,
 } from 'types/auth/users';
-import { httpToGrpcStatus } from '@in-job/common';
+import { GrpcAuthGuard, httpToGrpcStatus } from '@in-job/common';
 
 @Controller()
 export class UsersController {
@@ -37,6 +37,7 @@ export class UsersController {
     }
   }
 
+  @UseGuards(GrpcAuthGuard)
   @GrpcMethod('UserService', 'GetAllUsers')
   async GetAllUsers(
     request: GetAllUsersRequest
