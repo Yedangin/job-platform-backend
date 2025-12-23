@@ -217,7 +217,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/abed/Work/Test/job-platform-backend/generated/prisma-job",
+      "value": "/Users/abed/Work/JobPlatform/job-platform-backend-v1/generated/prisma-job",
       "fromEnvVar": null
     },
     "config": {
@@ -231,12 +231,11 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/abed/Work/Test/job-platform-backend/prisma/job/job.schema.prisma",
+    "sourceFilePath": "/Users/abed/Work/JobPlatform/job-platform-backend-v1/prisma/job/job.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
-    "schemaEnvPath": "../../.env"
+    "rootEnvPath": null
   },
   "relativePath": "../../prisma/job",
   "clientVersion": "6.19.0",

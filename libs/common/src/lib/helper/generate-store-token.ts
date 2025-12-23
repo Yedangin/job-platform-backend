@@ -13,21 +13,23 @@ export type Payload = {
 export class GenerateStoreToken {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly redisService: RedisService,
+    private readonly redisService: RedisService
   ) {}
   async generate(payload: Payload): Promise<string> {
     const accessToken = this.jwtService.sign(payload, {
+      secret: process.env['JWT_SECRET'],
       expiresIn: '15m',
     });
 
     const refreshToken = this.jwtService.sign(payload, {
+      secret: process.env['JWT_SECRET'],
       expiresIn: '7d',
     });
 
     // Generate session ID (also as JWT for security)
     const sessionId = this.jwtService.sign(
       { sessionUuid: uuidv4(), userId: payload.userId },
-      { expiresIn: '7d' },
+      { expiresIn: '7d' }
     );
 
     // Store session data in Redis
@@ -43,7 +45,8 @@ export class GenerateStoreToken {
     await this.redisService.set(
       `session:${sessionId}`,
       JSON.stringify(sessionData),
-      7 * 24 * 60 * 60, // 7 days in seconds
+      7 * 24 * 60 * 60 // 7 days in seconds
+      // 60
     );
 
     return sessionId;

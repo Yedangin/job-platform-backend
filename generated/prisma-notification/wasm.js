@@ -184,7 +184,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/lord/Desktop/Yedanginn/IN-JOB/generated/prisma-notification",
+      "value": "/Users/abed/Work/JobPlatform/job-platform-backend-v1/generated/prisma-notification",
       "fromEnvVar": null
     },
     "config": {
@@ -198,12 +198,11 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/lord/Desktop/Yedanginn/IN-JOB/prisma/notification/notification.schema.prisma",
+    "sourceFilePath": "/Users/abed/Work/JobPlatform/job-platform-backend-v1/prisma/notification/notification.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
-    "schemaEnvPath": "../../.env"
+    "rootEnvPath": null
   },
   "relativePath": "../../prisma/notification",
   "clientVersion": "6.19.0",

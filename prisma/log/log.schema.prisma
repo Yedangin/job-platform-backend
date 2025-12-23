@@ -23,3 +23,34 @@ model SystemLog {
   @@index([createdAt])
   @@map("system_logs")
 }
+
+model AuditLog {
+  id           String   @id @default(auto()) @map("_id") @logDB.ObjectId
+  service      String   @map("service") @logDB.String
+  userId       String?  @map("user_id")
+  action       String   @map("action") @logDB.String
+  resource     String?  @map("resource") @logDB.String
+  resourceId   String?  @map("resource_id")
+  method       String?  @map("method") @logDB.String
+  endpoint     String?  @map("endpoint") @logDB.String
+  statusCode   Int?     @map("status_code")
+  ipAddress    String?  @map("ip_address")
+  userAgent    String?  @map("user_agent")
+  requestId    String?  @map("request_id")
+  sessionId    String?  @map("session_id")
+  metadata     Json?    @map("metadata")
+  oldValues    Json?    @map("old_values")
+  newValues    Json?    @map("new_values")
+  duration     Int?     @map("duration") // in milliseconds
+  success      Boolean  @default(true) @map("success")
+  errorMessage String?  @map("error_message")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([service])
+  @@index([userId])
+  @@index([action])
+  @@index([resource])
+  @@index([createdAt])
+  @@index([success])
+  @@map("audit_logs")
+}

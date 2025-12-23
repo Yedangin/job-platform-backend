@@ -122,6 +122,29 @@ exports.Prisma.SystemLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  service: 'service',
+  userId: 'userId',
+  action: 'action',
+  resource: 'resource',
+  resourceId: 'resourceId',
+  method: 'method',
+  endpoint: 'endpoint',
+  statusCode: 'statusCode',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  requestId: 'requestId',
+  sessionId: 'sessionId',
+  metadata: 'metadata',
+  oldValues: 'oldValues',
+  newValues: 'newValues',
+  duration: 'duration',
+  success: 'success',
+  errorMessage: 'errorMessage',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -134,7 +157,8 @@ exports.Prisma.QueryMode = {
 
 
 exports.Prisma.ModelName = {
-  SystemLog: 'SystemLog'
+  SystemLog: 'SystemLog',
+  AuditLog: 'AuditLog'
 };
 
 /**

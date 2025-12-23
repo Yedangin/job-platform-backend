@@ -398,7 +398,7 @@ export class DepositService {
         data: {
           userId: transaction.userId || '',
           walletId: wallet.id,
-          depositedAmount: parseInt(request.amount),
+          depositedAmount: request?.amount,
           status: 'APPROVED',
         },
       });

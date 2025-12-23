@@ -1,5 +1,10 @@
 import { CacheModule } from '@nestjs/cache-manager';
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { redisStore } from 'cache-manager-redis-yet';
 import { JwtModule } from '@nestjs/jwt';
@@ -7,7 +12,12 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
-import { GrpcMetadataInterceptor, RedisModule } from '@in-job/common';
+import {
+  GrpcMetadataInterceptor,
+  RedisModule,
+  LoggingMiddleware,
+  LogPrismaModule,
+} from '@in-job/common';
 import { MemberVerificationModule } from './member-verification/member-verification.module';
 import { UsersModule } from './users/users.module';
 import { UserInformationsModule } from './user-informations/user-informations.module';
@@ -71,13 +81,39 @@ import { PaymentModule } from './payment/payment.module';
     InterviewModule,
     ReviewModule,
     PaymentModule,
+    LogPrismaModule,
   ],
   controllers: [],
   providers: [
     {
       provide: APP_INTERCEPTOR,
-      useClass: GrpcMetadataInterceptor
-    }
+      useClass: GrpcMetadataInterceptor,
+    },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(LoggingMiddleware).forRoutes(
+      {
+        path: 'auth/login',
+        method: RequestMethod.POST,
+      },
+      {
+        path: 'auth/register',
+        method: RequestMethod.POST,
+      },
+      {
+        path: '/payments/deposit/create',
+        method: RequestMethod.POST,
+      },
+      {
+        path: '/payments/deposit/confirm',
+        method: RequestMethod.POST,
+      },
+      {
+        path: '/payments/deposit/fail',
+        method: RequestMethod.POST,
+      }
+    );
+  }
+}

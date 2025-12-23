@@ -1295,7 +1295,6 @@ export namespace Prisma {
   export type WalletMinAggregateOutputType = {
     id: string | null
     userId: string | null
-    beforeAmount: string | null
     balance: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -1304,7 +1303,6 @@ export namespace Prisma {
   export type WalletMaxAggregateOutputType = {
     id: string | null
     userId: string | null
-    beforeAmount: string | null
     balance: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -1313,7 +1311,6 @@ export namespace Prisma {
   export type WalletCountAggregateOutputType = {
     id: number
     userId: number
-    beforeAmount: number
     balance: number
     createdAt: number
     updatedAt: number
@@ -1324,7 +1321,6 @@ export namespace Prisma {
   export type WalletMinAggregateInputType = {
     id?: true
     userId?: true
-    beforeAmount?: true
     balance?: true
     createdAt?: true
     updatedAt?: true
@@ -1333,7 +1329,6 @@ export namespace Prisma {
   export type WalletMaxAggregateInputType = {
     id?: true
     userId?: true
-    beforeAmount?: true
     balance?: true
     createdAt?: true
     updatedAt?: true
@@ -1342,7 +1337,6 @@ export namespace Prisma {
   export type WalletCountAggregateInputType = {
     id?: true
     userId?: true
-    beforeAmount?: true
     balance?: true
     createdAt?: true
     updatedAt?: true
@@ -1424,7 +1418,6 @@ export namespace Prisma {
   export type WalletGroupByOutputType = {
     id: string
     userId: string
-    beforeAmount: string | null
     balance: string | null
     createdAt: Date
     updatedAt: Date
@@ -1450,7 +1443,6 @@ export namespace Prisma {
   export type WalletSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
-    beforeAmount?: boolean
     balance?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -1461,7 +1453,6 @@ export namespace Prisma {
   export type WalletSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
-    beforeAmount?: boolean
     balance?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -1470,7 +1461,6 @@ export namespace Prisma {
   export type WalletSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
-    beforeAmount?: boolean
     balance?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -1479,13 +1469,12 @@ export namespace Prisma {
   export type WalletSelectScalar = {
     id?: boolean
     userId?: boolean
-    beforeAmount?: boolean
     balance?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type WalletOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "beforeAmount" | "balance" | "createdAt" | "updatedAt", ExtArgs["result"]["wallet"]>
+  export type WalletOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "balance" | "createdAt" | "updatedAt", ExtArgs["result"]["wallet"]>
   export type WalletInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     deposits?: boolean | Wallet$depositsArgs<ExtArgs>
     _count?: boolean | WalletCountOutputTypeDefaultArgs<ExtArgs>
@@ -1501,7 +1490,6 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
-      beforeAmount: string | null
       balance: string | null
       createdAt: Date
       updatedAt: Date
@@ -1931,7 +1919,6 @@ export namespace Prisma {
   interface WalletFieldRefs {
     readonly id: FieldRef<"Wallet", 'String'>
     readonly userId: FieldRef<"Wallet", 'String'>
-    readonly beforeAmount: FieldRef<"Wallet", 'String'>
     readonly balance: FieldRef<"Wallet", 'String'>
     readonly createdAt: FieldRef<"Wallet", 'DateTime'>
     readonly updatedAt: FieldRef<"Wallet", 'DateTime'>
@@ -2371,25 +2358,16 @@ export namespace Prisma {
 
   export type AggregateDeposit = {
     _count: DepositCountAggregateOutputType | null
-    _avg: DepositAvgAggregateOutputType | null
-    _sum: DepositSumAggregateOutputType | null
     _min: DepositMinAggregateOutputType | null
     _max: DepositMaxAggregateOutputType | null
-  }
-
-  export type DepositAvgAggregateOutputType = {
-    depositedAmount: number | null
-  }
-
-  export type DepositSumAggregateOutputType = {
-    depositedAmount: number | null
   }
 
   export type DepositMinAggregateOutputType = {
     id: string | null
     userId: string | null
     walletId: string | null
-    depositedAmount: number | null
+    depositedAmount: string | null
+    beforeAmount: string | null
     status: $Enums.DepositStatus | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2399,7 +2377,8 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     walletId: string | null
-    depositedAmount: number | null
+    depositedAmount: string | null
+    beforeAmount: string | null
     status: $Enums.DepositStatus | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2410,6 +2389,7 @@ export namespace Prisma {
     userId: number
     walletId: number
     depositedAmount: number
+    beforeAmount: number
     status: number
     createdAt: number
     updatedAt: number
@@ -2417,19 +2397,12 @@ export namespace Prisma {
   }
 
 
-  export type DepositAvgAggregateInputType = {
-    depositedAmount?: true
-  }
-
-  export type DepositSumAggregateInputType = {
-    depositedAmount?: true
-  }
-
   export type DepositMinAggregateInputType = {
     id?: true
     userId?: true
     walletId?: true
     depositedAmount?: true
+    beforeAmount?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -2440,6 +2413,7 @@ export namespace Prisma {
     userId?: true
     walletId?: true
     depositedAmount?: true
+    beforeAmount?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -2450,6 +2424,7 @@ export namespace Prisma {
     userId?: true
     walletId?: true
     depositedAmount?: true
+    beforeAmount?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -2494,18 +2469,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: DepositAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: DepositSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: DepositMinAggregateInputType
@@ -2536,8 +2499,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: DepositCountAggregateInputType | true
-    _avg?: DepositAvgAggregateInputType
-    _sum?: DepositSumAggregateInputType
     _min?: DepositMinAggregateInputType
     _max?: DepositMaxAggregateInputType
   }
@@ -2546,13 +2507,12 @@ export namespace Prisma {
     id: string
     userId: string
     walletId: string
-    depositedAmount: number | null
+    depositedAmount: string | null
+    beforeAmount: string | null
     status: $Enums.DepositStatus
     createdAt: Date
     updatedAt: Date
     _count: DepositCountAggregateOutputType | null
-    _avg: DepositAvgAggregateOutputType | null
-    _sum: DepositSumAggregateOutputType | null
     _min: DepositMinAggregateOutputType | null
     _max: DepositMaxAggregateOutputType | null
   }
@@ -2576,6 +2536,7 @@ export namespace Prisma {
     userId?: boolean
     walletId?: boolean
     depositedAmount?: boolean
+    beforeAmount?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2589,6 +2550,7 @@ export namespace Prisma {
     userId?: boolean
     walletId?: boolean
     depositedAmount?: boolean
+    beforeAmount?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2600,6 +2562,7 @@ export namespace Prisma {
     userId?: boolean
     walletId?: boolean
     depositedAmount?: boolean
+    beforeAmount?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2611,12 +2574,13 @@ export namespace Prisma {
     userId?: boolean
     walletId?: boolean
     depositedAmount?: boolean
+    beforeAmount?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type DepositOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "walletId" | "depositedAmount" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["deposit"]>
+  export type DepositOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "walletId" | "depositedAmount" | "beforeAmount" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["deposit"]>
   export type DepositInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     wallet?: boolean | WalletDefaultArgs<ExtArgs>
     transactions?: boolean | Deposit$transactionsArgs<ExtArgs>
@@ -2639,7 +2603,8 @@ export namespace Prisma {
       id: string
       userId: string
       walletId: string
-      depositedAmount: number | null
+      depositedAmount: string | null
+      beforeAmount: string | null
       status: $Enums.DepositStatus
       createdAt: Date
       updatedAt: Date
@@ -3071,7 +3036,8 @@ export namespace Prisma {
     readonly id: FieldRef<"Deposit", 'String'>
     readonly userId: FieldRef<"Deposit", 'String'>
     readonly walletId: FieldRef<"Deposit", 'String'>
-    readonly depositedAmount: FieldRef<"Deposit", 'Int'>
+    readonly depositedAmount: FieldRef<"Deposit", 'String'>
+    readonly beforeAmount: FieldRef<"Deposit", 'String'>
     readonly status: FieldRef<"Deposit", 'DepositStatus'>
     readonly createdAt: FieldRef<"Deposit", 'DateTime'>
     readonly updatedAt: FieldRef<"Deposit", 'DateTime'>
@@ -5931,7 +5897,6 @@ export namespace Prisma {
   export const WalletScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
-    beforeAmount: 'beforeAmount',
     balance: 'balance',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -5945,6 +5910,7 @@ export namespace Prisma {
     userId: 'userId',
     walletId: 'walletId',
     depositedAmount: 'depositedAmount',
+    beforeAmount: 'beforeAmount',
     status: 'status',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -6065,20 +6031,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-  /**
    * Reference to a field of type 'DepositStatus'
    */
   export type EnumDepositStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DepositStatus'>
@@ -6089,6 +6041,20 @@ export namespace Prisma {
    * Reference to a field of type 'DepositStatus[]'
    */
   export type ListEnumDepositStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DepositStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int'
+   */
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'Int[]'
+   */
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -6157,7 +6123,6 @@ export namespace Prisma {
     NOT?: WalletWhereInput | WalletWhereInput[]
     id?: StringFilter<"Wallet"> | string
     userId?: StringFilter<"Wallet"> | string
-    beforeAmount?: StringNullableFilter<"Wallet"> | string | null
     balance?: StringNullableFilter<"Wallet"> | string | null
     createdAt?: DateTimeFilter<"Wallet"> | Date | string
     updatedAt?: DateTimeFilter<"Wallet"> | Date | string
@@ -6167,7 +6132,6 @@ export namespace Prisma {
   export type WalletOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
-    beforeAmount?: SortOrderInput | SortOrder
     balance?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -6180,7 +6144,6 @@ export namespace Prisma {
     AND?: WalletWhereInput | WalletWhereInput[]
     OR?: WalletWhereInput[]
     NOT?: WalletWhereInput | WalletWhereInput[]
-    beforeAmount?: StringNullableFilter<"Wallet"> | string | null
     balance?: StringNullableFilter<"Wallet"> | string | null
     createdAt?: DateTimeFilter<"Wallet"> | Date | string
     updatedAt?: DateTimeFilter<"Wallet"> | Date | string
@@ -6190,7 +6153,6 @@ export namespace Prisma {
   export type WalletOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
-    beforeAmount?: SortOrderInput | SortOrder
     balance?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -6205,7 +6167,6 @@ export namespace Prisma {
     NOT?: WalletScalarWhereWithAggregatesInput | WalletScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Wallet"> | string
     userId?: StringWithAggregatesFilter<"Wallet"> | string
-    beforeAmount?: StringNullableWithAggregatesFilter<"Wallet"> | string | null
     balance?: StringNullableWithAggregatesFilter<"Wallet"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Wallet"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Wallet"> | Date | string
@@ -6218,7 +6179,8 @@ export namespace Prisma {
     id?: StringFilter<"Deposit"> | string
     userId?: StringFilter<"Deposit"> | string
     walletId?: StringFilter<"Deposit"> | string
-    depositedAmount?: IntNullableFilter<"Deposit"> | number | null
+    depositedAmount?: StringNullableFilter<"Deposit"> | string | null
+    beforeAmount?: StringNullableFilter<"Deposit"> | string | null
     status?: EnumDepositStatusFilter<"Deposit"> | $Enums.DepositStatus
     createdAt?: DateTimeFilter<"Deposit"> | Date | string
     updatedAt?: DateTimeFilter<"Deposit"> | Date | string
@@ -6231,6 +6193,7 @@ export namespace Prisma {
     userId?: SortOrder
     walletId?: SortOrder
     depositedAmount?: SortOrderInput | SortOrder
+    beforeAmount?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -6245,7 +6208,8 @@ export namespace Prisma {
     NOT?: DepositWhereInput | DepositWhereInput[]
     userId?: StringFilter<"Deposit"> | string
     walletId?: StringFilter<"Deposit"> | string
-    depositedAmount?: IntNullableFilter<"Deposit"> | number | null
+    depositedAmount?: StringNullableFilter<"Deposit"> | string | null
+    beforeAmount?: StringNullableFilter<"Deposit"> | string | null
     status?: EnumDepositStatusFilter<"Deposit"> | $Enums.DepositStatus
     createdAt?: DateTimeFilter<"Deposit"> | Date | string
     updatedAt?: DateTimeFilter<"Deposit"> | Date | string
@@ -6258,14 +6222,13 @@ export namespace Prisma {
     userId?: SortOrder
     walletId?: SortOrder
     depositedAmount?: SortOrderInput | SortOrder
+    beforeAmount?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: DepositCountOrderByAggregateInput
-    _avg?: DepositAvgOrderByAggregateInput
     _max?: DepositMaxOrderByAggregateInput
     _min?: DepositMinOrderByAggregateInput
-    _sum?: DepositSumOrderByAggregateInput
   }
 
   export type DepositScalarWhereWithAggregatesInput = {
@@ -6275,7 +6238,8 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Deposit"> | string
     userId?: StringWithAggregatesFilter<"Deposit"> | string
     walletId?: StringWithAggregatesFilter<"Deposit"> | string
-    depositedAmount?: IntNullableWithAggregatesFilter<"Deposit"> | number | null
+    depositedAmount?: StringNullableWithAggregatesFilter<"Deposit"> | string | null
+    beforeAmount?: StringNullableWithAggregatesFilter<"Deposit"> | string | null
     status?: EnumDepositStatusWithAggregatesFilter<"Deposit"> | $Enums.DepositStatus
     createdAt?: DateTimeWithAggregatesFilter<"Deposit"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Deposit"> | Date | string
@@ -6474,7 +6438,6 @@ export namespace Prisma {
   export type WalletCreateInput = {
     id?: string
     userId: string
-    beforeAmount?: string | null
     balance?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -6484,7 +6447,6 @@ export namespace Prisma {
   export type WalletUncheckedCreateInput = {
     id?: string
     userId: string
-    beforeAmount?: string | null
     balance?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -6494,7 +6456,6 @@ export namespace Prisma {
   export type WalletUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    beforeAmount?: NullableStringFieldUpdateOperationsInput | string | null
     balance?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6504,7 +6465,6 @@ export namespace Prisma {
   export type WalletUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    beforeAmount?: NullableStringFieldUpdateOperationsInput | string | null
     balance?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6514,7 +6474,6 @@ export namespace Prisma {
   export type WalletCreateManyInput = {
     id?: string
     userId: string
-    beforeAmount?: string | null
     balance?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -6523,7 +6482,6 @@ export namespace Prisma {
   export type WalletUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    beforeAmount?: NullableStringFieldUpdateOperationsInput | string | null
     balance?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6532,7 +6490,6 @@ export namespace Prisma {
   export type WalletUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    beforeAmount?: NullableStringFieldUpdateOperationsInput | string | null
     balance?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6541,7 +6498,8 @@ export namespace Prisma {
   export type DepositCreateInput = {
     id?: string
     userId: string
-    depositedAmount?: number | null
+    depositedAmount?: string | null
+    beforeAmount?: string | null
     status?: $Enums.DepositStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -6553,7 +6511,8 @@ export namespace Prisma {
     id?: string
     userId: string
     walletId: string
-    depositedAmount?: number | null
+    depositedAmount?: string | null
+    beforeAmount?: string | null
     status?: $Enums.DepositStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -6563,7 +6522,8 @@ export namespace Prisma {
   export type DepositUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    depositedAmount?: NullableIntFieldUpdateOperationsInput | number | null
+    depositedAmount?: NullableStringFieldUpdateOperationsInput | string | null
+    beforeAmount?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6575,7 +6535,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     walletId?: StringFieldUpdateOperationsInput | string
-    depositedAmount?: NullableIntFieldUpdateOperationsInput | number | null
+    depositedAmount?: NullableStringFieldUpdateOperationsInput | string | null
+    beforeAmount?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6586,7 +6547,8 @@ export namespace Prisma {
     id?: string
     userId: string
     walletId: string
-    depositedAmount?: number | null
+    depositedAmount?: string | null
+    beforeAmount?: string | null
     status?: $Enums.DepositStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -6595,7 +6557,8 @@ export namespace Prisma {
   export type DepositUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    depositedAmount?: NullableIntFieldUpdateOperationsInput | number | null
+    depositedAmount?: NullableStringFieldUpdateOperationsInput | string | null
+    beforeAmount?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6605,7 +6568,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     walletId?: StringFieldUpdateOperationsInput | string
-    depositedAmount?: NullableIntFieldUpdateOperationsInput | number | null
+    depositedAmount?: NullableStringFieldUpdateOperationsInput | string | null
+    beforeAmount?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6889,7 +6853,6 @@ export namespace Prisma {
   export type WalletCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-    beforeAmount?: SortOrder
     balance?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -6898,7 +6861,6 @@ export namespace Prisma {
   export type WalletMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-    beforeAmount?: SortOrder
     balance?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -6907,7 +6869,6 @@ export namespace Prisma {
   export type WalletMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-    beforeAmount?: SortOrder
     balance?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -6963,17 +6924,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
   export type EnumDepositStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.DepositStatus | EnumDepositStatusFieldRefInput<$PrismaModel>
     in?: $Enums.DepositStatus[] | ListEnumDepositStatusFieldRefInput<$PrismaModel>
@@ -7001,13 +6951,10 @@ export namespace Prisma {
     userId?: SortOrder
     walletId?: SortOrder
     depositedAmount?: SortOrder
+    beforeAmount?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type DepositAvgOrderByAggregateInput = {
-    depositedAmount?: SortOrder
   }
 
   export type DepositMaxOrderByAggregateInput = {
@@ -7015,6 +6962,7 @@ export namespace Prisma {
     userId?: SortOrder
     walletId?: SortOrder
     depositedAmount?: SortOrder
+    beforeAmount?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7025,29 +6973,10 @@ export namespace Prisma {
     userId?: SortOrder
     walletId?: SortOrder
     depositedAmount?: SortOrder
+    beforeAmount?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type DepositSumOrderByAggregateInput = {
-    depositedAmount?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type EnumDepositStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -7058,6 +6987,17 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumDepositStatusFilter<$PrismaModel>
     _max?: NestedEnumDepositStatusFilter<$PrismaModel>
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type EnumPaymentMethodNullableFilter<$PrismaModel = never> = {
@@ -7163,6 +7103,22 @@ export namespace Prisma {
 
   export type TransactionSumOrderByAggregateInput = {
     amount?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type EnumPaymentMethodNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -7374,14 +7330,6 @@ export namespace Prisma {
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type EnumDepositStatusFieldUpdateOperationsInput = {
     set?: $Enums.DepositStatus
   }
@@ -7440,6 +7388,14 @@ export namespace Prisma {
     connectOrCreate?: TransactionLogCreateOrConnectWithoutTransactionRefInput | TransactionLogCreateOrConnectWithoutTransactionRefInput[]
     createMany?: TransactionLogCreateManyTransactionRefInputEnvelope
     connect?: TransactionLogWhereUniqueInput | TransactionLogWhereUniqueInput[]
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type NullableEnumPaymentMethodFieldUpdateOperationsInput = {
@@ -7628,33 +7584,6 @@ export namespace Prisma {
     not?: NestedEnumDepositStatusFilter<$PrismaModel> | $Enums.DepositStatus
   }
 
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedEnumDepositStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.DepositStatus | EnumDepositStatusFieldRefInput<$PrismaModel>
     in?: $Enums.DepositStatus[] | ListEnumDepositStatusFieldRefInput<$PrismaModel>
@@ -7688,6 +7617,33 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedEnumPaymentMethodNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -7767,7 +7723,8 @@ export namespace Prisma {
   export type DepositCreateWithoutWalletInput = {
     id?: string
     userId: string
-    depositedAmount?: number | null
+    depositedAmount?: string | null
+    beforeAmount?: string | null
     status?: $Enums.DepositStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7777,7 +7734,8 @@ export namespace Prisma {
   export type DepositUncheckedCreateWithoutWalletInput = {
     id?: string
     userId: string
-    depositedAmount?: number | null
+    depositedAmount?: string | null
+    beforeAmount?: string | null
     status?: $Enums.DepositStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7817,7 +7775,8 @@ export namespace Prisma {
     id?: StringFilter<"Deposit"> | string
     userId?: StringFilter<"Deposit"> | string
     walletId?: StringFilter<"Deposit"> | string
-    depositedAmount?: IntNullableFilter<"Deposit"> | number | null
+    depositedAmount?: StringNullableFilter<"Deposit"> | string | null
+    beforeAmount?: StringNullableFilter<"Deposit"> | string | null
     status?: EnumDepositStatusFilter<"Deposit"> | $Enums.DepositStatus
     createdAt?: DateTimeFilter<"Deposit"> | Date | string
     updatedAt?: DateTimeFilter<"Deposit"> | Date | string
@@ -7826,7 +7785,6 @@ export namespace Prisma {
   export type WalletCreateWithoutDepositsInput = {
     id?: string
     userId: string
-    beforeAmount?: string | null
     balance?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7835,7 +7793,6 @@ export namespace Prisma {
   export type WalletUncheckedCreateWithoutDepositsInput = {
     id?: string
     userId: string
-    beforeAmount?: string | null
     balance?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7908,7 +7865,6 @@ export namespace Prisma {
   export type WalletUpdateWithoutDepositsInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    beforeAmount?: NullableStringFieldUpdateOperationsInput | string | null
     balance?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7917,7 +7873,6 @@ export namespace Prisma {
   export type WalletUncheckedUpdateWithoutDepositsInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    beforeAmount?: NullableStringFieldUpdateOperationsInput | string | null
     balance?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7964,7 +7919,8 @@ export namespace Prisma {
   export type DepositCreateWithoutTransactionsInput = {
     id?: string
     userId: string
-    depositedAmount?: number | null
+    depositedAmount?: string | null
+    beforeAmount?: string | null
     status?: $Enums.DepositStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -7975,7 +7931,8 @@ export namespace Prisma {
     id?: string
     userId: string
     walletId: string
-    depositedAmount?: number | null
+    depositedAmount?: string | null
+    beforeAmount?: string | null
     status?: $Enums.DepositStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8032,7 +7989,8 @@ export namespace Prisma {
   export type DepositUpdateWithoutTransactionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    depositedAmount?: NullableIntFieldUpdateOperationsInput | number | null
+    depositedAmount?: NullableStringFieldUpdateOperationsInput | string | null
+    beforeAmount?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8043,7 +8001,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     walletId?: StringFieldUpdateOperationsInput | string
-    depositedAmount?: NullableIntFieldUpdateOperationsInput | number | null
+    depositedAmount?: NullableStringFieldUpdateOperationsInput | string | null
+    beforeAmount?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8175,7 +8134,8 @@ export namespace Prisma {
   export type DepositCreateManyWalletInput = {
     id?: string
     userId: string
-    depositedAmount?: number | null
+    depositedAmount?: string | null
+    beforeAmount?: string | null
     status?: $Enums.DepositStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8184,7 +8144,8 @@ export namespace Prisma {
   export type DepositUpdateWithoutWalletInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    depositedAmount?: NullableIntFieldUpdateOperationsInput | number | null
+    depositedAmount?: NullableStringFieldUpdateOperationsInput | string | null
+    beforeAmount?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8194,7 +8155,8 @@ export namespace Prisma {
   export type DepositUncheckedUpdateWithoutWalletInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    depositedAmount?: NullableIntFieldUpdateOperationsInput | number | null
+    depositedAmount?: NullableStringFieldUpdateOperationsInput | string | null
+    beforeAmount?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8204,7 +8166,8 @@ export namespace Prisma {
   export type DepositUncheckedUpdateManyWithoutWalletInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    depositedAmount?: NullableIntFieldUpdateOperationsInput | number | null
+    depositedAmount?: NullableStringFieldUpdateOperationsInput | string | null
+    beforeAmount?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumDepositStatusFieldUpdateOperationsInput | $Enums.DepositStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

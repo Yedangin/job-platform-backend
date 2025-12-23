@@ -86,3 +86,6 @@ export * from './lib/pipes/profile-picture-validator.pipe';
 // Types
 // export * from './lib/types/general-response';
 // export * from './lib/types/jwt-payload';
+
+//Middleware
+export * from './lib/middleware/logging-middleware';

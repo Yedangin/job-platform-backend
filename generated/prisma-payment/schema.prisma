@@ -43,12 +43,11 @@ enum DepositStatus {
 }
 
 model Wallet {
-  id           String   @id @default(cuid()) @map("id")
-  userId       String   @unique @map("user_id")
-  beforeAmount String?  @map("before_amount") @paymentDB.VarChar(50)
-  balance      String?  @paymentDB.VarChar(50)
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id        String   @id @default(cuid()) @map("id")
+  userId    String   @unique @map("user_id")
+  balance   String?  @paymentDB.VarChar(50)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   deposits Deposit[]
 
@@ -61,7 +60,8 @@ model Deposit {
   id              String        @id @default(cuid()) @map("id")
   userId          String        @map("user_id")
   walletId        String        @map("wallet_id")
-  depositedAmount Int?          @map("deposited_amount")
+  depositedAmount String?       @map("deposited_amount")
+  beforeAmount    String?       @map("before_amount") @paymentDB.VarChar(50)
   status          DepositStatus @default(PENDING)
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")

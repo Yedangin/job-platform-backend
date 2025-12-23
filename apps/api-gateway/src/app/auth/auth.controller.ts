@@ -100,13 +100,13 @@ export class AuthController implements OnModuleInit {
   async register(@Body() registerDto: RegisterDto) {
     try {
       const result = await firstValueFrom(
-        this.authService.register(registerDto),
+        this.authService.register(registerDto)
       );
       return result;
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
+        grpcToHttpStatus(error.code ?? 2)
       );
     }
   }
@@ -120,14 +120,16 @@ export class AuthController implements OnModuleInit {
   })
   async login(
     @Body() loginDto: LoginDto,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) res: Response
   ) {
     try {
       const result: any = await firstValueFrom(
-        this.authService.login(loginDto),
+        this.authService.login(loginDto)
       );
 
       const sessionId = String(result.sessionId);
+
+      console.log('sessionId : ', sessionId);
 
       res.cookie('sessionId', sessionId, {
         httpOnly: true,
@@ -141,7 +143,7 @@ export class AuthController implements OnModuleInit {
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
+        grpcToHttpStatus(error.code ?? 2)
       );
     }
   }
@@ -159,13 +161,13 @@ export class AuthController implements OnModuleInit {
       }
 
       const result = await firstValueFrom(
-        this.authService.getProfile({ sessionId: sessionId }),
+        this.authService.getProfile({ sessionId: sessionId })
       );
       return result;
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
+        grpcToHttpStatus(error.code ?? 2)
       );
     }
   }
@@ -178,11 +180,11 @@ export class AuthController implements OnModuleInit {
   })
   async logout(
     @Session() sessionId: string,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) res: Response
   ) {
     try {
       const result = await firstValueFrom(
-        this.authService.logout({ sessionId: sessionId }),
+        this.authService.logout({ sessionId: sessionId })
       );
 
       res.clearCookie('sessionId', {
@@ -193,7 +195,7 @@ export class AuthController implements OnModuleInit {
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
+        grpcToHttpStatus(error.code ?? 2)
       );
     }
   }
@@ -204,13 +206,13 @@ export class AuthController implements OnModuleInit {
   async requestPasswordReset(@Body() { email }: RequestPasswordResetDto) {
     try {
       const result = await firstValueFrom(
-        this.authService.passwordReset({ email }),
+        this.authService.passwordReset({ email })
       );
       return result;
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
+        grpcToHttpStatus(error.code ?? 2)
       );
     }
   }
@@ -224,13 +226,13 @@ export class AuthController implements OnModuleInit {
         this.authService.resetPassword({
           token,
           newPassword,
-        }),
+        })
       );
       return result;
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
+        grpcToHttpStatus(error.code ?? 2)
       );
     }
   }
@@ -245,7 +247,7 @@ export class AuthController implements OnModuleInit {
   @ApiOperation({ summary: 'Google OAuth callback' })
   async googleAuthRedirect(
     @Request() req: any,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) res: Response
   ) {
     try {
       const user = {
@@ -271,7 +273,7 @@ export class AuthController implements OnModuleInit {
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
+        grpcToHttpStatus(error.code ?? 2)
       );
     }
   }
@@ -286,7 +288,7 @@ export class AuthController implements OnModuleInit {
   @ApiOperation({ summary: 'Facebook OAuth callback' })
   async facebookAuthRedirect(
     @Request() req: any,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) res: Response
   ) {
     try {
       const user = {
@@ -312,7 +314,7 @@ export class AuthController implements OnModuleInit {
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
+        grpcToHttpStatus(error.code ?? 2)
       );
     }
   }
@@ -327,7 +329,7 @@ export class AuthController implements OnModuleInit {
   @ApiOperation({ summary: 'Kakao OAuth callback' })
   async kakaoOAuthRedirect(
     @Request() req: any,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) res: Response
   ) {
     try {
       const user = {
@@ -353,7 +355,7 @@ export class AuthController implements OnModuleInit {
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
+        grpcToHttpStatus(error.code ?? 2)
       );
     }
   }
@@ -368,7 +370,7 @@ export class AuthController implements OnModuleInit {
   @ApiOperation({ summary: 'Apple OAuth callback' })
   async AppleOAuthRedirect(
     @Request() req: any,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) res: Response
   ) {
     try {
       const user = {
@@ -394,7 +396,7 @@ export class AuthController implements OnModuleInit {
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
+        grpcToHttpStatus(error.code ?? 2)
       );
     }
   }
