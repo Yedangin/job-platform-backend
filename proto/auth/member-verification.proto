@@ -27,7 +27,7 @@ message MemberVerification {
   string selfiePhoto = 4;
   VerificationStatus verificationStatus = 5;
   string isVerifiedBy = 6;
-  string createAt = 7;
+  string createdAt = 7;
   string updatedAt = 8;
 }
 
@@ -43,7 +43,7 @@ message UpdateMemberVerificationRequest {
   optional string passportPhoto = 2;
   optional string selfiePhoto = 3;
   optional VerificationStatus verificationStatus = 4;
-  optional string isVerifiedby = 5;
+  optional string isVerifiedBy = 5;
 }
 
 // Delete Request

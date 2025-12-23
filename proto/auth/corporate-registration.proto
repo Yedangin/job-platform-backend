@@ -33,7 +33,7 @@ message UpdateCoporateRegistrationReqeust {
   optional string companyName = 2;
   optional string businessLicenseFile = 3;
   optional VerificationStatus verificationStatus = 4;
-  optional string isVerifiedby = 5;
+  optional string isVerifiedBy = 5;
 }
 
 message DeleteCorporateRegistrationRequest {

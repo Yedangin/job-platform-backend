@@ -114,7 +114,7 @@ export class CorporateRegistrationController implements OnModuleInit {
             updateCorporateRegistrationDto.businessLicenseFile,
           verificationStatus:
             updateCorporateRegistrationDto.verificationStatus as any,
-          isVerifiedby: session.userId,
+          isVerifiedBy: session.userId,
         })
       );
       return result;
