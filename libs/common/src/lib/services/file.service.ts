@@ -5,7 +5,10 @@ import { v4 as uuidv4 } from 'uuid';
 
 export enum FileCategory {
   PROFILES = 'profiles',
-  PRODUCTS = 'products',
+  CVS = 'cvs',
+  PASSPORT_PHOTOS = 'passport-photos',
+  SELFIE_PHOTOS = 'selfie-photos',
+  BUSINESS_LICENSES = 'business-licenses',
 }
 
 @Injectable()
@@ -25,7 +28,7 @@ export class FileService {
   }
 
   private async ensureUploadDirectoryExists(
-    category: FileCategory,
+    category: FileCategory
   ): Promise<void> {
     const uploadPath = join(this.baseUploadPath, category);
     try {
@@ -37,8 +40,12 @@ export class FileService {
 
   async saveFile(
     file: Express.Multer.File,
-    category: FileCategory = FileCategory.PROFILES,
+    category: FileCategory = FileCategory.PROFILES
   ): Promise<string> {
+    if (!file || !file.originalname) {
+      throw new Error('Invalid file: file or originalname is undefined');
+    }
+
     await this.ensureUploadDirectoryExists(category);
 
     const fileExtension = file.originalname.split('.').pop();
@@ -52,7 +59,7 @@ export class FileService {
 
   async saveMultipleFiles(
     files: Express.Multer.File[],
-    category: FileCategory = FileCategory.PROFILES,
+    category: FileCategory = FileCategory.PROFILES
   ): Promise<string[]> {
     const savedFiles: string[] = [];
     for (const file of files) {

@@ -1,12 +1,30 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import { extname } from 'path';
 
+export interface FileValidatorOptions {
+  optional?: boolean;
+  allowedExtensions?: string[];
+  maxSize?: number;
+}
+
+
 @Injectable()
 export class FileValidatorPipe implements PipeTransform {
-  private readonly allowedExtensions = ['.png', '.jpeg', '.jpg', '.pdf','.docx'];
-  private readonly maxSize = 5 * 1024 * 1024; // 5MB
+  private allowedExtensions: string[];
+  private maxSize: number;
+  private optional: boolean;
 
-  constructor(private readonly optional = false) {}
+  constructor(options: FileValidatorOptions = {}) {
+    this.allowedExtensions = options.allowedExtensions || [
+      '.png',
+      '.jpeg',
+      '.jpg',
+      '.pdf',
+      '.docx',
+    ];
+    this.maxSize = options.maxSize || 5 * 1024 * 1024; // 5MB default
+    this.optional = options.optional || false;
+  }
 
   transform(value?: {
     profile?: Express.Multer.File;
@@ -68,7 +86,7 @@ export class FileValidatorPipe implements PipeTransform {
     }
     const normalizedOriginalName = Buffer.from(
       file.originalname,
-      'binary',
+      'binary'
     ).toString();
     const extension = extname(normalizedOriginalName).toLowerCase();
 
@@ -78,7 +96,9 @@ export class FileValidatorPipe implements PipeTransform {
 
     if (file.size > this.maxSize) {
       throw new BadRequestException(
-        `File exceeds 20MB limit (received: ${(file.size / 1024 / 1024).toFixed(2)}MB)`,
+        `File exceeds 20MB limit (received: ${(file.size / 1024 / 1024).toFixed(
+          2
+        )}MB)`
       );
     }
 

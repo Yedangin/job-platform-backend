@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { UserInformationsService } from './user-informations.service';
 import { UserInformationsController } from './user-informations.controller';
-import { AuthPrismaService, PaginationService } from '@in-job/common';
+import { AuthPrismaService, FileService, PaginationService } from '@in-job/common';
 
 @Module({
   controllers: [UserInformationsController],
-  providers: [UserInformationsService, AuthPrismaService, PaginationService],
+  providers: [UserInformationsService, AuthPrismaService, PaginationService, FileService],
 })
 export class UserInformationsModule {}

@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   Patch,
@@ -8,15 +7,21 @@ import {
   Delete,
   OnModuleInit,
   Inject,
-  Query,
   HttpException,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiConsumes,
+  ApiBody,
+} from '@nestjs/swagger';
 import {
   CreateUserInformationDto,
   UpdateUserInformationDto,
-  GetAllUserInformationsDto,
-  GetAllUserInformationsResponseDto,
   UserInformationResponseDto,
   DeleteUserInformationResponseDto,
 } from './dto';
@@ -26,7 +31,14 @@ import {
 } from 'types/auth/user-information';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { grpcToHttpStatus } from '@in-job/common';
+import {
+  FileCategory,
+  FileService,
+  SingleFileValidatorPipe,
+  grpcToHttpStatus,
+  User,
+} from '@in-job/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('User Informations')
 @Controller('user-informations')
@@ -34,7 +46,8 @@ export class UserInformationsController implements OnModuleInit {
   private userInformationService: UserInformationServiceClient;
 
   constructor(
-    @Inject(USER_INFORMATION_PACKAGE_NAME) private readonly client: ClientGrpc
+    @Inject(USER_INFORMATION_PACKAGE_NAME) private readonly client: ClientGrpc,
+    private readonly fileService: FileService
   ) {}
 
   onModuleInit() {
@@ -76,6 +89,85 @@ export class UserInformationsController implements OnModuleInit {
         grpcToHttpStatus(error.code ?? 2)
       );
     }
+  }
+
+  @Post('profile/:id')
+  @ApiOperation({ summary: 'Upload profile picture' })
+  @UseInterceptors(FileInterceptor('profile'))
+  @ApiParam({ name: 'id', description: 'User information record id' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        profile: {
+          type: 'string',
+          format: 'binary',
+          description: 'Profile picture file (PNG, JPEG, JPG only, max 5MB)',
+        },
+      },
+    },
+  })
+  async uploadProfilePicture(
+    // @User() user: any,
+    @Param('id') id: string,
+    @UploadedFile(
+      new SingleFileValidatorPipe({
+        optional: false,
+        allowedExtensions: ['.png', '.jpeg', '.jpg'],
+        maxSize: 5 * 1024 * 1024, // 5MB
+      })
+    )
+    file: Express.Multer.File
+  ) {
+    const imageUrl = await this.fileService.saveFile(
+      file,
+      FileCategory.PROFILES
+    );
+    const result = await this.userInformationService.updateProfilePicture({
+      id: id,
+      imageUrl: imageUrl,
+      fileType: 1,
+    });
+    return result;
+  }
+
+  @Post('cv/:id')
+  @ApiOperation({ summary: 'Upload profile picture' })
+  @UseInterceptors(FileInterceptor('cv'))
+    @ApiParam({ name: 'id', description: 'User information record id' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        cv: {
+          type: 'string',
+          format: 'binary',
+          description: 'Profile picture file (PDF, DOCX only, max 5MB)',
+        },
+      },
+    },
+  })
+  async uploadCV(
+    @Param('id') id: string,
+    // @User() user: any,
+    @UploadedFile(
+      new SingleFileValidatorPipe({
+        optional: false,
+        allowedExtensions: ['.docx', '.pdf'],
+        maxSize: 5 * 1024 * 1024, // 5MB
+      })
+    )
+    file: Express.Multer.File
+  ) {
+    const cvUrl = await this.fileService.saveFile(file, FileCategory.CVS);
+    const result = await this.userInformationService.updateProfilePicture({
+      id: id,
+      imageUrl: cvUrl,
+      fileType: 2,
+    });
+    return result;
   }
 
   // @Get()
@@ -123,7 +215,6 @@ export class UserInformationsController implements OnModuleInit {
 
   //   return result as unknown as UserInformationResponseDto;
   // }
-
   @Patch(':userId')
   @ApiOperation({ summary: 'Update user information' })
   @ApiParam({ name: 'userId', description: 'User ID' })

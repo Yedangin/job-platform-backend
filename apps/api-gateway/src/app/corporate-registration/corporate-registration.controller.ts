@@ -11,6 +11,8 @@ import {
   HttpStatus,
   UseGuards,
   HttpException,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateCorporateRegistrationDto } from './dto/create-corporate-registration.dto';
 import { UpdateCorporateRegistrationDto } from './dto/update-corporate-registration.dto';
@@ -24,6 +26,7 @@ import {
   ApiBadRequestResponse,
   ApiBody,
   ApiConflictResponse,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
@@ -39,14 +42,19 @@ import {
   SessionAuthGuard,
   SessionData,
   CurrentSession,
+  SingleFileValidatorPipe,
+  FileCategory,
+  FileService,
 } from '@in-job/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('corporate-registration')
 export class CorporateRegistrationController implements OnModuleInit {
   private corporateService: CorporateRegistrationClient;
   constructor(
     @Inject(CORPORATE_REGISTRATION_PACKAGE_NAME)
-    private corporateRegistrationClient: ClientGrpc
+    private corporateRegistrationClient: ClientGrpc,
+    private readonly fileService: FileService
   ) {}
   onModuleInit() {
     this.corporateService =
@@ -85,6 +93,40 @@ export class CorporateRegistrationController implements OnModuleInit {
         grpcToHttpStatus(error.code ?? 2)
       );
     }
+  }
+
+  @Post('business-license-upload')
+  @ApiOperation({ summary: 'Upload profile picture' })
+  @UseInterceptors(FileInterceptor('businessLicense'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        businessLicense: {
+          type: 'string',
+          format: 'binary',
+          description: 'Profile picture file (PDF, DOCX only, max 5MB)',
+        },
+      },
+    },
+  })
+  async uploadBusinessLicense(
+    // @User() user: any,
+    @UploadedFile(
+      new SingleFileValidatorPipe({
+        optional: false,
+        allowedExtensions: ['.docx', '.pdf'],
+        maxSize: 5 * 1024 * 1024, // 5MB
+      })
+    )
+    file: Express.Multer.File
+  ) {
+    const cvUrl = await this.fileService.saveFile(
+      file,
+      FileCategory.BUSINESS_LICENSES
+    );
+    return { cvUrl };
   }
 
   @Patch(':id')

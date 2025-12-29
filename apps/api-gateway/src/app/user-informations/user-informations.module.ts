@@ -3,6 +3,7 @@ import { UserInformationsController } from './user-informations.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { USER_INFORMATION_PACKAGE_NAME } from 'types/auth/user-information';
+import { FileService } from '@in-job/common';
 
 @Module({
   imports: [
@@ -36,6 +37,6 @@ import { USER_INFORMATION_PACKAGE_NAME } from 'types/auth/user-information';
     ]),
   ],
   controllers: [UserInformationsController],
-  providers: [],
+  providers: [FileService],
 })
 export class UserInformationsModule {}

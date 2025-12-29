@@ -1,22 +1,33 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   AuthPrismaService,
+  FileCategory,
+  FileService,
   PaginationResult,
   PaginationService,
 } from '@in-job/common';
-import { UserInformation } from 'generated/prisma-user';
+import { User, UserInformation } from 'generated/prisma-user';
 import {
   AllUserInformationsWithMetaResponse,
   UserInformationResponse,
   DeleteUserInformationResponse,
   CreateUserInformationResponse,
+  UpdateFileRequest,
+  UpdateProfileResponse,
+  FileType,
 } from 'types/auth/user-information';
 
 @Injectable()
 export class UserInformationsService {
   constructor(
     private readonly prisma: AuthPrismaService,
-    private readonly paginationService: PaginationService
+    private readonly paginationService: PaginationService,
+    private readonly fileService: FileService
   ) {}
 
   private mapUserInformationToResponse(userInfo: UserInformation) {
@@ -97,6 +108,87 @@ export class UserInformationsService {
       success: true,
       message: 'User information created successfully',
     };
+  }
+
+  async updateProfilePicture(
+    data: UpdateFileRequest
+  ): Promise<UpdateProfileResponse> {
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        // Get current user to check for existing profile image
+        const user = await tx.userInformation.findUnique({
+          where: { id: data.id },
+          select: {
+            profileImage: true,
+            cvForm: true,
+          },
+        });
+
+        if (!user) {
+          throw new BadRequestException('User not found');
+        }
+
+        let updateData: {
+          profileImage?: string;
+          cvForm?: string;
+        } = {};
+
+
+        const fileTypeStr =
+          typeof data.fileType === 'string'
+            ? data.fileType
+            : FileType[data.fileType];
+
+        if (
+          fileTypeStr === 'PROFILE_PICTURE' ||
+          data.fileType === FileType.PROFILE_PICTURE
+        ) {
+          updateData.profileImage = data.imageUrl;
+        } else if (
+          fileTypeStr === 'CV_FORM' ||
+          data.fileType === FileType.CV_FORM
+        ) {
+          updateData.cvForm = data.imageUrl;
+        } else {
+          console.log('Unknown fileType:', data.fileType);
+        }
+
+
+        if (
+          (fileTypeStr === 'PROFILE_PICTURE' ||
+            data.fileType === FileType.PROFILE_PICTURE) &&
+          user.profileImage
+        ) {
+          await this.fileService.deleteFile(user.profileImage);
+        }
+
+        if (
+          (fileTypeStr === 'CV_FORM' || data.fileType === FileType.CV_FORM) &&
+          user.cvForm
+        ) {
+          await this.fileService.deleteFile(user.cvForm);
+        }
+
+        // Update user
+        await tx.userInformation.update({
+          where: { id: data.id },
+          data: updateData,
+        });
+
+        // No need to call tx.commit() - transaction auto-commits on successful completion
+        return {
+          message: 'File updated successfully',
+        };
+      });
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException(
+        'Failed to update profile picture'
+      );
+    }
   }
 
   async update(
