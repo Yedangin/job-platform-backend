@@ -95,10 +95,11 @@ export class CorporateRegistrationController implements OnModuleInit {
     }
   }
 
-  @Post('business-license-upload')
-  @ApiOperation({ summary: 'Upload profile picture' })
+  @Post('business-license-upload/:id')
+  @ApiOperation({ summary: 'Upload business license file' })
   @UseInterceptors(FileInterceptor('businessLicense'))
   @ApiConsumes('multipart/form-data')
+  @ApiParam({ name: 'id', description: 'Corporate record id' })
   @ApiBody({
     schema: {
       type: 'object',
@@ -113,6 +114,7 @@ export class CorporateRegistrationController implements OnModuleInit {
   })
   async uploadBusinessLicense(
     // @User() user: any,
+    @Param('id') id: string,
     @UploadedFile(
       new SingleFileValidatorPipe({
         optional: false,
@@ -126,7 +128,11 @@ export class CorporateRegistrationController implements OnModuleInit {
       file,
       FileCategory.BUSINESS_LICENSES
     );
-    return { cvUrl };
+    const result = await this.corporateService.updateBusinessLicense({
+      id: id,
+      businessLicenseFile: cvUrl,
+    });
+    return result;
   }
 
   @Patch(':id')
