@@ -96,9 +96,10 @@ export class MemberVerificationController implements OnModuleInit {
     }
   }
 
-  @Post('passportPhoto')
+  @Post('passportPhoto/:id')
   @ApiOperation({ summary: 'Upload profile picture' })
   @UseInterceptors(FileInterceptor('passportPhoto'))
+  @ApiParam({ name: 'id', description: 'Member record id' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -114,6 +115,7 @@ export class MemberVerificationController implements OnModuleInit {
   })
   async uploadPassportPhoto(
     // @User() user: any,
+    @Param('id') id: string,
     @UploadedFile(
       new SingleFileValidatorPipe({
         optional: false,
@@ -127,12 +129,18 @@ export class MemberVerificationController implements OnModuleInit {
       file,
       FileCategory.PASSPORT_PHOTOS
     );
-    return { imageUrl };
+    const result = await this.memberSerice.updateMemberPhoto({
+      id: id,
+      fileUrl: imageUrl,
+      fileType: 1,
+    });
+    return result;
   }
 
-  @Post('selfiePhoto')
+  @Post('selfiePhoto/:id')
   @ApiOperation({ summary: 'Upload profile picture' })
   @UseInterceptors(FileInterceptor('selfiePhoto'))
+  @ApiParam({ name: 'id', description: 'Member record id' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -148,6 +156,7 @@ export class MemberVerificationController implements OnModuleInit {
   })
   async uploadSelfiePhoto(
     // @User() user: any,
+    @Param('id') id: string,
     @UploadedFile(
       new SingleFileValidatorPipe({
         optional: false,
@@ -161,7 +170,12 @@ export class MemberVerificationController implements OnModuleInit {
       file,
       FileCategory.SELFIE_PHOTOS
     );
-    return { imageUrl };
+    const result = await this.memberSerice.updateMemberPhoto({
+      id: id,
+      fileUrl: imageUrl,
+      fileType: 2,
+    });
+    return result;
   }
   @Patch(':id')
   @UseGuards(SessionAuthGuard, RolesGuard)

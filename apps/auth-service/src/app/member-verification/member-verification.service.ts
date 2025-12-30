@@ -1,18 +1,26 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { AuthPrismaService } from '@in-job/common';
+import { AuthPrismaService, FileService } from '@in-job/common';
 import {
+  FileType,
+  SuccessResponse,
   UpdateMemberVerificationRequest,
+  UpdatePhotoRequest,
   UpsertMemberVerificationRequest,
 } from 'types/auth/member-verification';
 import { UserRole, VerificationStatus } from 'generated/prisma-user';
 
 @Injectable()
 export class MemberVerificationService {
-  constructor(private readonly prisma: AuthPrismaService) {}
+  constructor(
+    private readonly prisma: AuthPrismaService,
+    private fileService: FileService
+  ) {}
   async create(createDto: UpsertMemberVerificationRequest) {
     // Check if user exists
     const user = await this.prisma.user.findUnique({
@@ -31,7 +39,7 @@ export class MemberVerificationService {
 
     if (existingVerification) {
       throw new ConflictException(
-        'Identity verification already exists for this user',
+        'Identity verification already exists for this user'
       );
     }
 
@@ -58,7 +66,7 @@ export class MemberVerificationService {
 
     if (!verification) {
       throw new NotFoundException(
-        `Member identity verification with ID ${id} not found`,
+        `Member identity verification with ID ${id} not found`
       );
     }
 
@@ -76,7 +84,7 @@ export class MemberVerificationService {
 
       if (!verifier) {
         throw new NotFoundException(
-          `Verifier with ID ${updateDto.isVerifiedby} not found`,
+          `Verifier with ID ${updateDto.isVerifiedby} not found`
         );
       }
     }
@@ -91,6 +99,84 @@ export class MemberVerificationService {
           (updateDto.verificationStatus as any) || VerificationStatus.PENDING,
       },
     });
+  }
+
+  async updateMemberPhoto(data: UpdatePhotoRequest): Promise<SuccessResponse> {
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        // Get current user to check for existing profile image
+        const user = await tx.memberIdentityVerification.findUnique({
+          where: { id: data.id },
+          select: {
+            passportPhoto: true,
+            selfiePhoto: true,
+          },
+        });
+
+        if (!user) {
+          throw new BadRequestException('User not found');
+        }
+
+        let updateData: {
+          passportPhoto?: string;
+          selfiePhoto?: string;
+        } = {};
+
+        const fileTypeStr =
+          typeof data.fileType === 'string'
+            ? data.fileType
+            : FileType[data.fileType];
+
+        if (
+          fileTypeStr === 'PASSPORT_PHOTO' ||
+          data.fileType === FileType.PASSPORT_PHOTO
+        ) {
+          updateData.passportPhoto = data.fileUrl;
+        } else if (
+          fileTypeStr === 'SELFIE_PHOTO' ||
+          data.fileType === FileType.SELFIE_PHOTO
+        ) {
+          updateData.selfiePhoto = data.fileUrl;
+        } else {
+          console.log('Unknown fileType:', data.fileType);
+        }
+
+        if (
+          (fileTypeStr === 'PASSPORT_PHOTO' ||
+            data.fileType === FileType.PASSPORT_PHOTO) &&
+          user.passportPhoto
+        ) {
+          await this.fileService.deleteFile(user.passportPhoto);
+        }
+
+        if (
+          (fileTypeStr === 'SELFIE_PHOTO' ||
+            data.fileType === FileType.SELFIE_PHOTO) &&
+          user.selfiePhoto
+        ) {
+          await this.fileService.deleteFile(user.selfiePhoto);
+        }
+
+        // Update user
+        await tx.memberIdentityVerification.update({
+          where: { id: data.id },
+          data: updateData,
+        });
+
+        // No need to call tx.commit() - transaction auto-commits on successful completion
+        return {
+          message: 'File updated successfully',
+        };
+      });
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException(
+        'Failed to update profile picture'
+      );
+    }
   }
 
   async remove(id: string) {
