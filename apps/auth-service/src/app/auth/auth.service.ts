@@ -18,7 +18,12 @@ import {
   PasswordResetResponse,
   SocialProvider as ProtoSocialProvider,
 } from 'types/auth/auth';
-import { AuthPrismaService, RedisService, SessionData, GenerateStoreToken } from '@in-job/common';
+import {
+  AuthPrismaService,
+  RedisService,
+  SessionData,
+  GenerateStoreToken,
+} from '@in-job/common';
 import {
   SocialProvider as PrismaSocialProvider,
   User as PrismaUser,
@@ -29,7 +34,7 @@ export class AuthService {
   constructor(
     private readonly prisma: AuthPrismaService,
     private readonly generateToken: GenerateStoreToken,
-    private readonly redisService: RedisService,
+    private readonly redisService: RedisService
   ) {}
 
   async register(request: RegisterRequest): Promise<RegisterSuccessResponse> {
@@ -66,14 +71,14 @@ export class AuthService {
           userRole === UserRole.GUEST
             ? 'GUEST'
             : userRole === UserRole.MEMBER
-              ? 'MEMBER'
-              : userRole === UserRole.CORPORATE
-                ? 'CORPORATE'
-                : userRole === UserRole.ADMIN
-                  ? 'ADMIN'
-                  : userRole === UserRole.SUPERADMIN
-                    ? 'SUPERADMIN'
-                    : 'GUEST',
+            ? 'MEMBER'
+            : userRole === UserRole.CORPORATE
+            ? 'CORPORATE'
+            : userRole === UserRole.ADMIN
+            ? 'ADMIN'
+            : userRole === UserRole.SUPERADMIN
+            ? 'SUPERADMIN'
+            : 'GUEST',
         status: 'PENDING',
         isEmailedVerified: false,
         isPhoneVerified: false,
@@ -87,7 +92,7 @@ export class AuthService {
   }
 
   async login(
-    request: LoginRequest,
+    request: LoginRequest
   ): Promise<{ success: boolean; sessionId: string; message: string }> {
     const { email, password } = request;
 
@@ -128,13 +133,35 @@ export class AuthService {
 
     const sessionData = JSON.parse(sessionDataStr) as SessionData;
 
-    // Fetch user from database
+    // Fetch user from database with user information
     const user = await this.prisma.user.findUnique({
       where: { id: sessionData.userId },
+      include: {
+        userInformation: true,
+      },
     });
 
     if (!user) {
       throw new NotFoundException('User not found');
+    }
+
+    // Map user information to proto format
+    let userInformation = undefined;
+    if (user.userInformation) {
+      userInformation = {
+        id: user.userInformation.id,
+        userId: user.userInformation.userId,
+        profileImage: user.userInformation.profileImage || undefined,
+        gender: user.userInformation.gender || undefined,
+        address: user.userInformation.address || undefined,
+        country: user.userInformation.country || undefined,
+        city: user.userInformation.city || undefined,
+        cvForm: user.userInformation.cvForm || undefined,
+        additionalInformation:
+          user.userInformation.additionalInformation || undefined,
+        createdAt: user.userInformation.createdAt.toISOString(),
+        updatedAt: user.userInformation.updatedAt.toISOString(),
+      };
     }
 
     // Map Prisma user to proto User - ensure all values are plain types
@@ -150,6 +177,7 @@ export class AuthService {
       walletId: user.walletId || undefined,
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
+      userInformation: userInformation,
     };
 
     return {
@@ -180,7 +208,7 @@ export class AuthService {
 
     // Implement your email sending logic here
     console.log(
-      `Password reset link: http://yourapp.com/reset-password?token=${token}`,
+      `Password reset link: http://yourapp.com/reset-password?token=${token}`
     );
     return {
       message: `Password reset link: http://yourapp.com/reset-password?token=${token}`,
@@ -189,7 +217,7 @@ export class AuthService {
 
   async resetPassword(
     token: string,
-    newPassword: string,
+    newPassword: string
   ): Promise<{ message: string }> {
     const verificationToken = await this.prisma.verificationToken.findFirst({
       where: {
@@ -246,7 +274,7 @@ export class AuthService {
   }) {
     // Convert proto enum to Prisma enum
     const prismaProvider = this.mapProtoToPrismaSocialProvider(
-      profile.provider,
+      profile.provider
     );
     // Check if OAuth account exists
     const existingSocialAuth = await this.prisma.socialAuth.findFirst({
@@ -461,7 +489,7 @@ export class AuthService {
   }
 
   private mapProtoToPrismaSocialProvider(
-    protoProvider: ProtoSocialProvider,
+    protoProvider: ProtoSocialProvider
   ): PrismaSocialProvider {
     const providerMap: Record<ProtoSocialProvider, PrismaSocialProvider> = {
       [ProtoSocialProvider.GOOGLE]: 'GOOGLE' as PrismaSocialProvider,

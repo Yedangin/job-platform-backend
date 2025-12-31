@@ -69,14 +69,14 @@ export class CorporateRegistrationService {
       await this.findOne(id);
 
       // If verifier is being set, check if verifier exists
-      if (updateDto.isVerifiedby) {
+      if (updateDto.isVerifiedBy) {
         const verifier = await this.prisma.user.findUnique({
-          where: { id: updateDto.isVerifiedby },
+          where: { id: updateDto.isVerifiedBy },
         });
 
         if (!verifier) {
           throw new NotFoundException(
-            `Verifier with ID ${updateDto.isVerifiedby} not found`
+            `Verifier with ID ${updateDto.isVerifiedBy} not found`
           );
         }
       }
@@ -86,7 +86,7 @@ export class CorporateRegistrationService {
         data: {
           businessLicenseFile: updateDto.businessLicenseFile,
           companyName: updateDto.companyName,
-          isVerifiedBy: updateDto.isVerifiedby,
+          isVerifiedBy: updateDto.isVerifiedBy,
           verificationStatus:
             (updateDto.verificationStatus as any) || VerificationStatus.PENDING,
         },

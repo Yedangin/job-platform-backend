@@ -191,7 +191,6 @@ export class UserInformationsController implements OnModuleInit {
   //         filterModel: query.filterModel,
   //         filterKeyword: query.filterKeyword,
   //       },
-  //     }),
   //   );
 
   //   return result as unknown as GetAllUserInformationsResponseDto;

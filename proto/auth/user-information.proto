@@ -20,16 +20,16 @@ enum FileType {
 // --- User Information Message ---
 message UserInformation {
   string id = 1;
-  string userId = 2; // Was user_id
-  optional string profileImage = 3; // Was profile_image
+  string userId = 2;
+  optional string profileImage = 3;
   optional string gender = 4;
   optional string address = 5;
   optional string country = 6;
   optional string city = 7;
-  optional string cvForm = 8; // Was cv_form
-  optional string additionalInformation = 9; // Was additional_information
-  string createdAt = 10; // Was created_at
-  string updatedAt = 11; // Was updated_at
+  optional string cvForm = 8;
+  optional string additionalInformation = 9;
+  string createdAt = 10;
+  string updatedAt = 11;
 }
 
 
@@ -46,11 +46,11 @@ message CreateUserInformationResponse {
 message UserInformationResponse {
   bool success = 1;
   optional string message = 2;
-  UserInformation userInformation = 3; // Was user_information
+  UserInformation userInformation = 3;
 }
 
 message ListUserInformationsResponse {
-  repeated UserInformation userInformations = 1; // Was user_informations
+  repeated UserInformation userInformations = 1;
   int32 total = 2;
   int32 page = 3;
   int32 limit = 4;

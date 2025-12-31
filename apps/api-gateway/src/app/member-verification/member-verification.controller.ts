@@ -204,7 +204,7 @@ export class MemberVerificationController implements OnModuleInit {
           selfiePhoto: updateMemberIdentityVerificationDto.selfiePhoto,
           verificationStatus:
             updateMemberIdentityVerificationDto.verificationStatus as any,
-          isVerifiedby: session.userId,
+          isVerifiedBy: session.userId,
         })
       );
 

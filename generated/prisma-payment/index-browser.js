@@ -124,7 +124,6 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 exports.Prisma.WalletScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  beforeAmount: 'beforeAmount',
   balance: 'balance',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -135,6 +134,7 @@ exports.Prisma.DepositScalarFieldEnum = {
   userId: 'userId',
   walletId: 'walletId',
   depositedAmount: 'depositedAmount',
+  beforeAmount: 'beforeAmount',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

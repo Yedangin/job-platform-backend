@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AUTH_PACKAGE_NAME } from 'types/auth/auth';
 import { join } from 'path';
 import {
   AppleStrategy,
@@ -14,6 +13,8 @@ import {
   SessionAuthGuard,
   UserJwtStrategy,
 } from '@in-job/common';
+import { USER_INFORMATION_PACKAGE_NAME } from 'types/auth/user-information';
+import { AUTH_PACKAGE_NAME } from 'types/auth/auth';
 
 @Module({
   imports: [
@@ -22,9 +23,21 @@ import {
         name: AUTH_PACKAGE_NAME,
         transport: Transport.GRPC,
         options: {
-          package: AUTH_PACKAGE_NAME,
-          protoPath: join(process.cwd(), 'proto/auth/auth.proto'),
+          package: [AUTH_PACKAGE_NAME, USER_INFORMATION_PACKAGE_NAME],
+          protoPath: [
+            join(process.cwd(), 'proto/auth/auth.proto'),
+            join(process.cwd(), 'proto/auth/user-information.proto'),
+          ],
           url: process.env.AUTH_SERVICE_URL || 'localhost:8001',
+          loader: {
+            includeDirs: [join(process.cwd(), 'proto')],
+            keepCase: true,
+            longs: String,
+            enums: String,
+            defaults: true,
+            arrays: true,
+            objects: true,
+          },
         },
       },
     ]),

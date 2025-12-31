@@ -53,7 +53,7 @@ export class UsersService {
   ) {
     return {
       id: user.id,
-      full_name: user?.fullName ?? undefined,
+      fullName: user?.fullName ?? undefined,
       email: user?.email ?? undefined,
       phone: user?.phone ?? undefined,
       status: this.mapUserStatus(user.status as string),
