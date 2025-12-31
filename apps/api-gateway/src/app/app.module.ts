@@ -20,6 +20,7 @@ import { InterviewModule } from './interview/interview.module';
 import { ReviewModule } from './review/review.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PaymentModule } from './payment/payment.module';
+import { SanctionModule } from './sanction/sanction.module';
 
 @Module({
   imports: [
@@ -78,6 +79,7 @@ import { PaymentModule } from './payment/payment.module';
     InterviewModule,
     ReviewModule,
     PaymentModule,
+    SanctionModule,
   ],
   controllers: [],
   providers: [
