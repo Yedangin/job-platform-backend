@@ -2,6 +2,13 @@ syntax = "proto3";
 
 package memberVerfication;
 
+// Enums
+enum FileType {
+  FILE_TYPE_UNSPECIFIED = 0;
+  PASSPORT_PHOTO = 1;
+  SELFIE_PHOTO = 2;
+}
+
 // Import standard types for an empty response and timestamp
 message Empyt {}
 
@@ -38,6 +45,12 @@ message UpsertMemberVerificationRequest {
   optional string selfiePhoto = 3;
 }
 
+message UpdatePhotoRequest {
+  string id = 1;
+  string fileUrl = 2;
+  FileType fileType = 3;
+}
+
 message UpdateMemberVerificationRequest {
   string id = 1;
   optional string passportPhoto = 2;
@@ -57,6 +70,7 @@ message DeleteMemberVerificationRequest {
 
 service MemberVerificationService {
   rpc UpsertVerification(UpsertMemberVerificationRequest) returns (SuccessResponse);
+  rpc UpdateMemberPhoto(UpdatePhotoRequest) returns (SuccessResponse);
   rpc UpdateVerification(UpdateMemberVerificationRequest) returns (SuccessResponse);
   rpc DeleteVerification(DeleteMemberVerificationRequest) returns (SuccessResponse);
 }

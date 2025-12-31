@@ -28,6 +28,11 @@ message CreateCorporateRegistrationRequest {
   string businessLicenseFile = 3;
 }
 
+message UpdateBusinessLicenseFileRequest {
+  string id = 1;
+  string businessLicenseFile = 2;
+}
+
 message UpdateCoporateRegistrationReqeust {
   string id = 1;
   optional string companyName = 2;
@@ -46,6 +51,7 @@ message DeleteCorporateRegistrationRequest {
 
 service CorporateRegistration {
   rpc CreateCorporateRegistration(CreateCorporateRegistrationRequest) returns (common.basic.response.SuccessResponse);
+  rpc UpdateBusinessLicense(UpdateBusinessLicenseFileRequest) returns (common.basic.response.SuccessResponse);
   rpc UpdateCorporateRegistration(UpdateCoporateRegistrationReqeust) returns (common.basic.response.SuccessResponse);
   rpc DeleteCorporateRegistration(DeleteCorporateRegistrationRequest) returns (common.basic.response.SuccessResponse);
 }

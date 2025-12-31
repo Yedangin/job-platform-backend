@@ -10,6 +10,12 @@ enum Gender {
   GENDER_UNSPECIFIED = 0;
 }
 
+enum FileType {
+  IMAGE_STATUS_UNSPECIFIED = 0;
+  PROFILE_PICTURE = 1;
+  CV_FORM = 2;
+}
+
 
 // --- User Information Message ---
 message UserInformation {
@@ -55,6 +61,10 @@ message DeleteUserInformationResponse {
   string message = 2;
 }
 
+message UpdateProfileResponse {
+  string message = 1;
+}
+
 message AllUserInformationsWithMetaResponse {
   repeated UserInformation data = 1;
   common.basic.usage.PaginationMeta meta = 2;
@@ -91,6 +101,12 @@ message CreateUserInformationRequest {
   optional string additionalInformation = 8;
 }
 
+message UpdateFileRequest {
+  string id = 1;
+  string imageUrl = 2;
+  optional FileType fileType = 3;
+}
+
 message UpdateUserInformationRequest {
   string userId = 1;
   optional string profileImage = 2;
@@ -113,6 +129,7 @@ message DeleteUserInformationRequest {
 service UserInformationService {
   rpc CreateUserInformation (CreateUserInformationRequest) returns (CreateUserInformationResponse);
   rpc GetUserInformation (GetUserInformationRequest) returns (UserInformationResponse);
+  rpc UpdateProfilePicture (UpdateFileRequest) returns (UpdateProfileResponse);
   rpc GetAllUserInformations (GetAllUserInformationsRequest) returns (AllUserInformationsWithMetaResponse);
   rpc UpdateUserInformation (UpdateUserInformationRequest) returns (CreateUserInformationResponse);
   rpc DeleteUserInformation (DeleteUserInformationRequest) returns (DeleteUserInformationResponse);

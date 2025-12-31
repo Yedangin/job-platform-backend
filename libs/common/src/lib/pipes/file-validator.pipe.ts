@@ -1,29 +1,43 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import { extname } from 'path';
 
-@Injectable()
-export class ParseFilePipeDocument implements PipeTransform {
-  private readonly allowedExtensions = [
-    '.png',
-    '.jpeg',
-    '.jpg',
-    '.pdf',
-    '.mp4',
-    '.mov',
-    '.mkv',
-  ];
-  private readonly maxSize = 20 * 1024 * 1024; // 20MB
+export interface FileValidatorOptions {
+  optional?: boolean;
+  allowedExtensions?: string[];
+  maxSize?: number;
+}
 
-  constructor(private readonly optional = false) {}
+
+@Injectable()
+export class FileValidatorPipe implements PipeTransform {
+  private allowedExtensions: string[];
+  private maxSize: number;
+  private optional: boolean;
+
+  constructor(options: FileValidatorOptions = {}) {
+    this.allowedExtensions = options.allowedExtensions || [
+      '.png',
+      '.jpeg',
+      '.jpg',
+      '.pdf',
+      '.docx',
+    ];
+    this.maxSize = options.maxSize || 5 * 1024 * 1024; // 5MB default
+    this.optional = options.optional || false;
+  }
 
   transform(value?: {
-    images?: Express.Multer.File[];
-    thumbnail?: Express.Multer.File[];
-    content?: Express.Multer.File[];
+    profile?: Express.Multer.File;
+    cv?: Express.Multer.File;
+    passportPhoto?: Express.Multer.File;
+    selfiePhoto?: Express.Multer.File;
+    businessLicenseFile?: Express.Multer.File;
   }): {
-    images?: Express.Multer.File[];
-    thumbnail?: Express.Multer.File[];
-    content?: Express.Multer.File[];
+    profile?: Express.Multer.File;
+    cv?: Express.Multer.File;
+    passportPhoto?: Express.Multer.File;
+    selfiePhoto?: Express.Multer.File;
+    businessLicenseFile?: Express.Multer.File;
   } | null {
     if (!value) {
       if (this.optional) return null;
@@ -31,59 +45,63 @@ export class ParseFilePipeDocument implements PipeTransform {
     }
 
     const result: {
-      images?: Express.Multer.File[];
-      thumbnail?: Express.Multer.File[];
-      content?: Express.Multer.File[];
+      profile?: Express.Multer.File;
+      cv?: Express.Multer.File;
+      passportPhoto?: Express.Multer.File;
+      selfiePhoto?: Express.Multer.File;
+      businessLicenseFile?: Express.Multer.File;
     } = {};
 
-    // Handle images field
-    if (value.images && value.images.length > 0) {
-      result.images = this.validateFiles(value.images);
+    // Handle profile field
+    if (value.profile) {
+      result.profile = this.validateFile(value.profile);
     }
 
-    // Handle thumbnail field
-    if (value.thumbnail && value.thumbnail.length > 0) {
-      result.thumbnail = this.validateFiles(value.thumbnail);
+    // Handle cv field
+    if (value.cv) {
+      result.cv = this.validateFile(value.cv);
     }
 
-    // Handle content field (for .pdf files)
-    if (value.content && value.content.length > 0) {
-      result.content = this.validateFiles(value.content);
+    // Handle passportPhoto field
+    if (value.passportPhoto) {
+      result.passportPhoto = this.validateFile(value.passportPhoto);
     }
 
-    // Check if any files were processed
-    if (!result.images && !result.thumbnail && !result.content) {
-      if (this.optional) return null;
-      throw new BadRequestException('No valid files uploaded');
+    // Handle selfiePhoto field
+    if (value.selfiePhoto) {
+      result.selfiePhoto = this.validateFile(value.selfiePhoto);
+    }
+
+    // Handle businessLicenseFile field
+    if (value.businessLicenseFile) {
+      result.businessLicenseFile = this.validateFile(value.businessLicenseFile);
     }
 
     return result;
   }
 
-  private validateFiles(files: Express.Multer.File[]): Express.Multer.File[] {
-    return files.map((file) => {
-      if (!file || !file.originalname) {
-        throw new BadRequestException('Invalid file structure.');
-      }
-      const normalizedOriginalName = Buffer.from(
-        file.originalname,
-        'binary',
-      ).toString();
-      const extension = extname(normalizedOriginalName).toLowerCase();
+  private validateFile(file: Express.Multer.File): Express.Multer.File {
+    if (!file || !file.originalname) {
+      throw new BadRequestException('Invalid file structure.');
+    }
+    const normalizedOriginalName = Buffer.from(
+      file.originalname,
+      'binary'
+    ).toString();
+    const extension = extname(normalizedOriginalName).toLowerCase();
 
-      if (!this.allowedExtensions.includes(extension)) {
-        throw new BadRequestException(
-          `File type ${extension} is not supported`,
-        );
-      }
+    if (!this.allowedExtensions.includes(extension)) {
+      throw new BadRequestException(`File type ${extension} is not supported`);
+    }
 
-      if (file.size > this.maxSize) {
-        throw new BadRequestException(
-          `File exceeds 20MB limit (received: ${(file.size / 1024 / 1024).toFixed(2)}MB)`,
-        );
-      }
+    if (file.size > this.maxSize) {
+      throw new BadRequestException(
+        `File exceeds 20MB limit (received: ${(file.size / 1024 / 1024).toFixed(
+          2
+        )}MB)`
+      );
+    }
 
-      return file;
-    });
+    return file;
   }
 }

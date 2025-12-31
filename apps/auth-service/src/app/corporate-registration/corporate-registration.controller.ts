@@ -3,6 +3,7 @@ import { GrpcMethod, RpcException } from '@nestjs/microservices';
 import {
   CreateCorporateRegistrationRequest,
   DeleteCorporateRegistrationRequest,
+  UpdateBusinessLicenseFileRequest,
   UpdateCoporateRegistrationReqeust,
 } from 'types/auth/corporate-registration';
 import { SuccessResponse } from 'types/common/response';
@@ -34,6 +35,21 @@ export class CorporateRegistrationController {
     try {
       const result = await this.corporateService.update(request);
       return { message: 'Corporate registration udpated successfully' };
+    } catch (error: any) {
+      throw new RpcException({
+        code: httpToGrpcStatus(error.status ?? 500),
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  @GrpcMethod('CorporateRegistration', 'UpdateBusinessLicense')
+  async updateBusinessLicense(
+    request: UpdateBusinessLicenseFileRequest
+  ): Promise<SuccessResponse> {
+    try {
+      const result = this.corporateService.updateBusinessLicense(request);
+      return { message: 'Business license file updated successfully' };
     } catch (error: any) {
       throw new RpcException({
         code: httpToGrpcStatus(error.status ?? 500),

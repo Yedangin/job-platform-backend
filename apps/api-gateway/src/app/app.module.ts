@@ -49,7 +49,14 @@ import { PaymentModule } from './payment/payment.module';
       ],
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
+      rootPath: 'public',
+      serveRoot: '/public',
+      exclude: ['/api-docs', '/health'],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: 'uploads',
+      serveRoot: '/uploads',
+      exclude: ['/api-docs', '/health'],
     }),
     JwtModule.register({
       global: true,
@@ -76,8 +83,8 @@ import { PaymentModule } from './payment/payment.module';
   providers: [
     {
       provide: APP_INTERCEPTOR,
-      useClass: GrpcMetadataInterceptor
-    }
+      useClass: GrpcMetadataInterceptor,
+    },
   ],
 })
 export class AppModule {}

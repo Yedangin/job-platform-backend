@@ -1,18 +1,21 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { UserRole, VerificationStatus } from 'generated/prisma-user';
-import { AuthPrismaService } from '@in-job/common';
+import { AuthPrismaService, FileService } from '@in-job/common';
 import {
   CreateCorporateRegistrationRequest,
+  UpdateBusinessLicenseFileRequest,
   UpdateCoporateRegistrationReqeust,
 } from 'types/auth/corporate-registration';
 
 @Injectable()
 export class CorporateRegistrationService {
-  constructor(private prisma: AuthPrismaService) {}
+  constructor(private prisma: AuthPrismaService, private fileService: FileService) {}
 
   async create(createDto: CreateCorporateRegistrationRequest) {
     // Check if user exists
@@ -32,7 +35,7 @@ export class CorporateRegistrationService {
 
     if (existingRegistration) {
       throw new ConflictException(
-        'Corporate registration already exists for this user',
+        'Corporate registration already exists for this user'
       );
     }
 
@@ -52,7 +55,7 @@ export class CorporateRegistrationService {
 
     if (!registration) {
       throw new NotFoundException(
-        `Corporate registration with ID ${id} not found`,
+        `Corporate registration with ID ${id} not found`
       );
     }
 
@@ -73,7 +76,7 @@ export class CorporateRegistrationService {
 
         if (!verifier) {
           throw new NotFoundException(
-            `Verifier with ID ${updateDto.isVerifiedby} not found`,
+            `Verifier with ID ${updateDto.isVerifiedby} not found`
           );
         }
       }
@@ -97,6 +100,50 @@ export class CorporateRegistrationService {
       console.log('the error is : ', error);
     }
   }
+
+  async updateBusinessLicense(data: UpdateBusinessLicenseFileRequest) {
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+        // Get current user to check for existing profile image
+        const user = await tx.corporateRegistration.findUnique({
+          where: { id: data.id },
+          select: {
+            businessLicenseFile: true,
+          },
+        });
+
+        if (!user) {
+          throw new BadRequestException('User not found');
+        }
+
+        if (user.businessLicenseFile) {
+          await this.fileService.deleteFile(user.businessLicenseFile);
+        }
+
+        // Update user
+        await tx.corporateRegistration.update({
+          where: { id: data.id },
+          data: {
+            businessLicenseFile: data.businessLicenseFile,
+          },
+        });
+
+        // No need to call tx.commit() - transaction auto-commits on successful completion
+        return {
+          message: 'File updated successfully',
+        };
+      });
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException(
+        'Failed to update business license file'
+      );
+    }
+  }
+
   async remove(id: string) {
     // Check if registration exists
     await this.findOne(id);

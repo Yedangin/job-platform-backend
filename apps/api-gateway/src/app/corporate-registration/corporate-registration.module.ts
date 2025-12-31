@@ -4,6 +4,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { CORPORATE_REGISTRATION_PACKAGE_NAME } from 'types/auth/corporate-registration';
 import { join } from 'path';
 import { COMMON_BASIC_RESPONSE_PACKAGE_NAME } from 'types/common/response';
+import { FileService } from '@in-job/common';
 
 @Module({
   imports: [
@@ -35,6 +36,6 @@ import { COMMON_BASIC_RESPONSE_PACKAGE_NAME } from 'types/common/response';
     ]),
   ],
   controllers: [CorporateRegistrationController],
-  providers: [],
+  providers: [FileService],
 })
 export class CorporateRegistrationModule {}

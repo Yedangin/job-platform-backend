@@ -18,8 +18,8 @@ export class GrpcMetadataInterceptor implements NestInterceptor {
     const session = request.session;
     const sessionId = request.sessionID;
 
-    console.log('Session data:', session);
-    console.log('Session ID:', sessionId);
+    // console.log('Session data:', session);
+    // console.log('Session ID:', sessionId);
 
     if (session) {
       const metadata = new Metadata();
@@ -32,7 +32,7 @@ export class GrpcMetadataInterceptor implements NestInterceptor {
       request.metadata = metadata;
     }
 
-    console.log('Request metadata:', request.metadata);
+    // console.log('Request metadata:', request.metadata);
 
     return next.handle();
   }

@@ -82,6 +82,7 @@ export * from './lib/services/file.service';
 // Pipes
 export * from './lib/pipes/file-validator.pipe';
 export * from './lib/pipes/profile-picture-validator.pipe';
+export * from './lib/pipes/single-file-validator.pipe';
 
 // Types
 // export * from './lib/types/general-response';

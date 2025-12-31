@@ -5,6 +5,7 @@ import {
   DeleteMemberVerificationRequest,
   SuccessResponse,
   UpdateMemberVerificationRequest,
+  UpdatePhotoRequest,
   UpsertMemberVerificationRequest,
 } from 'types/auth/member-verification';
 import { httpToGrpcStatus } from '@in-job/common';
@@ -37,6 +38,20 @@ export class MemberVerificationController {
     try {
       const result = await this.memberVerificationService.update(request);
       return { message: 'successfully updated.' };
+    } catch (error: any) {
+      throw new RpcException({
+        code: httpToGrpcStatus(error.status ?? 500),
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  @GrpcMethod('MemberVerificationService', 'UpdateMemberPhoto')
+  async UpdateMemberPhoto(
+    request: UpdatePhotoRequest
+  ): Promise<SuccessResponse> {
+    try {
+      return await this.memberVerificationService.updateMemberPhoto(request);
     } catch (error: any) {
       throw new RpcException({
         code: httpToGrpcStatus(error.status ?? 500),

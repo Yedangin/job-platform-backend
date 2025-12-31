@@ -11,6 +11,8 @@ import {
   HttpCode,
   UseGuards,
   HttpException,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { CreateMemberVerificationDto } from './dto/create-member-verification.dto';
 import { UpdateMemberVerificationDto } from './dto/update-member-verification.dto';
@@ -23,6 +25,7 @@ import {
   ApiBadRequestResponse,
   ApiBody,
   ApiConflictResponse,
+  ApiConsumes,
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiNotFoundResponse,
@@ -39,7 +42,11 @@ import {
   SessionAuthGuard,
   SessionData,
   CurrentSession,
+  SingleFileValidatorPipe,
+  FileCategory,
+  FileService,
 } from '@in-job/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Member-Verification')
 @Controller('member-verification')
@@ -47,7 +54,8 @@ export class MemberVerificationController implements OnModuleInit {
   private memberSerice: MemberVerificationServiceClient;
   constructor(
     @Inject(MEMBER_VERFICATION_PACKAGE_NAME)
-    private memberVerificationClient: ClientGrpc
+    private memberVerificationClient: ClientGrpc,
+    private readonly fileService: FileService
   ) {}
   onModuleInit() {
     this.memberSerice =
@@ -88,6 +96,87 @@ export class MemberVerificationController implements OnModuleInit {
     }
   }
 
+  @Post('passportPhoto/:id')
+  @ApiOperation({ summary: 'Upload profile picture' })
+  @UseInterceptors(FileInterceptor('passportPhoto'))
+  @ApiParam({ name: 'id', description: 'Member record id' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        passportPhoto: {
+          type: 'string',
+          format: 'binary',
+          description: 'Profile picture file (PNG, JPEG, JPG only, max 5MB)',
+        },
+      },
+    },
+  })
+  async uploadPassportPhoto(
+    // @User() user: any,
+    @Param('id') id: string,
+    @UploadedFile(
+      new SingleFileValidatorPipe({
+        optional: false,
+        allowedExtensions: ['.png', '.jpeg', '.jpg'],
+        maxSize: 5 * 1024 * 1024, // 5MB
+      })
+    )
+    file: Express.Multer.File
+  ) {
+    const imageUrl = await this.fileService.saveFile(
+      file,
+      FileCategory.PASSPORT_PHOTOS
+    );
+    const result = await this.memberSerice.updateMemberPhoto({
+      id: id,
+      fileUrl: imageUrl,
+      fileType: 1,
+    });
+    return result;
+  }
+
+  @Post('selfiePhoto/:id')
+  @ApiOperation({ summary: 'Upload profile picture' })
+  @UseInterceptors(FileInterceptor('selfiePhoto'))
+  @ApiParam({ name: 'id', description: 'Member record id' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        selfiePhoto: {
+          type: 'string',
+          format: 'binary',
+          description: 'Profile picture file (PNG, JPEG, JPG only, max 5MB)',
+        },
+      },
+    },
+  })
+  async uploadSelfiePhoto(
+    // @User() user: any,
+    @Param('id') id: string,
+    @UploadedFile(
+      new SingleFileValidatorPipe({
+        optional: false,
+        allowedExtensions: ['.png', '.jpeg', '.jpg'],
+        maxSize: 5 * 1024 * 1024, // 5MB
+      })
+    )
+    file: Express.Multer.File
+  ) {
+    const imageUrl = await this.fileService.saveFile(
+      file,
+      FileCategory.SELFIE_PHOTOS
+    );
+    const result = await this.memberSerice.updateMemberPhoto({
+      id: id,
+      fileUrl: imageUrl,
+      fileType: 2,
+    });
+    return result;
+  }
   @Patch(':id')
   @UseGuards(SessionAuthGuard, RolesGuard)
   @Roles('ADMIN', 'SUPERADMIN')

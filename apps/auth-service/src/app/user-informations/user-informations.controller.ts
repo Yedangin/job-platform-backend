@@ -11,6 +11,8 @@ import {
   UserInformationResponse,
   DeleteUserInformationResponse,
   CreateUserInformationResponse,
+  UpdateFileRequest,
+  UpdateProfileResponse,
 } from 'types/auth/user-information';
 import { httpToGrpcStatus } from '@in-job/common';
 
@@ -54,6 +56,25 @@ export class UserInformationsController {
       );
       return userInformations;
     } catch (error: any) {
+      throw new RpcException({
+        code: httpToGrpcStatus(error.status ?? 500),
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  @GrpcMethod('UserInformationService', 'UpdateProfilePicture')
+  async UpdateProfilePicture(
+    request: UpdateFileRequest
+  ): Promise<UpdateProfileResponse> {
+    try {
+      return await this.userInformationsService.updateProfilePicture({
+        id: request.id,
+        imageUrl: request.imageUrl,
+        fileType: request.fileType,
+      });
+    } catch (error: any) {
+      // Re-throw the error as a gRPC RpcException
       throw new RpcException({
         code: httpToGrpcStatus(error.status ?? 500),
         message: error.message || 'Internal server error',
