@@ -7,6 +7,7 @@ import { MemberVerificationModule } from './member-verification/member-verificat
 import { UsersModule } from './users/users.module';
 import { UserInformationsModule } from './user-informations/user-informations.module';
 import { CorporateRegistrationModule } from './corporate-registration/corporate-registration.module';
+import { SanctionModule } from './sanction/sanction.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CorporateRegistrationModule } from './corporate-registration/corporate-
     UsersModule,
     UserInformationsModule,
     CorporateRegistrationModule,
+    SanctionModule,
   ],
   controllers: [],
   providers: [],

@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package sanctions;
+
+import "common/basic.proto";
+import "common/basic-query.proto";
+
+// Enums
+enum SanctionType {
+  SANCTION_TYPE_UNSPECIFIED = 0;
+  SUSPENSION = 1;
+  WARNING = 2;
+  BANNED = 3;
+}
+
+// Message
+message Sanction {
+  string id = 1;
+  string userId = 2;
+  SanctionType sanctionType = 3;
+  optional string reason = 4;
+  optional string startDate = 5;
+  optional string endDate = 6;
+  string createdAt = 7;
+}
+
+// ---------------------
+// CRUD Responses
+// ---------------------
+message SanctionResponse {
+  bool success = 1;
+  optional string message = 2;
+}
+
+message AllSanctionsWithMetaResponse {
+  repeated Sanction data = 1;
+  common.basic.usage.PaginationMeta meta = 2;
+}
+
+message SingleSanctionResponse {
+  optional string message = 1;
+  Sanction sanction = 2;
+}
+
+message DeleteSanctionResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// ---------------------
+// CRUD Requests
+// ---------------------
+message GetAllSanctionsRequest {
+  common.basic.query.BasicQuery basicQuery = 1;
+}
+
+message GetSanctionRequest {
+  string sanctionId = 1;
+}
+
+message CreateSanctionRequest {
+  string userId = 1;
+  SanctionType sanctionType = 2;
+  optional string reason = 3;
+  optional string startDate = 4;
+  optional string endDate = 5;
+}
+
+message UpdateSanctionRequest {
+  string sanctionId = 1;
+  optional SanctionType sanctionType = 2;
+  optional string reason = 3;
+  optional string startDate = 4;
+  optional string endDate = 5;
+}
+
+message DeleteSanctionRequest {
+  string sanctionId = 1;
+}
+
+// ---------------------
+// CRUD Service
+// ---------------------
+service SanctionService {
+  rpc CreateSanction (CreateSanctionRequest) returns (SanctionResponse);
+  rpc GetSanction (GetSanctionRequest) returns (SingleSanctionResponse);
+  rpc GetAllSanctions (GetAllSanctionsRequest) returns (AllSanctionsWithMetaResponse);
+  rpc UpdateSanction (UpdateSanctionRequest) returns (SanctionResponse);
+  rpc DeleteSanction (DeleteSanctionRequest) returns (DeleteSanctionResponse);
+}
