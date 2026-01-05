@@ -73,9 +73,9 @@ export class AuthController implements OnModuleInit {
   }
 
   @Get()
-  @UseGuards(SessionAuthGuard)
-  getHello(): string {
-    return 'Auth Service is running';
+  // @UseGuards(SessionAuthGuard)
+  getHello(): { message: string } {
+    return { message: 'Auth Service is running' };
   }
 
   @Get('admin')
