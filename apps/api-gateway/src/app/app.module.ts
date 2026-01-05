@@ -89,11 +89,8 @@ import { SanctionModule } from './sanction/sanction.module';
     InterviewModule,
     ReviewModule,
     PaymentModule,
-<<<<<<< HEAD
     SanctionModule,
-=======
     LogPrismaModule,
->>>>>>> b2e613e724a26008bd50064404da8448695dfc91
   ],
   controllers: [],
   providers: [
