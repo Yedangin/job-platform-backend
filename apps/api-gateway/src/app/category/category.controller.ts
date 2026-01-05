@@ -15,7 +15,7 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { GetAllCategoriesDto } from './dto/get-all-categories.dto';
+// import { GetAllCategoriesDto } from './dto/get-all-categories.dto';
 import {
   CategoryResponseDto,
   GetAllCategoriesResponseDto,
@@ -76,6 +76,8 @@ export class CategoryController implements OnModuleInit {
           parentCategoryId: createCategoryDto.parentCategoryId,
         })
       );
+
+      await this.invalidateCategoryCache();
 
       return result as unknown as CategoryResponseDto;
     } catch (error: any) {

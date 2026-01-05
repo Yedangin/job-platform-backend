@@ -11,6 +11,8 @@ import {
   UserResponse,
   DeleteUserResponse,
   CreateUserResponse,
+  ChangePasswordRequest,
+  ChangePasswordResponse,
 } from 'types/auth/users';
 import { GrpcAuthGuard, httpToGrpcStatus } from '@in-job/common';
 
@@ -88,6 +90,20 @@ export class UsersController {
   async DeleteUser(request: DeleteUserRequest): Promise<DeleteUserResponse> {
     try {
       return this.usersService.remove(request.userId);
+    } catch (error: any) {
+      throw new RpcException({
+        code: httpToGrpcStatus(error.status ?? 500),
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  @GrpcMethod('UserService', 'ChangePassword')
+  async ChangePassword(
+    request: ChangePasswordRequest
+  ): Promise<ChangePasswordResponse> {
+    try {
+      return this.usersService.changePassword(request);
     } catch (error: any) {
       throw new RpcException({
         code: httpToGrpcStatus(error.status ?? 500),

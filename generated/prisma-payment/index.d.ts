@@ -305,8 +305,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.19.0
-   * Query Engine version: 2ba551f319ab1df4bc874a89965d8b3641056773
+   * Prisma Client JS version: 6.19.1
+   * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
    */
   export type PrismaVersion = {
     client: string
@@ -3502,6 +3502,7 @@ export namespace Prisma {
   export type TransactionMinAggregateOutputType = {
     id: string | null
     tossOrderId: string | null
+    depositId: string | null
     tossPaymentKey: string | null
     amount: number | null
     currency: string | null
@@ -3521,6 +3522,7 @@ export namespace Prisma {
   export type TransactionMaxAggregateOutputType = {
     id: string | null
     tossOrderId: string | null
+    depositId: string | null
     tossPaymentKey: string | null
     amount: number | null
     currency: string | null
@@ -3540,6 +3542,7 @@ export namespace Prisma {
   export type TransactionCountAggregateOutputType = {
     id: number
     tossOrderId: number
+    depositId: number
     tossPaymentKey: number
     amount: number
     currency: number
@@ -3569,6 +3572,7 @@ export namespace Prisma {
   export type TransactionMinAggregateInputType = {
     id?: true
     tossOrderId?: true
+    depositId?: true
     tossPaymentKey?: true
     amount?: true
     currency?: true
@@ -3588,6 +3592,7 @@ export namespace Prisma {
   export type TransactionMaxAggregateInputType = {
     id?: true
     tossOrderId?: true
+    depositId?: true
     tossPaymentKey?: true
     amount?: true
     currency?: true
@@ -3607,6 +3612,7 @@ export namespace Prisma {
   export type TransactionCountAggregateInputType = {
     id?: true
     tossOrderId?: true
+    depositId?: true
     tossPaymentKey?: true
     amount?: true
     currency?: true
@@ -3713,6 +3719,7 @@ export namespace Prisma {
   export type TransactionGroupByOutputType = {
     id: string
     tossOrderId: string | null
+    depositId: string | null
     tossPaymentKey: string | null
     amount: number | null
     currency: string | null
@@ -3751,6 +3758,7 @@ export namespace Prisma {
   export type TransactionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     tossOrderId?: boolean
+    depositId?: boolean
     tossPaymentKey?: boolean
     amount?: boolean
     currency?: boolean
@@ -3773,6 +3781,7 @@ export namespace Prisma {
   export type TransactionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     tossOrderId?: boolean
+    depositId?: boolean
     tossPaymentKey?: boolean
     amount?: boolean
     currency?: boolean
@@ -3793,6 +3802,7 @@ export namespace Prisma {
   export type TransactionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     tossOrderId?: boolean
+    depositId?: boolean
     tossPaymentKey?: boolean
     amount?: boolean
     currency?: boolean
@@ -3813,6 +3823,7 @@ export namespace Prisma {
   export type TransactionSelectScalar = {
     id?: boolean
     tossOrderId?: boolean
+    depositId?: boolean
     tossPaymentKey?: boolean
     amount?: boolean
     currency?: boolean
@@ -3829,7 +3840,7 @@ export namespace Prisma {
     paidAt?: boolean
   }
 
-  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tossOrderId" | "tossPaymentKey" | "amount" | "currency" | "method" | "status" | "failureReason" | "userId" | "userName" | "userEmail" | "userPhone" | "depositeName" | "createdAt" | "updatedAt" | "paidAt", ExtArgs["result"]["transaction"]>
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tossOrderId" | "depositId" | "tossPaymentKey" | "amount" | "currency" | "method" | "status" | "failureReason" | "userId" | "userName" | "userEmail" | "userPhone" | "depositeName" | "createdAt" | "updatedAt" | "paidAt", ExtArgs["result"]["transaction"]>
   export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     deposit?: boolean | Transaction$depositArgs<ExtArgs>
     transactionLogs?: boolean | Transaction$transactionLogsArgs<ExtArgs>
@@ -3851,6 +3862,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       tossOrderId: string | null
+      depositId: string | null
       tossPaymentKey: string | null
       amount: number | null
       currency: string | null
@@ -4292,6 +4304,7 @@ export namespace Prisma {
   interface TransactionFieldRefs {
     readonly id: FieldRef<"Transaction", 'String'>
     readonly tossOrderId: FieldRef<"Transaction", 'String'>
+    readonly depositId: FieldRef<"Transaction", 'String'>
     readonly tossPaymentKey: FieldRef<"Transaction", 'String'>
     readonly amount: FieldRef<"Transaction", 'Int'>
     readonly currency: FieldRef<"Transaction", 'String'>
@@ -5922,6 +5935,7 @@ export namespace Prisma {
   export const TransactionScalarFieldEnum: {
     id: 'id',
     tossOrderId: 'tossOrderId',
+    depositId: 'depositId',
     tossPaymentKey: 'tossPaymentKey',
     amount: 'amount',
     currency: 'currency',
@@ -6251,6 +6265,7 @@ export namespace Prisma {
     NOT?: TransactionWhereInput | TransactionWhereInput[]
     id?: StringFilter<"Transaction"> | string
     tossOrderId?: StringNullableFilter<"Transaction"> | string | null
+    depositId?: StringNullableFilter<"Transaction"> | string | null
     tossPaymentKey?: StringNullableFilter<"Transaction"> | string | null
     amount?: IntNullableFilter<"Transaction"> | number | null
     currency?: StringNullableFilter<"Transaction"> | string | null
@@ -6272,6 +6287,7 @@ export namespace Prisma {
   export type TransactionOrderByWithRelationInput = {
     id?: SortOrder
     tossOrderId?: SortOrderInput | SortOrder
+    depositId?: SortOrderInput | SortOrder
     tossPaymentKey?: SortOrderInput | SortOrder
     amount?: SortOrderInput | SortOrder
     currency?: SortOrderInput | SortOrder
@@ -6296,6 +6312,7 @@ export namespace Prisma {
     OR?: TransactionWhereInput[]
     NOT?: TransactionWhereInput | TransactionWhereInput[]
     tossOrderId?: StringNullableFilter<"Transaction"> | string | null
+    depositId?: StringNullableFilter<"Transaction"> | string | null
     tossPaymentKey?: StringNullableFilter<"Transaction"> | string | null
     amount?: IntNullableFilter<"Transaction"> | number | null
     currency?: StringNullableFilter<"Transaction"> | string | null
@@ -6317,6 +6334,7 @@ export namespace Prisma {
   export type TransactionOrderByWithAggregationInput = {
     id?: SortOrder
     tossOrderId?: SortOrderInput | SortOrder
+    depositId?: SortOrderInput | SortOrder
     tossPaymentKey?: SortOrderInput | SortOrder
     amount?: SortOrderInput | SortOrder
     currency?: SortOrderInput | SortOrder
@@ -6344,6 +6362,7 @@ export namespace Prisma {
     NOT?: TransactionScalarWhereWithAggregatesInput | TransactionScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Transaction"> | string
     tossOrderId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    depositId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
     tossPaymentKey?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
     amount?: IntNullableWithAggregatesFilter<"Transaction"> | number | null
     currency?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
@@ -6577,6 +6596,7 @@ export namespace Prisma {
 
   export type TransactionCreateInput = {
     id?: string
+    tossOrderId?: string | null
     tossPaymentKey?: string | null
     amount?: number | null
     currency?: string | null
@@ -6598,6 +6618,7 @@ export namespace Prisma {
   export type TransactionUncheckedCreateInput = {
     id?: string
     tossOrderId?: string | null
+    depositId?: string | null
     tossPaymentKey?: string | null
     amount?: number | null
     currency?: string | null
@@ -6617,6 +6638,7 @@ export namespace Prisma {
 
   export type TransactionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tossOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     tossPaymentKey?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
@@ -6638,6 +6660,7 @@ export namespace Prisma {
   export type TransactionUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     tossOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    depositId?: NullableStringFieldUpdateOperationsInput | string | null
     tossPaymentKey?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
@@ -6658,6 +6681,7 @@ export namespace Prisma {
   export type TransactionCreateManyInput = {
     id?: string
     tossOrderId?: string | null
+    depositId?: string | null
     tossPaymentKey?: string | null
     amount?: number | null
     currency?: string | null
@@ -6676,6 +6700,7 @@ export namespace Prisma {
 
   export type TransactionUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tossOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     tossPaymentKey?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
@@ -6695,6 +6720,7 @@ export namespace Prisma {
   export type TransactionUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     tossOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    depositId?: NullableStringFieldUpdateOperationsInput | string | null
     tossPaymentKey?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
@@ -7043,6 +7069,7 @@ export namespace Prisma {
   export type TransactionCountOrderByAggregateInput = {
     id?: SortOrder
     tossOrderId?: SortOrder
+    depositId?: SortOrder
     tossPaymentKey?: SortOrder
     amount?: SortOrder
     currency?: SortOrder
@@ -7066,6 +7093,7 @@ export namespace Prisma {
   export type TransactionMaxOrderByAggregateInput = {
     id?: SortOrder
     tossOrderId?: SortOrder
+    depositId?: SortOrder
     tossPaymentKey?: SortOrder
     amount?: SortOrder
     currency?: SortOrder
@@ -7085,6 +7113,7 @@ export namespace Prisma {
   export type TransactionMinOrderByAggregateInput = {
     id?: SortOrder
     tossOrderId?: SortOrder
+    depositId?: SortOrder
     tossPaymentKey?: SortOrder
     amount?: SortOrder
     currency?: SortOrder
@@ -7805,6 +7834,7 @@ export namespace Prisma {
 
   export type TransactionCreateWithoutDepositInput = {
     id?: string
+    tossOrderId?: string | null
     tossPaymentKey?: string | null
     amount?: number | null
     currency?: string | null
@@ -7824,6 +7854,7 @@ export namespace Prisma {
 
   export type TransactionUncheckedCreateWithoutDepositInput = {
     id?: string
+    tossOrderId?: string | null
     tossPaymentKey?: string | null
     amount?: number | null
     currency?: string | null
@@ -7900,6 +7931,7 @@ export namespace Prisma {
     NOT?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
     id?: StringFilter<"Transaction"> | string
     tossOrderId?: StringNullableFilter<"Transaction"> | string | null
+    depositId?: StringNullableFilter<"Transaction"> | string | null
     tossPaymentKey?: StringNullableFilter<"Transaction"> | string | null
     amount?: IntNullableFilter<"Transaction"> | number | null
     currency?: StringNullableFilter<"Transaction"> | string | null
@@ -8041,6 +8073,7 @@ export namespace Prisma {
 
   export type TransactionCreateWithoutTransactionLogsInput = {
     id?: string
+    tossOrderId?: string | null
     tossPaymentKey?: string | null
     amount?: number | null
     currency?: string | null
@@ -8061,6 +8094,7 @@ export namespace Prisma {
   export type TransactionUncheckedCreateWithoutTransactionLogsInput = {
     id?: string
     tossOrderId?: string | null
+    depositId?: string | null
     tossPaymentKey?: string | null
     amount?: number | null
     currency?: string | null
@@ -8095,6 +8129,7 @@ export namespace Prisma {
 
   export type TransactionUpdateWithoutTransactionLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tossOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     tossPaymentKey?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8115,6 +8150,7 @@ export namespace Prisma {
   export type TransactionUncheckedUpdateWithoutTransactionLogsInput = {
     id?: StringFieldUpdateOperationsInput | string
     tossOrderId?: NullableStringFieldUpdateOperationsInput | string | null
+    depositId?: NullableStringFieldUpdateOperationsInput | string | null
     tossPaymentKey?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8175,6 +8211,7 @@ export namespace Prisma {
 
   export type TransactionCreateManyDepositInput = {
     id?: string
+    tossOrderId?: string | null
     tossPaymentKey?: string | null
     amount?: number | null
     currency?: string | null
@@ -8193,6 +8230,7 @@ export namespace Prisma {
 
   export type TransactionUpdateWithoutDepositInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tossOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     tossPaymentKey?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8212,6 +8250,7 @@ export namespace Prisma {
 
   export type TransactionUncheckedUpdateWithoutDepositInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tossOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     tossPaymentKey?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8231,6 +8270,7 @@ export namespace Prisma {
 
   export type TransactionUncheckedUpdateManyWithoutDepositInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tossOrderId?: NullableStringFieldUpdateOperationsInput | string | null
     tossPaymentKey?: NullableStringFieldUpdateOperationsInput | string | null
     amount?: NullableIntFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null

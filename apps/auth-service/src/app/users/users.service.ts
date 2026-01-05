@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   AuthPrismaService,
   PaginationResult,
@@ -12,6 +16,8 @@ import {
   UserResponse,
   DeleteUserResponse,
   CreateUserResponse,
+  ChangePasswordRequest,
+  ChangePasswordResponse,
 } from 'types/auth/users';
 import * as bcrypt from 'bcrypt';
 
@@ -227,6 +233,41 @@ export class UsersService {
     return {
       success: true,
       message: 'User deleted successfully',
+    };
+  }
+
+  async changePassword(
+    request: ChangePasswordRequest
+  ): Promise<ChangePasswordResponse> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: request.userId },
+    });
+
+    console.log('User : ', user);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const isOldPasswordValid = await bcrypt.compare(
+      request.oldPassword,
+      user.password
+    );
+
+    if (!isOldPasswordValid) {
+      throw new BadRequestException('Old password is incorrect');
+    }
+
+    const hashedNewPassword = await bcrypt.hash(request.newPassword, 10);
+
+    await this.prisma.user.update({
+      where: { id: request.userId },
+      data: { password: hashedNewPassword },
+    });
+
+    return {
+      success: true,
+      message: 'Password changed successfully',
     };
   }
 }

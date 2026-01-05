@@ -47,15 +47,20 @@ import {
   FileService,
 } from '@in-job/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @ApiTags('Member-Verification')
 @Controller('member-verification')
 export class MemberVerificationController implements OnModuleInit {
   private memberSerice: MemberVerificationServiceClient;
+  private cacheVersion = 'v1';
+
   constructor(
     @Inject(MEMBER_VERFICATION_PACKAGE_NAME)
     private memberVerificationClient: ClientGrpc,
-    private readonly fileService: FileService
+    private readonly fileService: FileService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
   onModuleInit() {
     this.memberSerice =
@@ -87,6 +92,7 @@ export class MemberVerificationController implements OnModuleInit {
           selfiePhoto: createMemberIdentityVerificationDto.selfiePhoto,
         })
       );
+      await this.invalidateMemberCache();
       return result;
     } catch (error: any) {
       throw new HttpException(
@@ -208,6 +214,7 @@ export class MemberVerificationController implements OnModuleInit {
         })
       );
 
+      await this.invalidateMemberCache();
       return result;
     } catch (error: any) {
       throw new HttpException(
@@ -238,6 +245,26 @@ export class MemberVerificationController implements OnModuleInit {
         error.details ?? error.message ?? 'Internal server error',
         grpcToHttpStatus(error.code ?? 2)
       );
+    }
+  }
+
+  // Helper method to get cache version
+  private async getCacheVersion(): Promise<string> {
+    const version = await this.cacheManager.get<string>('member:version');
+    if (!version) {
+      await this.cacheManager.set('member:version', this.cacheVersion, 0);
+      return this.cacheVersion;
+    }
+    return version;
+  }
+
+  // Helper method to invalidate all corporate-registration cache by incrementing version
+  private async invalidateMemberCache(): Promise<void> {
+    try {
+      const newVersion = `v${Date.now()}`;
+      await this.cacheManager.set('member:version', newVersion, 0);
+    } catch (error) {
+      console.error('Error invalidating cache:', error);
     }
   }
 }

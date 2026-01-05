@@ -87,6 +87,11 @@ export interface AllUsersWithMetaResponse {
   meta: PaginationMeta | undefined;
 }
 
+export interface ChangePasswordResponse {
+  success: boolean;
+  message?: string | undefined;
+}
+
 export interface ListUsersRequest {
   page: number;
   limit: number;
@@ -125,6 +130,12 @@ export interface CreateUserRequest {
   status?: UserStatus | undefined;
 }
 
+export interface ChangePasswordRequest {
+  userId: string;
+  oldPassword: string;
+  newPassword: string;
+}
+
 export const USERS_PACKAGE_NAME = "users";
 
 /**
@@ -145,6 +156,10 @@ export interface UserServiceClient {
   deleteUser(request: DeleteUserRequest): Observable<DeleteUserResponse>;
 
   listUsers(request: ListUsersRequest): Observable<ListUsersResponse>;
+
+  /** Password Change */
+
+  changePassword(request: ChangePasswordRequest): Observable<ChangePasswordResponse>;
 }
 
 /**
@@ -169,11 +184,25 @@ export interface UserServiceController {
   ): Promise<DeleteUserResponse> | Observable<DeleteUserResponse> | DeleteUserResponse;
 
   listUsers(request: ListUsersRequest): Promise<ListUsersResponse> | Observable<ListUsersResponse> | ListUsersResponse;
+
+  /** Password Change */
+
+  changePassword(
+    request: ChangePasswordRequest,
+  ): Promise<ChangePasswordResponse> | Observable<ChangePasswordResponse> | ChangePasswordResponse;
 }
 
 export function UserServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createUser", "getUser", "getAllUsers", "updateUser", "deleteUser", "listUsers"];
+    const grpcMethods: string[] = [
+      "createUser",
+      "getUser",
+      "getAllUsers",
+      "updateUser",
+      "deleteUser",
+      "listUsers",
+      "changePassword",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("UserService", method)(constructor.prototype[method], method, descriptor);

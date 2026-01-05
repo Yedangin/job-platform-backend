@@ -79,6 +79,11 @@ message AllUsersWithMetaResponse {
   common.basic.usage.PaginationMeta meta = 2;
 }
 
+message ChangePasswordResponse {
+  bool success = 1;
+  optional string message = 2;
+}
+
 // ---------------------
 // CRUD Requests
 // ---------------------
@@ -121,6 +126,12 @@ message CreateUserRequest {
   optional UserStatus status = 6;
 }
 
+message ChangePasswordRequest {
+  string userId = 1;
+  string oldPassword = 2;
+  string newPassword = 3;
+}
+
 
 // ---------------------
 // CRUD Service
@@ -132,4 +143,6 @@ service UserService {
   rpc UpdateUser (UpdateUserRequest) returns (UserResponse);
   rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
   rpc ListUsers (ListUsersRequest) returns (ListUsersResponse);
+   //Password Change
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse);
 }
