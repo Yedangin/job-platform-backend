@@ -26,6 +26,7 @@ message CreateCorporateRegistrationRequest {
   string userId = 1;
   string companyName = 2;
   string businessLicenseFile = 3;
+
 }
 
 message UpdateCoporateRegistrationReqeust {

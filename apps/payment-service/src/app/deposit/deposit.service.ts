@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PaymentPrismaService } from '@in-job/common';
 // import { ConfigService } from '@nestjs/config';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse, AxiosError } from 'axios';
 import {
   CreatePaymentRequest,
   CreatePaymentResponse,
@@ -90,7 +90,7 @@ export class DepositService {
             userId: deposit.userId,
             walletId: deposit.walletId,
             depositedAmount: deposit.depositedAmount?.toString() || '0',
-            beforeAmount: '0', // This field doesn't exist in the deposit model
+            beforeAmount: deposit.beforeAmount?.toString() || '0',
             status: this.mapDepositStatusToProto(deposit.status),
             createdAt: deposit.createdAt.toISOString(),
             updatedAt: deposit.updatedAt.toISOString(),
@@ -186,17 +186,18 @@ export class DepositService {
         response = await axios.post(`${this.baseURL}/payments`, body, {
           headers,
         });
-      } catch (axiosError: any) {
+      } catch (axiosError: unknown) {
+        const error = axiosError as AxiosError;
         this.logger.error('Toss Payments API Error:', {
-          status: axiosError.response?.status,
-          statusText: axiosError.response?.statusText,
-          data: axiosError.response?.data,
-          message: axiosError.message,
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          message: error.message,
         });
         throw new Error(
           `Toss Payments API failed: ${
-            axiosError.response?.status
-          } - ${JSON.stringify(axiosError.response?.data)}`
+            error.response?.status
+          } - ${JSON.stringify(error.response?.data)}`
         );
       }
 
@@ -383,27 +384,29 @@ export class DepositService {
         throw new NotFoundException('Wallet not found');
       }
 
-      // 5. Update wallet balance
+      // 5. Update wallet balance and create deposit record
       const currentBalance = BigInt(wallet.balance || '0');
       const addedAmount = BigInt(parseInt(request.amount));
       const newBalance = (currentBalance + addedAmount).toString();
 
+      // Update wallet balance
       await this.prisma.wallet.update({
         where: { id: wallet.id },
         data: { balance: newBalance },
       });
 
-      // 6. Create deposit record
+      // Create deposit record with beforeAmount
       const deposit = await this.prisma.deposit.create({
         data: {
           userId: transaction.userId || '',
           walletId: wallet.id,
           depositedAmount: request?.amount,
+          beforeAmount: wallet.balance || '0', // Store the balance before this deposit
           status: 'APPROVED',
         },
       });
 
-      // 7. Note: The relation between transaction and deposit is handled via tossOrderId
+      // 6. Note: The relation between transaction and deposit is handled via tossOrderId
       // No need to explicitly link them as the schema shows deposit -> transaction relation
 
       this.logger.log(

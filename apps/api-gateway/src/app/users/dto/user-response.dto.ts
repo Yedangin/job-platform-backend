@@ -76,3 +76,11 @@ export class DeleteUserResponseDto {
   @ApiProperty({ example: 'User deleted successfully' })
   message: string;
 }
+
+export class ChangePasswordResponseDto {
+  @ApiProperty({ example: true })
+  success: boolean;
+
+  @ApiProperty({ example: 'Password changed successfully' })
+  message: string;
+}

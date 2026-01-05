@@ -40,19 +40,22 @@ import {
   SessionData,
   CurrentSession,
 } from '@in-job/common';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Controller('corporate-registration')
 export class CorporateRegistrationController implements OnModuleInit {
   private corporateService: CorporateRegistrationClient;
+  private cacheVersion = 'v1';
   constructor(
     @Inject(CORPORATE_REGISTRATION_PACKAGE_NAME)
-    private corporateRegistrationClient: ClientGrpc
+    private readonly client: ClientGrpc,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
   onModuleInit() {
-    this.corporateService =
-      this.corporateRegistrationClient.getService<CorporateRegistrationClient>(
-        CORPORATE_REGISTRATION_SERVICE_NAME
-      );
+    this.corporateService = this.client.getService<CorporateRegistrationClient>(
+      CORPORATE_REGISTRATION_SERVICE_NAME
+    );
   }
 
   @Post()
@@ -78,6 +81,7 @@ export class CorporateRegistrationController implements OnModuleInit {
             createCorporateRegistrationDto.businessLicenseFile,
         })
       );
+      await this.invalidateCorporateCache();
       return result;
     } catch (error: any) {
       throw new HttpException(
@@ -117,6 +121,7 @@ export class CorporateRegistrationController implements OnModuleInit {
           isVerifiedBy: session.userId,
         })
       );
+      await this.invalidateCorporateCache();
       return result;
     } catch (error: any) {
       throw new HttpException(
@@ -145,6 +150,26 @@ export class CorporateRegistrationController implements OnModuleInit {
         error.details ?? error.message ?? 'Internal server error',
         grpcToHttpStatus(error.code ?? 2)
       );
+    }
+  }
+
+  // Helper method to get cache version
+  private async getCacheVersion(): Promise<string> {
+    const version = await this.cacheManager.get<string>('corporate:version');
+    if (!version) {
+      await this.cacheManager.set('corporate:version', this.cacheVersion, 0);
+      return this.cacheVersion;
+    }
+    return version;
+  }
+
+  // Helper method to invalidate all corporate-registration cache by incrementing version
+  private async invalidateCorporateCache(): Promise<void> {
+    try {
+      const newVersion = `v${Date.now()}`;
+      await this.cacheManager.set('corporate:version', newVersion, 0);
+    } catch (error) {
+      console.error('Error invalidating cache:', error);
     }
   }
 }

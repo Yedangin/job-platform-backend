@@ -4,6 +4,7 @@ package jobpost;
 
 import "common/basic.proto";
 import "common/basic-query.proto";
+import "job/category.proto";
 
 // ---------------------
 // JobPost Messages
@@ -23,7 +24,7 @@ message JobPost {
   string createdAt = 12;
   string updatedAt = 13;
   optional string expiredAt = 14;
-  optional Category category = 15;
+  optional category.Category category = 15;
   repeated Apply applies = 16;
 }
 

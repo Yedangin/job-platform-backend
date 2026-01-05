@@ -35,15 +35,74 @@ export class CorporateRegistrationService {
         'Corporate registration already exists for this user'
       );
     }
+    // const corporate = await this.prisma.corporateRegistration.findUnique({
+    //   where: { id: createDto.isVerifiedBy },
+    // });
 
-    return await this.prisma.corporateRegistration.create({
+    // console.log('Corporate : ', corporate);
+
+    // const userRole = await this.prisma.user.update({
+    //   where: { id: corporate.userId },
+    //   data: { role: UserRole.CORPORATE },
+    // });
+
+    const verify = await this.prisma.corporateRegistration.create({
       data: {
         userId: createDto.userId,
         companyName: createDto.companyName,
         businessLicenseFile: createDto.businessLicenseFile,
       },
     });
+
+    const userRole = await this.prisma.user.update({
+      where: { id: createDto.userId },
+      data: { role: UserRole.CORPORATE },
+    });
+    return verify;
   }
+
+  // async create(createDto: CreateCorporateRegistrationRequest) {
+  //   // 1. Check if user exists
+  //   const user = await this.prisma.user.findUnique({
+  //     where: { id: createDto.userId },
+  //   });
+
+  //   if (!user) {
+  //     throw new NotFoundException(`User with ID ${createDto.userId} not found`);
+  //   }
+
+  //   // 2. Check if corporate registration already exists
+  //   const existingRegistration =
+  //     await this.prisma.corporateRegistration.findFirst({
+  //       where: { userId: createDto.userId },
+  //     });
+
+  //   if (existingRegistration) {
+  //     throw new ConflictException(
+  //       'Corporate registration already exists for this user'
+  //     );
+  //   }
+
+  //   // 3. Use a transaction to create registration AND update user role
+  //   return await this.prisma.$transaction(async (tx) => {
+  //     // Update the user's role
+  //     await tx.user.update({
+  //       where: { id: createDto.userId },
+  //       data: { role: UserRole.CORPORATE },
+  //     });
+
+  //     // Create the corporate registration record
+  //     return await tx.corporateRegistration.create({
+  //       data: {
+  //         userId: createDto.userId,
+  //         companyName: createDto.companyName,
+  //         businessLicenseFile: createDto.businessLicenseFile,
+  //         // You can also explicitly set the status if needed
+  //         verificationStatus: VerificationStatus.PENDING,
+  //       },
+  //     });
+  //   });
+  // }
 
   async findOne(id: string) {
     const registration = await this.prisma.corporateRegistration.findUnique({

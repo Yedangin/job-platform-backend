@@ -41,7 +41,7 @@ export class MemberVerificationService {
         passportPhoto: createDto.passportPhoto,
         selfiePhoto: createDto.selfiePhoto,
       },
-    });
+    }); 
 
     const userRole = await this.prisma.user.update({
       where: { id: createDto.userId },
