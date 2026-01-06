@@ -49,13 +49,13 @@ export class JobPostService {
       createdAt: jobPost.createdAt.toISOString(),
       updatedAt: jobPost.updatedAt.toISOString(),
       expiredAt: jobPost.expiredAt?.toISOString() ?? undefined,
-      category: jobPost.category
-        ? {
-            id: jobPost.category.id,
-            name: jobPost.category.name ?? undefined,
-            description: jobPost.category.description ?? undefined,
-          }
-        : undefined,
+      // category: jobPost.category
+      //   ? {
+      //       id: jobPost.category.id,
+      //       name: jobPost.category.name ?? undefined,
+      //       description: jobPost.category.description ?? undefined,
+      //     }
+      //   : undefined,
       applies: appliesArray,
     };
   }
