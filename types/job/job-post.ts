@@ -9,7 +9,6 @@ import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
 import { PaginationMeta } from "../common/basic";
 import { BasicQuery } from "../common/basic-query";
-import { Category as Category1 } from "./category";
 
 export const protobufPackage = "jobpost";
 
@@ -33,7 +32,7 @@ export interface JobPost {
   createdAt: string;
   updatedAt: string;
   expiredAt?: string | undefined;
-  category?: Category1 | undefined;
+  category?: Category | undefined;
   applies: Apply[];
 }
 

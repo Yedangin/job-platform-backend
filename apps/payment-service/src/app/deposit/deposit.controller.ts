@@ -8,6 +8,8 @@ import {
   FailPaymentRequest,
   GetAllWalletsRequest,
   AllWalletsWithMetaResponse,
+  GetAllDepositsRequest,
+  AllDepositsWithMetaResponse,
 } from 'types/payment/payment';
 import { DepositService } from './deposit.service';
 
@@ -20,7 +22,26 @@ export class DepositController {
     request: GetAllWalletsRequest
   ): Promise<AllWalletsWithMetaResponse> {
     try {
+      // console.log("the request : ", request)
       return await this.paymentService.getAllWallets(request);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Internal server error';
+      const statusCode = (error as { status?: number })?.status ?? 500;
+      throw new RpcException({
+        code: httpToGrpcStatus(statusCode),
+        message: errorMessage,
+      });
+    }
+  }
+
+  @GrpcMethod('PaymentService', 'GetAllDeposits')
+  async getAllDeposits(
+    request: GetAllDepositsRequest
+  ): Promise<AllDepositsWithMetaResponse> {
+    try {
+      // console.log("the request : ", request)
+      return await this.paymentService.getAllDeposits(request);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : 'Internal server error';

@@ -24,6 +24,12 @@ message Apply {
   bool isReviewed = 5;
   AppliedStatus status = 6;
   string appliedAt = 7;
+  repeated JobPost jobPosts = 8;
+}
+
+message JobPost {
+  string id =1;
+  string title =2;
 }
 
 // ---------------------

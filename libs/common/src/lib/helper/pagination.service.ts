@@ -17,10 +17,10 @@ export class PaginationService {
       const isIdField = filterModel.endsWith('Id');
 
       if (isIdField) {
-        const parsed = parseInt(filterKeyword, 10);
-        if (!isNaN(parsed)) {
-          where[filterModel] = { equals: BigInt(parsed) };
-        }
+        // const parsed = parseInt(filterKeyword, 10);
+        // if (!isNaN(parsed)) {
+          where[filterModel] = { equals: filterKeyword};
+        // }
       } else if (filterModel === 'role' || filterModel === 'status') {
         where[filterModel] = { equals: filterKeyword };
       } else {

@@ -55,9 +55,8 @@ export class CorporateRegistrationController implements OnModuleInit {
   private corporateService: CorporateRegistrationClient;
   private cacheVersion = 'v1';
   constructor(
-    @Inject(CORPORATE_REGISTRATION_PACKAGE_NAME)
-    private corporateRegistrationClient: ClientGrpc,
     private readonly fileService: FileService,
+    @Inject(CORPORATE_REGISTRATION_PACKAGE_NAME)
     private readonly client: ClientGrpc,
     @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}

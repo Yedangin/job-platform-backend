@@ -19,7 +19,7 @@ import {
 export class ApplyService {
   constructor(
     private readonly prisma: JobPrismaService,
-    private readonly paginationService: PaginationService,
+    private readonly paginationService: PaginationService
   ) {}
 
   private mapApplyStatus(status: string): AppliedStatus {
@@ -55,11 +55,11 @@ export class ApplyService {
       {
         // Include any relations if needed
         jobPost: true,
-      },
+      }
     );
 
     const mappedData = (result as PaginationResult<Apply>)?.data.map((apply) =>
-      this.mapApplyToResponse(apply),
+      this.mapApplyToResponse(apply)
     );
 
     return { data: mappedData, meta: result.meta };
@@ -85,6 +85,10 @@ export class ApplyService {
         isReviewed: apply.isReviewed,
         status: this.mapApplyStatus(apply.status as string),
         appliedAt: apply.appliedAt.toISOString(),
+        jobPosts: {
+          id: apply.jobPost.id,
+          title: apply.jobPost.title,
+        },
       },
     };
   }
@@ -97,7 +101,7 @@ export class ApplyService {
 
     if (!jobPost) {
       throw new NotFoundException(
-        `Job post with ID ${createApplyDto.jobPostId} not found`,
+        `Job post with ID ${createApplyDto.jobPostId} not found`
       );
     }
 

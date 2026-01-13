@@ -88,8 +88,8 @@ export class CategoryController implements OnModuleInit {
     }
   }
 
-  @UseGuards(SessionAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SUPERADMIN', 'MEMBER', 'CORPORATE')
+  // @UseGuards(SessionAuthGuard, RolesGuard)
+  // @Roles('ADMIN', 'SUPERADMIN', 'MEMBER', 'CORPORATE')
   @Get()
   @ApiOperation({ summary: 'Get all categories with pagination' })
   @ApiResponse({
