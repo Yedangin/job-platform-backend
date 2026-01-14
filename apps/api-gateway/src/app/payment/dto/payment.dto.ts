@@ -1,3 +1,4 @@
+import { BasicQuery } from '@in-job/common';
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsString,
@@ -75,7 +76,7 @@ export class FailPaymentDto {
   orderId: string;
 }
 
-export class GetWalletsQueryDto {
+export class GetWalletsQueryDto extends BasicQuery{
   @ApiProperty({
     description: 'Page number for pagination',
     example: '0',

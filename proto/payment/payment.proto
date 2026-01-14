@@ -33,7 +33,6 @@ message Wallet {
   string balance = 3;
   string createdAt = 4;
   string updatedAt = 5;
-  repeated Deposit deposits = 6;
 }
 
 message CreatePaymentRequest {
@@ -54,6 +53,16 @@ message AllWalletsWithMetaResponse {
   repeated Wallet data = 1;
   common.basic.usage.PaginationMeta meta = 2;
 }
+
+message GetAllDepositsRequest {
+  common.basic.query.BasicQuery basicQuery = 1;
+}
+
+message AllDepositsWithMetaResponse {
+  repeated Deposit data = 1;
+  common.basic.usage.PaginationMeta meta = 2;
+}
+
 
 message ConfirmPaymentRequest {
   string orderId = 1;
@@ -80,6 +89,8 @@ service PaymentService {
   rpc HandlePaymentFailure(HandlePaymentFailureRequest) returns (HandlePaymentFailureResponse);
 
   rpc GetAllWallets(GetAllWalletsRequest) returns (AllWalletsWithMetaResponse);
+
+    rpc GetAllDeposits(GetAllDepositsRequest) returns (AllDepositsWithMetaResponse);
 
   rpc CreatePayment(CreatePaymentRequest) returns (CreatePaymentResponse);
 

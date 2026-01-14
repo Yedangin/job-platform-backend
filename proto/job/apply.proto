@@ -28,6 +28,12 @@ message Apply {
   optional string memberCVForm = 9;
   AppliedStatus status = 10;
   string appliedAt = 11;
+  optional JobPost jobPosts = 12;
+}
+
+message JobPost {
+  string id =1;
+  string title =2;
 }
 
 // ---------------------

@@ -12,12 +12,14 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import {
+  BasicQuery,
   grpcToHttpStatus,
   Roles,
   RolesGuard,
   SessionAuthGuard,
 } from '@in-job/common';
 import {
+  AllDepositsWithMetaResponse,
   PAYMENT_PACKAGE_NAME,
   PaymentServiceClient,
 } from 'types/payment/payment';
@@ -32,6 +34,7 @@ import {
   ConfirmPaymentResponseDto,
   FailPaymentResponseDto,
   GetWalletsResponseDto,
+  DepositDto,
 } from './dto/payment-response.dto';
 
 @ApiTags('Payments')
@@ -58,18 +61,47 @@ export class PaymentController {
     type: GetWalletsResponseDto,
   })
   async getAllWallets(
-    @Query() query: GetWalletsQueryDto
+    @Query() basicQuery: BasicQuery
   ): Promise<GetWalletsResponseDto> {
     try {
       const result = await firstValueFrom(
         this.paymentService.getAllWallets({
-          basicQuery: {
-            page: query.page || '0',
-            limit: query.limit || '10',
-          },
+          basicQuery,
         })
       );
       return result as GetWalletsResponseDto;
+    } catch (error: unknown) {
+      const grpcError = error as {
+        details?: string;
+        message?: string;
+        code?: number;
+      };
+      throw new HttpException(
+        grpcError.details ?? grpcError.message ?? 'Internal server error',
+        grpcToHttpStatus(grpcError.code ?? 2)
+      );
+    }
+  }
+
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
+  @Get('deposits')
+  @ApiOperation({ summary: 'Get all deposits with pagination' })
+  @ApiResponse({
+    status: 200,
+    description: 'Deposits retrieved successfully',
+    type: DepositDto,
+  })
+  async getAllDeposits(
+    @Query() basicQuery: BasicQuery
+  ): Promise<AllDepositsWithMetaResponse> {
+    try {
+      const result = await firstValueFrom(
+        this.paymentService.getAllDeposits({
+          basicQuery,
+        })
+      );
+      return result;
     } catch (error: unknown) {
       const grpcError = error as {
         details?: string;

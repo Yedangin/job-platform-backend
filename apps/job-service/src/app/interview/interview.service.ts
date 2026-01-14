@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Interview, Prisma } from 'generated/prisma-job';
 import {
+  AuthPrismaService,
   JobPrismaService,
   PaginationResult,
   PaginationService,
@@ -19,6 +20,7 @@ import {
 @Injectable()
 export class InterviewService {
   constructor(
+    private readonly userPrisma: AuthPrismaService,
     private readonly prisma: JobPrismaService,
     private readonly paginationService: PaginationService,
   ) {}
@@ -157,6 +159,10 @@ export class InterviewService {
       throw new Error('Interview already exists for this job post and member');
     }
 
+    const userInformation = await this.userPrisma.user.findUnique({
+      where: { id: data.memberId },
+    })
+
     const interview = await this.prisma.interview.create({
       data: {
         jobPostId: data.jobPostId,
@@ -168,10 +174,10 @@ export class InterviewService {
           : undefined,
         status: (data.status as any) || 'PENDING',
         failureReason: data.failureReason,
-      },
-      include: {
-        jobPost: true,
-        reviews: true,
+        memberFullName: userInformation?.fullName || undefined,
+        memberEmail: userInformation?.email || undefined,
+        memberPhone: userInformation?.phone || undefined,
+        corporateName: jobPostExists.corporateName || undefined,
       },
     });
 
