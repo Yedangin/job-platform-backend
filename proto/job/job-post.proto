@@ -26,6 +26,7 @@ message JobPost {
   optional string expiredAt = 14;
   optional category.Category category = 15;
   repeated Apply applies = 16;
+  optional string corporateName = 17;
 }
 
 message Category {

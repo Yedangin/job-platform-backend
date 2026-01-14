@@ -51,20 +51,21 @@ model Category {
 }
 
 model JobPost {
-  id           String        @id @default(cuid()) @map("id")
-  corporateId  String        @map("corporate_id")
-  title        String?       @jobDB.VarChar(255)
-  description  String?       @jobDB.Text
-  location     String?       @jobDB.VarChar(255)
-  salaryRange  String?       @map("salary_range") @jobDB.VarChar(255)
-  categoryId   String?       @map("category_id")
-  feeType      String?       @map("fee_type") @jobDB.VarChar(50)
-  status       JobPostStatus @default(PENDING)
-  approvedBy   String?       @map("approved_by")
-  appliesCount Int?          @default(0) @map("applies_count")
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
-  expiredAt    DateTime?     @map("expired_at")
+  id            String        @id @default(cuid()) @map("id")
+  corporateId   String        @map("corporate_id")
+  corporateName String?       @map("corporate_name") @jobDB.VarChar(255)
+  title         String?       @jobDB.VarChar(255)
+  description   String?       @jobDB.Text
+  location      String?       @jobDB.VarChar(255)
+  salaryRange   String?       @map("salary_range") @jobDB.VarChar(255)
+  categoryId    String?       @map("category_id")
+  feeType       String?       @map("fee_type") @jobDB.VarChar(50)
+  status        JobPostStatus @default(PENDING)
+  approvedBy    String?       @map("approved_by")
+  appliesCount  Int?          @default(0) @map("applies_count")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  expiredAt     DateTime?     @map("expired_at")
 
   category   Category?   @relation(fields: [categoryId], references: [id])
   applies    Apply[]
@@ -78,13 +79,17 @@ model JobPost {
 }
 
 model Apply {
-  id         String        @id @default(cuid()) @map("id")
-  jobPostId  String        @map("job_post_id")
-  userId     String        @map("user_id")
-  userInfoId String?       @map("user_info_id")
-  isReviewed Boolean       @default(false) @map("is_reviewed")
-  status     AppliedStatus @default(PENDING)
-  appliedAt  DateTime      @default(now()) @map("applied_at")
+  id             String        @id @default(cuid()) @map("id")
+  jobPostId      String        @map("job_post_id")
+  userId         String        @map("user_id")
+  memberFullName String?       @map("member_full_name") @jobDB.VarChar(255)
+  memberEmail    String?       @map("member_email") @jobDB.VarChar(255)
+  memberPhone    String?       @map("member_phone") @jobDB.VarChar(50)
+  memberCVForm   String?       @map("member_cv_form") @jobDB.Text
+  userInfoId     String?       @map("user_info_id")
+  isReviewed     Boolean       @default(false) @map("is_reviewed")
+  status         AppliedStatus @default(PENDING)
+  appliedAt      DateTime      @default(now()) @map("applied_at")
 
   jobPost JobPost @relation(fields: [jobPostId], references: [id])
 
@@ -94,16 +99,20 @@ model Apply {
 }
 
 model Interview {
-  id            String          @id @default(cuid()) @map("id")
-  jobPostId     String          @map("job_post_id")
-  memberId      String          @map("member_id")
-  corporateId   String          @map("corporate_id")
-  roomId        String?         @map("room_id")
-  interviewDate DateTime?       @map("interview_date")
-  status        InterviewStatus @default(PENDING)
-  failureReason String?         @map("failure_reason") @jobDB.VarChar(255)
-  createdAt     DateTime        @default(now()) @map("created_at")
-  updatedAt     DateTime        @updatedAt @map("updated_at")
+  id             String          @id @default(cuid()) @map("id")
+  jobPostId      String          @map("job_post_id")
+  memberId       String          @map("member_id")
+  memberFullName String?         @map("member_full_name") @jobDB.VarChar(255)
+  memberEmail    String?         @map("member_email") @jobDB.VarChar(255)
+  memberPhone    String?         @map("member_phone") @jobDB.VarChar(50)
+  corporateId    String          @map("corporate_id")
+  corporateName  String?         @map("corporate_name") @jobDB.VarChar(255)
+  roomId         String?         @map("room_id")
+  interviewDate  DateTime?       @map("interview_date")
+  status         InterviewStatus @default(PENDING)
+  failureReason  String?         @map("failure_reason") @jobDB.VarChar(255)
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
 
   jobPost JobPost  @relation(fields: [jobPostId], references: [id])
   reviews Review[]

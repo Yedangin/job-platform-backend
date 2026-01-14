@@ -22,8 +22,12 @@ message Apply {
   string userId = 3;
   optional string userInfoId = 4;
   bool isReviewed = 5;
-  AppliedStatus status = 6;
-  string appliedAt = 7;
+  optional string memberFullname = 6;
+  optional string memberEmail = 7;
+  optional string memberPhone = 8;
+  optional string memberCVForm = 9;
+  AppliedStatus status = 10;
+  string appliedAt = 11;
 }
 
 // ---------------------

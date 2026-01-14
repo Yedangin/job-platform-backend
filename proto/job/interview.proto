@@ -21,6 +21,10 @@ message Interview {
   string updatedAt = 10;
   optional JobPost jobPost = 11;
   repeated Review reviews = 12;
+  optional string memberFullName = 13;
+  optional string memberEmail = 14;
+  optional string memberPhone = 15;
+  optional string corporateName = 16;
 }
 
 message JobPost {
