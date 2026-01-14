@@ -1,5 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PaymentPrismaService } from '@in-job/common';
+import { PaginationService, PaymentPrismaService } from '@in-job/common';
 // import { ConfigService } from '@nestjs/config';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import {
@@ -10,8 +10,11 @@ import {
   GetAllWalletsRequest,
   AllWalletsWithMetaResponse,
   DepositStatus,
+  GetAllDepositsRequest,
+  AllDepositsWithMetaResponse,
 } from 'types/payment/payment';
 import { ConfigService } from '@nestjs/config';
+import { Deposit, Wallet } from 'generated/prisma-payment';
 
 interface TossPaymentResponse {
   orderId: string;
@@ -46,7 +49,8 @@ export class DepositService {
 
   constructor(
     private readonly prisma: PaymentPrismaService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private paginationService: PaginationService
   ) {}
 
   private get authHeaders() {
@@ -59,49 +63,86 @@ export class DepositService {
     request: GetAllWalletsRequest
   ): Promise<AllWalletsWithMetaResponse> {
     try {
-      const page = Number(request.basicQuery?.page) || 0;
-      const limit = Number(request.basicQuery?.limit) || 10;
-      const skip = page * limit;
+      console.log("the request : ", request)
+      // const [wallets, total] = await Promise.all([
+      //   this.prisma.wallet.findMany({
+      //     include: {
+      //       deposits: {
+      //         orderBy: { createdAt: 'desc' },
+      //         take: 5,
+      //       },
+      //     },
+      //     skip,
+      //     take: limit,
+      //     orderBy: { createdAt: 'desc' },
+      //   }),
+      //   this.prisma.wallet.count(),
+      // ]);
+    const searchColumn = ['id',"userId"]
+      const { data , meta} = await this.paginationService.paginate<Wallet>(
+        request.basicQuery,
+        this.prisma.wallet,
+        searchColumn,
+        {
+          // deposits: true,
+        }
+      );
 
-      const [wallets, total] = await Promise.all([
-        this.prisma.wallet.findMany({
-          include: {
-            deposits: {
-              orderBy: { createdAt: 'desc' },
-              take: 5,
-            },
-          },
-          skip,
-          take: limit,
-          orderBy: { createdAt: 'desc' },
-        }),
-        this.prisma.wallet.count(),
-      ]);
+      console.log('The wallet : ', data);
 
       return {
-        data: wallets.map((wallet) => ({
+        data: data.map((wallet) => ({
           id: wallet.id,
           userId: wallet.userId,
           balance: wallet.balance || '0',
           createdAt: wallet.createdAt.toISOString(),
           updatedAt: wallet.updatedAt.toISOString(),
-          deposits: wallet.deposits.map((deposit) => ({
-            id: deposit.id,
-            userId: deposit.userId,
-            walletId: deposit.walletId,
-            depositedAmount: deposit.depositedAmount?.toString() || '0',
-            beforeAmount: deposit.beforeAmount?.toString() || '0',
-            status: this.mapDepositStatusToProto(deposit.status),
-            createdAt: deposit.createdAt.toISOString(),
-            updatedAt: deposit.updatedAt.toISOString(),
-          })),
+          // deposits: wallet.deposits.map((deposit) => ({
+          //   id: deposit.id,
+          //   userId: deposit.userId,
+          //   walletId: deposit.walletId,
+          //   depositedAmount: deposit.depositedAmount?.toString() || '0',
+          //   beforeAmount: deposit.beforeAmount?.toString() || '0',
+          //   status: this.mapDepositStatusToProto(deposit.status),
+          //   createdAt: deposit.createdAt.toISOString(),
+          //   updatedAt: deposit.updatedAt.toISOString(),
+          // })),
         })),
-        meta: {
-          count: total,
-          page,
-          pageCount: Math.ceil(total / limit),
-          limit,
-        },
+        meta,
+      };
+    } catch (error) {
+      this.logger.error('Error fetching wallets:', error);
+      throw error;
+    }
+  }
+
+  async getAllDeposits(
+    request: GetAllDepositsRequest
+  ): Promise<AllDepositsWithMetaResponse> {
+    try {
+      const { data, meta } = await this.paginationService.paginate<Deposit>(
+        request.basicQuery,
+        this.prisma.deposit,
+        [],
+        {
+          // deposits: true,
+        }
+      );
+
+      // console.log('The wallet : ', data);
+
+      return {
+        data: data.map((deposit) => ({
+          id: deposit.id,
+          userId: deposit.userId,
+          walletId: deposit.walletId,
+          depositedAmount: deposit.depositedAmount?.toString() || '0',
+          beforeAmount: deposit.beforeAmount?.toString() || '0',
+          status: this.mapDepositStatusToProto(deposit.status),
+          createdAt: deposit.createdAt.toISOString(),
+          updatedAt: deposit.updatedAt.toISOString(),
+        })),
+        meta,
       };
     } catch (error) {
       this.logger.error('Error fetching wallets:', error);

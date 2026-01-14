@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Apply } from 'generated/prisma-job';
+import { Apply, JobPost } from 'generated/prisma-job';
 import {
+  AuthPrismaService,
   JobPrismaService,
   PaginationResult,
   PaginationService,
@@ -18,8 +19,9 @@ import {
 @Injectable()
 export class ApplyService {
   constructor(
+    private readonly userPrisma: AuthPrismaService,
     private readonly prisma: JobPrismaService,
-    private readonly paginationService: PaginationService,
+    private readonly paginationService: PaginationService
   ) {}
 
   private mapApplyStatus(status: string): AppliedStatus {
@@ -33,7 +35,7 @@ export class ApplyService {
     return statusMap[status] || AppliedStatus.PENDING;
   }
 
-  private mapApplyToResponse(apply: Apply) {
+  private mapApplyToResponse(apply: Apply & { jobPost?: JobPost }) {
     return {
       id: apply.id,
       jobPostId: apply.jobPostId,
@@ -42,6 +44,23 @@ export class ApplyService {
       isReviewed: apply.isReviewed,
       status: this.mapApplyStatus(apply.status as string),
       appliedAt: apply.appliedAt.toISOString(),
+      memberFullname: apply.memberFullName || undefined,
+      memberEmail: apply.memberEmail || undefined,
+      memberPhone: apply.memberPhone || undefined,
+      memberCVForm: apply.memberCVForm || undefined,
+      // jobPosts: apply.jobPost
+      //   ? [
+      //       {
+      //         id: apply.jobPost.id,
+      //         title: apply.jobPost.title,
+      //       },
+      //     ]
+      //   : [],
+      jobPosts: {
+        id: apply.jobPost.id,
+        title: apply.jobPost.title,
+      },
+      
     };
   }
 
@@ -55,11 +74,11 @@ export class ApplyService {
       {
         // Include any relations if needed
         jobPost: true,
-      },
+      }
     );
 
     const mappedData = (result as PaginationResult<Apply>)?.data.map((apply) =>
-      this.mapApplyToResponse(apply),
+      this.mapApplyToResponse(apply)
     );
 
     return { data: mappedData, meta: result.meta };
@@ -85,6 +104,10 @@ export class ApplyService {
         isReviewed: apply.isReviewed,
         status: this.mapApplyStatus(apply.status as string),
         appliedAt: apply.appliedAt.toISOString(),
+        jobPosts: {
+          id: apply.jobPost.id,
+          title: apply.jobPost.title,
+        },
       },
     };
   }
@@ -97,9 +120,20 @@ export class ApplyService {
 
     if (!jobPost) {
       throw new NotFoundException(
-        `Job post with ID ${createApplyDto.jobPostId} not found`,
+        `Job post with ID ${createApplyDto.jobPostId} not found`
       );
     }
+
+    const memberInformation = await this.userPrisma.user.findUnique({
+      where: { id: createApplyDto.userId },
+      include: {
+        userInformation: {
+          select : {
+            cvForm: true,
+          }
+        }
+      }
+    })
 
     const apply = await this.prisma.apply.create({
       data: {
@@ -108,6 +142,10 @@ export class ApplyService {
         userInfoId: createApplyDto.userInfoId,
         isReviewed: createApplyDto.isReviewed || false,
         status: (createApplyDto.status as any) || 'PENDING',
+        memberFullName: memberInformation?.fullName || undefined,
+        memberEmail: memberInformation?.email || undefined,
+        memberPhone: memberInformation?.phone || undefined,
+        memberCVForm: memberInformation?.userInformation?.cvForm || undefined,
       },
     });
 
