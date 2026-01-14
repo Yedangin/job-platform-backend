@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Apply } from 'generated/prisma-job';
+import { Apply, JobPost } from 'generated/prisma-job';
 import {
   JobPrismaService,
   PaginationResult,
@@ -33,7 +33,7 @@ export class ApplyService {
     return statusMap[status] || AppliedStatus.PENDING;
   }
 
-  private mapApplyToResponse(apply: Apply) {
+  private mapApplyToResponse(apply: Apply & { jobPost?: JobPost }) {
     return {
       id: apply.id,
       jobPostId: apply.jobPostId,
@@ -42,6 +42,18 @@ export class ApplyService {
       isReviewed: apply.isReviewed,
       status: this.mapApplyStatus(apply.status as string),
       appliedAt: apply.appliedAt.toISOString(),
+      // jobPosts: apply.jobPost
+      //   ? [
+      //       {
+      //         id: apply.jobPost.id,
+      //         title: apply.jobPost.title,
+      //       },
+      //     ]
+      //   : [],
+      jobPosts: {
+        id: apply.jobPost.id,
+        title: apply.jobPost.title,
+      },
     };
   }
 

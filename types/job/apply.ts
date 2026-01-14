@@ -32,7 +32,7 @@ export interface Apply {
   isReviewed: boolean;
   status: AppliedStatus;
   appliedAt: string;
-  jobPosts: JobPost[];
+  jobPosts?: JobPost | undefined;
 }
 
 export interface JobPost {

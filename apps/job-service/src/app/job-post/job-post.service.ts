@@ -94,9 +94,9 @@ export class JobPostService {
       {
         category: true,
         applies: {
-          orderBy: {
-            appliedAt: 'desc',
-          },
+          // orderBy: {
+          //   appliedAt: 'desc',
+          // },
         },
       }
       // where,
