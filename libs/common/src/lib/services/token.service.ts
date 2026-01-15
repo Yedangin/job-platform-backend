@@ -2,12 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RedisService } from '../redis/redis.service';
 import { SessionData } from '../interfaces/session.interface';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class TokenService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly redisService: RedisService,
+    private readonly redisService: RedisService
   ) {}
 
   /**
@@ -47,7 +48,7 @@ export class TokenService {
     await this.redisService.set(
       `session:${sessionId}`,
       JSON.stringify(sessionData),
-      7 * 24 * 60 * 60, // Keep same TTL
+      7 * 24 * 60 * 60 // Keep same TTL
     );
 
     return newAccessToken;
@@ -62,6 +63,13 @@ export class TokenService {
     } catch (error) {
       return null;
     }
+  }
+
+  /**
+   * Generate email verification token using crypto
+   */
+  generateVerificationToken(): string {
+    return crypto.randomBytes(32).toString('hex');
   }
 
   /**

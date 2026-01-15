@@ -1,8 +1,8 @@
 export enum EmailType {
   // OTP = 'otp',
-  EMAIL_VERIFICATION = 'email_verification',
-  INTERVIEW = 'interview',
-  GENERAL = 'general',
+  EMAIL_VERIFICATION = 'jobchaja-email-verification',
+  INTERVIEW = 'jobchaja-interview',
+  GENERAL = 'jobchaja-general',
 }
 
 export enum EmailPriority {
@@ -14,6 +14,7 @@ export interface SendVerificationEmailEvent {
   type: EmailType.EMAIL_VERIFICATION;
   data: {
     userId: string;
+    fullName: string;
     email: string;
     verificationToken: string;
     verificationUrl: string;

@@ -3,6 +3,7 @@ import {
   UnauthorizedException,
   ConflictException,
   NotFoundException,
+  Inject,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
@@ -23,18 +24,23 @@ import {
   RedisService,
   SessionData,
   GenerateStoreToken,
+  EmailType,
+  TokenService,
 } from '@in-job/common';
 import {
   SocialProvider as PrismaSocialProvider,
   User as PrismaUser,
 } from 'generated/prisma-user';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: AuthPrismaService,
     private readonly generateToken: GenerateStoreToken,
-    private readonly redisService: RedisService
+    private tokenService: TokenService,
+    private readonly redisService: RedisService,
+    @Inject('AUTH_SERVICE') private readonly client: ClientProxy
   ) {}
 
   async register(request: RegisterRequest): Promise<RegisterSuccessResponse> {
@@ -62,7 +68,7 @@ export class AuthService {
     }
 
     // Create user
-    await this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         email,
         password: hashedPassword,
@@ -85,10 +91,63 @@ export class AuthService {
       },
     });
 
+    const token = this.tokenService.generateVerificationToken();
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    const verificationToken = await this.prisma.verificationToken.create({
+      data: {
+        userId: user.id,
+        token,
+        type: 'email_verification',
+        expiresAt,
+      },
+    });
+
+    const verificationUrl = `${process.env.CLIENT_URL}verify-email?token=${token}`;
+
+    const verifyUser = {
+      userId: user.id,
+      fullName: user.fullName,
+      token,
+      type: EmailType.EMAIL_VERIFICATION,
+      email: user.email,
+      verificationUrl,
+    };
+
+    console.log('the verify data : ', verifyUser);
+
+    await this.client.emit(EmailType.EMAIL_VERIFICATION, verifyUser);
+
     return {
       success: true,
       message: 'User registered successfully',
     };
+  }
+
+  async verifyEmail(token: string): Promise<void> {
+    const verificationToken = await this.prisma.verificationToken.findFirst({
+      where: {
+        token,
+        type: 'email_verification',
+        expiresAt: { gt: new Date() },
+        usedAt: null,
+      },
+    });
+
+    if (!verificationToken) {
+      throw new UnauthorizedException('Invalid or expired verification token');
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.user.update({
+        where: { id: verificationToken.userId },
+        data: { isEmailedVerified: true },
+      }),
+      this.prisma.verificationToken.update({
+        where: { id: verificationToken.id },
+        data: { usedAt: new Date() },
+      }),
+    ]);
   }
 
   async login(
