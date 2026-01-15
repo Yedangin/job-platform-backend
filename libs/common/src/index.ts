@@ -90,3 +90,7 @@ export * from './lib/pipes/single-file-validator.pipe';
 
 //Middleware
 export * from './lib/middleware/logging-middleware';
+
+
+// Events
+export * from './lib/events/email.enent';
