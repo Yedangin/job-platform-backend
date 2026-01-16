@@ -1,11 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Interview, Prisma } from 'generated/prisma-job';
 import {
   AuthPrismaService,
   JobPrismaService,
   PaginationResult,
   PaginationService,
+  EmailType,
 } from '@in-job/common';
+import { ClientProxy } from '@nestjs/microservices';
 
 import {
   AllInterviewsWithMetaResponse,
@@ -23,10 +25,12 @@ export class InterviewService {
     private readonly userPrisma: AuthPrismaService,
     private readonly prisma: JobPrismaService,
     private readonly paginationService: PaginationService,
+    @Inject('NOTIFICATION_SERVICE')
+    private readonly notificationClient: ClientProxy
   ) {}
 
   private mapInterviewToResponse(
-    interview: Interview & { jobPost?: any; reviews?: any[] },
+    interview: Interview & { jobPost?: any; reviews?: any[] }
   ): InterviewProto {
     return {
       id: interview.id,
@@ -96,11 +100,11 @@ export class InterviewService {
         jobPost: true,
         reviews: true,
       },
-      where,
+      where
     );
 
     const mappedData = (result as PaginationResult<Interview>)?.data.map(
-      (interview) => this.mapInterviewToResponse(interview),
+      (interview) => this.mapInterviewToResponse(interview)
     );
 
     return {
@@ -143,7 +147,7 @@ export class InterviewService {
 
     if (!jobPostExists) {
       throw new NotFoundException(
-        `Job post with ID ${data.jobPostId} not found`,
+        `Job post with ID ${data.jobPostId} not found`
       );
     }
 
@@ -161,7 +165,7 @@ export class InterviewService {
 
     const userInformation = await this.userPrisma.user.findUnique({
       where: { id: data.memberId },
-    })
+    });
 
     const interview = await this.prisma.interview.create({
       data: {
@@ -181,6 +185,32 @@ export class InterviewService {
       },
     });
 
+    // Send interview invitation email
+    if (userInformation?.email && interview.interviewDate) {
+      const interviewEmailData = {
+        candidateName: userInformation.fullName || 'Candidate',
+        jobTitle: jobPostExists.title || 'Position',
+        companyName: jobPostExists.corporateName || 'Company',
+        interviewTime: interview.interviewDate,
+        duration: 60, // Default 60 minutes
+        interviewType: 'Virtual Interview',
+        platform: 'Job Chaja Platform',
+        meetingLink: data.roomId
+          ? `${process.env.CLIENT_URL}interview/${data.roomId}`
+          : undefined,
+        interviewerName: 'HR Team',
+        additionalInstructions:
+          'Please be ready 10 minutes before the scheduled time.',
+        contactEmail: process.env.MAIL_FROM || 'support@jobchaja.com',
+      };
+
+      await this.notificationClient.emit(EmailType.INTERVIEW, {
+        userId: data.memberId,
+        email: userInformation.email,
+        interviewData: interviewEmailData,
+      });
+    }
+
     return {
       success: true,
       message: 'Interview created successfully',
@@ -195,7 +225,7 @@ export class InterviewService {
       interviewDate?: string;
       status?: string;
       failureReason?: string;
-    },
+    }
   ): Promise<InterviewResponse> {
     const existingInterview = await this.prisma.interview.findUnique({
       where: { id: interviewId },
@@ -245,7 +275,7 @@ export class InterviewService {
 
     if (reviewsCount > 0) {
       throw new Error(
-        'Cannot delete interview with reviews. Please delete reviews first.',
+        'Cannot delete interview with reviews. Please delete reviews first.'
       );
     }
 
@@ -278,7 +308,7 @@ export class InterviewService {
 
     return {
       data: interviews.map((interview) =>
-        this.mapInterviewToResponse(interview),
+        this.mapInterviewToResponse(interview)
       ),
       meta: {
         total,
@@ -308,7 +338,7 @@ export class InterviewService {
 
     return {
       data: interviews.map((interview) =>
-        this.mapInterviewToResponse(interview),
+        this.mapInterviewToResponse(interview)
       ),
       meta: {
         total,
@@ -322,7 +352,7 @@ export class InterviewService {
   async listByCorporate(
     corporateId: string,
     page: number = 1,
-    limit: number = 10,
+    limit: number = 10
   ) {
     const skip = (page - 1) * limit;
 
@@ -342,7 +372,7 @@ export class InterviewService {
 
     return {
       data: interviews.map((interview) =>
-        this.mapInterviewToResponse(interview),
+        this.mapInterviewToResponse(interview)
       ),
       meta: {
         total,
@@ -356,7 +386,7 @@ export class InterviewService {
   async updateStatus(
     interviewId: string,
     status: string,
-    failureReason?: string,
+    failureReason?: string
   ): Promise<InterviewResponse> {
     const existingInterview = await this.prisma.interview.findUnique({
       where: { id: interviewId },

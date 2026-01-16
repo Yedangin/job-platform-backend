@@ -33,13 +33,13 @@ model Notification {
   userId             String             @map("user_id")
   email              String?            @notiDB.VarChar(50)
   subject            String?            @notiDB.VarChar(100)
-  content            String?            @notiDB.VarChar(255)
+  content            String?
   notificationType   NotificationType   @default(REMINDER) @map("notification_type")
   status             NotificationStatus @default(PENDING)
   priority           Int?
   attempts           Int?
   maxAttempts        Int?               @map("max_attempts")
-  metadata           String?            @notiDB.VarChar(255)
+  metadata           String?
   isRead             Boolean?           @map("is_read")
   relatedInterviewId String?            @map("related_interview_id")
   relatedJobPostId   String?            @map("related_job_post_id")

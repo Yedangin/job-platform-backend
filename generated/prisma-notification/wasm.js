@@ -36,12 +36,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.19.0
- * Query Engine version: 2ba551f319ab1df4bc874a89965d8b3641056773
+ * Prisma Client JS version: 6.19.1
+ * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
  */
 Prisma.prismaVersion = {
-  client: "6.19.0",
-  engine: "2ba551f319ab1df4bc874a89965d8b3641056773"
+  client: "6.19.1",
+  engine: "c2990dca591cba766e3b7ef5d9e8a84796e47ab7"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -184,7 +184,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/abed/Work/JobPlatform/job-platform-backend-v1/generated/prisma-notification",
+      "value": "/Users/zelda/Desktop/Yedanginn/Job-Chaja/Job-Chaja-BE/generated/prisma-notification",
       "fromEnvVar": null
     },
     "config": {
@@ -198,15 +198,16 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/abed/Work/JobPlatform/job-platform-backend-v1/prisma/notification/notification.schema.prisma",
+    "sourceFilePath": "/Users/zelda/Desktop/Yedanginn/Job-Chaja/Job-Chaja-BE/prisma/notification/notification.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null
+    "rootEnvPath": null,
+    "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma/notification",
-  "clientVersion": "6.19.0",
-  "engineVersion": "2ba551f319ab1df4bc874a89965d8b3641056773",
+  "clientVersion": "6.19.1",
+  "engineVersion": "c2990dca591cba766e3b7ef5d9e8a84796e47ab7",
   "datasourceNames": [
     "notiDB"
   ],
@@ -220,8 +221,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// Notification Domain Schema - PostgreSQL\n// Includes: notifications, chats, messages\n\ndatasource notiDB {\n  provider = \"postgresql\"\n  url      = env(\"NOTIFICATION_DATABASE_URL\")\n}\n\ngenerator notiClient {\n  provider = \"prisma-client-js\"\n  output   = \"../../generated/prisma-notification\"\n  // binaryTargets = [\"native\", \"linux-musl-arm64-openssl-3.0.x\"]\n}\n\nenum NotificationType {\n  APPLICATION_ALERT\n  INTERVIEW_UPDATE\n  REMINDER\n  PROMOTION\n  EMAIL_VERIFICATION\n  FINANCIAL_ALERT\n  STATUS_ALERT\n}\n\nenum NotificationStatus {\n  PENDING\n  SENDING\n  FAILED\n}\n\nmodel Notification {\n  id                 String             @id @default(cuid()) @map(\"id\")\n  userId             String             @map(\"user_id\")\n  email              String?            @notiDB.VarChar(50)\n  subject            String?            @notiDB.VarChar(100)\n  content            String?            @notiDB.VarChar(255)\n  notificationType   NotificationType   @default(REMINDER) @map(\"notification_type\")\n  status             NotificationStatus @default(PENDING)\n  priority           Int?\n  attempts           Int?\n  maxAttempts        Int?               @map(\"max_attempts\")\n  metadata           String?            @notiDB.VarChar(255)\n  isRead             Boolean?           @map(\"is_read\")\n  relatedInterviewId String?            @map(\"related_interview_id\")\n  relatedJobPostId   String?            @map(\"related_job_post_id\")\n  createdAt          DateTime           @default(now()) @map(\"created_at\")\n  sendedAt           DateTime?          @map(\"sended_at\")\n  failedAt           DateTime?          @map(\"failed_at\")\n  errorMessage       String?            @map(\"error_message\") @notiDB.Text\n\n  @@index([email])\n  @@index([subject])\n  @@index([notificationType])\n  @@index([metadata])\n  @@map(\"notifications\")\n}\n\n// --- Chatting Models (Updated) ---\n\n// 1. Represents a single chat room (either 1-on-1 or group).\nmodel Conversation {\n  id        String   @id @default(cuid()) @map(\"id\")\n  name      String?  @notiDB.VarChar(255) // Only needed for Group chats (optional for 1-on-1)\n  isGroup   Boolean  @default(false) // True for group chats, false for 1-on-1\n  createdAt DateTime @default(now()) @map(\"created_at\")\n\n  members  ConversationMember[]\n  messages Message[]\n\n  @@map(\"conversations\")\n}\n\n// 2. Links Users to Conversations (Many-to-Many Relationship).\n// This replaces your old 'Chat' model.\nmodel ConversationMember {\n  id             String  @id @default(cuid()) @map(\"id\")\n  conversationId String  @map(\"conversation_id\")\n  userId         String  @map(\"user_id\") // The user ID for this member\n  isAdmin        Boolean @default(false) // For group management\n\n  conversation Conversation @relation(fields: [conversationId], references: [id])\n\n  @@unique([conversationId, userId]) // A user can only be a member once per conversation\n  @@map(\"conversation_members\")\n}\n\n// 3. Updated to reference the Conversation ID instead of a receiver ID.\nmodel Message {\n  id             String   @id @default(cuid()) @map(\"id\")\n  conversationId String   @map(\"conversation_id\") // References the chat room/conversation\n  senderId       String   @map(\"sender_id\") // The user who sent the message\n  message        String?  @notiDB.VarChar(255)\n  isSeen         Boolean  @default(false) @map(\"is_seen\")\n  createdAt      DateTime @default(now()) @map(\"created_at\")\n\n  conversation Conversation @relation(fields: [conversationId], references: [id])\n\n  @@map(\"messages\")\n}\n",
-  "inlineSchemaHash": "75583c2e58e70ff06a4fceeaf337e90ee259996b86df6233fa3cbf9fb4400e26",
+  "inlineSchema": "// Notification Domain Schema - PostgreSQL\n// Includes: notifications, chats, messages\n\ndatasource notiDB {\n  provider = \"postgresql\"\n  url      = env(\"NOTIFICATION_DATABASE_URL\")\n}\n\ngenerator notiClient {\n  provider = \"prisma-client-js\"\n  output   = \"../../generated/prisma-notification\"\n  // binaryTargets = [\"native\", \"linux-musl-arm64-openssl-3.0.x\"]\n}\n\nenum NotificationType {\n  APPLICATION_ALERT\n  INTERVIEW_UPDATE\n  REMINDER\n  PROMOTION\n  EMAIL_VERIFICATION\n  FINANCIAL_ALERT\n  STATUS_ALERT\n}\n\nenum NotificationStatus {\n  PENDING\n  SENDING\n  FAILED\n}\n\nmodel Notification {\n  id                 String             @id @default(cuid()) @map(\"id\")\n  userId             String             @map(\"user_id\")\n  email              String?            @notiDB.VarChar(50)\n  subject            String?            @notiDB.VarChar(100)\n  content            String?\n  notificationType   NotificationType   @default(REMINDER) @map(\"notification_type\")\n  status             NotificationStatus @default(PENDING)\n  priority           Int?\n  attempts           Int?\n  maxAttempts        Int?               @map(\"max_attempts\")\n  metadata           String?\n  isRead             Boolean?           @map(\"is_read\")\n  relatedInterviewId String?            @map(\"related_interview_id\")\n  relatedJobPostId   String?            @map(\"related_job_post_id\")\n  createdAt          DateTime           @default(now()) @map(\"created_at\")\n  sendedAt           DateTime?          @map(\"sended_at\")\n  failedAt           DateTime?          @map(\"failed_at\")\n  errorMessage       String?            @map(\"error_message\") @notiDB.Text\n\n  @@index([email])\n  @@index([subject])\n  @@index([notificationType])\n  @@index([metadata])\n  @@map(\"notifications\")\n}\n\n// --- Chatting Models (Updated) ---\n\n// 1. Represents a single chat room (either 1-on-1 or group).\nmodel Conversation {\n  id        String   @id @default(cuid()) @map(\"id\")\n  name      String?  @notiDB.VarChar(255) // Only needed for Group chats (optional for 1-on-1)\n  isGroup   Boolean  @default(false) // True for group chats, false for 1-on-1\n  createdAt DateTime @default(now()) @map(\"created_at\")\n\n  members  ConversationMember[]\n  messages Message[]\n\n  @@map(\"conversations\")\n}\n\n// 2. Links Users to Conversations (Many-to-Many Relationship).\n// This replaces your old 'Chat' model.\nmodel ConversationMember {\n  id             String  @id @default(cuid()) @map(\"id\")\n  conversationId String  @map(\"conversation_id\")\n  userId         String  @map(\"user_id\") // The user ID for this member\n  isAdmin        Boolean @default(false) // For group management\n\n  conversation Conversation @relation(fields: [conversationId], references: [id])\n\n  @@unique([conversationId, userId]) // A user can only be a member once per conversation\n  @@map(\"conversation_members\")\n}\n\n// 3. Updated to reference the Conversation ID instead of a receiver ID.\nmodel Message {\n  id             String   @id @default(cuid()) @map(\"id\")\n  conversationId String   @map(\"conversation_id\") // References the chat room/conversation\n  senderId       String   @map(\"sender_id\") // The user who sent the message\n  message        String?  @notiDB.VarChar(255)\n  isSeen         Boolean  @default(false) @map(\"is_seen\")\n  createdAt      DateTime @default(now()) @map(\"created_at\")\n\n  conversation Conversation @relation(fields: [conversationId], references: [id])\n\n  @@map(\"messages\")\n}\n",
+  "inlineSchemaHash": "936ad1d42a33434af6581e64bd05c679a4e470ff7b9f21d24b4c591ea87c87a6",
   "copyEngine": true
 }
 config.dirname = '/'
