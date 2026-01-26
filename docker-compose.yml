@@ -1,33 +1,50 @@
-version: '3.8'
 services:
   backend-service:
     build: .
+    container_name: job-backend
     ports:
       - "8000:8000"
     restart: always
     env_file:
       - .env
     depends_on:
-      - mongo
-    volumes:
-      - .:/app
-      - /app/node_modules
-    deploy:
-      mode: replicated
-      replicas: 1
-    command: sh -c "npx prisma db push && npm run start:dev"
+      - postgres
+      - mongodb
+      - redis
+    command: sh -c "npx prisma db push --schema=./prisma/user/user.schema.prisma && npm run start:dev"
 
-  mongo:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  mongodb:
     image: mongo:6
+    container_name: mongodb
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
-      MONGO_INITDB_DATABASE: base
     ports:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
 
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
 volumes:
+  postgres-data:
   mongo-data:

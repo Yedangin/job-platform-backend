@@ -13,7 +13,11 @@ COPY . .
 
 # Generate Prisma client
 # Only generate Prisma client (optional but helpful)
-RUN npx prisma generate
+RUN npx prisma generate --schema=./prisma/user/user.schema.prisma && \
+    npx prisma generate --schema=./prisma/job/job.schema.prisma && \
+    npx prisma generate --schema=./prisma/payment/payment.schema.prisma && \
+    npx prisma generate --schema=./prisma/notification/notification.schema.prisma && \
+    npx prisma generate --schema=./prisma/log/log.schema.prisma
 
 # Build NestJS app
 RUN npm run build
