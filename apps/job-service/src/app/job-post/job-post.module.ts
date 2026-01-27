@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { JobPostService } from './job-post.service';
 import { JobPostController } from './job-post.controller';
 import { CategoryService } from '../category/category.service';
-import { JobPrismaService, PaginationService } from '@in-job/common';
+import { AuthPrismaService, JobPrismaService, PaginationService } from '@in-job/common';
 
 @Module({
   controllers: [JobPostController],
@@ -11,6 +11,7 @@ import { JobPrismaService, PaginationService } from '@in-job/common';
     CategoryService,
     PaginationService,
     JobPrismaService,
+    AuthPrismaService,
   ],
 })
 export class JobPostModule {}

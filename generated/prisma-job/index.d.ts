@@ -327,8 +327,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.19.0
-   * Query Engine version: 2ba551f319ab1df4bc874a89965d8b3641056773
+   * Prisma Client JS version: 6.19.1
+   * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
    */
   export type PrismaVersion = {
     client: string
@@ -2645,6 +2645,7 @@ export namespace Prisma {
   export type JobPostMinAggregateOutputType = {
     id: string | null
     corporateId: string | null
+    corporateName: string | null
     title: string | null
     description: string | null
     location: string | null
@@ -2662,6 +2663,7 @@ export namespace Prisma {
   export type JobPostMaxAggregateOutputType = {
     id: string | null
     corporateId: string | null
+    corporateName: string | null
     title: string | null
     description: string | null
     location: string | null
@@ -2679,6 +2681,7 @@ export namespace Prisma {
   export type JobPostCountAggregateOutputType = {
     id: number
     corporateId: number
+    corporateName: number
     title: number
     description: number
     location: number
@@ -2706,6 +2709,7 @@ export namespace Prisma {
   export type JobPostMinAggregateInputType = {
     id?: true
     corporateId?: true
+    corporateName?: true
     title?: true
     description?: true
     location?: true
@@ -2723,6 +2727,7 @@ export namespace Prisma {
   export type JobPostMaxAggregateInputType = {
     id?: true
     corporateId?: true
+    corporateName?: true
     title?: true
     description?: true
     location?: true
@@ -2740,6 +2745,7 @@ export namespace Prisma {
   export type JobPostCountAggregateInputType = {
     id?: true
     corporateId?: true
+    corporateName?: true
     title?: true
     description?: true
     location?: true
@@ -2844,6 +2850,7 @@ export namespace Prisma {
   export type JobPostGroupByOutputType = {
     id: string
     corporateId: string
+    corporateName: string | null
     title: string | null
     description: string | null
     location: string | null
@@ -2880,6 +2887,7 @@ export namespace Prisma {
   export type JobPostSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     corporateId?: boolean
+    corporateName?: boolean
     title?: boolean
     description?: boolean
     location?: boolean
@@ -2901,6 +2909,7 @@ export namespace Prisma {
   export type JobPostSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     corporateId?: boolean
+    corporateName?: boolean
     title?: boolean
     description?: boolean
     location?: boolean
@@ -2919,6 +2928,7 @@ export namespace Prisma {
   export type JobPostSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     corporateId?: boolean
+    corporateName?: boolean
     title?: boolean
     description?: boolean
     location?: boolean
@@ -2937,6 +2947,7 @@ export namespace Prisma {
   export type JobPostSelectScalar = {
     id?: boolean
     corporateId?: boolean
+    corporateName?: boolean
     title?: boolean
     description?: boolean
     location?: boolean
@@ -2951,7 +2962,7 @@ export namespace Prisma {
     expiredAt?: boolean
   }
 
-  export type JobPostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "corporateId" | "title" | "description" | "location" | "salaryRange" | "categoryId" | "feeType" | "status" | "approvedBy" | "appliesCount" | "createdAt" | "updatedAt" | "expiredAt", ExtArgs["result"]["jobPost"]>
+  export type JobPostOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "corporateId" | "corporateName" | "title" | "description" | "location" | "salaryRange" | "categoryId" | "feeType" | "status" | "approvedBy" | "appliesCount" | "createdAt" | "updatedAt" | "expiredAt", ExtArgs["result"]["jobPost"]>
   export type JobPostInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     category?: boolean | JobPost$categoryArgs<ExtArgs>
     applies?: boolean | JobPost$appliesArgs<ExtArgs>
@@ -2975,6 +2986,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       corporateId: string
+      corporateName: string | null
       title: string | null
       description: string | null
       location: string | null
@@ -3415,6 +3427,7 @@ export namespace Prisma {
   interface JobPostFieldRefs {
     readonly id: FieldRef<"JobPost", 'String'>
     readonly corporateId: FieldRef<"JobPost", 'String'>
+    readonly corporateName: FieldRef<"JobPost", 'String'>
     readonly title: FieldRef<"JobPost", 'String'>
     readonly description: FieldRef<"JobPost", 'String'>
     readonly location: FieldRef<"JobPost", 'String'>
@@ -3922,6 +3935,10 @@ export namespace Prisma {
     id: string | null
     jobPostId: string | null
     userId: string | null
+    memberFullName: string | null
+    memberEmail: string | null
+    memberPhone: string | null
+    memberCVForm: string | null
     userInfoId: string | null
     isReviewed: boolean | null
     status: $Enums.AppliedStatus | null
@@ -3932,6 +3949,10 @@ export namespace Prisma {
     id: string | null
     jobPostId: string | null
     userId: string | null
+    memberFullName: string | null
+    memberEmail: string | null
+    memberPhone: string | null
+    memberCVForm: string | null
     userInfoId: string | null
     isReviewed: boolean | null
     status: $Enums.AppliedStatus | null
@@ -3942,6 +3963,10 @@ export namespace Prisma {
     id: number
     jobPostId: number
     userId: number
+    memberFullName: number
+    memberEmail: number
+    memberPhone: number
+    memberCVForm: number
     userInfoId: number
     isReviewed: number
     status: number
@@ -3954,6 +3979,10 @@ export namespace Prisma {
     id?: true
     jobPostId?: true
     userId?: true
+    memberFullName?: true
+    memberEmail?: true
+    memberPhone?: true
+    memberCVForm?: true
     userInfoId?: true
     isReviewed?: true
     status?: true
@@ -3964,6 +3993,10 @@ export namespace Prisma {
     id?: true
     jobPostId?: true
     userId?: true
+    memberFullName?: true
+    memberEmail?: true
+    memberPhone?: true
+    memberCVForm?: true
     userInfoId?: true
     isReviewed?: true
     status?: true
@@ -3974,6 +4007,10 @@ export namespace Prisma {
     id?: true
     jobPostId?: true
     userId?: true
+    memberFullName?: true
+    memberEmail?: true
+    memberPhone?: true
+    memberCVForm?: true
     userInfoId?: true
     isReviewed?: true
     status?: true
@@ -4057,6 +4094,10 @@ export namespace Prisma {
     id: string
     jobPostId: string
     userId: string
+    memberFullName: string | null
+    memberEmail: string | null
+    memberPhone: string | null
+    memberCVForm: string | null
     userInfoId: string | null
     isReviewed: boolean
     status: $Enums.AppliedStatus
@@ -4084,6 +4125,10 @@ export namespace Prisma {
     id?: boolean
     jobPostId?: boolean
     userId?: boolean
+    memberFullName?: boolean
+    memberEmail?: boolean
+    memberPhone?: boolean
+    memberCVForm?: boolean
     userInfoId?: boolean
     isReviewed?: boolean
     status?: boolean
@@ -4095,6 +4140,10 @@ export namespace Prisma {
     id?: boolean
     jobPostId?: boolean
     userId?: boolean
+    memberFullName?: boolean
+    memberEmail?: boolean
+    memberPhone?: boolean
+    memberCVForm?: boolean
     userInfoId?: boolean
     isReviewed?: boolean
     status?: boolean
@@ -4106,6 +4155,10 @@ export namespace Prisma {
     id?: boolean
     jobPostId?: boolean
     userId?: boolean
+    memberFullName?: boolean
+    memberEmail?: boolean
+    memberPhone?: boolean
+    memberCVForm?: boolean
     userInfoId?: boolean
     isReviewed?: boolean
     status?: boolean
@@ -4117,13 +4170,17 @@ export namespace Prisma {
     id?: boolean
     jobPostId?: boolean
     userId?: boolean
+    memberFullName?: boolean
+    memberEmail?: boolean
+    memberPhone?: boolean
+    memberCVForm?: boolean
     userInfoId?: boolean
     isReviewed?: boolean
     status?: boolean
     appliedAt?: boolean
   }
 
-  export type ApplyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobPostId" | "userId" | "userInfoId" | "isReviewed" | "status" | "appliedAt", ExtArgs["result"]["apply"]>
+  export type ApplyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobPostId" | "userId" | "memberFullName" | "memberEmail" | "memberPhone" | "memberCVForm" | "userInfoId" | "isReviewed" | "status" | "appliedAt", ExtArgs["result"]["apply"]>
   export type ApplyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     jobPost?: boolean | JobPostDefaultArgs<ExtArgs>
   }
@@ -4143,6 +4200,10 @@ export namespace Prisma {
       id: string
       jobPostId: string
       userId: string
+      memberFullName: string | null
+      memberEmail: string | null
+      memberPhone: string | null
+      memberCVForm: string | null
       userInfoId: string | null
       isReviewed: boolean
       status: $Enums.AppliedStatus
@@ -4574,6 +4635,10 @@ export namespace Prisma {
     readonly id: FieldRef<"Apply", 'String'>
     readonly jobPostId: FieldRef<"Apply", 'String'>
     readonly userId: FieldRef<"Apply", 'String'>
+    readonly memberFullName: FieldRef<"Apply", 'String'>
+    readonly memberEmail: FieldRef<"Apply", 'String'>
+    readonly memberPhone: FieldRef<"Apply", 'String'>
+    readonly memberCVForm: FieldRef<"Apply", 'String'>
     readonly userInfoId: FieldRef<"Apply", 'String'>
     readonly isReviewed: FieldRef<"Apply", 'Boolean'>
     readonly status: FieldRef<"Apply", 'AppliedStatus'>
@@ -5006,7 +5071,11 @@ export namespace Prisma {
     id: string | null
     jobPostId: string | null
     memberId: string | null
+    memberFullName: string | null
+    memberEmail: string | null
+    memberPhone: string | null
     corporateId: string | null
+    corporateName: string | null
     roomId: string | null
     interviewDate: Date | null
     status: $Enums.InterviewStatus | null
@@ -5019,7 +5088,11 @@ export namespace Prisma {
     id: string | null
     jobPostId: string | null
     memberId: string | null
+    memberFullName: string | null
+    memberEmail: string | null
+    memberPhone: string | null
     corporateId: string | null
+    corporateName: string | null
     roomId: string | null
     interviewDate: Date | null
     status: $Enums.InterviewStatus | null
@@ -5032,7 +5105,11 @@ export namespace Prisma {
     id: number
     jobPostId: number
     memberId: number
+    memberFullName: number
+    memberEmail: number
+    memberPhone: number
     corporateId: number
+    corporateName: number
     roomId: number
     interviewDate: number
     status: number
@@ -5047,7 +5124,11 @@ export namespace Prisma {
     id?: true
     jobPostId?: true
     memberId?: true
+    memberFullName?: true
+    memberEmail?: true
+    memberPhone?: true
     corporateId?: true
+    corporateName?: true
     roomId?: true
     interviewDate?: true
     status?: true
@@ -5060,7 +5141,11 @@ export namespace Prisma {
     id?: true
     jobPostId?: true
     memberId?: true
+    memberFullName?: true
+    memberEmail?: true
+    memberPhone?: true
     corporateId?: true
+    corporateName?: true
     roomId?: true
     interviewDate?: true
     status?: true
@@ -5073,7 +5158,11 @@ export namespace Prisma {
     id?: true
     jobPostId?: true
     memberId?: true
+    memberFullName?: true
+    memberEmail?: true
+    memberPhone?: true
     corporateId?: true
+    corporateName?: true
     roomId?: true
     interviewDate?: true
     status?: true
@@ -5159,7 +5248,11 @@ export namespace Prisma {
     id: string
     jobPostId: string
     memberId: string
+    memberFullName: string | null
+    memberEmail: string | null
+    memberPhone: string | null
     corporateId: string
+    corporateName: string | null
     roomId: string | null
     interviewDate: Date | null
     status: $Enums.InterviewStatus
@@ -5189,7 +5282,11 @@ export namespace Prisma {
     id?: boolean
     jobPostId?: boolean
     memberId?: boolean
+    memberFullName?: boolean
+    memberEmail?: boolean
+    memberPhone?: boolean
     corporateId?: boolean
+    corporateName?: boolean
     roomId?: boolean
     interviewDate?: boolean
     status?: boolean
@@ -5205,7 +5302,11 @@ export namespace Prisma {
     id?: boolean
     jobPostId?: boolean
     memberId?: boolean
+    memberFullName?: boolean
+    memberEmail?: boolean
+    memberPhone?: boolean
     corporateId?: boolean
+    corporateName?: boolean
     roomId?: boolean
     interviewDate?: boolean
     status?: boolean
@@ -5219,7 +5320,11 @@ export namespace Prisma {
     id?: boolean
     jobPostId?: boolean
     memberId?: boolean
+    memberFullName?: boolean
+    memberEmail?: boolean
+    memberPhone?: boolean
     corporateId?: boolean
+    corporateName?: boolean
     roomId?: boolean
     interviewDate?: boolean
     status?: boolean
@@ -5233,7 +5338,11 @@ export namespace Prisma {
     id?: boolean
     jobPostId?: boolean
     memberId?: boolean
+    memberFullName?: boolean
+    memberEmail?: boolean
+    memberPhone?: boolean
     corporateId?: boolean
+    corporateName?: boolean
     roomId?: boolean
     interviewDate?: boolean
     status?: boolean
@@ -5242,7 +5351,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type InterviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobPostId" | "memberId" | "corporateId" | "roomId" | "interviewDate" | "status" | "failureReason" | "createdAt" | "updatedAt", ExtArgs["result"]["interview"]>
+  export type InterviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobPostId" | "memberId" | "memberFullName" | "memberEmail" | "memberPhone" | "corporateId" | "corporateName" | "roomId" | "interviewDate" | "status" | "failureReason" | "createdAt" | "updatedAt", ExtArgs["result"]["interview"]>
   export type InterviewInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     jobPost?: boolean | JobPostDefaultArgs<ExtArgs>
     reviews?: boolean | Interview$reviewsArgs<ExtArgs>
@@ -5265,7 +5374,11 @@ export namespace Prisma {
       id: string
       jobPostId: string
       memberId: string
+      memberFullName: string | null
+      memberEmail: string | null
+      memberPhone: string | null
       corporateId: string
+      corporateName: string | null
       roomId: string | null
       interviewDate: Date | null
       status: $Enums.InterviewStatus
@@ -5700,7 +5813,11 @@ export namespace Prisma {
     readonly id: FieldRef<"Interview", 'String'>
     readonly jobPostId: FieldRef<"Interview", 'String'>
     readonly memberId: FieldRef<"Interview", 'String'>
+    readonly memberFullName: FieldRef<"Interview", 'String'>
+    readonly memberEmail: FieldRef<"Interview", 'String'>
+    readonly memberPhone: FieldRef<"Interview", 'String'>
     readonly corporateId: FieldRef<"Interview", 'String'>
+    readonly corporateName: FieldRef<"Interview", 'String'>
     readonly roomId: FieldRef<"Interview", 'String'>
     readonly interviewDate: FieldRef<"Interview", 'DateTime'>
     readonly status: FieldRef<"Interview", 'InterviewStatus'>
@@ -8300,6 +8417,7 @@ export namespace Prisma {
   export const JobPostScalarFieldEnum: {
     id: 'id',
     corporateId: 'corporateId',
+    corporateName: 'corporateName',
     title: 'title',
     description: 'description',
     location: 'location',
@@ -8321,6 +8439,10 @@ export namespace Prisma {
     id: 'id',
     jobPostId: 'jobPostId',
     userId: 'userId',
+    memberFullName: 'memberFullName',
+    memberEmail: 'memberEmail',
+    memberPhone: 'memberPhone',
+    memberCVForm: 'memberCVForm',
     userInfoId: 'userInfoId',
     isReviewed: 'isReviewed',
     status: 'status',
@@ -8334,7 +8456,11 @@ export namespace Prisma {
     id: 'id',
     jobPostId: 'jobPostId',
     memberId: 'memberId',
+    memberFullName: 'memberFullName',
+    memberEmail: 'memberEmail',
+    memberPhone: 'memberPhone',
     corporateId: 'corporateId',
+    corporateName: 'corporateName',
     roomId: 'roomId',
     interviewDate: 'interviewDate',
     status: 'status',
@@ -8580,6 +8706,7 @@ export namespace Prisma {
     NOT?: JobPostWhereInput | JobPostWhereInput[]
     id?: StringFilter<"JobPost"> | string
     corporateId?: StringFilter<"JobPost"> | string
+    corporateName?: StringNullableFilter<"JobPost"> | string | null
     title?: StringNullableFilter<"JobPost"> | string | null
     description?: StringNullableFilter<"JobPost"> | string | null
     location?: StringNullableFilter<"JobPost"> | string | null
@@ -8600,6 +8727,7 @@ export namespace Prisma {
   export type JobPostOrderByWithRelationInput = {
     id?: SortOrder
     corporateId?: SortOrder
+    corporateName?: SortOrderInput | SortOrder
     title?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     location?: SortOrderInput | SortOrder
@@ -8623,6 +8751,7 @@ export namespace Prisma {
     OR?: JobPostWhereInput[]
     NOT?: JobPostWhereInput | JobPostWhereInput[]
     corporateId?: StringFilter<"JobPost"> | string
+    corporateName?: StringNullableFilter<"JobPost"> | string | null
     title?: StringNullableFilter<"JobPost"> | string | null
     description?: StringNullableFilter<"JobPost"> | string | null
     location?: StringNullableFilter<"JobPost"> | string | null
@@ -8643,6 +8772,7 @@ export namespace Prisma {
   export type JobPostOrderByWithAggregationInput = {
     id?: SortOrder
     corporateId?: SortOrder
+    corporateName?: SortOrderInput | SortOrder
     title?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     location?: SortOrderInput | SortOrder
@@ -8668,6 +8798,7 @@ export namespace Prisma {
     NOT?: JobPostScalarWhereWithAggregatesInput | JobPostScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"JobPost"> | string
     corporateId?: StringWithAggregatesFilter<"JobPost"> | string
+    corporateName?: StringNullableWithAggregatesFilter<"JobPost"> | string | null
     title?: StringNullableWithAggregatesFilter<"JobPost"> | string | null
     description?: StringNullableWithAggregatesFilter<"JobPost"> | string | null
     location?: StringNullableWithAggregatesFilter<"JobPost"> | string | null
@@ -8689,6 +8820,10 @@ export namespace Prisma {
     id?: StringFilter<"Apply"> | string
     jobPostId?: StringFilter<"Apply"> | string
     userId?: StringFilter<"Apply"> | string
+    memberFullName?: StringNullableFilter<"Apply"> | string | null
+    memberEmail?: StringNullableFilter<"Apply"> | string | null
+    memberPhone?: StringNullableFilter<"Apply"> | string | null
+    memberCVForm?: StringNullableFilter<"Apply"> | string | null
     userInfoId?: StringNullableFilter<"Apply"> | string | null
     isReviewed?: BoolFilter<"Apply"> | boolean
     status?: EnumAppliedStatusFilter<"Apply"> | $Enums.AppliedStatus
@@ -8700,6 +8835,10 @@ export namespace Prisma {
     id?: SortOrder
     jobPostId?: SortOrder
     userId?: SortOrder
+    memberFullName?: SortOrderInput | SortOrder
+    memberEmail?: SortOrderInput | SortOrder
+    memberPhone?: SortOrderInput | SortOrder
+    memberCVForm?: SortOrderInput | SortOrder
     userInfoId?: SortOrderInput | SortOrder
     isReviewed?: SortOrder
     status?: SortOrder
@@ -8714,6 +8853,10 @@ export namespace Prisma {
     NOT?: ApplyWhereInput | ApplyWhereInput[]
     jobPostId?: StringFilter<"Apply"> | string
     userId?: StringFilter<"Apply"> | string
+    memberFullName?: StringNullableFilter<"Apply"> | string | null
+    memberEmail?: StringNullableFilter<"Apply"> | string | null
+    memberPhone?: StringNullableFilter<"Apply"> | string | null
+    memberCVForm?: StringNullableFilter<"Apply"> | string | null
     userInfoId?: StringNullableFilter<"Apply"> | string | null
     isReviewed?: BoolFilter<"Apply"> | boolean
     status?: EnumAppliedStatusFilter<"Apply"> | $Enums.AppliedStatus
@@ -8725,6 +8868,10 @@ export namespace Prisma {
     id?: SortOrder
     jobPostId?: SortOrder
     userId?: SortOrder
+    memberFullName?: SortOrderInput | SortOrder
+    memberEmail?: SortOrderInput | SortOrder
+    memberPhone?: SortOrderInput | SortOrder
+    memberCVForm?: SortOrderInput | SortOrder
     userInfoId?: SortOrderInput | SortOrder
     isReviewed?: SortOrder
     status?: SortOrder
@@ -8741,6 +8888,10 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Apply"> | string
     jobPostId?: StringWithAggregatesFilter<"Apply"> | string
     userId?: StringWithAggregatesFilter<"Apply"> | string
+    memberFullName?: StringNullableWithAggregatesFilter<"Apply"> | string | null
+    memberEmail?: StringNullableWithAggregatesFilter<"Apply"> | string | null
+    memberPhone?: StringNullableWithAggregatesFilter<"Apply"> | string | null
+    memberCVForm?: StringNullableWithAggregatesFilter<"Apply"> | string | null
     userInfoId?: StringNullableWithAggregatesFilter<"Apply"> | string | null
     isReviewed?: BoolWithAggregatesFilter<"Apply"> | boolean
     status?: EnumAppliedStatusWithAggregatesFilter<"Apply"> | $Enums.AppliedStatus
@@ -8754,7 +8905,11 @@ export namespace Prisma {
     id?: StringFilter<"Interview"> | string
     jobPostId?: StringFilter<"Interview"> | string
     memberId?: StringFilter<"Interview"> | string
+    memberFullName?: StringNullableFilter<"Interview"> | string | null
+    memberEmail?: StringNullableFilter<"Interview"> | string | null
+    memberPhone?: StringNullableFilter<"Interview"> | string | null
     corporateId?: StringFilter<"Interview"> | string
+    corporateName?: StringNullableFilter<"Interview"> | string | null
     roomId?: StringNullableFilter<"Interview"> | string | null
     interviewDate?: DateTimeNullableFilter<"Interview"> | Date | string | null
     status?: EnumInterviewStatusFilter<"Interview"> | $Enums.InterviewStatus
@@ -8769,7 +8924,11 @@ export namespace Prisma {
     id?: SortOrder
     jobPostId?: SortOrder
     memberId?: SortOrder
+    memberFullName?: SortOrderInput | SortOrder
+    memberEmail?: SortOrderInput | SortOrder
+    memberPhone?: SortOrderInput | SortOrder
     corporateId?: SortOrder
+    corporateName?: SortOrderInput | SortOrder
     roomId?: SortOrderInput | SortOrder
     interviewDate?: SortOrderInput | SortOrder
     status?: SortOrder
@@ -8787,7 +8946,11 @@ export namespace Prisma {
     NOT?: InterviewWhereInput | InterviewWhereInput[]
     jobPostId?: StringFilter<"Interview"> | string
     memberId?: StringFilter<"Interview"> | string
+    memberFullName?: StringNullableFilter<"Interview"> | string | null
+    memberEmail?: StringNullableFilter<"Interview"> | string | null
+    memberPhone?: StringNullableFilter<"Interview"> | string | null
     corporateId?: StringFilter<"Interview"> | string
+    corporateName?: StringNullableFilter<"Interview"> | string | null
     roomId?: StringNullableFilter<"Interview"> | string | null
     interviewDate?: DateTimeNullableFilter<"Interview"> | Date | string | null
     status?: EnumInterviewStatusFilter<"Interview"> | $Enums.InterviewStatus
@@ -8802,7 +8965,11 @@ export namespace Prisma {
     id?: SortOrder
     jobPostId?: SortOrder
     memberId?: SortOrder
+    memberFullName?: SortOrderInput | SortOrder
+    memberEmail?: SortOrderInput | SortOrder
+    memberPhone?: SortOrderInput | SortOrder
     corporateId?: SortOrder
+    corporateName?: SortOrderInput | SortOrder
     roomId?: SortOrderInput | SortOrder
     interviewDate?: SortOrderInput | SortOrder
     status?: SortOrder
@@ -8821,7 +8988,11 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Interview"> | string
     jobPostId?: StringWithAggregatesFilter<"Interview"> | string
     memberId?: StringWithAggregatesFilter<"Interview"> | string
+    memberFullName?: StringNullableWithAggregatesFilter<"Interview"> | string | null
+    memberEmail?: StringNullableWithAggregatesFilter<"Interview"> | string | null
+    memberPhone?: StringNullableWithAggregatesFilter<"Interview"> | string | null
     corporateId?: StringWithAggregatesFilter<"Interview"> | string
+    corporateName?: StringNullableWithAggregatesFilter<"Interview"> | string | null
     roomId?: StringNullableWithAggregatesFilter<"Interview"> | string | null
     interviewDate?: DateTimeNullableWithAggregatesFilter<"Interview"> | Date | string | null
     status?: EnumInterviewStatusWithAggregatesFilter<"Interview"> | $Enums.InterviewStatus
@@ -9027,6 +9198,7 @@ export namespace Prisma {
   export type JobPostCreateInput = {
     id?: string
     corporateId: string
+    corporateName?: string | null
     title?: string | null
     description?: string | null
     location?: string | null
@@ -9046,6 +9218,7 @@ export namespace Prisma {
   export type JobPostUncheckedCreateInput = {
     id?: string
     corporateId: string
+    corporateName?: string | null
     title?: string | null
     description?: string | null
     location?: string | null
@@ -9065,6 +9238,7 @@ export namespace Prisma {
   export type JobPostUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
@@ -9084,6 +9258,7 @@ export namespace Prisma {
   export type JobPostUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
@@ -9103,6 +9278,7 @@ export namespace Prisma {
   export type JobPostCreateManyInput = {
     id?: string
     corporateId: string
+    corporateName?: string | null
     title?: string | null
     description?: string | null
     location?: string | null
@@ -9120,6 +9296,7 @@ export namespace Prisma {
   export type JobPostUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
@@ -9136,6 +9313,7 @@ export namespace Prisma {
   export type JobPostUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
@@ -9153,6 +9331,10 @@ export namespace Prisma {
   export type ApplyCreateInput = {
     id?: string
     userId: string
+    memberFullName?: string | null
+    memberEmail?: string | null
+    memberPhone?: string | null
+    memberCVForm?: string | null
     userInfoId?: string | null
     isReviewed?: boolean
     status?: $Enums.AppliedStatus
@@ -9164,6 +9346,10 @@ export namespace Prisma {
     id?: string
     jobPostId: string
     userId: string
+    memberFullName?: string | null
+    memberEmail?: string | null
+    memberPhone?: string | null
+    memberCVForm?: string | null
     userInfoId?: string | null
     isReviewed?: boolean
     status?: $Enums.AppliedStatus
@@ -9173,6 +9359,10 @@ export namespace Prisma {
   export type ApplyUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    memberCVForm?: NullableStringFieldUpdateOperationsInput | string | null
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     isReviewed?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumAppliedStatusFieldUpdateOperationsInput | $Enums.AppliedStatus
@@ -9184,6 +9374,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     jobPostId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    memberCVForm?: NullableStringFieldUpdateOperationsInput | string | null
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     isReviewed?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumAppliedStatusFieldUpdateOperationsInput | $Enums.AppliedStatus
@@ -9194,6 +9388,10 @@ export namespace Prisma {
     id?: string
     jobPostId: string
     userId: string
+    memberFullName?: string | null
+    memberEmail?: string | null
+    memberPhone?: string | null
+    memberCVForm?: string | null
     userInfoId?: string | null
     isReviewed?: boolean
     status?: $Enums.AppliedStatus
@@ -9203,6 +9401,10 @@ export namespace Prisma {
   export type ApplyUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    memberCVForm?: NullableStringFieldUpdateOperationsInput | string | null
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     isReviewed?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumAppliedStatusFieldUpdateOperationsInput | $Enums.AppliedStatus
@@ -9213,6 +9415,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     jobPostId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    memberCVForm?: NullableStringFieldUpdateOperationsInput | string | null
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     isReviewed?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumAppliedStatusFieldUpdateOperationsInput | $Enums.AppliedStatus
@@ -9222,7 +9428,11 @@ export namespace Prisma {
   export type InterviewCreateInput = {
     id?: string
     memberId: string
+    memberFullName?: string | null
+    memberEmail?: string | null
+    memberPhone?: string | null
     corporateId: string
+    corporateName?: string | null
     roomId?: string | null
     interviewDate?: Date | string | null
     status?: $Enums.InterviewStatus
@@ -9237,7 +9447,11 @@ export namespace Prisma {
     id?: string
     jobPostId: string
     memberId: string
+    memberFullName?: string | null
+    memberEmail?: string | null
+    memberPhone?: string | null
     corporateId: string
+    corporateName?: string | null
     roomId?: string | null
     interviewDate?: Date | string | null
     status?: $Enums.InterviewStatus
@@ -9250,7 +9464,11 @@ export namespace Prisma {
   export type InterviewUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     memberId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     roomId?: NullableStringFieldUpdateOperationsInput | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
@@ -9265,7 +9483,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     jobPostId?: StringFieldUpdateOperationsInput | string
     memberId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     roomId?: NullableStringFieldUpdateOperationsInput | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
@@ -9279,7 +9501,11 @@ export namespace Prisma {
     id?: string
     jobPostId: string
     memberId: string
+    memberFullName?: string | null
+    memberEmail?: string | null
+    memberPhone?: string | null
     corporateId: string
+    corporateName?: string | null
     roomId?: string | null
     interviewDate?: Date | string | null
     status?: $Enums.InterviewStatus
@@ -9291,7 +9517,11 @@ export namespace Prisma {
   export type InterviewUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     memberId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     roomId?: NullableStringFieldUpdateOperationsInput | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
@@ -9304,7 +9534,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     jobPostId?: StringFieldUpdateOperationsInput | string
     memberId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     roomId?: NullableStringFieldUpdateOperationsInput | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
@@ -9645,6 +9879,7 @@ export namespace Prisma {
   export type JobPostCountOrderByAggregateInput = {
     id?: SortOrder
     corporateId?: SortOrder
+    corporateName?: SortOrder
     title?: SortOrder
     description?: SortOrder
     location?: SortOrder
@@ -9666,6 +9901,7 @@ export namespace Prisma {
   export type JobPostMaxOrderByAggregateInput = {
     id?: SortOrder
     corporateId?: SortOrder
+    corporateName?: SortOrder
     title?: SortOrder
     description?: SortOrder
     location?: SortOrder
@@ -9683,6 +9919,7 @@ export namespace Prisma {
   export type JobPostMinOrderByAggregateInput = {
     id?: SortOrder
     corporateId?: SortOrder
+    corporateName?: SortOrder
     title?: SortOrder
     description?: SortOrder
     location?: SortOrder
@@ -9762,6 +9999,10 @@ export namespace Prisma {
     id?: SortOrder
     jobPostId?: SortOrder
     userId?: SortOrder
+    memberFullName?: SortOrder
+    memberEmail?: SortOrder
+    memberPhone?: SortOrder
+    memberCVForm?: SortOrder
     userInfoId?: SortOrder
     isReviewed?: SortOrder
     status?: SortOrder
@@ -9772,6 +10013,10 @@ export namespace Prisma {
     id?: SortOrder
     jobPostId?: SortOrder
     userId?: SortOrder
+    memberFullName?: SortOrder
+    memberEmail?: SortOrder
+    memberPhone?: SortOrder
+    memberCVForm?: SortOrder
     userInfoId?: SortOrder
     isReviewed?: SortOrder
     status?: SortOrder
@@ -9782,6 +10027,10 @@ export namespace Prisma {
     id?: SortOrder
     jobPostId?: SortOrder
     userId?: SortOrder
+    memberFullName?: SortOrder
+    memberEmail?: SortOrder
+    memberPhone?: SortOrder
+    memberCVForm?: SortOrder
     userInfoId?: SortOrder
     isReviewed?: SortOrder
     status?: SortOrder
@@ -9827,7 +10076,11 @@ export namespace Prisma {
     id?: SortOrder
     jobPostId?: SortOrder
     memberId?: SortOrder
+    memberFullName?: SortOrder
+    memberEmail?: SortOrder
+    memberPhone?: SortOrder
     corporateId?: SortOrder
+    corporateName?: SortOrder
     roomId?: SortOrder
     interviewDate?: SortOrder
     status?: SortOrder
@@ -9840,7 +10093,11 @@ export namespace Prisma {
     id?: SortOrder
     jobPostId?: SortOrder
     memberId?: SortOrder
+    memberFullName?: SortOrder
+    memberEmail?: SortOrder
+    memberPhone?: SortOrder
     corporateId?: SortOrder
+    corporateName?: SortOrder
     roomId?: SortOrder
     interviewDate?: SortOrder
     status?: SortOrder
@@ -9853,7 +10110,11 @@ export namespace Prisma {
     id?: SortOrder
     jobPostId?: SortOrder
     memberId?: SortOrder
+    memberFullName?: SortOrder
+    memberEmail?: SortOrder
+    memberPhone?: SortOrder
     corporateId?: SortOrder
+    corporateName?: SortOrder
     roomId?: SortOrder
     interviewDate?: SortOrder
     status?: SortOrder
@@ -10549,6 +10810,7 @@ export namespace Prisma {
   export type JobPostCreateWithoutCategoryInput = {
     id?: string
     corporateId: string
+    corporateName?: string | null
     title?: string | null
     description?: string | null
     location?: string | null
@@ -10567,6 +10829,7 @@ export namespace Prisma {
   export type JobPostUncheckedCreateWithoutCategoryInput = {
     id?: string
     corporateId: string
+    corporateName?: string | null
     title?: string | null
     description?: string | null
     location?: string | null
@@ -10673,6 +10936,7 @@ export namespace Prisma {
     NOT?: JobPostScalarWhereInput | JobPostScalarWhereInput[]
     id?: StringFilter<"JobPost"> | string
     corporateId?: StringFilter<"JobPost"> | string
+    corporateName?: StringNullableFilter<"JobPost"> | string | null
     title?: StringNullableFilter<"JobPost"> | string | null
     description?: StringNullableFilter<"JobPost"> | string | null
     location?: StringNullableFilter<"JobPost"> | string | null
@@ -10715,6 +10979,10 @@ export namespace Prisma {
   export type ApplyCreateWithoutJobPostInput = {
     id?: string
     userId: string
+    memberFullName?: string | null
+    memberEmail?: string | null
+    memberPhone?: string | null
+    memberCVForm?: string | null
     userInfoId?: string | null
     isReviewed?: boolean
     status?: $Enums.AppliedStatus
@@ -10724,6 +10992,10 @@ export namespace Prisma {
   export type ApplyUncheckedCreateWithoutJobPostInput = {
     id?: string
     userId: string
+    memberFullName?: string | null
+    memberEmail?: string | null
+    memberPhone?: string | null
+    memberCVForm?: string | null
     userInfoId?: string | null
     isReviewed?: boolean
     status?: $Enums.AppliedStatus
@@ -10743,7 +11015,11 @@ export namespace Prisma {
   export type InterviewCreateWithoutJobPostInput = {
     id?: string
     memberId: string
+    memberFullName?: string | null
+    memberEmail?: string | null
+    memberPhone?: string | null
     corporateId: string
+    corporateName?: string | null
     roomId?: string | null
     interviewDate?: Date | string | null
     status?: $Enums.InterviewStatus
@@ -10756,7 +11032,11 @@ export namespace Prisma {
   export type InterviewUncheckedCreateWithoutJobPostInput = {
     id?: string
     memberId: string
+    memberFullName?: string | null
+    memberEmail?: string | null
+    memberPhone?: string | null
     corporateId: string
+    corporateName?: string | null
     roomId?: string | null
     interviewDate?: Date | string | null
     status?: $Enums.InterviewStatus
@@ -10830,6 +11110,10 @@ export namespace Prisma {
     id?: StringFilter<"Apply"> | string
     jobPostId?: StringFilter<"Apply"> | string
     userId?: StringFilter<"Apply"> | string
+    memberFullName?: StringNullableFilter<"Apply"> | string | null
+    memberEmail?: StringNullableFilter<"Apply"> | string | null
+    memberPhone?: StringNullableFilter<"Apply"> | string | null
+    memberCVForm?: StringNullableFilter<"Apply"> | string | null
     userInfoId?: StringNullableFilter<"Apply"> | string | null
     isReviewed?: BoolFilter<"Apply"> | boolean
     status?: EnumAppliedStatusFilter<"Apply"> | $Enums.AppliedStatus
@@ -10859,7 +11143,11 @@ export namespace Prisma {
     id?: StringFilter<"Interview"> | string
     jobPostId?: StringFilter<"Interview"> | string
     memberId?: StringFilter<"Interview"> | string
+    memberFullName?: StringNullableFilter<"Interview"> | string | null
+    memberEmail?: StringNullableFilter<"Interview"> | string | null
+    memberPhone?: StringNullableFilter<"Interview"> | string | null
     corporateId?: StringFilter<"Interview"> | string
+    corporateName?: StringNullableFilter<"Interview"> | string | null
     roomId?: StringNullableFilter<"Interview"> | string | null
     interviewDate?: DateTimeNullableFilter<"Interview"> | Date | string | null
     status?: EnumInterviewStatusFilter<"Interview"> | $Enums.InterviewStatus
@@ -10871,6 +11159,7 @@ export namespace Prisma {
   export type JobPostCreateWithoutAppliesInput = {
     id?: string
     corporateId: string
+    corporateName?: string | null
     title?: string | null
     description?: string | null
     location?: string | null
@@ -10889,6 +11178,7 @@ export namespace Prisma {
   export type JobPostUncheckedCreateWithoutAppliesInput = {
     id?: string
     corporateId: string
+    corporateName?: string | null
     title?: string | null
     description?: string | null
     location?: string | null
@@ -10923,6 +11213,7 @@ export namespace Prisma {
   export type JobPostUpdateWithoutAppliesInput = {
     id?: StringFieldUpdateOperationsInput | string
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10941,6 +11232,7 @@ export namespace Prisma {
   export type JobPostUncheckedUpdateWithoutAppliesInput = {
     id?: StringFieldUpdateOperationsInput | string
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
@@ -10959,6 +11251,7 @@ export namespace Prisma {
   export type JobPostCreateWithoutInterviewsInput = {
     id?: string
     corporateId: string
+    corporateName?: string | null
     title?: string | null
     description?: string | null
     location?: string | null
@@ -10977,6 +11270,7 @@ export namespace Prisma {
   export type JobPostUncheckedCreateWithoutInterviewsInput = {
     id?: string
     corporateId: string
+    corporateName?: string | null
     title?: string | null
     description?: string | null
     location?: string | null
@@ -11037,6 +11331,7 @@ export namespace Prisma {
   export type JobPostUpdateWithoutInterviewsInput = {
     id?: StringFieldUpdateOperationsInput | string
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
@@ -11055,6 +11350,7 @@ export namespace Prisma {
   export type JobPostUncheckedUpdateWithoutInterviewsInput = {
     id?: StringFieldUpdateOperationsInput | string
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
@@ -11101,7 +11397,11 @@ export namespace Prisma {
   export type InterviewCreateWithoutReviewsInput = {
     id?: string
     memberId: string
+    memberFullName?: string | null
+    memberEmail?: string | null
+    memberPhone?: string | null
     corporateId: string
+    corporateName?: string | null
     roomId?: string | null
     interviewDate?: Date | string | null
     status?: $Enums.InterviewStatus
@@ -11115,7 +11415,11 @@ export namespace Prisma {
     id?: string
     jobPostId: string
     memberId: string
+    memberFullName?: string | null
+    memberEmail?: string | null
+    memberPhone?: string | null
     corporateId: string
+    corporateName?: string | null
     roomId?: string | null
     interviewDate?: Date | string | null
     status?: $Enums.InterviewStatus
@@ -11143,7 +11447,11 @@ export namespace Prisma {
   export type InterviewUpdateWithoutReviewsInput = {
     id?: StringFieldUpdateOperationsInput | string
     memberId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     roomId?: NullableStringFieldUpdateOperationsInput | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
@@ -11157,7 +11465,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     jobPostId?: StringFieldUpdateOperationsInput | string
     memberId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     roomId?: NullableStringFieldUpdateOperationsInput | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
@@ -11177,6 +11489,7 @@ export namespace Prisma {
   export type JobPostCreateManyCategoryInput = {
     id?: string
     corporateId: string
+    corporateName?: string | null
     title?: string | null
     description?: string | null
     location?: string | null
@@ -11221,6 +11534,7 @@ export namespace Prisma {
   export type JobPostUpdateWithoutCategoryInput = {
     id?: StringFieldUpdateOperationsInput | string
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
@@ -11239,6 +11553,7 @@ export namespace Prisma {
   export type JobPostUncheckedUpdateWithoutCategoryInput = {
     id?: StringFieldUpdateOperationsInput | string
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
@@ -11257,6 +11572,7 @@ export namespace Prisma {
   export type JobPostUncheckedUpdateManyWithoutCategoryInput = {
     id?: StringFieldUpdateOperationsInput | string
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     title?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     location?: NullableStringFieldUpdateOperationsInput | string | null
@@ -11273,6 +11589,10 @@ export namespace Prisma {
   export type ApplyCreateManyJobPostInput = {
     id?: string
     userId: string
+    memberFullName?: string | null
+    memberEmail?: string | null
+    memberPhone?: string | null
+    memberCVForm?: string | null
     userInfoId?: string | null
     isReviewed?: boolean
     status?: $Enums.AppliedStatus
@@ -11282,7 +11602,11 @@ export namespace Prisma {
   export type InterviewCreateManyJobPostInput = {
     id?: string
     memberId: string
+    memberFullName?: string | null
+    memberEmail?: string | null
+    memberPhone?: string | null
     corporateId: string
+    corporateName?: string | null
     roomId?: string | null
     interviewDate?: Date | string | null
     status?: $Enums.InterviewStatus
@@ -11294,6 +11618,10 @@ export namespace Prisma {
   export type ApplyUpdateWithoutJobPostInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    memberCVForm?: NullableStringFieldUpdateOperationsInput | string | null
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     isReviewed?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumAppliedStatusFieldUpdateOperationsInput | $Enums.AppliedStatus
@@ -11303,6 +11631,10 @@ export namespace Prisma {
   export type ApplyUncheckedUpdateWithoutJobPostInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    memberCVForm?: NullableStringFieldUpdateOperationsInput | string | null
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     isReviewed?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumAppliedStatusFieldUpdateOperationsInput | $Enums.AppliedStatus
@@ -11312,6 +11644,10 @@ export namespace Prisma {
   export type ApplyUncheckedUpdateManyWithoutJobPostInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    memberCVForm?: NullableStringFieldUpdateOperationsInput | string | null
     userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
     isReviewed?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumAppliedStatusFieldUpdateOperationsInput | $Enums.AppliedStatus
@@ -11321,7 +11657,11 @@ export namespace Prisma {
   export type InterviewUpdateWithoutJobPostInput = {
     id?: StringFieldUpdateOperationsInput | string
     memberId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     roomId?: NullableStringFieldUpdateOperationsInput | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
@@ -11334,7 +11674,11 @@ export namespace Prisma {
   export type InterviewUncheckedUpdateWithoutJobPostInput = {
     id?: StringFieldUpdateOperationsInput | string
     memberId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     roomId?: NullableStringFieldUpdateOperationsInput | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
@@ -11347,7 +11691,11 @@ export namespace Prisma {
   export type InterviewUncheckedUpdateManyWithoutJobPostInput = {
     id?: StringFieldUpdateOperationsInput | string
     memberId?: StringFieldUpdateOperationsInput | string
+    memberFullName?: NullableStringFieldUpdateOperationsInput | string | null
+    memberEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    memberPhone?: NullableStringFieldUpdateOperationsInput | string | null
     corporateId?: StringFieldUpdateOperationsInput | string
+    corporateName?: NullableStringFieldUpdateOperationsInput | string | null
     roomId?: NullableStringFieldUpdateOperationsInput | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus

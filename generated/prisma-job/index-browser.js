@@ -21,12 +21,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.19.0
- * Query Engine version: 2ba551f319ab1df4bc874a89965d8b3641056773
+ * Prisma Client JS version: 6.19.1
+ * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
  */
 Prisma.prismaVersion = {
-  client: "6.19.0",
-  engine: "2ba551f319ab1df4bc874a89965d8b3641056773"
+  client: "6.19.1",
+  engine: "c2990dca591cba766e3b7ef5d9e8a84796e47ab7"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -133,6 +133,7 @@ exports.Prisma.CategoryScalarFieldEnum = {
 exports.Prisma.JobPostScalarFieldEnum = {
   id: 'id',
   corporateId: 'corporateId',
+  corporateName: 'corporateName',
   title: 'title',
   description: 'description',
   location: 'location',
@@ -151,6 +152,10 @@ exports.Prisma.ApplyScalarFieldEnum = {
   id: 'id',
   jobPostId: 'jobPostId',
   userId: 'userId',
+  memberFullName: 'memberFullName',
+  memberEmail: 'memberEmail',
+  memberPhone: 'memberPhone',
+  memberCVForm: 'memberCVForm',
   userInfoId: 'userInfoId',
   isReviewed: 'isReviewed',
   status: 'status',
@@ -161,7 +166,11 @@ exports.Prisma.InterviewScalarFieldEnum = {
   id: 'id',
   jobPostId: 'jobPostId',
   memberId: 'memberId',
+  memberFullName: 'memberFullName',
+  memberEmail: 'memberEmail',
+  memberPhone: 'memberPhone',
   corporateId: 'corporateId',
+  corporateName: 'corporateName',
   roomId: 'roomId',
   interviewDate: 'interviewDate',
   status: 'status',

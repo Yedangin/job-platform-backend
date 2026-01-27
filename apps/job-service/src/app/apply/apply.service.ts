@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Apply, JobPost } from 'generated/prisma-job';
 import {
+  AuthPrismaService,
   JobPrismaService,
   PaginationResult,
   PaginationService,
@@ -18,6 +19,7 @@ import {
 @Injectable()
 export class ApplyService {
   constructor(
+    private readonly userPrisma: AuthPrismaService,
     private readonly prisma: JobPrismaService,
     private readonly paginationService: PaginationService
   ) {}
@@ -42,6 +44,10 @@ export class ApplyService {
       isReviewed: apply.isReviewed,
       status: this.mapApplyStatus(apply.status as string),
       appliedAt: apply.appliedAt.toISOString(),
+      memberFullname: apply.memberFullName || undefined,
+      memberEmail: apply.memberEmail || undefined,
+      memberPhone: apply.memberPhone || undefined,
+      memberCVForm: apply.memberCVForm || undefined,
       // jobPosts: apply.jobPost
       //   ? [
       //       {
@@ -53,6 +59,7 @@ export class ApplyService {
       jobPosts: {
         id: apply.jobPost.id,
         title: apply.jobPost.title,
+        corporateId: apply.jobPost.corporateId,
       },
     };
   }
@@ -100,6 +107,7 @@ export class ApplyService {
         jobPosts: {
           id: apply.jobPost.id,
           title: apply.jobPost.title,
+          corporateId: apply.jobPost.corporateId,
         },
       },
     };
@@ -117,6 +125,17 @@ export class ApplyService {
       );
     }
 
+    const memberInformation = await this.userPrisma.user.findUnique({
+      where: { id: createApplyDto.userId },
+      include: {
+        userInformation: {
+          select: {
+            cvForm: true,
+          },
+        },
+      },
+    });
+
     const apply = await this.prisma.apply.create({
       data: {
         jobPostId: createApplyDto.jobPostId,
@@ -124,6 +143,10 @@ export class ApplyService {
         userInfoId: createApplyDto.userInfoId,
         isReviewed: createApplyDto.isReviewed || false,
         status: (createApplyDto.status as any) || 'PENDING',
+        memberFullName: memberInformation?.fullName || undefined,
+        memberEmail: memberInformation?.email || undefined,
+        memberPhone: memberInformation?.phone || undefined,
+        memberCVForm: memberInformation?.userInformation?.cvForm || undefined,
       },
     });
 

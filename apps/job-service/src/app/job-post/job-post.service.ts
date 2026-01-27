@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { JobPost } from 'generated/prisma-job';
 import {
+  AuthPrismaService,
   JobPrismaService,
   PaginationResult,
   PaginationService,
@@ -17,6 +18,7 @@ import {
 export class JobPostService {
   constructor(
     private readonly prisma: JobPrismaService,
+    private readonly userPrisma: AuthPrismaService,
     private readonly paginationService: PaginationService
   ) {}
 
@@ -32,6 +34,7 @@ export class JobPostService {
         isReviewed: apply.isReviewed ?? false,
         status: apply.status,
         appliedAt: apply.appliedAt.toISOString(),
+        corporateName: apply.corporateName ?? undefined,
       })) ?? [];
 
     return {
@@ -49,13 +52,13 @@ export class JobPostService {
       createdAt: jobPost.createdAt.toISOString(),
       updatedAt: jobPost.updatedAt.toISOString(),
       expiredAt: jobPost.expiredAt?.toISOString() ?? undefined,
-      category: jobPost.category
-        ? {
-            id: jobPost.category.id,
-            name: jobPost.category.name ?? undefined,
-            description: jobPost.category.description ?? undefined,
-          }
-        : undefined,
+      // category: jobPost.category
+      //   ? {
+      //       id: jobPost.category.id,
+      //       name: jobPost.category.name ?? undefined,
+      //       description: jobPost.category.description ?? undefined,
+      //     }
+      //   : undefined,
       applies: appliesArray,
     };
   }
@@ -68,24 +71,6 @@ export class JobPostService {
       'location',
       'salaryRange',
     ];
-
-    // Build where clause for filters
-    // const where: Prisma.JobPostWhereInput = {};
-
-    // if (basicQuery.filterModel) {
-    //   if (basicQuery.filterModel.corporateId) {
-    //     where.corporateId = basicQuery.filterModel.corporateId;
-    //   }
-    //   if (basicQuery.filterModel.categoryId) {
-    //     where.categoryId = basicQuery.filterModel.categoryId;
-    //   }
-    //   if (basicQuery.filterModel.status) {
-    //     where.status = basicQuery.filterModel.status;
-    //   }
-    //   if (basicQuery.filterModel.feeType) {
-    //     where.feeType = basicQuery.filterModel.feeType;
-    //   }
-    // }
 
     const result = await this.paginationService.paginate<JobPost>(
       basicQuery,
@@ -152,6 +137,12 @@ export class JobPostService {
       }
     }
 
+    const corporate = await this.userPrisma.corporateRegistration.findUnique({
+      where: {
+        id: data.corporateId,
+      },
+    });
+
     const jobPost = await this.prisma.jobPost.create({
       data: {
         title: data.title,
@@ -163,6 +154,7 @@ export class JobPostService {
         status: data.status as any,
         expiredAt: data.expiredAt ? new Date(data.expiredAt) : undefined,
         corporateId: data.corporateId,
+        corporateName: corporate?.companyName ?? undefined,
       },
       include: {
         category: true,
