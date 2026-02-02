@@ -42,6 +42,7 @@ export interface Apply {
 export interface JobPost {
   id: string;
   title: string;
+  corporateId: string;
 }
 
 /**

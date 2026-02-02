@@ -3,7 +3,7 @@ import { InterviewService } from './interview.service';
 import { InterviewController } from './interview.controller';
 import { JobPostService } from '../job-post/job-post.service';
 import { CategoryService } from '../category/category.service';
-import { JobPrismaService, PaginationService } from '@in-job/common';
+import { AuthPrismaService, JobPrismaService, PaginationService } from '@in-job/common';
 
 @Module({
   controllers: [InterviewController],
@@ -13,6 +13,7 @@ import { JobPrismaService, PaginationService } from '@in-job/common';
     CategoryService,
     PaginationService,
     JobPrismaService,
+    AuthPrismaService,
   ],
 })
 export class InterviewModule {}

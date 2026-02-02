@@ -34,6 +34,7 @@ message Apply {
 message JobPost {
   string id =1;
   string title =2;
+  string corporateId = 3;
 }
 
 // ---------------------

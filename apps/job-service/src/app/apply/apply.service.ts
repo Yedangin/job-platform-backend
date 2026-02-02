@@ -59,8 +59,8 @@ export class ApplyService {
       jobPosts: {
         id: apply.jobPost.id,
         title: apply.jobPost.title,
+        corporateId: apply.jobPost.corporateId,
       },
-      
     };
   }
 
@@ -107,6 +107,7 @@ export class ApplyService {
         jobPosts: {
           id: apply.jobPost.id,
           title: apply.jobPost.title,
+          corporateId: apply.jobPost.corporateId,
         },
       },
     };
@@ -128,12 +129,12 @@ export class ApplyService {
       where: { id: createApplyDto.userId },
       include: {
         userInformation: {
-          select : {
+          select: {
             cvForm: true,
-          }
-        }
-      }
-    })
+          },
+        },
+      },
+    });
 
     const apply = await this.prisma.apply.create({
       data: {

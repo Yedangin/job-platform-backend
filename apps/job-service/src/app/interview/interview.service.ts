@@ -16,23 +16,28 @@ import {
   DeleteInterviewResponse,
   ListInterviewResponse,
 } from 'types/job/interview';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class InterviewService {
   constructor(
     private readonly userPrisma: AuthPrismaService,
     private readonly prisma: JobPrismaService,
-    private readonly paginationService: PaginationService,
+    private readonly paginationService: PaginationService
   ) {}
 
   private mapInterviewToResponse(
-    interview: Interview & { jobPost?: any; reviews?: any[] },
+    interview: Interview & { jobPost?: any; reviews?: any[] }
   ): InterviewProto {
     return {
       id: interview.id,
       jobPostId: interview.jobPostId,
       memberId: interview.memberId,
       corporateId: interview.corporateId,
+      memberFullName: interview.memberFullName ?? undefined,
+      memberEmail: interview.memberEmail ?? undefined,
+      memberPhone: interview.memberPhone ?? undefined,
+      corporateName: interview.corporateName ?? undefined,
       roomId: interview.roomId ?? undefined,
       interviewDate: interview.interviewDate?.toISOString() ?? undefined,
       status: interview.status,
@@ -96,11 +101,11 @@ export class InterviewService {
         jobPost: true,
         reviews: true,
       },
-      where,
+      where
     );
 
     const mappedData = (result as PaginationResult<Interview>)?.data.map(
-      (interview) => this.mapInterviewToResponse(interview),
+      (interview) => this.mapInterviewToResponse(interview)
     );
 
     return {
@@ -143,7 +148,7 @@ export class InterviewService {
 
     if (!jobPostExists) {
       throw new NotFoundException(
-        `Job post with ID ${data.jobPostId} not found`,
+        `Job post with ID ${data.jobPostId} not found`
       );
     }
 
@@ -161,14 +166,16 @@ export class InterviewService {
 
     const userInformation = await this.userPrisma.user.findUnique({
       where: { id: data.memberId },
-    })
+    });
+
+    const generateRoomId = uuidv4();
 
     const interview = await this.prisma.interview.create({
       data: {
         jobPostId: data.jobPostId,
         memberId: data.memberId,
         corporateId: data.corporateId,
-        roomId: data.roomId,
+        roomId: generateRoomId,
         interviewDate: data.interviewDate
           ? new Date(data.interviewDate)
           : undefined,
@@ -195,7 +202,7 @@ export class InterviewService {
       interviewDate?: string;
       status?: string;
       failureReason?: string;
-    },
+    }
   ): Promise<InterviewResponse> {
     const existingInterview = await this.prisma.interview.findUnique({
       where: { id: interviewId },
@@ -245,7 +252,7 @@ export class InterviewService {
 
     if (reviewsCount > 0) {
       throw new Error(
-        'Cannot delete interview with reviews. Please delete reviews first.',
+        'Cannot delete interview with reviews. Please delete reviews first.'
       );
     }
 
@@ -278,7 +285,7 @@ export class InterviewService {
 
     return {
       data: interviews.map((interview) =>
-        this.mapInterviewToResponse(interview),
+        this.mapInterviewToResponse(interview)
       ),
       meta: {
         total,
@@ -308,7 +315,7 @@ export class InterviewService {
 
     return {
       data: interviews.map((interview) =>
-        this.mapInterviewToResponse(interview),
+        this.mapInterviewToResponse(interview)
       ),
       meta: {
         total,
@@ -322,7 +329,7 @@ export class InterviewService {
   async listByCorporate(
     corporateId: string,
     page: number = 1,
-    limit: number = 10,
+    limit: number = 10
   ) {
     const skip = (page - 1) * limit;
 
@@ -342,7 +349,7 @@ export class InterviewService {
 
     return {
       data: interviews.map((interview) =>
-        this.mapInterviewToResponse(interview),
+        this.mapInterviewToResponse(interview)
       ),
       meta: {
         total,
@@ -356,7 +363,7 @@ export class InterviewService {
   async updateStatus(
     interviewId: string,
     status: string,
-    failureReason?: string,
+    failureReason?: string
   ): Promise<InterviewResponse> {
     const existingInterview = await this.prisma.interview.findUnique({
       where: { id: interviewId },
