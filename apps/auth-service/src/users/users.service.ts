@@ -58,9 +58,9 @@ export class UsersService {
       walletId: user.walletId || undefined,
       createdAt: user.createdAt.toISOString(),
       updatedAt: user.updatedAt.toISOString(),
-      memberIdentityVerification: user.memberIdentityVerification,
-      userInformation: user?.userInformation,
-      corporateRegistration: user.corporateRegistration,
+      memberIdentityVerification: (user as any).memberIdentityVerification,
+      userInformation: (user as any).userInformation,
+      corporateRegistration: (user as any).corporateRegistration,
     };
   }
 

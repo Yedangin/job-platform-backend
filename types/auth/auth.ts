@@ -73,6 +73,8 @@ export interface LoginSuccessResponse {
   success: boolean;
   sessionId: string;
   message: string;
+  accessToken?: string | undefined;
+  user?: User | undefined;
 }
 
 export interface PasswordResetResponse {

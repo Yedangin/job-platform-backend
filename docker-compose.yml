@@ -4,6 +4,7 @@ services:
     container_name: job-backend
     ports:
       - "8000:8000"
+      - "8001:8001"  
     restart: always
     env_file:
       - .env
@@ -11,7 +12,11 @@ services:
       - postgres
       - mongodb
       - redis
-    command: sh -c "npx prisma db push --schema=./prisma/user/user.schema.prisma && npm run start:dev"
+      
+    command: >
+             sh -c "npx prisma db push --schema=./prisma/user/user.schema.prisma && 
+             npx nest start auth-service & 
+             npx nest start job-platform-backend"
 
   postgres:
     image: postgres:15-alpine

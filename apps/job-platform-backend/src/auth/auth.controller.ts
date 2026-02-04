@@ -137,7 +137,7 @@ export class AuthController implements OnModuleInit {
         domain: process.env.COOKIE_DOMAIN || 'localhost',
       });
 
-      return { message: 'Login successful' };
+      return result;
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
@@ -267,7 +267,7 @@ export class AuthController implements OnModuleInit {
         domain: process.env.COOKIE_DOMAIN || 'localhost',
       });
 
-      return { message: result.message };
+      return res.redirect('http://jobchaja.com');
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
@@ -308,7 +308,7 @@ export class AuthController implements OnModuleInit {
         domain: process.env.COOKIE_DOMAIN || 'localhost',
       });
 
-      return { message: result.message };
+      return res.redirect('http://jobchaja.com');
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
@@ -349,7 +349,7 @@ export class AuthController implements OnModuleInit {
         domain: process.env.COOKIE_DOMAIN || 'localhost',
       });
 
-      return { message: result.message };
+      return res.redirect('http://jobchaja.com');
     } catch (error: any) {
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',

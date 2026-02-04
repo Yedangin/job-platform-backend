@@ -11,6 +11,7 @@ import {
   RegisterRequest,
   LoginRequest,
   UserResponse,
+  LoginSuccessResponse,
   User,
   UserRole,
   UserStatus,
@@ -89,7 +90,7 @@ export class AuthService {
 
   async login(
     request: LoginRequest,
-  ): Promise<{ success: boolean; sessionId: string; message: string }> {
+  ): Promise<LoginSuccessResponse> {
     const { email, password } = request;
 
     // Find user
@@ -112,10 +113,14 @@ export class AuthService {
 
     const sessionId = await this.generateToken.generate(payload);
 
+    const accessToken = await this.getAccessTokenFromSession(sessionId);
+
     return {
       success: true,
       sessionId,
       message: 'Login successful',
+      accessToken,
+      user: this.mapPrismaUserToProto(user),
     };
   }
 
@@ -139,19 +144,7 @@ export class AuthService {
     }
 
     // Map Prisma user to proto User - ensure all values are plain types
-    const protoUser: User = {
-      id: user.id,
-      role: this.mapUserRole(user.role),
-      email: user.email || undefined,
-      phone: user.phone || undefined,
-      fullName: user.fullName || undefined,
-      status: this.mapUserStatus(user.status),
-      isEmailedVerified: user.isEmailedVerified,
-      isPhoneVerified: user.isPhoneVerified,
-      walletId: user.walletId || undefined,
-      createdAt: user.createdAt.toISOString(),
-      updatedAt: user.updatedAt.toISOString(),
-    };
+    const protoUser = this.mapPrismaUserToProto(user);
 
     return {
       success: true,
@@ -267,10 +260,14 @@ export class AuthService {
       };
       const sessionId = await this.generateToken.generate(payload);
 
+      const accessToken = await this.getAccessTokenFromSession(sessionId);
+
       return {
         success: true,
         sessionId,
         message: 'Login successful',
+        accessToken,
+        user: this.mapPrismaUserToProto(existingSocialAuth.user),
       };
     }
 
@@ -342,10 +339,14 @@ export class AuthService {
 
     const sessionId = await this.generateToken.generate(payload);
 
+    const accessToken = await this.getAccessTokenFromSession(sessionId);
+
     return {
       success: true,
       sessionId,
       message: 'Login successful',
+      accessToken,
+      user: this.mapPrismaUserToProto(user),
     };
   }
 
@@ -438,6 +439,33 @@ export class AuthService {
   //     return user;
   //   });
   // }
+
+  private async getAccessTokenFromSession(
+    sessionId: string,
+  ): Promise<string | undefined> {
+    const sessionDataStr = await this.redisService.get(`session:${sessionId}`);
+    if (sessionDataStr) {
+      const sessionData = JSON.parse(sessionDataStr) as SessionData;
+      return sessionData.accessToken;
+    }
+    return undefined;
+  }
+
+  private mapPrismaUserToProto(user: PrismaUser): User {
+    return {
+      id: user.id,
+      role: this.mapUserRole(user.role),
+      email: user.email || undefined,
+      phone: user.phone || undefined,
+      fullName: user.fullName || undefined,
+      status: this.mapUserStatus(user.status),
+      isEmailedVerified: user.isEmailedVerified,
+      isPhoneVerified: user.isPhoneVerified,
+      walletId: user.walletId || undefined,
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
+    };
+  }
 
   private mapUserRole(role: string): UserRole {
     const roleMap: Record<string, UserRole> = {
