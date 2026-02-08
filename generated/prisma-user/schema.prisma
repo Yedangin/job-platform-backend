@@ -1,159 +1,92 @@
-// User Domain Schema - PostgreSQL
-// Includes: users, user_informations, social_auths, verifications, sanctions
-
-datasource userDB {
+datasource db {
   provider = "postgresql"
-  url      = env("USER_DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
-generator userClient {
+generator client {
   provider = "prisma-client-js"
   output   = "../../generated/prisma-user"
 }
 
 model User {
-  id                String     @id @default(cuid()) @map("id")
-  role              UserRole   @default(GUEST)
-  email             String?    @userDB.VarChar(255)
-  password          String?    @userDB.VarChar(255)
-  phone             String?    @userDB.VarChar(50)
-  fullName          String?    @map("full_name") @userDB.VarChar(255)
-  status            UserStatus @default(PENDING)
-  isEmailedVerified Boolean    @default(false) @map("is_emailed_verified")
-  isPhoneVerified   Boolean    @default(false) @map("is_phone_verified")
-  walletId          String?    @unique @map("wallet_id")
-  userInfoId        String?    @unique @map("user_info_id")
-  createdAt         DateTime   @default(now()) @map("created_at")
-  updatedAt         DateTime   @updatedAt @map("updated_at")
+  id       String  @id @default(cuid())
+  email    String? @unique
+  password String?
 
-  memberIdentityVerification     MemberIdentityVerification?  @relation("memberIdentities")
-  corporateRegistration          CorporateRegistration?       @relation("CoporateIdenities")
-  verifiedMemberIdentities       MemberIdentityVerification[] @relation("VerifiedBy")
-  verifiedCorporateRegistrations CorporateRegistration[]      @relation("VerifiedBy")
-  sanctions                      Sanction[]
-  userInformation                UserInformation?
-  socialAuths                    SocialAuth?
-  verificationTokens             VerificationToken[]
+  // [중요] fullName이 있어야 전략(Strategy) 파일 에러가 안 납니다.
+  fullName String? @map("full_name")
 
-  @@index([fullName])
-  @@index([email])
-  @@index([phone])
-  @@index([isEmailedVerified])
-  @@index([isPhoneVerified])
-  @@index([status])
-  @@index([role])
+  userType UserType @default(INDIVIDUAL) @map("user_type")
+
+  corporate   CorporateProfile?
+  individual  IndividualProfile?
+  socialAuths SocialAuth[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
   @@map("users")
 }
 
-model UserInformation {
-  id                    String   @id @default(cuid()) @map("id")
-  userId                String   @unique @map("user_id")
-  profileImage          String?  @map("profile_image") @userDB.VarChar(255)
-  gender                String?  @userDB.VarChar(50)
-  address               String?  @userDB.VarChar(255)
-  country               String?  @userDB.VarChar(50)
-  city                  String?  @userDB.VarChar(50)
-  cvForm                String?  @map("cv_form") @userDB.VarChar(255)
-  additionalInformation String?  @map("additional_information") @userDB.VarChar(255)
-  createdAt             DateTime @default(now()) @map("created_at")
-  updatedAt             DateTime @updatedAt @map("updated_at")
+enum UserType {
+  CORPORATE
+  INDIVIDUAL
+}
 
-  user User @relation(fields: [userId], references: [id])
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
 
-  @@index([country, city], name: "Country")
-  @@map("user_informations")
+model CorporateProfile {
+  companyId     BigInt @id @default(autoincrement()) @map("company_id")
+  userId        String @unique @map("user_id")
+  user          User   @relation(fields: [userId], references: [id])
+  companyName   String @map("company_name")
+  industryCode  String @map("industry_code")
+  businessRegNo String @map("business_reg_no")
+
+  accessLogs TalentAccessLog[]
+
+  @@map("profiles_corporate")
+}
+
+model IndividualProfile {
+  individualId   BigInt  @id @default(autoincrement()) @map("individual_id")
+  userId         String  @unique @map("user_id")
+  user           User    @relation(fields: [userId], references: [id])
+  fullName       String  @map("full_name")
+  visaStatus     String  @map("visa_status")
+  isVisaVerified Boolean @default(false) @map("is_visa_verified")
+  koreanLevel    Int     @default(0) @map("korean_level")
+
+  accessLogs TalentAccessLog[]
+
+  @@map("profiles_individual")
+}
+
+model TalentAccessLog {
+  accessId     BigInt            @id @default(autoincrement()) @map("access_id")
+  corporateId  BigInt            @map("corporate_id")
+  corporate    CorporateProfile  @relation(fields: [corporateId], references: [companyId])
+  individualId BigInt            @map("individual_id")
+  individual   IndividualProfile @relation(fields: [individualId], references: [individualId])
+  accessedAt   DateTime          @default(now()) @map("accessed_at")
+
+  @@unique([corporateId, individualId])
+  @@map("talent_access_logs")
 }
 
 model SocialAuth {
-  id         String         @default(cuid()) @map("id")
-  userId     String         @unique @map("user_id")
+  id         String         @id @default(cuid())
+  userId     String         @map("user_id")
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   provider   SocialProvider
-  providerId String         @map("provider_id") @userDB.VarChar(255)
+  providerId String         @map("provider_id")
 
-  user User @relation(fields: [userId], references: [id])
-
+  @@unique([provider, providerId])
   @@map("social_auths")
-}
-
-model MemberIdentityVerification {
-  id                 String             @id @default(cuid()) @map("id")
-  userId             String             @unique() @map("user_id")
-  passportPhoto      String?            @map("passport_photo") @userDB.VarChar(255)
-  selfiePhoto        String?            @map("selfie_photo") @userDB.VarChar(255)
-  verificationStatus VerificationStatus @default(PENDING) @map("verification_status")
-  isVerifiedBy       String?            @map("is_verified_by")
-  createdAt          DateTime           @default(now()) @map("created_at")
-  updatedAt          DateTime           @updatedAt @map("updated_at")
-  user               User               @relation("memberIdentities", fields: [userId], references: [id])
-  verifier           User?              @relation("VerifiedBy", fields: [isVerifiedBy], references: [id])
-
-  @@index([verificationStatus])
-  @@index([createdAt])
-  @@map("member_identity_verifications")
-}
-
-model CorporateRegistration {
-  id                  String             @id @default(cuid()) @map("id")
-  userId              String             @unique() @map("user_id")
-  companyName         String?            @map("company_name") @userDB.VarChar(255)
-  businessLicenseFile String?            @map("business_license_file") @userDB.VarChar(255)
-  verificationStatus  VerificationStatus @default(PENDING) @map("verification_status")
-  isVerifiedBy        String?            @map("is_verified_by")
-  createdAt           DateTime           @default(now()) @map("created_at")
-  updatedAt           DateTime           @updatedAt @map("updated_at")
-
-  user     User  @relation("CoporateIdenities", fields: [userId], references: [id])
-  verifier User? @relation("VerifiedBy", fields: [isVerifiedBy], references: [id])
-
-  @@index([verificationStatus])
-  @@index([createdAt])
-  @@map("corporate_registrations")
-}
-
-model VerificationToken {
-  id        String    @id @default(cuid()) @map("id")
-  userId    String    @map("user_id")
-  token     String    @unique @map("token")
-  type      String    @map("type") // email_verification, phone_verification, password_reset
-  expiresAt DateTime  @map("expires_at")
-  usedAt    DateTime? @map("used_at")
-  createdAt DateTime  @default(now()) @map("created_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("verification_tokens")
-}
-
-model Sanction {
-  id           String       @id @default(cuid()) @map("id")
-  userId       String       @map("user_id")
-  sanctionType SanctionType @map("sanction_type")
-  reason       String?      @userDB.Text
-  startDate    DateTime?    @map("start_date")
-  endDate      DateTime?    @map("end_date")
-  createdAt    DateTime     @default(now()) @map("created_at")
-
-  user User @relation(fields: [userId], references: [id])
-
-  @@index([userId])
-  @@index([sanctionType])
-  @@map("sanctions")
-}
-
-enum UserRole {
-  GUEST
-  MEMBER
-  CORPORATE
-  ADMIN
-  SUPERADMIN
-}
-
-enum UserStatus {
-  PENDING
-  ACTIVE
-  SUSPENDED
-  REJECTED
-  INACTIVE
 }
 
 enum SocialProvider {
@@ -161,16 +94,4 @@ enum SocialProvider {
   FACEBOOK
   KAKAO
   APPLE
-}
-
-enum VerificationStatus {
-  PENDING
-  APPROVED
-  REJECTED
-}
-
-enum SanctionType {
-  SUSPENSION
-  WARNING
-  BANNED
 }

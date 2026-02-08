@@ -107,10 +107,27 @@ model JobApplication {
   @@map("job_applications")
 }
 
-enum BoardType { PART_TIME; FULL_TIME }
-enum PostStatus { OPEN; CLOSED }
-enum Intensity { UPPER; MIDDLE; LOWER }
-enum InterviewType { OFFLINE; ONLINE }
+enum BoardType {
+  PART_TIME
+  FULL_TIME
+}
+
+enum PostStatus {
+  OPEN
+  CLOSED
+}
+
+enum Intensity {
+  UPPER
+  MIDDLE
+  LOWER
+}
+
+enum InterviewType {
+  OFFLINE
+  ONLINE
+}
+
 enum ApplicationStatus { 
   PENDING
   INTERVIEW_REQUESTED
@@ -119,4 +136,8 @@ enum ApplicationStatus {
   REJECTED
   CANCELLED
 }
-enum ActorType { EMPLOYER; APPLICANT }
+
+enum ActorType {
+  EMPLOYER
+  APPLICANT
+}

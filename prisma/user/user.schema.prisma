@@ -9,20 +9,37 @@ generator client {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String?   @unique
-  password      String?
-  userType      UserType
-  corporate     CorporateProfile?
-  individual    IndividualProfile?
-  socialAuths   SocialAuth[]
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
+  id          String    @id @default(cuid())
+  email       String?   @unique
+  password    String?
+  
+  // [중요] fullName이 있어야 전략(Strategy) 파일 에러가 안 납니다.
+  fullName    String?   @map("full_name")
+  
+  userType    UserType  @default(INDIVIDUAL) @map("user_type")
+
+  corporate   CorporateProfile?
+  individual  IndividualProfile?
+  socialAuths SocialAuth[]
+  
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
   @@map("users")
 }
 
-enum UserType { CORPORATE; INDIVIDUAL }
+
+enum UserType {
+  CORPORATE
+  INDIVIDUAL
+}
+
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
 
 model CorporateProfile {
   companyId     BigInt    @id @default(autoincrement()) @map("company_id")

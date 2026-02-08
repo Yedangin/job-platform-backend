@@ -176,7 +176,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/lord/Desktop/Yedanginn/Job-Platform/api-gateway/generated/prisma-notification",
+      "value": "C:\\Users\\CHANHO\\Documents\\Jobchaja\\Jobchaja_local\\job-platform-backend\\generated\\prisma-notification",
       "fromEnvVar": null
     },
     "config": {
@@ -185,17 +185,16 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "darwin-arm64",
+        "value": "windows",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/lord/Desktop/Yedanginn/Job-Platform/api-gateway/prisma/notification/notification.schema.prisma",
+    "sourceFilePath": "C:\\Users\\CHANHO\\Documents\\Jobchaja\\Jobchaja_local\\job-platform-backend\\prisma\\notification\\notification.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
-    "schemaEnvPath": "../../.env"
+    "rootEnvPath": null
   },
   "relativePath": "../../prisma/notification",
   "clientVersion": "6.10.0",
