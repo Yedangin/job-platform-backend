@@ -88,9 +88,7 @@ export class AuthService {
     };
   }
 
-  async login(
-    request: LoginRequest,
-  ): Promise<LoginSuccessResponse> {
+  async login(request: LoginRequest): Promise<LoginSuccessResponse> {
     const { email, password } = request;
 
     // Find user

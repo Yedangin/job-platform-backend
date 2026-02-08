@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { Prisma } from '../../../generated/prisma-user';
 
@@ -9,7 +18,9 @@ export class UserController {
   // --- Individual Profile Endpoints ---
 
   @Post('individual')
-  async createIndividualProfile(@Body() data: Prisma.ProfileIndividualCreateInput) {
+  async createIndividualProfile(
+    @Body() data: Prisma.ProfileIndividualCreateInput,
+  ) {
     return this.userService.createIndividualProfile(data);
   }
 
@@ -24,7 +35,7 @@ export class UserController {
   @Post('individual/:individualId/careers')
   async addCareer(
     @Param('individualId', ParseIntPipe) individualId: number,
-    @Body() data: Prisma.ProfileCareerCreateWithoutProfileIndividualInput
+    @Body() data: Prisma.ProfileCareerCreateWithoutProfileIndividualInput,
   ) {
     return this.userService.addCareer(BigInt(individualId), data);
   }
@@ -32,7 +43,7 @@ export class UserController {
   @Put('careers/:careerId')
   async updateCareer(
     @Param('careerId', ParseIntPipe) careerId: number,
-    @Body() data: Prisma.ProfileCareerUpdateInput
+    @Body() data: Prisma.ProfileCareerUpdateInput,
   ) {
     return this.userService.updateCareer(BigInt(careerId), data);
   }
@@ -45,7 +56,9 @@ export class UserController {
   // --- Corporate Profile Endpoints ---
 
   @Post('corporate')
-  async createCorporateProfile(@Body() data: Prisma.ProfileCorporateCreateInput) {
+  async createCorporateProfile(
+    @Body() data: Prisma.ProfileCorporateCreateInput,
+  ) {
     return this.userService.createCorporateProfile(data);
   }
 
