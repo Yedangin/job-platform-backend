@@ -128,7 +128,28 @@ message SocialLoginRequest {
   SocialProvider provider = 5;
   string providerId = 6;
 }
+//Sendotp
+message SendOtpRequest {
+  string email = 1;
+}
 
+// SendOtpResponse
+message SendOtpResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// VerifyOtpRequest
+message VerifyOtpRequest {
+  string email = 1;
+  string code = 2;
+}
+
+// VerifyOtpResponse
+message VerifyOtpResponse {
+  bool success = 1;
+  string message = 2;
+}
 // -----------------------------
 //  Service Definition
 // -----------------------------
@@ -153,4 +174,10 @@ service AuthService {
   rpc PasswordReset(PasswordResetRequest) returns (PasswordResetResponse);
   // Social Login
   rpc SocialLogin(SocialLoginRequest) returns (LoginSuccessResponse);
+  // Send Otp mail
+  rpc SendOtp (SendOtpRequest) returns (SendOtpResponse);
+
+  // Verifi Otp
+  rpc VerifyOtp (VerifyOtpRequest) returns (VerifyOtpResponse);
+
 }

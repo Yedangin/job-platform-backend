@@ -33,6 +33,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.985.0",
     "@grpc/grpc-js": "^1.14.1",
     "@grpc/proto-loader": "^0.8.0",
     "@nestjs/cache-manager": "^3.0.1",
@@ -54,6 +55,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "cookie-parser": "^1.4.7",
+    "ioredis": "^5.9.2",
     "passport": "^0.7.0",
     "passport-apple": "^2.0.2",
     "passport-facebook": "^3.0.0",

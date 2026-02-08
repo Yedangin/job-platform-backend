@@ -111,6 +111,44 @@ export class AuthController implements OnModuleInit {
     }
   }
 
+  @Post('send-otp')
+  @ApiOperation({ summary: 'Send verification OTP to email' })
+  @ApiBody({ schema: { example: { email: 'user@example.com' } } })
+  @ApiResponse({ status: 200, description: 'OTP sent successfully.' })
+  async sendOtp(@Body() { email }: { email: string }) {
+    try {
+      // Gateway가 gRPC를 통해 Auth Service의 SendOtp를 호출합니다.
+      const result = await firstValueFrom(
+        this.authService.sendOtp({ email }),
+      );
+      return result;
+    } catch (error: any) {
+      throw new HttpException(
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
+      );
+    }
+  }
+
+  @Post('verify-otp')
+  @ApiOperation({ summary: 'Verify OTP code' })
+  @ApiBody({ schema: { example: { email: 'user@example.com', code: '123456' } } })
+  @ApiResponse({ status: 200, description: 'OTP verified successfully.' })
+  async verifyOtp(@Body() body: { email: string; code: string }) {
+    try {
+      const result = await firstValueFrom(
+        this.authService.verifyOtp(body),
+      );
+      return result;
+    } catch (error: any) {
+      throw new HttpException(
+        error.details ?? error.message ?? 'Internal server error',
+        grpcToHttpStatus(error.code ?? 2),
+      );
+    }
+  }
+  
+
   @Post('login')
   @ApiOperation({ summary: 'Login with email and password' })
   @ApiBody({ type: LoginDto })
@@ -398,4 +436,5 @@ export class AuthController implements OnModuleInit {
       );
     }
   }
+  
 }

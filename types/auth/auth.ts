@@ -169,6 +169,9 @@ export interface AuthServiceClient {
   /** Social Login */
 
   socialLogin(request: SocialLoginRequest): Observable<LoginSuccessResponse>;
+
+  sendOtp(request: { email: string }): Observable<any>;
+  verifyOtp(request: { email: string; code: string }): Observable<any>;
 }
 
 export interface AuthServiceController {
@@ -209,6 +212,10 @@ export interface AuthServiceController {
   socialLogin(
     request: SocialLoginRequest,
   ): Promise<LoginSuccessResponse> | Observable<LoginSuccessResponse> | LoginSuccessResponse;
+
+  
+  sendOtp(request: { email: string }): Promise<any> | Observable<any> | any;
+  verifyOtp(request: { email: string; code: string }): Promise<any> | Observable<any> | any;
 }
 
 export function AuthServiceControllerMethods() {

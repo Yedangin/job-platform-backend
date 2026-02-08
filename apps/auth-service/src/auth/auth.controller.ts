@@ -151,4 +151,29 @@ export class AuthController {
       });
     }
   }
+  @GrpcMethod('AuthService', 'SendOtp')
+  async sendOtp(request: { email: string }) {
+    try {
+      this.logger.log(`Received send-otp request for: ${request.email}`);
+      return await this.authService.sendOtp(request.email);
+    } catch (error: any) {
+      throw new RpcException({
+        code: httpToGrpcStatus(error.status ?? 500),
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  @GrpcMethod('AuthService', 'VerifyOtp')
+  async verifyOtp(request: { email: string; code: string }) {
+    try {
+      this.logger.log(`Received verify-otp request for: ${request.email}`);
+      return await this.authService.verifyOtp(request.email, request.code);
+    } catch (error: any) {
+      throw new RpcException({
+        code: httpToGrpcStatus(error.status ?? 500),
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
 }
