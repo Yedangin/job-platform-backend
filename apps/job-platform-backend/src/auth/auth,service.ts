@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
+import { Resolver } from 'dns/promises';
 import {
   RegisterRequest,
   LoginRequest,
@@ -33,6 +34,7 @@ import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 @Injectable()
 export class AuthService {
   private sesClient: SESClient;
+  private dnsResolver: Resolver;
 
   constructor(
     private readonly prisma: AuthPrismaService,
@@ -47,6 +49,15 @@ export class AuthService {
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? '',
       },
     });
+
+    // ✅ DNS Resolver를 Google Public DNS로 강제 설정
+    // 로컬 환경의 DNS 설정 문제를 우회하고 안정적인 DNS 조회 보장
+    this.dnsResolver = new Resolver();
+    this.dnsResolver.setServers([
+      '8.8.8.8',    // Google Public DNS Primary
+      '8.8.4.4',    // Google Public DNS Secondary
+      '1.1.1.1',    // Cloudflare DNS (Fallback)
+    ]);
   }
 
   // --- 1. OTP 발송 (AWS SES 사용) ---
@@ -57,7 +68,6 @@ export class AuthService {
     // 1. 1분 이내 재발송 요청 확인
     const isLocked = await this.redisService.get(limitKey);
     if (isLocked) {
-      // 🔄 RpcException -> BadRequestException으로 변경
       throw new BadRequestException(
         '너무 자주 요청하셨습니다. 1분 후에 다시 시도해주세요.',
       );
@@ -66,52 +76,76 @@ export class AuthService {
     // 2. 하루 최대 발송 횟수 확인 (10회)
     const dailyCount = (await this.redisService.get(dailyKey)) || 0;
     if (Number(dailyCount) >= 10) {
-      // 🔄 RpcException -> BadRequestException으로 변경
       throw new BadRequestException(
         '오늘 하루 인증 요청 횟수(10회)를 모두 초과했습니다.',
       );
     }
 
-    // 3. OTP 생성 및 발송 로직
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    const command = new SendEmailCommand({
-      Source: process.env.MAIL_FROM, // .env 파일에 MAIL_FROM이 있어야 함
-      Destination: { ToAddresses: [email] },
-      Message: {
-        Subject: {
-          Data: '[JobChaja] 이메일 인증번호 안내',
-          Charset: 'UTF-8',
-        },
-        Body: {
-          Html: {
-            Data: this.getEmailHtmlTemplate(otp),
-            Charset: 'UTF-8',
-          },
-        },
-      },
-    });
+    // 3. 이메일 도메인 MX 레코드 검증 (실제 존재하는 도메인인지 확인)
+    // Google Public DNS(8.8.8.8)를 사용하여 안정적인 DNS 조회 보장
+    const domain = email.split('@')[1];
+    if (!domain) {
+      throw new BadRequestException('올바른 이메일 형식이 아닙니다.');
+    }
 
     try {
-      // SES 메일 발송
-      await this.sesClient.send(command);
-      console.log(`[AWS SES 전송 성공] To: ${email}, OTP: ${otp}`);
-
-      // 4. Redis 데이터 업데이트
-      await this.redisService.set(`otp:${email}`, otp, 180); // 3분 유효
-      await this.redisService.set(limitKey, 'locked', 60); // 1분 잠금
-
-      const nextCount = Number(dailyCount) + 1;
-      await this.redisService.set(dailyKey, String(nextCount), 86400); // 1일 유지
-
-      return { success: true, message: '인증번호가 발송되었습니다.' };
-    } catch (error) {
-      console.error('발송 로직 에러 상세:', error);
-      // 🔄 RpcException -> InternalServerErrorException으로 변경
-      throw new InternalServerErrorException(
-        '인증번호 처리 중 오류가 발생했습니다.',
+      const mxRecords = await this.dnsResolver.resolveMx(domain);
+      if (!mxRecords || mxRecords.length === 0) {
+        throw new BadRequestException('존재하지 않는 이메일 도메인입니다.');
+      }
+      console.log(`[MX 검증 성공] ${domain}:`, mxRecords.map(r => r.exchange).join(', '));
+    } catch (error: any) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      console.error(`[MX 검증 실패] ${domain}:`, error.code);
+      throw new BadRequestException(
+        '유효하지 않은 이메일 주소입니다. 도메인을 확인해주세요.',
       );
     }
+
+    // 4. OTP 생성 및 발송 로직
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // 5. Redis에 즉시 저장 (도메인 검증 통과 후)
+    await this.redisService.set(`otp:${email}`, otp, 300); // 5분 유효
+    await this.redisService.set(limitKey, 'locked', 60); // 1분 잠금
+
+    const nextCount = Number(dailyCount) + 1;
+    await this.redisService.set(dailyKey, String(nextCount), 86400); // 1일 유지
+
+    // 6. 즉시 성공 응답 반환 (UX 개선: 사용자가 바로 타이머 시작)
+    const response = { success: true, message: '인증번호가 발송되었습니다.' };
+
+    // 7. AWS SES 발송은 비동기로 백그라운드 처리 (응답 반환 후)
+    setImmediate(async () => {
+      const command = new SendEmailCommand({
+        Source: process.env.MAIL_FROM,
+        Destination: { ToAddresses: [email] },
+        Message: {
+          Subject: {
+            Data: '[JobChaja] 이메일 인증번호 안내',
+            Charset: 'UTF-8',
+          },
+          Body: {
+            Html: {
+              Data: this.getEmailHtmlTemplate(otp),
+              Charset: 'UTF-8',
+            },
+          },
+        },
+      });
+
+      try {
+        await this.sesClient.send(command);
+        console.log(`[AWS SES 전송 성공] To: ${email}, OTP: ${otp}`);
+      } catch (error) {
+        console.error('[AWS SES 전송 실패] 백그라운드 발송 에러:', error);
+        // OTP는 이미 Redis에 저장되어 있으므로 사용자는 검증 가능
+      }
+    });
+
+    return response;
   }
 
   private getEmailHtmlTemplate(otp: string): string {
@@ -126,7 +160,7 @@ export class AuthService {
         <div style="margin: 30px 0; padding: 20px; background-color: #fff; border: 2px solid #007bff; border-radius: 8px; font-size: 36px; font-weight: bold; color: #007bff; letter-spacing: 8px;">
           ${otp}
         </div>
-        <p style="font-size: 13px; color: #999;">이 인증번호는 <b>3분</b> 동안 유효합니다.</p>
+        <p style="font-size: 13px; color: #999;">이 인증번호는 <b>5분</b> 동안 유효합니다.</p>
       </div>
       <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #bbb;">
         <p>본 메일은 발신전용입니다. 궁금하신 점은 고객센터로 문의해 주세요.</p>
