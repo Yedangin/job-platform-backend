@@ -24,7 +24,7 @@ import { AuthPrismaService, RedisService, SessionData } from 'libs/common/src';
 import {
   SocialProvider as PrismaSocialProvider,
   User as PrismaUser,
-  UserType
+  UserType,
 } from 'generated/prisma-user';
 import { GenerateStoreToken } from 'libs/common/src/common/helper/generate-store-token';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
@@ -63,7 +63,7 @@ export class AuthService {
     }
 
     // 2. 하루 최대 발송 횟수 확인 (10회)
-    const dailyCount = await this.redisService.get(dailyKey) || 0;
+    const dailyCount = (await this.redisService.get(dailyKey)) || 0;
     if (Number(dailyCount) >= 10) {
       throw new RpcException({
         code: 8, // RESOURCE_EXHAUSTED
@@ -78,15 +78,15 @@ export class AuthService {
       Source: process.env.MAIL_FROM,
       Destination: { ToAddresses: [email] },
       Message: {
-        Subject: { 
+        Subject: {
           Data: '[JobChaja] 이메일 인증번호 안내',
-          Charset: 'UTF-8' 
+          Charset: 'UTF-8',
         },
-        Body: { 
-          Html: { 
-            Data: this.getEmailHtmlTemplate(otp), 
-            Charset: 'UTF-8'
-          } 
+        Body: {
+          Html: {
+            Data: this.getEmailHtmlTemplate(otp),
+            Charset: 'UTF-8',
+          },
         },
       },
     });
@@ -97,11 +97,11 @@ export class AuthService {
 
       // 4. Redis 데이터 업데이트 (데이터를 모두 문자열로 변환하여 저장)
       // OTP 본문 저장
-      await this.redisService.set(`otp:${email}`, otp, 180); 
-      
+      await this.redisService.set(`otp:${email}`, otp, 180);
+
       // 1분 제한 설정
       await this.redisService.set(limitKey, 'locked', 60);
-      
+
       // 🔴 숫자(nextCount)를 문자열로 변환하여 저장 (중요)
       const nextCount = Number(dailyCount) + 1;
       await this.redisService.set(dailyKey, String(nextCount), 86400);
@@ -218,10 +218,13 @@ export class AuthService {
 
   async getProfile(sessionId: string): Promise<UserResponse> {
     const sessionDataStr = await this.redisService.get(`session:${sessionId}`);
-    if (!sessionDataStr) throw new UnauthorizedException('Invalid or expired session');
+    if (!sessionDataStr)
+      throw new UnauthorizedException('Invalid or expired session');
 
     const sessionData = JSON.parse(sessionDataStr) as SessionData;
-    const user = await this.prisma.user.findUnique({ where: { id: sessionData.userId } });
+    const user = await this.prisma.user.findUnique({
+      where: { id: sessionData.userId },
+    });
 
     if (!user) throw new NotFoundException('User not found');
 
@@ -263,14 +266,20 @@ export class AuthService {
     provider: ProtoSocialProvider;
     providerId: string;
   }) {
-    const prismaProvider = this.mapProtoToPrismaSocialProvider(profile.provider);
+    const prismaProvider = this.mapProtoToPrismaSocialProvider(
+      profile.provider,
+    );
     const existingSocialAuth = await this.prisma.socialAuth.findFirst({
       where: { provider: prismaProvider, providerId: profile.providerId },
       include: { user: true },
     });
 
     if (existingSocialAuth) {
-      const payload = { userId: existingSocialAuth.user.id, email: existingSocialAuth.user.email, role: existingSocialAuth.user.userType };
+      const payload = {
+        userId: existingSocialAuth.user.id,
+        email: existingSocialAuth.user.email,
+        role: existingSocialAuth.user.userType,
+      };
       const sessionId = await this.generateToken.generate(payload);
       const accessToken = await this.getAccessTokenFromSession(sessionId);
 
@@ -285,23 +294,29 @@ export class AuthService {
 
     let user: PrismaUser | null = null;
     if (profile.email) {
-      user = await this.prisma.user.findFirst({ where: { email: profile.email } });
+      user = await this.prisma.user.findFirst({
+        where: { email: profile.email },
+      });
     }
 
     if (!user) {
-      const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(' ') || null;
-      let email = profile.email || `${prismaProvider}_${profile.providerId}@oauth.local`;
+      const fullName =
+        [profile.firstName, profile.lastName].filter(Boolean).join(' ') || null;
+      let email =
+        profile.email || `${prismaProvider}_${profile.providerId}@oauth.local`;
       user = await this.prisma.user.create({
         data: { email, fullName, userType: UserType.INDIVIDUAL },
       });
     }
 
-    return { success: true, message: 'OAuth Login Ready' }; 
+    return { success: true, message: 'OAuth Login Ready' };
   }
 
   // --- 헬퍼 메서드 (필드명 에러 해결 핵심) ---
 
-  private async getAccessTokenFromSession(sessionId: string): Promise<string | undefined> {
+  private async getAccessTokenFromSession(
+    sessionId: string,
+  ): Promise<string | undefined> {
     const sessionDataStr = await this.redisService.get(`session:${sessionId}`);
     if (sessionDataStr) {
       const sessionData = JSON.parse(sessionDataStr) as SessionData;
@@ -319,7 +334,7 @@ export class AuthService {
       phone: undefined, // 스키마에 없으므로 undefined
       fullName: user.fullName || undefined,
       status: UserStatus.ACTIVE, // 스키마 필드 부재로 기본값 매핑
-      isEmailedVerified: true, 
+      isEmailedVerified: true,
       isPhoneVerified: false,
       walletId: undefined, // 스키마 필드 부재
       createdAt: user.createdAt.toISOString(),
@@ -346,7 +361,9 @@ export class AuthService {
     return statusMap[status] || UserStatus.USER_STATUS_UNSPECIFIED;
   }
 
-  private mapProtoToPrismaSocialProvider(protoProvider: ProtoSocialProvider): PrismaSocialProvider {
+  private mapProtoToPrismaSocialProvider(
+    protoProvider: ProtoSocialProvider,
+  ): PrismaSocialProvider {
     const providerMap: Record<ProtoSocialProvider, PrismaSocialProvider> = {
       [ProtoSocialProvider.GOOGLE]: 'GOOGLE' as PrismaSocialProvider,
       [ProtoSocialProvider.FACEBOOK]: 'FACEBOOK' as PrismaSocialProvider,

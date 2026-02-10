@@ -58,14 +58,18 @@ export class AuthService {
     const isLocked = await this.redisService.get(limitKey);
     if (isLocked) {
       // 🔄 RpcException -> BadRequestException으로 변경
-      throw new BadRequestException('너무 자주 요청하셨습니다. 1분 후에 다시 시도해주세요.');
+      throw new BadRequestException(
+        '너무 자주 요청하셨습니다. 1분 후에 다시 시도해주세요.',
+      );
     }
 
     // 2. 하루 최대 발송 횟수 확인 (10회)
     const dailyCount = (await this.redisService.get(dailyKey)) || 0;
     if (Number(dailyCount) >= 10) {
       // 🔄 RpcException -> BadRequestException으로 변경
-      throw new BadRequestException('오늘 하루 인증 요청 횟수(10회)를 모두 초과했습니다.');
+      throw new BadRequestException(
+        '오늘 하루 인증 요청 횟수(10회)를 모두 초과했습니다.',
+      );
     }
 
     // 3. OTP 생성 및 발송 로직
@@ -95,7 +99,7 @@ export class AuthService {
 
       // 4. Redis 데이터 업데이트
       await this.redisService.set(`otp:${email}`, otp, 180); // 3분 유효
-      await this.redisService.set(limitKey, 'locked', 60);   // 1분 잠금
+      await this.redisService.set(limitKey, 'locked', 60); // 1분 잠금
 
       const nextCount = Number(dailyCount) + 1;
       await this.redisService.set(dailyKey, String(nextCount), 86400); // 1일 유지
@@ -104,7 +108,9 @@ export class AuthService {
     } catch (error) {
       console.error('발송 로직 에러 상세:', error);
       // 🔄 RpcException -> InternalServerErrorException으로 변경
-      throw new InternalServerErrorException('인증번호 처리 중 오류가 발생했습니다.');
+      throw new InternalServerErrorException(
+        '인증번호 처리 중 오류가 발생했습니다.',
+      );
     }
   }
 
@@ -149,7 +155,7 @@ export class AuthService {
     // 인증 티켓 확인 (필요하다면 주석 해제)
     const isVerified = await this.redisService.get(`verified_ticket:${email}`);
     if (!isVerified) {
-       throw new BadRequestException('이메일 인증이 완료되지 않았습니다.');
+      throw new BadRequestException('이메일 인증이 완료되지 않았습니다.');
     }
 
     const existingUser = await this.prisma.user.findFirst({ where: { email } });
@@ -294,7 +300,11 @@ export class AuthService {
     // 소셜 계정 연동 (SocialAuth 생성) 로직이 빠져있다면 추가 필요
     // 일단 기존 코드 흐름 유지
 
-    return { success: true, message: 'OAuth Login Ready', sessionId: 'temp-session' }; // 임시 반환값
+    return {
+      success: true,
+      message: 'OAuth Login Ready',
+      sessionId: 'temp-session',
+    }; // 임시 반환값
   }
 
   // --- 8. 비밀번호 초기화 ---

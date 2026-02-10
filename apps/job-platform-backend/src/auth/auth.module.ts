@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
-import { AuthService } from './auth,service'; 
+import { AuthService } from './auth,service';
 import {
   AuthPrismaService,
   GoogleStrategy,
@@ -14,11 +14,11 @@ import { FacebookStrategy } from 'libs/common/src/common/strategies/facebook.str
 import { AppleStrategy } from 'libs/common/src/common/strategies/apple.strategy';
 import { GenerateStoreToken } from 'libs/common/src/common/helper/generate-store-token';
 @Module({
-  imports: [  ],
+  imports: [],
   controllers: [AuthController],
   providers: [
     GenerateStoreToken,
-    AuthService, 
+    AuthService,
     GoogleStrategy,
     KakaoStrategy,
     FacebookStrategy,
