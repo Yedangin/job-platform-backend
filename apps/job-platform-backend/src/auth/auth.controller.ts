@@ -2,32 +2,25 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
-  HttpStatus,
-  Inject,
-  OnModuleInit,
   Post,
   Request,
   Res,
   UnauthorizedException,
   UseGuards,
+  Session,
 } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import {
-  AUTH_PACKAGE_NAME,
-  AuthServiceClient,
-  SocialProvider,
-} from 'types/auth/auth';
+import { Response } from 'express';
+
+// ✅ 로컬 서비스(요리사)를 직접 가져옵니다.
+import { AuthService } from './auth,service';
+
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { Response } from 'express';
-import { firstValueFrom } from 'rxjs';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
 import {
   GoogleOAuthGuard,
-  Session,
   SessionAuthGuard,
   RolesGuard,
   Roles,
@@ -35,47 +28,21 @@ import {
   KakaoAuthGuard,
   Apple0AuthGuard,
 } from 'libs/common/src';
-
-// Helper function to map gRPC status codes to HTTP status codes
-function grpcToHttpStatus(grpcCode: number): number {
-  const statusMap: Record<number, number> = {
-    0: HttpStatus.OK, // OK
-    1: HttpStatus.INTERNAL_SERVER_ERROR, // CANCELLED
-    2: HttpStatus.INTERNAL_SERVER_ERROR, // UNKNOWN
-    3: HttpStatus.BAD_REQUEST, // INVALID_ARGUMENT
-    4: HttpStatus.REQUEST_TIMEOUT, // DEADLINE_EXCEEDED
-    5: HttpStatus.NOT_FOUND, // NOT_FOUND
-    6: HttpStatus.CONFLICT, // ALREADY_EXISTS
-    7: HttpStatus.FORBIDDEN, // PERMISSION_DENIED
-    8: HttpStatus.TOO_MANY_REQUESTS, // RESOURCE_EXHAUSTED
-    9: HttpStatus.BAD_REQUEST, // FAILED_PRECONDITION
-    10: HttpStatus.CONFLICT, // ABORTED
-    11: HttpStatus.BAD_REQUEST, // OUT_OF_RANGE
-    12: HttpStatus.NOT_IMPLEMENTED, // UNIMPLEMENTED
-    13: HttpStatus.INTERNAL_SERVER_ERROR, // INTERNAL
-    14: HttpStatus.SERVICE_UNAVAILABLE, // UNAVAILABLE
-    15: HttpStatus.INTERNAL_SERVER_ERROR, // DATA_LOSS
-    16: HttpStatus.UNAUTHORIZED, // UNAUTHENTICATED
-  };
-  return statusMap[grpcCode] ?? HttpStatus.INTERNAL_SERVER_ERROR;
-}
+import { SocialProvider } from 'types/auth/auth';
 
 @ApiTags('Authentication')
 @Controller('auth')
-export class AuthController implements OnModuleInit {
-  private authService: AuthServiceClient;
+export class AuthController {
+  // ✅ [변경 1] 복잡한 ClientGrpc 대신 AuthService를 직접 주입받습니다.
+  constructor(private readonly authService: AuthService) {}
 
-  constructor(@Inject(AUTH_PACKAGE_NAME) private authClient: ClientGrpc) {}
-
-  onModuleInit() {
-    this.authService =
-      this.authClient.getService<AuthServiceClient>('AuthService');
-  }
+  // ❌ [삭제됨] onModuleInit: 8001번 포트와 연결하는 과정이 필요 없습니다.
+  // ❌ [삭제됨] grpcToHttpStatus: gRPC 에러를 변환할 필요가 없습니다. (NestJS 기본 에러 사용)
 
   @Get()
   @UseGuards(SessionAuthGuard)
   getHello(): string {
-    return 'Auth Service is running';
+    return 'Auth System is running (Monolith Mode)';
   }
 
   @Get('admin')
@@ -90,6 +57,7 @@ export class AuthController implements OnModuleInit {
     return 'This is admin-only data';
   }
 
+  // --- 1. 회원가입 ---
   @Post('register')
   @ApiOperation({ summary: 'Register a new account' })
   @ApiBody({ type: RegisterDto })
@@ -98,57 +66,32 @@ export class AuthController implements OnModuleInit {
     description: 'User registered successfully.',
   })
   async register(@Body() registerDto: RegisterDto) {
-    try {
-      const result = await firstValueFrom(
-        this.authService.register(registerDto),
-      );
-      return result;
-    } catch (error: any) {
-      throw new HttpException(
-        error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
-      );
-    }
+    // ✅ [변경 2] firstValueFrom 없이 바로 함수를 호출합니다.
+    return await this.authService.register(registerDto);
   }
 
+  // --- 2. OTP 발송 ---
   @Post('send-otp')
   @ApiOperation({ summary: 'Send verification OTP to email' })
   @ApiBody({ schema: { example: { email: 'user@example.com' } } })
   @ApiResponse({ status: 200, description: 'OTP sent successfully.' })
   async sendOtp(@Body() { email }: { email: string }) {
-    try {
-      // Gateway가 gRPC를 통해 Auth Service의 SendOtp를 호출합니다.
-      const result = await firstValueFrom(
-        this.authService.sendOtp({ email }),
-      );
-      return result;
-    } catch (error: any) {
-      throw new HttpException(
-        error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
-      );
-    }
+    // ✅ 외부 서버 호출 X -> 내부 함수 실행 O
+    return await this.authService.sendOtp(email);
   }
 
+  // --- 3. OTP 검증 ---
   @Post('verify-otp')
   @ApiOperation({ summary: 'Verify OTP code' })
-  @ApiBody({ schema: { example: { email: 'user@example.com', code: '123456' } } })
+  @ApiBody({
+    schema: { example: { email: 'user@example.com', code: '123456' } },
+  })
   @ApiResponse({ status: 200, description: 'OTP verified successfully.' })
   async verifyOtp(@Body() body: { email: string; code: string }) {
-    try {
-      const result = await firstValueFrom(
-        this.authService.verifyOtp(body),
-      );
-      return result;
-    } catch (error: any) {
-      throw new HttpException(
-        error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
-      );
-    }
+    return await this.authService.verifyOtp(body.email, body.code);
   }
-  
 
+  // --- 4. 로그인 ---
   @Post('login')
   @ApiOperation({ summary: 'Login with email and password' })
   @ApiBody({ type: LoginDto })
@@ -160,30 +103,24 @@ export class AuthController implements OnModuleInit {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    try {
-      const result: any = await firstValueFrom(
-        this.authService.login(loginDto),
-      );
+    // ✅ try-catch를 제거해도 됩니다. (서비스에서 에러를 던지면 NestJS가 알아서 처리함)
+    const result = await this.authService.login(loginDto);
 
-      const sessionId = String(result.sessionId);
+    const sessionId = String(result.sessionId);
 
-      res.cookie('sessionId', sessionId, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 2 * 60 * 60 * 1000,
-        domain: process.env.COOKIE_DOMAIN || 'localhost',
-      });
+    // 쿠키 설정은 기존 그대로 유지
+    res.cookie('sessionId', sessionId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 2 * 60 * 60 * 1000,
+      domain: process.env.COOKIE_DOMAIN || 'localhost',
+    });
 
-      return result;
-    } catch (error: any) {
-      throw new HttpException(
-        error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
-      );
-    }
+    return result;
   }
 
+  // --- 5. 프로필 조회 ---
   @Get('profile')
   @ApiOperation({ summary: 'Get current user profile' })
   @ApiResponse({
@@ -191,23 +128,14 @@ export class AuthController implements OnModuleInit {
     description: 'User profile retrieved successfully.',
   })
   async getProfile(@Session() sessionId: string) {
-    try {
-      if (!sessionId) {
-        throw new UnauthorizedException('Invalid or expired session');
-      }
-
-      const result = await firstValueFrom(
-        this.authService.getProfile({ sessionId: sessionId }),
-      );
-      return result;
-    } catch (error: any) {
-      throw new HttpException(
-        error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
-      );
+    if (!sessionId) {
+      throw new UnauthorizedException('Invalid or expired session');
     }
+    // ✅ 객체 { sessionId: ... } 포장 없이 ID값만 깔끔하게 전달
+    return await this.authService.getProfile(sessionId);
   }
 
+  // --- 6. 로그아웃 ---
   @Post('logout')
   @ApiOperation({ summary: 'Logout current user' })
   @ApiResponse({
@@ -218,61 +146,35 @@ export class AuthController implements OnModuleInit {
     @Session() sessionId: string,
     @Res({ passthrough: true }) res: Response,
   ) {
-    try {
-      const result = await firstValueFrom(
-        this.authService.logout({ sessionId: sessionId }),
-      );
+    const result = await this.authService.logout(sessionId);
 
-      res.clearCookie('sessionId', {
-        domain: process.env.COOKIE_DOMAIN || 'localhost',
-      });
+    res.clearCookie('sessionId', {
+      domain: process.env.COOKIE_DOMAIN || 'localhost',
+    });
 
-      return result;
-    } catch (error: any) {
-      throw new HttpException(
-        error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
-      );
-    }
+    return result;
   }
 
+  // --- 7. 비밀번호 초기화 ---
   @Post('request-password-reset')
   @ApiOperation({ summary: 'Request password reset email' })
   @ApiBody({ type: RequestPasswordResetDto })
   async requestPasswordReset(@Body() { email }: RequestPasswordResetDto) {
-    try {
-      const result = await firstValueFrom(
-        this.authService.passwordReset({ email }),
-      );
-      return result;
-    } catch (error: any) {
-      throw new HttpException(
-        error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
-      );
-    }
+    return await this.authService.requestPasswordReset(email);
   }
 
   @Post('reset-password')
   @ApiOperation({ summary: 'Reset password with token' })
   @ApiBody({ type: ResetPasswordDto })
   async resetPassword(@Body() { token, newPassword }: ResetPasswordDto) {
-    try {
-      const result = await firstValueFrom(
-        this.authService.resetPassword({
-          token,
-          newPassword,
-        }),
-      );
-      return result;
-    } catch (error: any) {
-      throw new HttpException(
-        error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
-      );
-    }
+    return await this.authService.resetPassword(token, newPassword);
   }
 
+  // ==========================================
+  // [소셜 로그인] 중복 코드를 제거하고 버그를 수정했습니다.
+  // ==========================================
+
+  // --- Google ---
   @Get('google')
   @UseGuards(GoogleOAuthGuard)
   @ApiOperation({ summary: 'Initiate Google OAuth login' })
@@ -285,35 +187,10 @@ export class AuthController implements OnModuleInit {
     @Request() req: any,
     @Res({ passthrough: true }) res: Response,
   ) {
-    try {
-      const user = {
-        email: req.user.email,
-        firstName: req.user.firstName,
-        lastName: req.user.lastName,
-        picture: req.user.picture,
-        provider: SocialProvider.GOOGLE,
-        providerId: req.user.providerId,
-      };
-
-      const result = await firstValueFrom(this.authService.socialLogin(user));
-
-      res.cookie('sessionId', result.sessionId, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 2 * 60 * 60 * 1000,
-        domain: process.env.COOKIE_DOMAIN || 'localhost',
-      });
-
-      return res.redirect('http://jobchaja.com');
-    } catch (error: any) {
-      throw new HttpException(
-        error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
-      );
-    }
+    return this.handleSocialLogin(req, res, SocialProvider.GOOGLE);
   }
 
+  // --- Facebook ---
   @Get('facebook')
   @UseGuards(Facebook0AuthGuard)
   @ApiOperation({ summary: 'Initiate Facebook OAuth login' })
@@ -326,35 +203,11 @@ export class AuthController implements OnModuleInit {
     @Request() req: any,
     @Res({ passthrough: true }) res: Response,
   ) {
-    try {
-      const user = {
-        email: req.user.email,
-        firstName: req.user.firstName,
-        lastName: req.user.lastName,
-        picture: req.user.picture,
-        provider: SocialProvider.GOOGLE,
-        providerId: req.user.providerId,
-      };
-
-      const result = await firstValueFrom(this.authService.socialLogin(user));
-
-      res.cookie('sessionId', result.sessionId, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 2 * 60 * 60 * 1000,
-        domain: process.env.COOKIE_DOMAIN || 'localhost',
-      });
-
-      return res.redirect('http://jobchaja.com');
-    } catch (error: any) {
-      throw new HttpException(
-        error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
-      );
-    }
+    // 🚨 기존 코드 버그 수정: provider가 GOOGLE로 되어 있던 것을 FACEBOOK으로 변경
+    return this.handleSocialLogin(req, res, SocialProvider.FACEBOOK);
   }
 
+  // --- Kakao ---
   @Get('kakao')
   @UseGuards(KakaoAuthGuard)
   @ApiOperation({ summary: 'Initiate Kakao OAuth login' })
@@ -367,35 +220,11 @@ export class AuthController implements OnModuleInit {
     @Request() req: any,
     @Res({ passthrough: true }) res: Response,
   ) {
-    try {
-      const user = {
-        email: req.user.email,
-        firstName: req.user.firstName,
-        lastName: req.user.lastName,
-        picture: req.user.picture,
-        provider: SocialProvider.GOOGLE,
-        providerId: req.user.providerId,
-      };
-
-      const result = await firstValueFrom(this.authService.socialLogin(user));
-
-      res.cookie('sessionId', result.sessionId, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 2 * 60 * 60 * 1000,
-        domain: process.env.COOKIE_DOMAIN || 'localhost',
-      });
-
-      return res.redirect('http://jobchaja.com');
-    } catch (error: any) {
-      throw new HttpException(
-        error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
-      );
-    }
+    // 🚨 기존 코드 버그 수정: provider가 GOOGLE로 되어 있던 것을 KAKAO로 변경
+    return this.handleSocialLogin(req, res, SocialProvider.KAKAO);
   }
 
+  // --- Apple ---
   @Get('apple')
   @UseGuards(Apple0AuthGuard)
   @ApiOperation({ summary: 'Initiate Apple OAuth Login' })
@@ -408,33 +237,41 @@ export class AuthController implements OnModuleInit {
     @Request() req: any,
     @Res({ passthrough: true }) res: Response,
   ) {
-    try {
-      const user = {
-        email: req.user.email,
-        firstName: req.user.firstName,
-        lastName: req.user.lastName,
-        picture: req.user.picture,
-        provider: SocialProvider.GOOGLE,
-        providerId: req.user.providerId,
-      };
-
-      const result = await firstValueFrom(this.authService.socialLogin(user));
-
-      res.cookie('sessionId', result.sessionId, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 2 * 60 * 60 * 1000,
-        domain: process.env.COOKIE_DOMAIN || 'localhost',
-      });
-
-      return { message: result.message };
-    } catch (error: any) {
-      throw new HttpException(
-        error.details ?? error.message ?? 'Internal server error',
-        grpcToHttpStatus(error.code ?? 2),
-      );
-    }
+    // 🚨 기존 코드 버그 수정: provider가 GOOGLE로 되어 있던 것을 APPLE로 변경
+    return this.handleSocialLogin(req, res, SocialProvider.APPLE);
   }
-  
+
+  /**
+   * ✅ 소셜 로그인 공통 처리 함수 (Private Helper)
+   * 기존에 4번 반복되던 코드를 하나로 통합했습니다.
+   */
+  private async handleSocialLogin(
+    req: any,
+    res: Response,
+    provider: SocialProvider,
+  ) {
+    const user = {
+      email: req.user.email,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      picture: req.user.picture,
+      provider: provider,
+      providerId: req.user.providerId,
+    };
+
+    // AuthService 직접 호출
+    const result = await this.authService.findOrCreateOAuthUser(user);
+
+    // 쿠키 설정
+    res.cookie('sessionId', result.sessionId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 2 * 60 * 60 * 1000,
+      domain: process.env.COOKIE_DOMAIN || 'localhost',
+    });
+
+    // 메인 페이지로 리다이렉트
+    return res.redirect('http://jobchaja.com');
+  }
 }
