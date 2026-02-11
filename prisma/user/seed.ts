@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   const adminEmail = 'admin';
-  const adminPassword = 'dlaqpelem1!';
+  const adminPassword = 'adminpage1!';
 
   // 기존 admin 계정 확인
   const existing = await prisma.user.findFirst({

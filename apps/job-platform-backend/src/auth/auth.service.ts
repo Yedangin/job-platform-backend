@@ -63,7 +63,7 @@ export class AuthService implements OnModuleInit {
   async onModuleInit() {
     try {
       const adminEmail = 'admin';
-      const adminPassword = 'dlaqpelem1!';
+      const adminPassword = 'adminpage1!';
 
       const existingAdmin = await this.prisma.user.findFirst({
         where: { email: adminEmail },
@@ -81,7 +81,7 @@ export class AuthService implements OnModuleInit {
           },
         });
         console.log(
-          '[Admin] ✅ 관리자 계정이 생성되었습니다. (admin / dlaqpelem1!)',
+          '[Admin] ✅ 관리자 계정이 생성되었습니다. (admin / adminpage1!)',
         );
       } else {
         console.log('[Admin] ✅ 관리자 계정이 이미 존재합니다.');
