@@ -72,9 +72,7 @@ npm run start:dev
 
 The server will start at `http://localhost:8000`.
 
-On first startup, an **admin account** is automatically created:
-- Email: `admin`
-- Password: `adminpage1!`
+On first startup, an **admin account** is automatically created. Ask the team lead for the admin credentials.
 
 ### 7. Verify it's running
 
@@ -82,7 +80,7 @@ On first startup, an **admin account** is automatically created:
 curl http://localhost:8000/auth/login \
   -X POST \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin","password":"adminpage1!"}'
+  -d '{"email":"your-email","password":"your-password"}'
 ```
 
 You should get a successful response with a session cookie.
