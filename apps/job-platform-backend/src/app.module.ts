@@ -20,6 +20,7 @@ import { CorporateRegistrationModule } from './corporate-registration/corporate-
 import { ReportModule } from './report/report.module';
 import { CategoryModule } from './category/category.module';
 import { ApplyModule } from './apply/apply.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { ApplyModule } from './apply/apply.module';
     ReportModule,
     CategoryModule,
     ApplyModule,
+    ProfileModule,
   ],
   controllers: [],
   providers: [

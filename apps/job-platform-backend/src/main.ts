@@ -11,9 +11,11 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    allowedHeaders: 'Authorization, Content-Type',
-    exposedHeaders: 'Authorization',
-    credentials: true,
+    origin: ['http://localhost:3000', 'http://localhost:3001'], // 프론트엔드 URL 명시
+    allowedHeaders: ['Authorization', 'Content-Type', 'Cookie'],
+    exposedHeaders: ['Authorization'],
+    credentials: true, // 쿠키 전송 허용
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   });
   const config = new DocumentBuilder()
     .setTitle('API Documentation')

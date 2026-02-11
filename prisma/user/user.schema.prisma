@@ -8,64 +8,208 @@ generator client {
   output   = "../../generated/prisma-user"
 }
 
+// ========================================
+// [핵심] users_auth: 로그인 계정 정보
+// ========================================
 model User {
-  id          String    @id @default(cuid())
-  email       String?   @unique
-  password    String?
-  
-  // [중요] fullName이 있어야 전략(Strategy) 파일 에러가 안 납니다.
-  fullName    String?   @map("full_name")
-  
-  userType    UserType  @default(INDIVIDUAL) @map("user_type")
+  id                String          @id @default(cuid()) @map("auth_id")
+  email             String          @unique
+  password          String?         @map("password_hash")
 
-  corporate   CorporateProfile?
-  individual  IndividualProfile?
-  socialAuths SocialAuth[]
-  
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  // [소셜 로그인] 일반/소셜 통합 관리
+  socialProvider    SocialProvider  @default(NONE) @map("social_provider")
+  socialProviderId  String?         @map("social_provider_id")
 
-  @@map("users")
+  // [권한 및 상태]
+  userType          UserType        @default(INDIVIDUAL) @map("user_type")
+  isActive          Boolean         @default(true) @map("is_active")
+
+  // [타임스탬프]
+  joinedAt          DateTime        @default(now()) @map("joined_at")
+  lastLoginAt       DateTime?       @map("last_login_at")
+
+  // [소프트 삭제]
+  deletedAt         DateTime?       @map("deleted_at")
+  deleteScheduledAt DateTime?       @map("delete_scheduled_at")
+
+  // [알림 설정]
+  notifSms          Boolean         @default(false) @map("notif_sms")
+  notifEmail        Boolean         @default(false) @map("notif_email")
+  notifKakao        Boolean         @default(false) @map("notif_kakao")
+  notifEnabledAt    DateTime?       @map("notif_enabled_at")
+
+  // [관계]
+  corporate         CorporateProfile?
+  individual        IndividualProfile?
+  supportTickets    SupportTicket[]
+
+  @@unique([socialProvider, socialProviderId])
+  @@index([email])
+  @@index([socialProvider, socialProviderId])
+  @@map("users_auth")
 }
-
 
 enum UserType {
-  CORPORATE
   INDIVIDUAL
+  CORPORATE
+  ADMIN
+}
+
+enum SocialProvider {
+  NONE
+  GOOGLE
+  FACEBOOK
+  KAKAO
+  APPLE
 }
 
 
-enum VerificationStatus {
-  PENDING
-  VERIFIED
-  REJECTED
-}
-
+// ========================================
+// [기업 회원] 프로필 정보
+// ========================================
 model CorporateProfile {
-  companyId     BigInt    @id @default(autoincrement()) @map("company_id")
-  userId        String    @unique @map("user_id")
-  user          User      @relation(fields: [userId], references: [id])
-  companyName   String    @map("company_name")
-  industryCode  String    @map("industry_code")
-  businessRegNo String    @map("business_reg_no")
-  
-  accessLogs    TalentAccessLog[]
+  companyId               BigInt              @id @default(autoincrement()) @map("company_id")
+  authId                  String              @unique @map("auth_id")
+  user                    User                @relation(fields: [authId], references: [id], onDelete: Cascade)
+
+  // [1. 기업 필수 정보]
+  bizRegNumber            String              @unique @map("biz_reg_number")          // 000-00-00000
+  companyNameOfficial     String              @map("company_name_official")
+  ceoName                 String              @map("ceo_name")
+  foundingDate            DateTime?           @map("founding_date") @db.Date
+
+  // [2. 채용 담당자 정보]
+  managerName             String              @map("manager_name")
+  managerPhone            String              @map("manager_phone")
+  managerEmail            String              @map("manager_email")
+
+  // [3. 검증 상태 (★ 핵심)]
+  verificationStatus      VerificationStatus  @default(PENDING) @map("verification_status")
+  verificationMethod      VerificationMethod? @map("verification_method")
+  proofDocumentUrl        String?             @map("proof_document_url")
+
+  // [4. 브랜딩 및 노출 정보]
+  brandName               String?             @map("brand_name")                    // 예: 맥도날드 강남점
+  logoImageUrl            String?             @map("logo_image_url")
+  companyIntro            String?             @map("company_intro") @db.Text
+
+  // [5. 업종 및 위치]
+  ksicCode                String              @map("ksic_code")                     // 표준산업분류코드
+  addressRoad             String              @map("address_road")
+
+  // [6. 전문직(E-7) 채용용 확장 정보]
+  companySizeType         CompanySizeType     @default(SME) @map("company_size_type")
+  employeeCountKorean     Int                 @default(0) @map("employee_count_korean")
+  employeeCountForeign    Int                 @default(0) @map("employee_count_foreign")
+  annualRevenue           BigInt              @default(0) @map("annual_revenue")
+
+  // [7. 상태]
+  isBizVerified           Boolean             @default(false) @map("is_biz_verified")
+
+  createdAt               DateTime            @default(now()) @map("created_at")
+  updatedAt               DateTime            @updatedAt @map("updated_at")
+
+  // [관계]
+  accessLogs              TalentAccessLog[]
 
   @@map("profiles_corporate")
 }
 
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum VerificationMethod {
+  CEO_MATCH
+  CORP_EMAIL
+  DOCUMENT_MANUAL
+}
+
+enum CompanySizeType {
+  SME
+  MID
+  LARGE
+  STARTUP
+}
+
+// ========================================
+// [개인 회원] 프로필 정보
+// ========================================
 model IndividualProfile {
-  individualId  BigInt    @id @default(autoincrement()) @map("individual_id")
-  userId        String    @unique @map("user_id")
-  user          User      @relation(fields: [userId], references: [id])
-  fullName      String    @map("full_name")
-  visaStatus    String    @map("visa_status")
-  isVisaVerified Boolean  @default(false) @map("is_visa_verified")
-  koreanLevel   Int       @default(0) @map("korean_level")
-  
-  accessLogs    TalentAccessLog[]
+  individualId        BigInt              @id @default(autoincrement()) @map("individual_id")
+  authId              String              @unique @map("auth_id")
+  user                User                @relation(fields: [authId], references: [id], onDelete: Cascade)
+
+  // [1. 기본 신원 정보]
+  realName            String              @map("real_name")
+  nationality         String              @map("nationality")   // ISO 3자리 (VNM, PHL, UZB)
+  birthDate           DateTime            @map("birth_date")    @db.Date
+  gender              Gender
+  addressRoad         String?             @map("address_road")
+
+  // [2. 비자 정보 - 채용 핵심 필터]
+  visaType            String              @map("visa_type")     // D-2, E-7, F-2 등
+  visaExpiryDate      DateTime            @map("visa_expiry_date") @db.Date
+
+  // [3. 구직 선호 조건]
+  desiredJobType      DesiredJobType      @default(FULL_TIME) @map("desired_job_type")
+  desiredSalary       Int                 @default(0) @map("desired_salary")  // 단위: 만원
+  desiredIndustries   String?             @map("desired_industries")          // 쉼표 구분
+  isOpenToScout       Boolean             @default(true) @map("is_open_to_scout")
+
+  // [4. 역량 요약 (검색 최적화용 캐싱)]
+  finalEducationLvl   EducationLevel?     @map("final_education_lvl")
+  koreanFluencyLvl    KoreanFluencyLevel? @map("korean_fluency_lvl")
+  totalCareerMonths   Int                 @default(0) @map("total_career_months")
+
+  // [5. 파일 및 소개]
+  profileImageUrl     String?             @map("profile_image_url")
+  resumeFileUrl       String?             @map("resume_file_url")
+  portfolioUrl        String?             @map("portfolio_url")
+  selfIntro           String?             @map("self_intro") @db.Text
+
+  // [6. 상태 관리]
+  isProfileCompleted  Boolean             @default(false) @map("is_profile_completed")
+
+  createdAt           DateTime            @default(now()) @map("created_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+
+  // [관계]
+  accessLogs          TalentAccessLog[]
+  educations          ProfileEducation[]
+  careers             ProfileCareer[]
+  languages           ProfileLanguage[]
 
   @@map("profiles_individual")
+}
+
+enum Gender {
+  M
+  F
+}
+
+enum DesiredJobType {
+  FULL_TIME
+  PART_TIME
+  INTERN
+}
+
+enum EducationLevel {
+  HIGH_SCHOOL
+  COLLEGE
+  BACHELOR
+  MASTER
+  DOCTOR
+}
+
+enum KoreanFluencyLevel {
+  NONE
+  BASIC
+  INTERMEDIATE
+  ADVANCED
+  NATIVE
 }
 
 model TalentAccessLog {
@@ -80,20 +224,116 @@ model TalentAccessLog {
   @@map("talent_access_logs")
 }
 
-model SocialAuth {
-  id         String         @id @default(cuid())
-  userId     String         @map("user_id")
-  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  provider   SocialProvider
-  providerId String         @map("provider_id")
+// ========================================
+// [학력 정보] E-7 비자 핵심 정보
+// ========================================
+model ProfileEducation {
+  eduId             BigInt              @id @default(autoincrement()) @map("edu_id")
+  individualId      BigInt              @map("individual_id")
+  individual        IndividualProfile   @relation(fields: [individualId], references: [individualId], onDelete: Cascade)
 
-  @@unique([provider, providerId])
-  @@map("social_auths")
+  schoolName        String              @map("school_name")
+  majorName         String              @map("major_name")
+  degreeLevel       EducationLevel      @map("degree_level")
+
+  startDate         DateTime            @map("start_date") @db.Date
+  graduationDate    DateTime?           @map("graduation_date") @db.Date
+  graduationStatus  GraduationStatus    @map("graduation_status")
+
+  gpaScore          Decimal?            @map("gps_score") @db.Decimal(3, 2)
+
+  @@map("profile_educations")
 }
 
-enum SocialProvider {
-  GOOGLE
-  FACEBOOK
-  KAKAO
-  APPLE
+enum GraduationStatus {
+  GRADUATED
+  ATTENDING
+  LEAVE
+  DROPOUT
+}
+
+// ========================================
+// [경력 정보]
+// ========================================
+model ProfileCareer {
+  careerId          BigInt              @id @default(autoincrement()) @map("career_id")
+  individualId      BigInt              @map("individual_id")
+  individual        IndividualProfile   @relation(fields: [individualId], references: [individualId], onDelete: Cascade)
+
+  companyName       String              @map("company_name")
+  dutyRole          String              @map("duty_role")
+  jobPosition       String?             @map("job_position")
+
+  startDate         DateTime            @map("start_date") @db.Date
+  endDate           DateTime?           @map("end_date") @db.Date
+  isCurrent         Boolean             @default(false) @map("is_current")
+
+  description       String?             @map("description") @db.Text
+
+  @@map("profile_careers")
+}
+
+// ========================================
+// [어학 및 자격증] TOPIK 필수
+// ========================================
+model ProfileLanguage {
+  langId            BigInt              @id @default(autoincrement()) @map("lang_id")
+  individualId      BigInt              @map("individual_id")
+  individual        IndividualProfile   @relation(fields: [individualId], references: [individualId], onDelete: Cascade)
+
+  languageType      String              @map("language_type")        // Korean, English...
+  testType          String?             @map("test_type")            // TOPIK, TOEIC...
+  scoreLevel        String              @map("score_level")          // 4급, 850점...
+  obtainedDate      DateTime?           @map("obtained_date") @db.Date
+  expiryDate        DateTime?           @map("expiry_date") @db.Date
+
+  isVerified        Boolean             @default(false) @map("is_verified")
+
+  @@map("profile_languages")
+}
+
+// ========================================
+// [고객센터] 문의 게시판
+// ========================================
+model SupportTicket {
+  id          BigInt        @id @default(autoincrement()) @map("ticket_id")
+  userId      String        @map("user_id")
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  content     String        @db.Text
+  status      TicketStatus  @default(OPEN)
+  answer      String?       @db.Text
+  answeredAt  DateTime?     @map("answered_at")
+  createdAt   DateTime      @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([status])
+  @@map("support_tickets")
+}
+
+enum TicketStatus {
+  OPEN
+  ANSWERED
+  CLOSED
+}
+
+// ========================================
+// [활동 로그] Admin 분석용
+// ========================================
+model ActivityLog {
+  id          BigInt   @id @default(autoincrement()) @map("log_id")
+  userId      String?  @map("user_id")
+  userEmail   String?  @map("user_email")
+  userName    String?  @map("user_name")
+  userGender  String?  @map("user_gender")
+  actionType  String   @map("action_type")
+  description String?  @db.Text
+  metadata    String?  @db.Text
+  ipAddress   String?  @map("ip_address")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([actionType])
+  @@index([createdAt])
+  @@index([userId])
+  @@map("activity_logs")
 }

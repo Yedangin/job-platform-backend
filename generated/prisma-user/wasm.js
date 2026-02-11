@@ -124,27 +124,71 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   password: 'password',
-  fullName: 'fullName',
+  socialProvider: 'socialProvider',
+  socialProviderId: 'socialProviderId',
   userType: 'userType',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  isActive: 'isActive',
+  joinedAt: 'joinedAt',
+  lastLoginAt: 'lastLoginAt',
+  deletedAt: 'deletedAt',
+  deleteScheduledAt: 'deleteScheduledAt',
+  notifSms: 'notifSms',
+  notifEmail: 'notifEmail',
+  notifKakao: 'notifKakao',
+  notifEnabledAt: 'notifEnabledAt'
 };
 
 exports.Prisma.CorporateProfileScalarFieldEnum = {
   companyId: 'companyId',
-  userId: 'userId',
-  companyName: 'companyName',
-  industryCode: 'industryCode',
-  businessRegNo: 'businessRegNo'
+  authId: 'authId',
+  bizRegNumber: 'bizRegNumber',
+  companyNameOfficial: 'companyNameOfficial',
+  ceoName: 'ceoName',
+  foundingDate: 'foundingDate',
+  managerName: 'managerName',
+  managerPhone: 'managerPhone',
+  managerEmail: 'managerEmail',
+  verificationStatus: 'verificationStatus',
+  verificationMethod: 'verificationMethod',
+  proofDocumentUrl: 'proofDocumentUrl',
+  brandName: 'brandName',
+  logoImageUrl: 'logoImageUrl',
+  companyIntro: 'companyIntro',
+  ksicCode: 'ksicCode',
+  addressRoad: 'addressRoad',
+  companySizeType: 'companySizeType',
+  employeeCountKorean: 'employeeCountKorean',
+  employeeCountForeign: 'employeeCountForeign',
+  annualRevenue: 'annualRevenue',
+  isBizVerified: 'isBizVerified',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.IndividualProfileScalarFieldEnum = {
   individualId: 'individualId',
-  userId: 'userId',
-  fullName: 'fullName',
-  visaStatus: 'visaStatus',
-  isVisaVerified: 'isVisaVerified',
-  koreanLevel: 'koreanLevel'
+  authId: 'authId',
+  realName: 'realName',
+  nationality: 'nationality',
+  birthDate: 'birthDate',
+  gender: 'gender',
+  addressRoad: 'addressRoad',
+  visaType: 'visaType',
+  visaExpiryDate: 'visaExpiryDate',
+  desiredJobType: 'desiredJobType',
+  desiredSalary: 'desiredSalary',
+  desiredIndustries: 'desiredIndustries',
+  isOpenToScout: 'isOpenToScout',
+  finalEducationLvl: 'finalEducationLvl',
+  koreanFluencyLvl: 'koreanFluencyLvl',
+  totalCareerMonths: 'totalCareerMonths',
+  profileImageUrl: 'profileImageUrl',
+  resumeFileUrl: 'resumeFileUrl',
+  portfolioUrl: 'portfolioUrl',
+  selfIntro: 'selfIntro',
+  isProfileCompleted: 'isProfileCompleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.TalentAccessLogScalarFieldEnum = {
@@ -154,11 +198,63 @@ exports.Prisma.TalentAccessLogScalarFieldEnum = {
   accessedAt: 'accessedAt'
 };
 
-exports.Prisma.SocialAuthScalarFieldEnum = {
+exports.Prisma.ProfileEducationScalarFieldEnum = {
+  eduId: 'eduId',
+  individualId: 'individualId',
+  schoolName: 'schoolName',
+  majorName: 'majorName',
+  degreeLevel: 'degreeLevel',
+  startDate: 'startDate',
+  graduationDate: 'graduationDate',
+  graduationStatus: 'graduationStatus',
+  gpaScore: 'gpaScore'
+};
+
+exports.Prisma.ProfileCareerScalarFieldEnum = {
+  careerId: 'careerId',
+  individualId: 'individualId',
+  companyName: 'companyName',
+  dutyRole: 'dutyRole',
+  jobPosition: 'jobPosition',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  isCurrent: 'isCurrent',
+  description: 'description'
+};
+
+exports.Prisma.ProfileLanguageScalarFieldEnum = {
+  langId: 'langId',
+  individualId: 'individualId',
+  languageType: 'languageType',
+  testType: 'testType',
+  scoreLevel: 'scoreLevel',
+  obtainedDate: 'obtainedDate',
+  expiryDate: 'expiryDate',
+  isVerified: 'isVerified'
+};
+
+exports.Prisma.SupportTicketScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  provider: 'provider',
-  providerId: 'providerId'
+  title: 'title',
+  content: 'content',
+  status: 'status',
+  answer: 'answer',
+  answeredAt: 'answeredAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ActivityLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  userEmail: 'userEmail',
+  userName: 'userName',
+  userGender: 'userGender',
+  actionType: 'actionType',
+  description: 'description',
+  metadata: 'metadata',
+  ipAddress: 'ipAddress',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -175,16 +271,77 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.UserType = exports.$Enums.UserType = {
-  CORPORATE: 'CORPORATE',
-  INDIVIDUAL: 'INDIVIDUAL'
-};
-
 exports.SocialProvider = exports.$Enums.SocialProvider = {
+  NONE: 'NONE',
   GOOGLE: 'GOOGLE',
   FACEBOOK: 'FACEBOOK',
   KAKAO: 'KAKAO',
   APPLE: 'APPLE'
+};
+
+exports.UserType = exports.$Enums.UserType = {
+  INDIVIDUAL: 'INDIVIDUAL',
+  CORPORATE: 'CORPORATE',
+  ADMIN: 'ADMIN'
+};
+
+exports.VerificationStatus = exports.$Enums.VerificationStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
+exports.VerificationMethod = exports.$Enums.VerificationMethod = {
+  CEO_MATCH: 'CEO_MATCH',
+  CORP_EMAIL: 'CORP_EMAIL',
+  DOCUMENT_MANUAL: 'DOCUMENT_MANUAL'
+};
+
+exports.CompanySizeType = exports.$Enums.CompanySizeType = {
+  SME: 'SME',
+  MID: 'MID',
+  LARGE: 'LARGE',
+  STARTUP: 'STARTUP'
+};
+
+exports.Gender = exports.$Enums.Gender = {
+  M: 'M',
+  F: 'F'
+};
+
+exports.DesiredJobType = exports.$Enums.DesiredJobType = {
+  FULL_TIME: 'FULL_TIME',
+  PART_TIME: 'PART_TIME',
+  INTERN: 'INTERN'
+};
+
+exports.EducationLevel = exports.$Enums.EducationLevel = {
+  HIGH_SCHOOL: 'HIGH_SCHOOL',
+  COLLEGE: 'COLLEGE',
+  BACHELOR: 'BACHELOR',
+  MASTER: 'MASTER',
+  DOCTOR: 'DOCTOR'
+};
+
+exports.KoreanFluencyLevel = exports.$Enums.KoreanFluencyLevel = {
+  NONE: 'NONE',
+  BASIC: 'BASIC',
+  INTERMEDIATE: 'INTERMEDIATE',
+  ADVANCED: 'ADVANCED',
+  NATIVE: 'NATIVE'
+};
+
+exports.GraduationStatus = exports.$Enums.GraduationStatus = {
+  GRADUATED: 'GRADUATED',
+  ATTENDING: 'ATTENDING',
+  LEAVE: 'LEAVE',
+  DROPOUT: 'DROPOUT'
+};
+
+exports.TicketStatus = exports.$Enums.TicketStatus = {
+  OPEN: 'OPEN',
+  ANSWERED: 'ANSWERED',
+  CLOSED: 'CLOSED'
 };
 
 exports.Prisma.ModelName = {
@@ -192,7 +349,11 @@ exports.Prisma.ModelName = {
   CorporateProfile: 'CorporateProfile',
   IndividualProfile: 'IndividualProfile',
   TalentAccessLog: 'TalentAccessLog',
-  SocialAuth: 'SocialAuth'
+  ProfileEducation: 'ProfileEducation',
+  ProfileCareer: 'ProfileCareer',
+  ProfileLanguage: 'ProfileLanguage',
+  SupportTicket: 'SupportTicket',
+  ActivityLog: 'ActivityLog'
 };
 
 /**
