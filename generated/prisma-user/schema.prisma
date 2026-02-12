@@ -28,9 +28,20 @@ model User {
   joinedAt    DateTime  @default(now()) @map("joined_at")
   lastLoginAt DateTime? @map("last_login_at")
 
+  // [소프트 삭제]
+  deletedAt         DateTime? @map("deleted_at")
+  deleteScheduledAt DateTime? @map("delete_scheduled_at")
+
+  // [알림 설정]
+  notifSms       Boolean   @default(false) @map("notif_sms")
+  notifEmail     Boolean   @default(false) @map("notif_email")
+  notifKakao     Boolean   @default(false) @map("notif_kakao")
+  notifEnabledAt DateTime? @map("notif_enabled_at")
+
   // [관계]
-  corporate  CorporateProfile?
-  individual IndividualProfile?
+  corporate      CorporateProfile?
+  individual     IndividualProfile?
+  supportTickets SupportTicket[]
 
   @@unique([socialProvider, socialProviderId])
   @@index([email])
@@ -60,16 +71,16 @@ model CorporateProfile {
   authId    String @unique @map("auth_id")
   user      User   @relation(fields: [authId], references: [id], onDelete: Cascade)
 
-  // [1. 기업 필수 정보]
-  bizRegNumber        String    @unique @map("biz_reg_number") // 000-00-00000
-  companyNameOfficial String    @map("company_name_official")
-  ceoName             String    @map("ceo_name")
+  // [1. 기업 정보] (인증 제출 시 입력, 가입 시에는 null)
+  bizRegNumber        String?   @unique @map("biz_reg_number") // 000-00-00000
+  companyNameOfficial String?   @map("company_name_official")
+  ceoName             String?   @map("ceo_name")
   foundingDate        DateTime? @map("founding_date") @db.Date
 
   // [2. 채용 담당자 정보]
-  managerName  String @map("manager_name")
-  managerPhone String @map("manager_phone")
-  managerEmail String @map("manager_email")
+  managerName  String? @map("manager_name")
+  managerPhone String? @map("manager_phone")
+  managerEmail String? @map("manager_email")
 
   // [3. 검증 상태 (★ 핵심)]
   verificationStatus VerificationStatus  @default(PENDING) @map("verification_status")
@@ -82,8 +93,8 @@ model CorporateProfile {
   companyIntro String? @map("company_intro") @db.Text
 
   // [5. 업종 및 위치]
-  ksicCode    String @map("ksic_code") // 표준산업분류코드
-  addressRoad String @map("address_road")
+  ksicCode    String? @map("ksic_code") // 표준산업분류코드
+  addressRoad String? @map("address_road")
 
   // [6. 전문직(E-7) 채용용 확장 정보]
   companySizeType      CompanySizeType @default(SME) @map("company_size_type")
@@ -91,8 +102,22 @@ model CorporateProfile {
   employeeCountForeign Int             @default(0) @map("employee_count_foreign")
   annualRevenue        BigInt          @default(0) @map("annual_revenue")
 
-  // [7. 상태]
-  isBizVerified Boolean @default(false) @map("is_biz_verified")
+  // [7. 서류 업로드 및 OCR 검증]
+  bizRegDocPath      String?   @map("biz_reg_doc_path")
+  bizRegDocOrigName  String?   @map("biz_reg_doc_orig_name")
+  empCertDocPath     String?   @map("emp_cert_doc_path")
+  empCertDocOrigName String?   @map("emp_cert_doc_orig_name")
+  isCeoSelf          Boolean   @default(false) @map("is_ceo_self")
+  ceoSelfDeclaredAt  DateTime? @map("ceo_self_declared_at")
+  ceoSelfDeclaredIp  String?   @map("ceo_self_declared_ip")
+  ocrVerified        Boolean   @default(false) @map("ocr_verified")
+  ocrExtractedBizNo  String?   @map("ocr_extracted_biz_no")
+
+  // [8. 상태]
+  isBizVerified       Boolean   @default(false) @map("is_biz_verified")
+  lastRejectionReason String?   @map("last_rejection_reason")
+  submittedAt         DateTime? @map("submitted_at")
+  approvedAt          DateTime? @map("approved_at")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -104,9 +129,10 @@ model CorporateProfile {
 }
 
 enum VerificationStatus {
-  PENDING
-  APPROVED
-  REJECTED
+  PENDING // 미제출 (가입 직후 or 거절 후 리셋)
+  SUBMITTED // 제출완료, 심사 대기
+  APPROVED // 승인
+  REJECTED // (미사용 - 거절 시 PENDING으로 되돌림)
 }
 
 enum VerificationMethod {
@@ -278,4 +304,506 @@ model ProfileLanguage {
   isVerified Boolean @default(false) @map("is_verified")
 
   @@map("profile_languages")
+}
+
+// ========================================
+// [고객센터] 문의 게시판
+// ========================================
+model SupportTicket {
+  id         BigInt       @id @default(autoincrement()) @map("ticket_id")
+  userId     String       @map("user_id")
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title      String
+  content    String       @db.Text
+  status     TicketStatus @default(OPEN)
+  answer     String?      @db.Text
+  answeredAt DateTime?    @map("answered_at")
+  createdAt  DateTime     @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([status])
+  @@map("support_tickets")
+}
+
+enum TicketStatus {
+  OPEN
+  ANSWERED
+  CLOSED
+}
+
+// ========================================
+// [활동 로그] Admin 분석용
+// ========================================
+model ActivityLog {
+  id          BigInt   @id @default(autoincrement()) @map("log_id")
+  userId      String?  @map("user_id")
+  userEmail   String?  @map("user_email")
+  userName    String?  @map("user_name")
+  userGender  String?  @map("user_gender")
+  actionType  String   @map("action_type")
+  description String?  @db.Text
+  metadata    String?  @db.Text
+  ipAddress   String?  @map("ip_address")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([actionType])
+  @@index([createdAt])
+  @@index([userId])
+  @@map("activity_logs")
+}
+
+// ========================================
+// [비자 유형] 마스터 데이터
+// ========================================
+model VisaType {
+  id          BigInt   @id @default(autoincrement()) @map("visa_type_id")
+  code        String   @unique
+  nameKo      String   @map("name_ko")
+  nameEn      String?  @map("name_en")
+  category    String // WORK, STUDY, RESIDENCE, VISIT
+  description String?  @db.Text
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  rules VisaRule[]
+
+  @@index([code])
+  @@map("visa_types")
+}
+
+// ========================================
+// [업종 코드] KSIC 표준산업분류 마스터
+// ========================================
+model IndustryCode {
+  id          BigInt   @id @default(autoincrement()) @map("industry_code_id")
+  ksicCode    String   @unique @map("ksic_code")
+  sectionCode String   @map("section_code") // 대분류 알파벳 (C, I, J ...)
+  nameKo      String   @map("name_ko")
+  nameEn      String?  @map("name_en")
+  level       Int      @default(5) // 1=대, 2=중, 3=소, 4=세, 5=세세
+  parentCode  String?  @map("parent_code")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([sectionCode])
+  @@map("industry_codes")
+}
+
+// ========================================
+// [비자 규칙] 핵심 규칙 엔진 테이블
+// ========================================
+model VisaRule {
+  id         BigInt   @id @default(autoincrement()) @map("rule_id")
+  visaTypeId BigInt   @map("visa_type_id")
+  visaType   VisaType @relation(fields: [visaTypeId], references: [id])
+
+  ruleName        String   @map("rule_name")
+  ruleDescription String?  @map("rule_description") @db.Text
+  priority        Int      @default(100)
+  ruleType        RuleType @default(ELIGIBILITY) @map("rule_type")
+
+  conditions String @map("conditions") @db.Text // JSON
+  actions    String @map("actions") @db.Text // JSON
+
+  version      Int        @default(1)
+  parentRuleId BigInt?    @map("parent_rule_id")
+  status       RuleStatus @default(ACTIVE)
+
+  effectiveFrom DateTime  @map("effective_from")
+  effectiveTo   DateTime? @map("effective_to")
+
+  createdBy String?  @map("created_by")
+  updatedBy String?  @map("updated_by")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([visaTypeId])
+  @@index([status, effectiveFrom])
+  @@index([ruleType])
+  @@map("visa_rules")
+}
+
+enum RuleType {
+  ELIGIBILITY
+  RESTRICTION
+  DOCUMENT
+  QUOTA
+}
+
+enum RuleStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+// ========================================
+// [정책 변경 모니터링] 스크래핑 결과
+// ========================================
+model PolicyChange {
+  id BigInt @id @default(autoincrement()) @map("policy_change_id")
+
+  sourceSite String  @map("source_site")
+  sourceUrl  String  @map("source_url") @db.Text
+  pageTitle  String? @map("page_title")
+
+  summary         String  @map("summary") @db.Text
+  previousContent String? @map("previous_content") @db.Text
+  currentContent  String? @map("current_content") @db.Text
+
+  changeType        PolicyChangeType @default(UNKNOWN) @map("change_type")
+  affectedVisaTypes String?          @map("affected_visa_types")
+  effectiveDate     DateTime?        @map("effective_date") @db.Date
+
+  reviewStatus ReviewStatus @default(PENDING) @map("review_status")
+  reviewedBy   String?      @map("reviewed_by")
+  reviewedAt   DateTime?    @map("reviewed_at")
+  reviewNote   String?      @map("review_note") @db.Text
+
+  draftRuleId BigInt?  @map("draft_rule_id")
+  detectedAt  DateTime @default(now()) @map("detected_at")
+  contentHash String?  @map("content_hash")
+
+  @@index([sourceSite])
+  @@index([reviewStatus])
+  @@index([detectedAt])
+  @@index([contentHash])
+  @@map("policy_changes")
+}
+
+enum PolicyChangeType {
+  NEW_REGULATION
+  AMENDMENT
+  REPEAL
+  NOTICE
+  GUIDELINE
+  UNKNOWN
+}
+
+enum ReviewStatus {
+  PENDING
+  REVIEWED
+  RULE_DRAFTED
+  APPLIED
+  DISMISSED
+}
+
+// ========================================
+// [스크래핑 상태] 사이트별 상태 추적
+// ========================================
+model ScrapingState {
+  id                BigInt    @id @default(autoincrement()) @map("scraping_state_id")
+  siteKey           String    @unique @map("site_key")
+  siteUrl           String    @map("site_url")
+  lastScrapedAt     DateTime? @map("last_scraped_at")
+  lastContentHash   String?   @map("last_content_hash")
+  lastStatus        String    @default("IDLE") @map("last_status")
+  lastError         String?   @map("last_error") @db.Text
+  totalChangesFound Int       @default(0) @map("total_changes_found")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  @@map("scraping_states")
+}
+
+// ========================================
+// [비자 평가 로그] 규칙 엔진 실행 기록
+// ========================================
+model VisaEvaluationLog {
+  id             BigInt   @id @default(autoincrement()) @map("evaluation_log_id")
+  corporateId    BigInt?  @map("corporate_id")
+  requestData    String   @map("request_data") @db.Text
+  eligibleVisas  String?  @map("eligible_visas") @db.Text
+  blockedVisas   String?  @map("blocked_visas") @db.Text
+  appliedRuleIds String?  @map("applied_rule_ids")
+  evaluatedAt    DateTime @default(now()) @map("evaluated_at")
+  durationMs     Int?     @map("duration_ms")
+
+  @@index([corporateId])
+  @@index([evaluatedAt])
+  @@map("visa_evaluation_logs")
+}
+
+// ========================================
+// [채용 상품] 프리미엄/일반 상품 마스터
+// ========================================
+model JobProduct {
+  id              BigInt    @id @default(autoincrement()) @map("product_id")
+  productCode     String    @unique @map("product_code")
+  boardType       BoardType @map("board_type")
+  tierType        TierType  @map("tier_type")
+  nameKo          String    @map("name_ko")
+  originalPrice   Int       @map("original_price")
+  discountPrice   Int       @map("discount_price")
+  discountPercent Int       @map("discount_percent")
+  durationDays    Int       @map("duration_days")
+  features        String?   @map("features") @db.Text
+  isActive        Boolean   @default(true) @map("is_active")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  orders JobOrder[]
+
+  @@map("job_products")
+}
+
+enum BoardType {
+  PART_TIME
+  FULL_TIME
+}
+
+enum TierType {
+  PREMIUM
+  STANDARD
+}
+
+// ========================================
+// [주문/결제] 가격 스냅샷 포함
+// ========================================
+model JobOrder {
+  id          BigInt     @id @default(autoincrement()) @map("order_id")
+  orderNo     String     @unique @map("order_no")
+  corporateId BigInt     @map("corporate_id")
+  productId   BigInt     @map("product_id")
+  product     JobProduct @relation(fields: [productId], references: [id])
+
+  // ★ 가격 스냅샷 (구매 시점 가격 기록)
+  snapshotProductName   String @map("snapshot_product_name")
+  snapshotOriginalPrice Int    @map("snapshot_original_price")
+  snapshotDiscountPrice Int    @map("snapshot_discount_price")
+  snapshotDiscountPct   Int    @map("snapshot_discount_pct")
+  paidAmount            Int    @map("paid_amount")
+
+  // 결제 정보
+  paymentStatus PaymentStatus @default(PENDING) @map("payment_status")
+  pgProvider    String?       @map("pg_provider")
+  impUid        String?       @map("imp_uid")
+  merchantUid   String?       @unique @map("merchant_uid")
+  paidAt        DateTime?     @map("paid_at")
+  cancelledAt   DateTime?     @map("cancelled_at")
+  cancelReason  String?       @map("cancel_reason")
+
+  // 연결
+  jobPostingId BigInt?  @map("job_posting_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([corporateId])
+  @@index([paymentStatus])
+  @@index([createdAt])
+  @@map("job_orders")
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  CANCELLED
+  REFUNDED
+  FAILED
+}
+
+// ========================================
+// [채용공고] 비자 중심 채용 시스템
+// ========================================
+model JobPosting {
+  id          BigInt  @id @default(autoincrement()) @map("job_id")
+  corporateId BigInt  @map("corporate_id")
+  orderId     BigInt? @map("order_id")
+
+  boardType      BoardType @map("board_type")
+  tierType       TierType  @default(STANDARD) @map("tier_type")
+  title          String
+  description    String    @db.Text
+  workContentImg String?   @map("work_content_img")
+
+  status      PostStatus @default(DRAFT)
+  closingDate DateTime?  @map("closing_date")
+
+  // 비자 (★ 핵심)
+  allowedVisas   String @map("allowed_visas")
+  minKoreanLevel Int    @default(0) @map("min_korean_level")
+
+  // 위치/근무
+  displayAddress String    @map("display_address")
+  actualAddress  String    @map("actual_address")
+  workIntensity  Intensity @default(MIDDLE) @map("work_intensity")
+  benefits       String?   @map("benefits_json") @db.Text
+
+  // 연락처
+  contactName  String  @map("contact_name")
+  contactPhone String  @map("contact_phone")
+  contactEmail String? @map("contact_email")
+
+  // 지원 방식
+  applicationMethod ApplicationMethod @default(PLATFORM) @map("application_method")
+  externalUrl       String?           @map("external_url")
+  externalEmail     String?           @map("external_email")
+
+  // 면접
+  interviewMethod InterviewType @default(OFFLINE) @map("interview_method")
+  interviewPlace  String?       @map("interview_place")
+
+  // 정규직 세부유형
+  employmentSubType EmploymentSubType? @map("employment_sub_type")
+
+  // 통계
+  viewCount  Int @default(0) @map("view_count")
+  scrapCount Int @default(0) @map("scrap_count")
+  applyCount Int @default(0) @map("apply_count")
+
+  // 관리자 조치
+  suspendedAt   DateTime? @map("suspended_at")
+  suspendReason String?   @map("suspend_reason")
+  suspendedBy   String?   @map("suspended_by")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  albaAttributes     JobAttributesAlba?
+  fulltimeAttributes JobAttributesFulltime?
+  applications       JobApplication[]
+  scraps             JobScrap[]
+
+  @@index([corporateId])
+  @@index([boardType, tierType, status])
+  @@index([status, createdAt])
+  @@map("job_postings")
+}
+
+enum PostStatus {
+  DRAFT
+  ACTIVE
+  CLOSED
+  SUSPENDED
+}
+
+enum EmploymentSubType {
+  CONTRACT
+  PERMANENT
+  INTERNSHIP
+}
+
+enum ApplicationMethod {
+  PLATFORM
+  WEBSITE
+  EMAIL
+}
+
+enum Intensity {
+  UPPER
+  MIDDLE
+  LOWER
+}
+
+enum InterviewType {
+  OFFLINE
+  ONLINE
+}
+
+// ========================================
+// [알바 전용 속성]
+// ========================================
+model JobAttributesAlba {
+  jobId         BigInt     @id @map("job_id")
+  job           JobPosting @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  hourlyWage    Int        @map("hourly_wage")
+  workPeriod    String?    @map("work_period")
+  workDaysMask  String     @map("work_days_mask")
+  workTimeStart String?    @map("work_time_start")
+  workTimeEnd   String?    @map("work_time_end")
+
+  @@map("job_attributes_alba")
+}
+
+// ========================================
+// [정규직 전용 속성]
+// ========================================
+model JobAttributesFulltime {
+  jobId           BigInt     @id @map("job_id")
+  job             JobPosting @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  salaryMin       Int?       @map("salary_min")
+  salaryMax       Int?       @map("salary_max")
+  experienceLevel String     @map("experience_level")
+  educationLevel  String     @map("education_level")
+
+  @@map("job_attributes_fulltime")
+}
+
+// ========================================
+// [지원] 3가지 방식 지원
+// ========================================
+model JobApplication {
+  id          BigInt     @id @default(autoincrement()) @map("app_id")
+  jobId       BigInt     @map("job_id")
+  job         JobPosting @relation(fields: [jobId], references: [id])
+  applicantId String     @map("applicant_id")
+
+  applicationMethod ApplicationMethod @map("application_method")
+  status            ApplicationStatus @default(PENDING)
+
+  coverLetter    String? @map("cover_letter") @db.Text
+  resumeSnapshot String? @map("resume_snapshot") @db.Text
+
+  selfReportedAt DateTime? @map("self_reported_at")
+
+  interviewDate DateTime? @map("interview_date")
+  interviewNote String?   @map("interview_note")
+
+  rejectionReason  String?   @map("rejection_reason")
+  resultNotifiedAt DateTime? @map("result_notified_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([jobId, applicantId])
+  @@index([applicantId])
+  @@index([status])
+  @@map("job_applications")
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWING
+  INTERVIEW_SCHEDULED
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
+// ========================================
+// [스크랩/찜]
+// ========================================
+model JobScrap {
+  id        BigInt     @id @default(autoincrement()) @map("scrap_id")
+  jobId     BigInt     @map("job_id")
+  job       JobPosting @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  userId    String     @map("user_id")
+  createdAt DateTime   @default(now()) @map("created_at")
+
+  @@unique([jobId, userId])
+  @@index([userId])
+  @@map("job_scraps")
+}
+
+// ========================================
+// [관리자 조치 로그]
+// ========================================
+model AdminJobAction {
+  id         BigInt          @id @default(autoincrement()) @map("action_id")
+  jobId      BigInt          @map("job_id")
+  adminId    String          @map("admin_id")
+  actionType AdminActionType @map("action_type")
+  reason     String?         @db.Text
+  createdAt  DateTime        @default(now()) @map("created_at")
+
+  @@index([jobId])
+  @@map("admin_job_actions")
+}
+
+enum AdminActionType {
+  SUSPEND
+  UNSUSPEND
+  FORCE_CLOSE
+  DELETE
 }

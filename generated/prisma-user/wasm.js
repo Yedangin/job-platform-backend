@@ -160,7 +160,19 @@ exports.Prisma.CorporateProfileScalarFieldEnum = {
   employeeCountKorean: 'employeeCountKorean',
   employeeCountForeign: 'employeeCountForeign',
   annualRevenue: 'annualRevenue',
+  bizRegDocPath: 'bizRegDocPath',
+  bizRegDocOrigName: 'bizRegDocOrigName',
+  empCertDocPath: 'empCertDocPath',
+  empCertDocOrigName: 'empCertDocOrigName',
+  isCeoSelf: 'isCeoSelf',
+  ceoSelfDeclaredAt: 'ceoSelfDeclaredAt',
+  ceoSelfDeclaredIp: 'ceoSelfDeclaredIp',
+  ocrVerified: 'ocrVerified',
+  ocrExtractedBizNo: 'ocrExtractedBizNo',
   isBizVerified: 'isBizVerified',
+  lastRejectionReason: 'lastRejectionReason',
+  submittedAt: 'submittedAt',
+  approvedAt: 'approvedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -257,6 +269,295 @@ exports.Prisma.ActivityLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.VisaTypeScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  nameKo: 'nameKo',
+  nameEn: 'nameEn',
+  category: 'category',
+  description: 'description',
+  isActive: 'isActive',
+  parentCode: 'parentCode',
+  subTypeCode: 'subTypeCode',
+  employmentLevel: 'employmentLevel',
+  maxWorkHoursWeekly: 'maxWorkHoursWeekly',
+  maxStayMonths: 'maxStayMonths',
+  renewalPossible: 'renewalPossible',
+  minAge: 'minAge',
+  maxAge: 'maxAge',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.IndustryCodeScalarFieldEnum = {
+  id: 'id',
+  ksicCode: 'ksicCode',
+  sectionCode: 'sectionCode',
+  nameKo: 'nameKo',
+  nameEn: 'nameEn',
+  level: 'level',
+  parentCode: 'parentCode',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.VisaRuleScalarFieldEnum = {
+  id: 'id',
+  visaTypeId: 'visaTypeId',
+  ruleName: 'ruleName',
+  ruleDescription: 'ruleDescription',
+  priority: 'priority',
+  ruleType: 'ruleType',
+  conditions: 'conditions',
+  actions: 'actions',
+  version: 'version',
+  parentRuleId: 'parentRuleId',
+  status: 'status',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PolicyChangeScalarFieldEnum = {
+  id: 'id',
+  sourceSite: 'sourceSite',
+  sourceUrl: 'sourceUrl',
+  pageTitle: 'pageTitle',
+  summary: 'summary',
+  previousContent: 'previousContent',
+  currentContent: 'currentContent',
+  changeType: 'changeType',
+  affectedVisaTypes: 'affectedVisaTypes',
+  effectiveDate: 'effectiveDate',
+  reviewStatus: 'reviewStatus',
+  reviewedBy: 'reviewedBy',
+  reviewedAt: 'reviewedAt',
+  reviewNote: 'reviewNote',
+  draftRuleId: 'draftRuleId',
+  detectedAt: 'detectedAt',
+  contentHash: 'contentHash'
+};
+
+exports.Prisma.ScrapingStateScalarFieldEnum = {
+  id: 'id',
+  siteKey: 'siteKey',
+  siteUrl: 'siteUrl',
+  lastScrapedAt: 'lastScrapedAt',
+  lastContentHash: 'lastContentHash',
+  lastStatus: 'lastStatus',
+  lastError: 'lastError',
+  totalChangesFound: 'totalChangesFound',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VisaEvaluationLogScalarFieldEnum = {
+  id: 'id',
+  corporateId: 'corporateId',
+  requestData: 'requestData',
+  eligibleVisas: 'eligibleVisas',
+  blockedVisas: 'blockedVisas',
+  appliedRuleIds: 'appliedRuleIds',
+  evaluatedAt: 'evaluatedAt',
+  durationMs: 'durationMs'
+};
+
+exports.Prisma.OccupationCodeScalarFieldEnum = {
+  id: 'id',
+  kscoCode: 'kscoCode',
+  nameKo: 'nameKo',
+  nameEn: 'nameEn',
+  level: 'level',
+  parentCode: 'parentCode',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.VisaOccupationMappingScalarFieldEnum = {
+  id: 'id',
+  visaTypeId: 'visaTypeId',
+  occupationCodeId: 'occupationCodeId',
+  isAllowed: 'isAllowed',
+  notes: 'notes'
+};
+
+exports.Prisma.VisaIndustryMappingScalarFieldEnum = {
+  id: 'id',
+  visaTypeId: 'visaTypeId',
+  industryCodeId: 'industryCodeId',
+  isAllowed: 'isAllowed',
+  maxForeignWorkerRatio: 'maxForeignWorkerRatio',
+  maxForeignWorkerCount: 'maxForeignWorkerCount',
+  notes: 'notes'
+};
+
+exports.Prisma.VisaCountryRestrictionScalarFieldEnum = {
+  id: 'id',
+  visaTypeId: 'visaTypeId',
+  countryCode: 'countryCode',
+  countryNameKo: 'countryNameKo',
+  restrictionType: 'restrictionType',
+  notes: 'notes'
+};
+
+exports.Prisma.PointSystemCategoryScalarFieldEnum = {
+  id: 'id',
+  visaTypeId: 'visaTypeId',
+  categoryName: 'categoryName',
+  categoryCode: 'categoryCode',
+  maxScore: 'maxScore',
+  sortOrder: 'sortOrder'
+};
+
+exports.Prisma.PointSystemCriteriaScalarFieldEnum = {
+  id: 'id',
+  categoryId: 'categoryId',
+  criteriaName: 'criteriaName',
+  minValue: 'minValue',
+  maxValue: 'maxValue',
+  matchValue: 'matchValue',
+  score: 'score',
+  sortOrder: 'sortOrder'
+};
+
+exports.Prisma.VisaRequiredDocumentScalarFieldEnum = {
+  id: 'id',
+  visaTypeId: 'visaTypeId',
+  documentName: 'documentName',
+  documentCode: 'documentCode',
+  isRequired: 'isRequired',
+  conditionDesc: 'conditionDesc',
+  sortOrder: 'sortOrder'
+};
+
+exports.Prisma.JobProductScalarFieldEnum = {
+  id: 'id',
+  productCode: 'productCode',
+  boardType: 'boardType',
+  tierType: 'tierType',
+  nameKo: 'nameKo',
+  originalPrice: 'originalPrice',
+  discountPrice: 'discountPrice',
+  discountPercent: 'discountPercent',
+  durationDays: 'durationDays',
+  features: 'features',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.JobOrderScalarFieldEnum = {
+  id: 'id',
+  orderNo: 'orderNo',
+  corporateId: 'corporateId',
+  productId: 'productId',
+  snapshotProductName: 'snapshotProductName',
+  snapshotOriginalPrice: 'snapshotOriginalPrice',
+  snapshotDiscountPrice: 'snapshotDiscountPrice',
+  snapshotDiscountPct: 'snapshotDiscountPct',
+  paidAmount: 'paidAmount',
+  paymentStatus: 'paymentStatus',
+  pgProvider: 'pgProvider',
+  impUid: 'impUid',
+  merchantUid: 'merchantUid',
+  paidAt: 'paidAt',
+  cancelledAt: 'cancelledAt',
+  cancelReason: 'cancelReason',
+  jobPostingId: 'jobPostingId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.JobPostingScalarFieldEnum = {
+  id: 'id',
+  corporateId: 'corporateId',
+  orderId: 'orderId',
+  boardType: 'boardType',
+  tierType: 'tierType',
+  title: 'title',
+  description: 'description',
+  workContentImg: 'workContentImg',
+  status: 'status',
+  closingDate: 'closingDate',
+  allowedVisas: 'allowedVisas',
+  minKoreanLevel: 'minKoreanLevel',
+  displayAddress: 'displayAddress',
+  actualAddress: 'actualAddress',
+  workIntensity: 'workIntensity',
+  benefits: 'benefits',
+  contactName: 'contactName',
+  contactPhone: 'contactPhone',
+  contactEmail: 'contactEmail',
+  applicationMethod: 'applicationMethod',
+  externalUrl: 'externalUrl',
+  externalEmail: 'externalEmail',
+  interviewMethod: 'interviewMethod',
+  interviewPlace: 'interviewPlace',
+  employmentSubType: 'employmentSubType',
+  viewCount: 'viewCount',
+  scrapCount: 'scrapCount',
+  applyCount: 'applyCount',
+  suspendedAt: 'suspendedAt',
+  suspendReason: 'suspendReason',
+  suspendedBy: 'suspendedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.JobAttributesAlbaScalarFieldEnum = {
+  jobId: 'jobId',
+  hourlyWage: 'hourlyWage',
+  workPeriod: 'workPeriod',
+  workDaysMask: 'workDaysMask',
+  workTimeStart: 'workTimeStart',
+  workTimeEnd: 'workTimeEnd'
+};
+
+exports.Prisma.JobAttributesFulltimeScalarFieldEnum = {
+  jobId: 'jobId',
+  salaryMin: 'salaryMin',
+  salaryMax: 'salaryMax',
+  experienceLevel: 'experienceLevel',
+  educationLevel: 'educationLevel'
+};
+
+exports.Prisma.JobApplicationScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  applicantId: 'applicantId',
+  applicationMethod: 'applicationMethod',
+  status: 'status',
+  coverLetter: 'coverLetter',
+  resumeSnapshot: 'resumeSnapshot',
+  selfReportedAt: 'selfReportedAt',
+  interviewDate: 'interviewDate',
+  interviewNote: 'interviewNote',
+  rejectionReason: 'rejectionReason',
+  resultNotifiedAt: 'resultNotifiedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.JobScrapScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AdminJobActionScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  adminId: 'adminId',
+  actionType: 'actionType',
+  reason: 'reason',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -287,6 +588,7 @@ exports.UserType = exports.$Enums.UserType = {
 
 exports.VerificationStatus = exports.$Enums.VerificationStatus = {
   PENDING: 'PENDING',
+  SUBMITTED: 'SUBMITTED',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED'
 };
@@ -344,6 +646,115 @@ exports.TicketStatus = exports.$Enums.TicketStatus = {
   CLOSED: 'CLOSED'
 };
 
+exports.EmploymentLevel = exports.$Enums.EmploymentLevel = {
+  FULL: 'FULL',
+  LIMITED: 'LIMITED',
+  PART_TIME: 'PART_TIME',
+  CONDITIONAL: 'CONDITIONAL',
+  PROHIBITED: 'PROHIBITED'
+};
+
+exports.RuleType = exports.$Enums.RuleType = {
+  ELIGIBILITY: 'ELIGIBILITY',
+  RESTRICTION: 'RESTRICTION',
+  DOCUMENT: 'DOCUMENT',
+  QUOTA: 'QUOTA'
+};
+
+exports.RuleStatus = exports.$Enums.RuleStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.PolicyChangeType = exports.$Enums.PolicyChangeType = {
+  NEW_REGULATION: 'NEW_REGULATION',
+  AMENDMENT: 'AMENDMENT',
+  REPEAL: 'REPEAL',
+  NOTICE: 'NOTICE',
+  GUIDELINE: 'GUIDELINE',
+  UNKNOWN: 'UNKNOWN'
+};
+
+exports.ReviewStatus = exports.$Enums.ReviewStatus = {
+  PENDING: 'PENDING',
+  REVIEWED: 'REVIEWED',
+  RULE_DRAFTED: 'RULE_DRAFTED',
+  APPLIED: 'APPLIED',
+  DISMISSED: 'DISMISSED'
+};
+
+exports.CountryRestrictionType = exports.$Enums.CountryRestrictionType = {
+  ALLOWED: 'ALLOWED',
+  BLOCKED: 'BLOCKED',
+  MOU_REQUIRED: 'MOU_REQUIRED'
+};
+
+exports.BoardType = exports.$Enums.BoardType = {
+  PART_TIME: 'PART_TIME',
+  FULL_TIME: 'FULL_TIME'
+};
+
+exports.TierType = exports.$Enums.TierType = {
+  PREMIUM: 'PREMIUM',
+  STANDARD: 'STANDARD'
+};
+
+exports.PaymentStatus = exports.$Enums.PaymentStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED',
+  FAILED: 'FAILED'
+};
+
+exports.PostStatus = exports.$Enums.PostStatus = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  CLOSED: 'CLOSED',
+  SUSPENDED: 'SUSPENDED'
+};
+
+exports.Intensity = exports.$Enums.Intensity = {
+  UPPER: 'UPPER',
+  MIDDLE: 'MIDDLE',
+  LOWER: 'LOWER'
+};
+
+exports.ApplicationMethod = exports.$Enums.ApplicationMethod = {
+  PLATFORM: 'PLATFORM',
+  WEBSITE: 'WEBSITE',
+  EMAIL: 'EMAIL'
+};
+
+exports.InterviewType = exports.$Enums.InterviewType = {
+  OFFLINE: 'OFFLINE',
+  ONLINE: 'ONLINE'
+};
+
+exports.EmploymentSubType = exports.$Enums.EmploymentSubType = {
+  CONTRACT: 'CONTRACT',
+  PERMANENT: 'PERMANENT',
+  INTERNSHIP: 'INTERNSHIP'
+};
+
+exports.ApplicationStatus = exports.$Enums.ApplicationStatus = {
+  PENDING: 'PENDING',
+  REVIEWING: 'REVIEWING',
+  INTERVIEW_SCHEDULED: 'INTERVIEW_SCHEDULED',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.AdminActionType = exports.$Enums.AdminActionType = {
+  SUSPEND: 'SUSPEND',
+  UNSUSPEND: 'UNSUSPEND',
+  FORCE_CLOSE: 'FORCE_CLOSE',
+  DELETE: 'DELETE'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   CorporateProfile: 'CorporateProfile',
@@ -353,7 +764,28 @@ exports.Prisma.ModelName = {
   ProfileCareer: 'ProfileCareer',
   ProfileLanguage: 'ProfileLanguage',
   SupportTicket: 'SupportTicket',
-  ActivityLog: 'ActivityLog'
+  ActivityLog: 'ActivityLog',
+  VisaType: 'VisaType',
+  IndustryCode: 'IndustryCode',
+  VisaRule: 'VisaRule',
+  PolicyChange: 'PolicyChange',
+  ScrapingState: 'ScrapingState',
+  VisaEvaluationLog: 'VisaEvaluationLog',
+  OccupationCode: 'OccupationCode',
+  VisaOccupationMapping: 'VisaOccupationMapping',
+  VisaIndustryMapping: 'VisaIndustryMapping',
+  VisaCountryRestriction: 'VisaCountryRestriction',
+  PointSystemCategory: 'PointSystemCategory',
+  PointSystemCriteria: 'PointSystemCriteria',
+  VisaRequiredDocument: 'VisaRequiredDocument',
+  JobProduct: 'JobProduct',
+  JobOrder: 'JobOrder',
+  JobPosting: 'JobPosting',
+  JobAttributesAlba: 'JobAttributesAlba',
+  JobAttributesFulltime: 'JobAttributesFulltime',
+  JobApplication: 'JobApplication',
+  JobScrap: 'JobScrap',
+  AdminJobAction: 'AdminJobAction'
 };
 
 /**

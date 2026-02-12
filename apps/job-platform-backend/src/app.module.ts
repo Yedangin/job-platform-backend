@@ -21,9 +21,16 @@ import { ReportModule } from './report/report.module';
 import { CategoryModule } from './category/category.module';
 import { ApplyModule } from './apply/apply.module';
 import { ProfileModule } from './profile/profile.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { VisaPolicyModule } from './visa-policy/visa-policy.module';
+import { VisaRulesModule } from './visa-rules/visa-rules.module';
+import { JobPostingModule } from './job-posting/job-posting.module';
+import { JobPaymentModule } from './job-payment/job-payment.module';
+import { JobApplicationModule } from './job-application/job-application.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -67,6 +74,11 @@ import { ProfileModule } from './profile/profile.module';
     CategoryModule,
     ApplyModule,
     ProfileModule,
+    VisaPolicyModule,
+    VisaRulesModule,
+    JobPostingModule,
+    JobPaymentModule,
+    JobApplicationModule,
   ],
   controllers: [],
   providers: [

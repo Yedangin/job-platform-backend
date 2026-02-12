@@ -1,7 +1,9 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -9,10 +11,16 @@ import {
   Request,
   Res,
   UnauthorizedException,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
+import { diskStorage } from 'multer';
+import * as path from 'path';
+import * as fs from 'fs';
 
 // ✅ 로컬 서비스(요리사)를 직접 가져옵니다.
 import { AuthService } from './auth.service';
@@ -349,6 +357,235 @@ export class AuthController {
       sortField: sortField || 'createdAt',
       sortOrder: sortOrder || 'desc',
     });
+  }
+
+  // --- 18. 사업자등록번호 진위확인 + 휴폐업 상태조회 ---
+  @Post('verify-business-number')
+  @ApiOperation({ summary: 'Verify business registration number (authenticity + status) via NTS API' })
+  @ApiBody({
+    schema: {
+      example: {
+        bizRegNumber: '1234567890',
+        ceoName: '홍길동',
+        companyName: '테스트기업',
+        openDate: '20200101',
+      },
+    },
+  })
+  async verifyBusinessNumber(
+    @Body() body: { bizRegNumber: string; ceoName: string; companyName: string; openDate: string },
+  ) {
+    return await this.authService.verifyBusinessNumber(body);
+  }
+
+  // --- 18-2. 기업 서류 파일 업로드 (사업자등록증 / 재직증명서) ---
+  @Post('upload-corporate-doc')
+  @ApiOperation({ summary: 'Upload corporate document (bizReg or empCert)' })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: (req: any, file, cb) => {
+          const docType = req.body?.docType || 'unknown';
+          const userId = 'temp'; // 실제 userId는 서비스에서 처리
+          const uploadPath = path.join(
+            process.cwd(),
+            'uploads',
+            'corporate-docs',
+            docType,
+          );
+          fs.mkdirSync(uploadPath, { recursive: true });
+          cb(null, uploadPath);
+        },
+        filename: (req, file, cb) => {
+          // multer가 originalname을 latin1로 디코딩하므로 UTF-8로 재변환
+          const decodedName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+          const timestamp = Date.now();
+          const ext = path.extname(decodedName);
+          const safeName = decodedName
+            .replace(ext, '')
+            .replace(/[^a-zA-Z0-9가-힣_-]/g, '_')
+            .substring(0, 50);
+          cb(null, `${timestamp}_${safeName}${ext}`);
+        },
+      }),
+      limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+      fileFilter: (req, file, cb) => {
+        const allowedMimes = [
+          'image/jpeg',
+          'image/png',
+          'application/pdf',
+        ];
+        if (allowedMimes.includes(file.mimetype)) {
+          cb(null, true);
+        } else {
+          cb(
+            new BadRequestException(
+              '허용되지 않는 파일 형식입니다. JPG, PNG, PDF만 업로드 가능합니다.',
+            ),
+            false,
+          );
+        }
+      },
+    }),
+  )
+  async uploadCorporateDoc(
+    @Session() sessionId: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: { docType: 'bizReg' | 'empCert' },
+  ) {
+    if (!sessionId) throw new UnauthorizedException('No session provided');
+    if (!file) throw new BadRequestException('파일을 선택해주세요.');
+    if (!body.docType || !['bizReg', 'empCert'].includes(body.docType)) {
+      throw new BadRequestException('docType은 bizReg 또는 empCert여야 합니다.');
+    }
+    return await this.authService.uploadCorporateDoc(
+      sessionId,
+      file,
+      body.docType,
+    );
+  }
+
+  // --- 19. 기업 인증 상태 조회 ---
+  @Get('corporate-verify')
+  @ApiOperation({ summary: 'Get corporate verification status' })
+  async getCorporateVerifyStatus(@Session() sessionId: string) {
+    if (!sessionId) throw new UnauthorizedException('No session provided');
+    return await this.authService.getCorporateVerificationStatus(sessionId);
+  }
+
+  // --- 19. 기업 인증 정보 제출 ---
+  @Put('corporate-verify')
+  @ApiOperation({ summary: 'Submit corporate verification data' })
+  async submitCorporateVerify(
+    @Session() sessionId: string,
+    @Request() req: any,
+    @Body()
+    body: {
+      bizRegNumber: string;
+      companyNameOfficial: string;
+      ceoName: string;
+      managerName: string;
+      managerPhone: string;
+      ksicCode?: string;
+      addressRoad?: string;
+      companySizeType?: string;
+      proofDocumentUrl?: string;
+      bizRegDocPath?: string;
+      bizRegDocOrigName?: string;
+      empCertDocPath?: string;
+      empCertDocOrigName?: string;
+      isCeoSelf?: boolean;
+    },
+  ) {
+    if (!sessionId) throw new UnauthorizedException('No session provided');
+    // IP 주소 추출 (대표자 본인 선언 법적 근거용)
+    const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+    return await this.authService.submitCorporateVerification(sessionId, body, clientIp);
+  }
+
+  // --- 19-2. Admin: 전체 회원 목록 조회 ---
+  @Get('admin/users')
+  @ApiOperation({ summary: 'Get all users with profiles (admin)' })
+  async getAdminUsers(
+    @Session() sessionId: string,
+    @Query('type') type?: string,
+    @Query('search') search?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: string,
+  ) {
+    if (!sessionId) throw new UnauthorizedException('No session provided');
+    const profile = await this.authService.getProfile(sessionId);
+    if (profile.user?.role !== 5)
+      throw new UnauthorizedException('Admin access required');
+    return await this.authService.getAdminUsers({
+      type,
+      search,
+      page: page ? parseInt(page) : 1,
+      limit: limit ? parseInt(limit) : 20,
+      sortBy,
+      sortOrder,
+    });
+  }
+
+  // --- 19-3. Admin: 기업 서류 파일 조회 ---
+  @Get('admin/corporate-doc-file')
+  @ApiOperation({ summary: 'Serve corporate document file (admin only)' })
+  async getCorporateDocFile(
+    @Session() sessionId: string,
+    @Query('path') filePath: string,
+    @Res() res: Response,
+  ) {
+    if (!sessionId) throw new UnauthorizedException('No session provided');
+    const profile = await this.authService.getProfile(sessionId);
+    if (profile.user?.role !== 5)
+      throw new UnauthorizedException('Admin access required');
+
+    // 보안: path traversal 방지
+    if (!filePath || filePath.includes('..')) {
+      throw new BadRequestException('잘못된 파일 경로입니다.');
+    }
+    const normalizedPath = filePath.replace(/\\/g, '/');
+    if (!normalizedPath.startsWith('uploads/corporate-docs/')) {
+      throw new BadRequestException('접근할 수 없는 경로입니다.');
+    }
+
+    const absolutePath = path.join(process.cwd(), normalizedPath);
+    if (!fs.existsSync(absolutePath)) {
+      throw new NotFoundException('파일을 찾을 수 없습니다.');
+    }
+
+    // Content-Type 판별
+    const ext = path.extname(absolutePath).toLowerCase();
+    const mimeMap: Record<string, string> = {
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.png': 'image/png',
+      '.pdf': 'application/pdf',
+    };
+    const contentType = mimeMap[ext] || 'application/octet-stream';
+
+    res.setHeader('Content-Type', contentType);
+    const fileStream = fs.createReadStream(absolutePath);
+    fileStream.pipe(res);
+  }
+
+  // --- 20. Admin: 기업 인증 목록 조회 ---
+  @Get('admin/corporate-verifications')
+  @ApiOperation({ summary: 'Get corporate verification list (admin)' })
+  async getCorporateVerifications(
+    @Session() sessionId: string,
+    @Query('status') status?: string,
+  ) {
+    if (!sessionId) throw new UnauthorizedException('No session provided');
+    const profile = await this.authService.getProfile(sessionId);
+    if (profile.user?.role !== 5)
+      throw new UnauthorizedException('Admin access required');
+    return await this.authService.getCorporateVerifications(status);
+  }
+
+  // --- 21. Admin: 기업 인증 승인/거절 ---
+  @Put('admin/corporate-verifications/:userId')
+  @ApiOperation({ summary: 'Approve or reject corporate verification (admin)' })
+  @ApiBody({
+    schema: {
+      example: { action: 'APPROVE', reason: '거절 사유 (거절 시 필수)' },
+    },
+  })
+  async updateCorporateVerification(
+    @Session() sessionId: string,
+    @Param('userId') userId: string,
+    @Body() body: { action: 'APPROVE' | 'REJECT'; reason?: string },
+  ) {
+    if (!sessionId) throw new UnauthorizedException('No session provided');
+    return await this.authService.updateCorporateVerification(
+      sessionId,
+      userId,
+      body.action,
+      body.reason,
+    );
   }
 
   // ==========================================
