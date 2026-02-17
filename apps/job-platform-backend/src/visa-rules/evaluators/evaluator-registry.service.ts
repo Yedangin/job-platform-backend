@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { IVisaEvaluator, EvaluateVisaInput, VisaEvaluation, VisaTypeWithRelations } from './evaluator.interface';
+import {
+  IVisaEvaluator,
+  EvaluateVisaInput,
+  VisaEvaluation,
+  VisaTypeWithRelations,
+} from './evaluator.interface';
 import { E9Evaluator } from './e-series/e9.evaluator';
 import { E7Evaluator } from './e-series/e7.evaluator';
 import { E2Evaluator } from './e-series/e2.evaluator';

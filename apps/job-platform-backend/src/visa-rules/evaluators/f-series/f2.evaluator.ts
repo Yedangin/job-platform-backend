@@ -1,26 +1,27 @@
 import { BaseVisaEvaluator } from '../base.evaluator';
-import { EvaluateVisaInput, VisaEvaluation, VisaTypeWithRelations } from '../evaluator.interface';
+import {
+  EvaluateVisaInput,
+  ScoreBreakdown,
+  VisaEvaluation,
+  VisaTypeWithRelations,
+} from '../evaluator.interface';
 
 /**
  * F-2 거주 비자 평가기
+ * F-2 Residence Visa Evaluator
  *
- * F-2 거주 = 자유취업 가능
- * F-2-7 점수제 = 120점 중 80점 이상 시 발급
- *
- * 점수 카테고리 (DB에서 로드):
- * - 나이 (25점)
- * - 학력 (35점)
- * - 한국어능력 (20점)
- * - 소득 (25점)
- * - 사회통합 가산점 (15점)
- *
- * 점수 계산은 PointCalculatorService에서 수행
- * 이 evaluator는 기본 적격 여부만 판단
+ * 알고리즘 (DB 기반) / Algorithm (DB-driven):
+ * F-2 일반 = 자유취업 가능
+ * F-2-7 점수제 = DB PointSystemCategory + PointSystemCriteria로 동적 계산
+ *   (120점 만점, 80점 이상 시 발급)
  */
 export class F2Evaluator extends BaseVisaEvaluator {
   readonly visaCodes = ['F-2', 'F-2-1', 'F-2-7', 'F-2-99'];
 
-  evaluate(input: EvaluateVisaInput, visaType: VisaTypeWithRelations): VisaEvaluation {
+  evaluate(
+    input: EvaluateVisaInput,
+    visaType: VisaTypeWithRelations,
+  ): VisaEvaluation {
     const result = this.createEmptyResult();
     result.documents = this.getRequiredDocuments(visaType.requiredDocuments);
 
@@ -30,14 +31,17 @@ export class F2Evaluator extends BaseVisaEvaluator {
       return this.evaluateF27(input, visaType, result);
     }
 
-    // F-2 일반: 자유 취업 가능
+    // F-2 일반: 자유 취업 가능 / F-2 general: unrestricted employment
     result.eligible = true;
     result.notes.push('F-2 거주비자 소지자는 업종 제한 없이 자유 취업 가능');
     result.matchedIndustries.push(input.ksicCode);
     return result;
   }
 
-  /** F-2-7 점수제 평가 (기본 판정 - 상세 점수는 PointCalculatorService에서) */
+  /**
+   * F-2-7 점수제 평가 (DB PointSystemCategory 기반)
+   * F-2-7 point system evaluation (DB-driven via PointSystemCategory)
+   */
   private evaluateF27(
     input: EvaluateVisaInput,
     visaType: VisaTypeWithRelations,
@@ -46,73 +50,158 @@ export class F2Evaluator extends BaseVisaEvaluator {
     result.requiredScore = 80;
     result.notes.push('F-2-7 점수제 거주비자 (120점 만점, 80점 이상 시 발급)');
 
-    // 간이 점수 추정 (PointCalculatorService 미연동 시 fallback)
-    let estimatedScore = 0;
-    const breakdown: string[] = [];
+    const categories = visaType.pointCategories ?? [];
+    const breakdown: ScoreBreakdown[] = [];
+    let totalScore = 0;
 
-    // 나이 점수
-    if (input.age !== undefined) {
-      let ageScore = 5;
-      if (input.age >= 18 && input.age <= 24) ageScore = 25;
-      else if (input.age <= 29) ageScore = 20;
-      else if (input.age <= 34) ageScore = 15;
-      else if (input.age <= 39) ageScore = 10;
-      else if (input.age <= 44) ageScore = 7;
-      estimatedScore += ageScore;
-      breakdown.push(`나이(${input.age}세): ${ageScore}점`);
+    for (const cat of categories) {
+      const { score, detail } = this.evaluateCategory(cat, input);
+      const capped = Math.min(score, cat.maxScore);
+      totalScore += capped;
+      breakdown.push({
+        categoryCode: cat.categoryCode,
+        categoryName: cat.categoryName,
+        score: capped,
+        maxScore: cat.maxScore,
+        detail,
+      });
     }
 
-    // 학력 점수
-    const eduScoreMap: Record<string, number> = {
-      DOCTOR: 35, MASTER: 30, BACHELOR: 25, COLLEGE: 15, HIGH_SCHOOL: 10,
-    };
-    const eduScore = eduScoreMap[input.educationLevel ?? ''] ?? 0;
-    estimatedScore += eduScore;
-    if (eduScore > 0) breakdown.push(`학력: ${eduScore}점`);
-
-    // 한국어 점수
-    const topikScoreMap: Record<string, number> = {
-      TOPIK6: 20, TOPIK5: 16, TOPIK4: 12, TOPIK3: 8, TOPIK2: 4,
-    };
-    const korScore = topikScoreMap[input.koreanLevel ?? ''] ?? 0;
-    estimatedScore += korScore;
-    if (korScore > 0) breakdown.push(`한국어(${input.koreanLevel}): ${korScore}점`);
-
-    // 소득 점수
-    if (input.incomeGniPercent !== undefined) {
-      let incScore = 0;
-      if (input.incomeGniPercent >= 300) incScore = 25;
-      else if (input.incomeGniPercent >= 200) incScore = 20;
-      else if (input.incomeGniPercent >= 150) incScore = 15;
-      else if (input.incomeGniPercent >= 100) incScore = 10;
-      else if (input.incomeGniPercent >= 80) incScore = 5;
-      estimatedScore += incScore;
-      breakdown.push(`소득(GNI ${input.incomeGniPercent}%): ${incScore}점`);
-    }
-
-    result.score = estimatedScore;
-    result.notes.push(`예상 점수: ${estimatedScore}점 / 120점 (상세 계산은 서버측 수행)`);
-    result.notes.push(`점수 내역: ${breakdown.join(', ')}`);
-
-    if (estimatedScore >= 80) {
-      result.eligible = true;
-      result.notes.push('80점 이상 - F-2-7 발급 가능 (예상)');
-    } else {
-      result.blockedReasons.push(`예상 점수 ${estimatedScore}점 < 80점 (부족: ${80 - estimatedScore}점)`);
-      result.suggestions.push('TOPIK 등급 향상, 사회통합프로그램 이수 등으로 추가 점수 확보 필요');
-    }
-
-    // 감점 요인
+    // 감점 요인 (SOCIAL 카테고리에 포함될 수 있으나 별도 표시)
+    // Deduction factors (may be included in SOCIAL category but displayed separately)
     if (input.hasCriminalRecord) {
-      result.notes.push('범죄경력: -5점 감점 적용');
-      result.score! -= 5;
+      result.notes.push('범죄경력: 감점 적용');
     }
     if (input.hasImmigrationViolation) {
-      result.notes.push('출입국법 위반: -10점 감점 적용');
-      result.score! -= 10;
+      result.notes.push('출입국법 위반: 감점 적용');
+    }
+
+    result.score = totalScore;
+    result.scoreBreakdown = breakdown;
+
+    const breakdownStr = breakdown
+      .filter(b => b.score > 0)
+      .map(b => `${b.categoryName}: ${b.score}점`)
+      .join(', ');
+    result.notes.push(`점수 내역: ${breakdownStr || '해당 없음'}`);
+
+    if (totalScore >= 80) {
+      result.eligible = true;
+      result.notes.push(`${totalScore}점 ≥ 80점 — F-2-7 발급 가능`);
+    } else {
+      result.blockedReasons.push(
+        `점수 ${totalScore}점 < 80점 (부족: ${80 - totalScore}점)`,
+      );
+      result.suggestions.push(
+        'TOPIK 등급 향상, 사회통합프로그램 이수 등으로 추가 점수 확보 필요',
+      );
     }
 
     result.matchedIndustries.push(input.ksicCode);
     return result;
+  }
+
+  /** 카테고리별 점수 계산 (DB criteria 기반) / Score per category (DB-driven) */
+  private evaluateCategory(
+    category: NonNullable<VisaTypeWithRelations['pointCategories']>[number],
+    input: EvaluateVisaInput,
+  ): { score: number; detail: string } {
+    switch (category.categoryCode) {
+      case 'AGE':
+        return this.evaluateRangeCriteria(category.criteria, input.age);
+      case 'EDUCATION':
+        return this.evaluateMatchCriteria(category.criteria, input.educationLevel);
+      case 'KOREAN':
+        return this.evaluateKoreanLevel(category.criteria, input);
+      case 'INCOME':
+        return this.evaluateRangeCriteria(category.criteria, input.incomeGniPercent);
+      case 'SOCIAL':
+        return this.evaluateSocialPoints(category.criteria, input);
+      default:
+        return { score: 0, detail: '해당 없음' };
+    }
+  }
+
+  /** 범위 기반 기준 (나이, 소득) / Range-based criteria (age, income) */
+  private evaluateRangeCriteria(
+    criteria: NonNullable<VisaTypeWithRelations['pointCategories']>[number]['criteria'],
+    value: number | undefined,
+  ): { score: number; detail: string } {
+    if (value === undefined) return { score: 0, detail: '정보 미입력' };
+    for (const c of criteria) {
+      const min = c.minValue ?? -Infinity;
+      const max = c.maxValue ?? Infinity;
+      if (value >= min && value <= max) {
+        return { score: c.score, detail: `${c.criteriaName} → ${c.score}점` };
+      }
+    }
+    return { score: 0, detail: '해당 구간 없음' };
+  }
+
+  /** 매칭 기반 기준 (학력) / Match-based criteria (education) */
+  private evaluateMatchCriteria(
+    criteria: NonNullable<VisaTypeWithRelations['pointCategories']>[number]['criteria'],
+    value: string | undefined,
+  ): { score: number; detail: string } {
+    if (!value) return { score: 0, detail: '정보 미입력' };
+    const match = criteria.find(c => c.matchValue === value);
+    if (match) {
+      return { score: match.score, detail: `${match.criteriaName} → ${match.score}점` };
+    }
+    return { score: 0, detail: '해당 기준 없음' };
+  }
+
+  /** 한국어능력 (TOPIK + KIIP) / Korean proficiency (TOPIK + KIIP) */
+  private evaluateKoreanLevel(
+    criteria: NonNullable<VisaTypeWithRelations['pointCategories']>[number]['criteria'],
+    input: EvaluateVisaInput,
+  ): { score: number; detail: string } {
+    const results: { score: number; detail: string }[] = [];
+
+    if (input.koreanLevel) {
+      const topik = criteria.find(c => c.matchValue === input.koreanLevel);
+      if (topik) results.push({ score: topik.score, detail: `${topik.criteriaName} → ${topik.score}점` });
+    }
+    if (input.socialIntegrationLevel) {
+      const kiip = criteria.find(c => c.matchValue === `KIIP${input.socialIntegrationLevel}`);
+      if (kiip) results.push({ score: kiip.score, detail: `${kiip.criteriaName} → ${kiip.score}점` });
+    }
+
+    if (results.length === 0) return { score: 0, detail: '한국어능력 정보 미입력' };
+    return results.reduce((a, b) => (a.score >= b.score ? a : b));
+  }
+
+  /** 사회통합 가산점 (복수 항목 합산) / Social integration bonus (sum multiple items) */
+  private evaluateSocialPoints(
+    criteria: NonNullable<VisaTypeWithRelations['pointCategories']>[number]['criteria'],
+    input: EvaluateVisaInput,
+  ): { score: number; detail: string } {
+    let total = 0;
+    const details: string[] = [];
+
+    const check = (matchValue: string, condition: boolean) => {
+      if (!condition) return;
+      const c = criteria.find(cr => cr.matchValue === matchValue);
+      if (c) {
+        total += c.score;
+        details.push(`${c.criteriaName}: ${c.score > 0 ? '+' : ''}${c.score}점`);
+      }
+    };
+
+    if (input.volunteerHours && input.volunteerHours >= 40) check('VOLUNTEER_40H', true);
+    else if (input.volunteerHours && input.volunteerHours >= 20) check('VOLUNTEER_20H', true);
+
+    check('KR_CHILD', input.hasKoreanChild === true);
+    check('GOV_RECOMMEND', input.hasRecommendation === true);
+    check('PROPERTY', input.hasProperty === true);
+    check('TAX_3Y', (input.taxYearsInKorea ?? 0) >= 3);
+    check('NO_CRIME', input.hasCriminalRecord === false);
+    check('HAS_CRIME', input.hasCriminalRecord === true);
+    check('IMMIGRATION_VIOLATION', input.hasImmigrationViolation === true);
+
+    return {
+      score: total,
+      detail: details.length > 0 ? details.join(', ') : '해당 없음',
+    };
   }
 }

@@ -13,8 +13,9 @@ import { KakaoStrategy } from 'libs/common/src/common/strategies/kakao.strategy'
 import { FacebookStrategy } from 'libs/common/src/common/strategies/facebook.strategy';
 import { AppleStrategy } from 'libs/common/src/common/strategies/apple.strategy';
 import { GenerateStoreToken } from 'libs/common/src/common/helper/generate-store-token';
+import { PaymentModule } from '../payment/payment.module';
 @Module({
-  imports: [],
+  imports: [PaymentModule],
   controllers: [AuthController],
   providers: [
     GenerateStoreToken,

@@ -8,8 +8,10 @@ import { EpsGoKrScraper } from './scraping/scrapers/eps-go-kr.scraper';
 import { MoelGoKrScraper } from './scraping/scrapers/moel-go-kr.scraper';
 import { HikoreaGoKrScraper } from './scraping/scrapers/hikorea-go-kr.scraper';
 import { AuthPrismaService, RedisService } from 'libs/common/src';
+import { LawAmendmentModule } from '../law-amendment/law-amendment.module';
 
 @Module({
+  imports: [LawAmendmentModule],
   controllers: [VisaPolicyController],
   providers: [
     VisaPolicyService,

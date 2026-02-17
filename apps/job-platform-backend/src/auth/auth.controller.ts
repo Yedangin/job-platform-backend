@@ -16,7 +16,13 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Response } from 'express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
@@ -361,7 +367,10 @@ export class AuthController {
 
   // --- 18. 사업자등록번호 진위확인 + 휴폐업 상태조회 ---
   @Post('verify-business-number')
-  @ApiOperation({ summary: 'Verify business registration number (authenticity + status) via NTS API' })
+  @ApiOperation({
+    summary:
+      'Verify business registration number (authenticity + status) via NTS API',
+  })
   @ApiBody({
     schema: {
       example: {
@@ -373,7 +382,13 @@ export class AuthController {
     },
   })
   async verifyBusinessNumber(
-    @Body() body: { bizRegNumber: string; ceoName: string; companyName: string; openDate: string },
+    @Body()
+    body: {
+      bizRegNumber: string;
+      ceoName: string;
+      companyName: string;
+      openDate: string;
+    },
   ) {
     return await this.authService.verifyBusinessNumber(body);
   }
@@ -399,7 +414,9 @@ export class AuthController {
         },
         filename: (req, file, cb) => {
           // multer가 originalname을 latin1로 디코딩하므로 UTF-8로 재변환
-          const decodedName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+          const decodedName = Buffer.from(file.originalname, 'latin1').toString(
+            'utf8',
+          );
           const timestamp = Date.now();
           const ext = path.extname(decodedName);
           const safeName = decodedName
@@ -411,11 +428,7 @@ export class AuthController {
       }),
       limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
       fileFilter: (req, file, cb) => {
-        const allowedMimes = [
-          'image/jpeg',
-          'image/png',
-          'application/pdf',
-        ];
+        const allowedMimes = ['image/jpeg', 'image/png', 'application/pdf'];
         if (allowedMimes.includes(file.mimetype)) {
           cb(null, true);
         } else {
@@ -437,7 +450,9 @@ export class AuthController {
     if (!sessionId) throw new UnauthorizedException('No session provided');
     if (!file) throw new BadRequestException('파일을 선택해주세요.');
     if (!body.docType || !['bizReg', 'empCert'].includes(body.docType)) {
-      throw new BadRequestException('docType은 bizReg 또는 empCert여야 합니다.');
+      throw new BadRequestException(
+        'docType은 bizReg 또는 empCert여야 합니다.',
+      );
     }
     return await this.authService.uploadCorporateDoc(
       sessionId,
@@ -480,8 +495,13 @@ export class AuthController {
   ) {
     if (!sessionId) throw new UnauthorizedException('No session provided');
     // IP 주소 추출 (대표자 본인 선언 법적 근거용)
-    const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
-    return await this.authService.submitCorporateVerification(sessionId, body, clientIp);
+    const clientIp =
+      req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+    return await this.authService.submitCorporateVerification(
+      sessionId,
+      body,
+      clientIp,
+    );
   }
 
   // --- 19-2. Admin: 전체 회원 목록 조회 ---
@@ -585,6 +605,49 @@ export class AuthController {
       userId,
       body.action,
       body.reason,
+    );
+  }
+
+  // --- 22. Admin: 회원 상세 조회 (이력서+비자인증 포함) ---
+  // --- 22. Admin: Get user detail with resume + visa verification ---
+  @Get('admin/users/:userId')
+  @ApiOperation({
+    summary: 'Get user detail with resume and visa verification (admin)',
+  })
+  async getAdminUserDetail(
+    @Session() sessionId: string,
+    @Param('userId') userId: string,
+  ) {
+    if (!sessionId) throw new UnauthorizedException('No session provided');
+    const profile = await this.authService.getProfile(sessionId);
+    if (profile.user?.role !== 5)
+      throw new UnauthorizedException('Admin access required');
+    return await this.authService.getAdminUserDetail(userId);
+  }
+
+  // --- 23. Admin: 비자인증 승인/거절 ---
+  // --- 23. Admin: Approve or reject visa verification ---
+  @Put('admin/visa-verification/:id')
+  @ApiOperation({ summary: 'Approve or reject visa verification (admin)' })
+  @ApiBody({
+    schema: {
+      example: {
+        action: 'VERIFIED',
+        rejectionReason: '거절 사유 (거절 시 필수)',
+      },
+    },
+  })
+  async updateVisaVerification(
+    @Session() sessionId: string,
+    @Param('id') id: string,
+    @Body() body: { action: 'VERIFIED' | 'REJECTED'; rejectionReason?: string },
+  ) {
+    if (!sessionId) throw new UnauthorizedException('No session provided');
+    return await this.authService.updateVisaVerification(
+      sessionId,
+      id,
+      body.action,
+      body.rejectionReason,
     );
   }
 

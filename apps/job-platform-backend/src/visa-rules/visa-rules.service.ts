@@ -2,15 +2,18 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  Optional,
 } from '@nestjs/common';
 import { AuthPrismaService } from 'libs/common/src';
 import { RuleEngineService } from './rule-engine.service';
+import { LoggingService } from '../logging/logging.service';
 
 @Injectable()
 export class VisaRulesService {
   constructor(
     private readonly prisma: AuthPrismaService,
     private readonly ruleEngine: RuleEngineService,
+    @Optional() private readonly loggingService?: LoggingService,
   ) {}
 
   // ==========================================
@@ -44,7 +47,9 @@ export class VisaRulesService {
       where: { code: data.code },
     });
     if (existing)
-      throw new BadRequestException(`비자 코드 '${data.code}'가 이미 존재합니다.`);
+      throw new BadRequestException(
+        `비자 코드 '${data.code}'가 이미 존재합니다.`,
+      );
 
     const vt = await this.prisma.visaType.create({ data });
     return { success: true, id: vt.id.toString() };
@@ -249,6 +254,20 @@ export class VisaRulesService {
     // 캐시 무효화
     await this.ruleEngine.invalidateCache();
 
+    // 변경 로그 기록 / Change log
+    this.loggingService?.logChange({
+      adminId,
+      tableName: 'visa_rules',
+      recordId: rule.id.toString(),
+      action: 'CREATE',
+      after: JSON.stringify({
+        ruleName: data.ruleName,
+        visaTypeCode: data.visaTypeCode,
+        conditions: data.conditions,
+        actions: data.actions,
+      }),
+    });
+
     return { success: true, id: rule.id.toString() };
   }
 
@@ -309,6 +328,26 @@ export class VisaRulesService {
 
     await this.ruleEngine.invalidateCache();
 
+    // 변경 로그 기록 / Change log
+    this.loggingService?.logChange({
+      adminId,
+      tableName: 'visa_rules',
+      recordId: newRule.id.toString(),
+      action: 'UPDATE',
+      before: JSON.stringify({
+        id: existing.id.toString(),
+        version: existing.version,
+        conditions: existing.conditions,
+        actions: existing.actions,
+      }),
+      after: JSON.stringify({
+        id: newRule.id.toString(),
+        version: newRule.version,
+        conditions: data.conditions || existing.conditions,
+        actions: data.actions || existing.actions,
+      }),
+    });
+
     return {
       success: true,
       id: newRule.id.toString(),
@@ -328,6 +367,20 @@ export class VisaRulesService {
     });
 
     await this.ruleEngine.invalidateCache();
+
+    // 변경 로그 기록 / Change log
+    this.loggingService?.logChange({
+      adminId,
+      tableName: 'visa_rules',
+      recordId: id,
+      action: 'DELETE',
+      before: JSON.stringify({
+        ruleName: rule.ruleName,
+        status: rule.status,
+      }),
+      after: JSON.stringify({ status: 'INACTIVE' }),
+    });
+
     return { success: true };
   }
 
@@ -337,7 +390,9 @@ export class VisaRulesService {
     });
     if (!rule) throw new NotFoundException('규칙을 찾을 수 없습니다.');
     if (rule.status !== 'DRAFT')
-      throw new BadRequestException('DRAFT 상태의 규칙만 활성화할 수 있습니다.');
+      throw new BadRequestException(
+        'DRAFT 상태의 규칙만 활성화할 수 있습니다.',
+      );
 
     await this.prisma.visaRule.update({
       where: { id: BigInt(id) },

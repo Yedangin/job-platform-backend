@@ -5,12 +5,14 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { AuthPrismaService, RedisService } from 'libs/common/src';
+import { CouponService } from '../payment/coupon.service';
 
 @Injectable()
 export class JobPostingService {
   constructor(
     private readonly prisma: AuthPrismaService,
     private readonly redis: RedisService,
+    private readonly couponService: CouponService,
   ) {}
 
   // ========================================
@@ -60,8 +62,10 @@ export class JobPostingService {
           fulltimeAttributes: true,
         },
         orderBy: [
-          { tierType: 'asc' }, // PREMIUM first (P < S alphabetically)
-          { createdAt: 'desc' },
+          { isFeatured: 'desc' },  // 추천 공고 우선 / Featured first
+          { tierType: 'asc' },     // PREMIUM first (P < S alphabetically)
+          { bumpedAt: 'desc' },    // 끌어올리기 최신순 / Bumped first
+          { createdAt: 'desc' },   // 최신 등록순 / Newest first
         ],
         skip,
         take: limit,
@@ -192,9 +196,20 @@ export class JobPostingService {
           salaryMin: data.fulltimeAttributes.salaryMin,
           salaryMax: data.fulltimeAttributes.salaryMax,
           experienceLevel: data.fulltimeAttributes.experienceLevel || 'ENTRY',
-          educationLevel: data.fulltimeAttributes.educationLevel || 'HIGH_SCHOOL',
+          educationLevel:
+            data.fulltimeAttributes.educationLevel || 'HIGH_SCHOOL',
         },
       });
+    }
+
+    // 첫 공고 등록 시 쿠폰 자동 발급 / Auto-grant coupon on first job posting
+    const existingJobCount = await this.prisma.jobPosting.count({
+      where: { corporateId: corp.companyId },
+    });
+    if (existingJobCount === 1) {
+      // 방금 생성한 것이 유일한 공고 = 첫 공고
+      // The just-created one is the only posting = first posting
+      await this.couponService.grantFirstPostCoupons(userId, Number(job.id));
     }
 
     return { jobId: job.id.toString(), status: 'DRAFT' };
@@ -208,24 +223,44 @@ export class JobPostingService {
 
     const updateData: any = {};
     if (data.title !== undefined) updateData.title = data.title;
-    if (data.description !== undefined) updateData.description = data.description;
-    if (data.allowedVisas !== undefined) updateData.allowedVisas = data.allowedVisas;
-    if (data.minKoreanLevel !== undefined) updateData.minKoreanLevel = data.minKoreanLevel;
-    if (data.displayAddress !== undefined) updateData.displayAddress = data.displayAddress;
-    if (data.actualAddress !== undefined) updateData.actualAddress = data.actualAddress;
-    if (data.workIntensity !== undefined) updateData.workIntensity = data.workIntensity;
-    if (data.benefits !== undefined) updateData.benefits = JSON.stringify(data.benefits);
-    if (data.contactName !== undefined) updateData.contactName = data.contactName;
-    if (data.contactPhone !== undefined) updateData.contactPhone = data.contactPhone;
-    if (data.contactEmail !== undefined) updateData.contactEmail = data.contactEmail;
-    if (data.applicationMethod !== undefined) updateData.applicationMethod = data.applicationMethod;
-    if (data.externalUrl !== undefined) updateData.externalUrl = data.externalUrl;
-    if (data.externalEmail !== undefined) updateData.externalEmail = data.externalEmail;
-    if (data.interviewMethod !== undefined) updateData.interviewMethod = data.interviewMethod;
-    if (data.interviewPlace !== undefined) updateData.interviewPlace = data.interviewPlace;
-    if (data.employmentSubType !== undefined) updateData.employmentSubType = data.employmentSubType;
-    if (data.closingDate !== undefined) updateData.closingDate = data.closingDate ? new Date(data.closingDate) : null;
-    if (data.workContentImg !== undefined) updateData.workContentImg = data.workContentImg;
+    if (data.description !== undefined)
+      updateData.description = data.description;
+    if (data.allowedVisas !== undefined)
+      updateData.allowedVisas = data.allowedVisas;
+    if (data.minKoreanLevel !== undefined)
+      updateData.minKoreanLevel = data.minKoreanLevel;
+    if (data.displayAddress !== undefined)
+      updateData.displayAddress = data.displayAddress;
+    if (data.actualAddress !== undefined)
+      updateData.actualAddress = data.actualAddress;
+    if (data.workIntensity !== undefined)
+      updateData.workIntensity = data.workIntensity;
+    if (data.benefits !== undefined)
+      updateData.benefits = JSON.stringify(data.benefits);
+    if (data.contactName !== undefined)
+      updateData.contactName = data.contactName;
+    if (data.contactPhone !== undefined)
+      updateData.contactPhone = data.contactPhone;
+    if (data.contactEmail !== undefined)
+      updateData.contactEmail = data.contactEmail;
+    if (data.applicationMethod !== undefined)
+      updateData.applicationMethod = data.applicationMethod;
+    if (data.externalUrl !== undefined)
+      updateData.externalUrl = data.externalUrl;
+    if (data.externalEmail !== undefined)
+      updateData.externalEmail = data.externalEmail;
+    if (data.interviewMethod !== undefined)
+      updateData.interviewMethod = data.interviewMethod;
+    if (data.interviewPlace !== undefined)
+      updateData.interviewPlace = data.interviewPlace;
+    if (data.employmentSubType !== undefined)
+      updateData.employmentSubType = data.employmentSubType;
+    if (data.closingDate !== undefined)
+      updateData.closingDate = data.closingDate
+        ? new Date(data.closingDate)
+        : null;
+    if (data.workContentImg !== undefined)
+      updateData.workContentImg = data.workContentImg;
 
     await this.prisma.jobPosting.update({
       where: { id: BigInt(jobId) },
@@ -291,7 +326,10 @@ export class JobPostingService {
   // ========================================
   // 내 공고 목록 (기업회원)
   // ========================================
-  async getMyJobPostings(userId: string, query: { status?: string; page?: number; limit?: number }) {
+  async getMyJobPostings(
+    userId: string,
+    query: { status?: string; page?: number; limit?: number },
+  ) {
     const corp = await this.prisma.corporateProfile.findUnique({
       where: { authId: userId },
     });
@@ -378,7 +416,14 @@ export class JobPostingService {
   // ========================================
   // Admin: 전체 공고 목록
   // ========================================
-  async getAllJobPostings(query: { status?: string; boardType?: string; search?: string; corporateId?: string; page?: number; limit?: number }) {
+  async getAllJobPostings(query: {
+    status?: string;
+    boardType?: string;
+    search?: string;
+    corporateId?: string;
+    page?: number;
+    limit?: number;
+  }) {
     const page = query.page || 1;
     const limit = query.limit || 20;
     const where: any = {};
@@ -390,20 +435,21 @@ export class JobPostingService {
     let searchCorpIds: bigint[] | null = null;
     if (query.search) {
       // 제목으로 직접 검색
-      const titleCondition = { title: { contains: query.search, mode: 'insensitive' as const } };
+      const titleCondition = {
+        title: { contains: query.search, mode: 'insensitive' as const },
+      };
 
       // 회사명으로 검색하여 corporateId 목록 가져오기
       const matchingCorps = await this.prisma.corporateProfile.findMany({
-        where: { companyNameOfficial: { contains: query.search, mode: 'insensitive' } },
+        where: {
+          companyNameOfficial: { contains: query.search, mode: 'insensitive' },
+        },
         select: { companyId: true },
       });
-      searchCorpIds = matchingCorps.map(c => c.companyId);
+      searchCorpIds = matchingCorps.map((c) => c.companyId);
 
       if (searchCorpIds.length > 0) {
-        where.OR = [
-          titleCondition,
-          { corporateId: { in: searchCorpIds } },
-        ];
+        where.OR = [titleCondition, { corporateId: { in: searchCorpIds } }];
       } else {
         where.title = { contains: query.search, mode: 'insensitive' };
       }
@@ -543,6 +589,11 @@ export class JobPostingService {
       viewCount: item.viewCount,
       scrapCount: item.scrapCount,
       applyCount: item.applyCount,
+      expiresAt: item.expiresAt,
+      bumpedAt: item.bumpedAt,
+      isUrgent: item.isUrgent || false,
+      isFeatured: item.isFeatured || false,
+      featuredUntil: item.featuredUntil,
       suspendedAt: item.suspendedAt,
       suspendReason: item.suspendReason,
       createdAt: item.createdAt,

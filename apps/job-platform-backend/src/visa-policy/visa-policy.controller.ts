@@ -56,10 +56,7 @@ export class VisaPolicyController {
 
   @Get('changes/:id')
   @ApiOperation({ summary: 'Get policy change detail' })
-  async getPolicyChange(
-    @Session() sessionId: string,
-    @Param('id') id: string,
-  ) {
+  async getPolicyChange(@Session() sessionId: string, @Param('id') id: string) {
     await this.requireAdmin(sessionId);
     return await this.visaPolicyService.getPolicyChangeById(id);
   }
@@ -77,19 +74,12 @@ export class VisaPolicyController {
     },
   ) {
     const adminId = await this.requireAdmin(sessionId);
-    return await this.visaPolicyService.reviewPolicyChange(
-      id,
-      body,
-      adminId,
-    );
+    return await this.visaPolicyService.reviewPolicyChange(id, body, adminId);
   }
 
   @Post('changes/:id/create-draft-rule')
   @ApiOperation({ summary: 'Create draft rule from policy change' })
-  async createDraftRule(
-    @Session() sessionId: string,
-    @Param('id') id: string,
-  ) {
+  async createDraftRule(@Session() sessionId: string, @Param('id') id: string) {
     const adminId = await this.requireAdmin(sessionId);
     return await this.visaPolicyService.createDraftRuleFromChange(id, adminId);
   }

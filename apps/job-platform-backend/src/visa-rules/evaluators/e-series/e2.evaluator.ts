@@ -1,5 +1,9 @@
 import { BaseVisaEvaluator } from '../base.evaluator';
-import { EvaluateVisaInput, VisaEvaluation, VisaTypeWithRelations } from '../evaluator.interface';
+import {
+  EvaluateVisaInput,
+  VisaEvaluation,
+  VisaTypeWithRelations,
+} from '../evaluator.interface';
 
 /**
  * E-2 회화지도 평가기
@@ -13,16 +17,26 @@ import { EvaluateVisaInput, VisaEvaluation, VisaTypeWithRelations } from '../eva
 export class E2Evaluator extends BaseVisaEvaluator {
   readonly visaCodes = ['E-2', 'E-2-1', 'E-2-2'];
 
-  evaluate(input: EvaluateVisaInput, visaType: VisaTypeWithRelations): VisaEvaluation {
+  evaluate(
+    input: EvaluateVisaInput,
+    visaType: VisaTypeWithRelations,
+  ): VisaEvaluation {
     const result = this.createEmptyResult();
     result.documents = this.getRequiredDocuments(visaType.requiredDocuments);
 
     // 1. 원어민 국가 확인
-    const countryCheck = this.checkCountryAllowed(input.nationality, visaType.countryRestrictions);
+    const countryCheck = this.checkCountryAllowed(
+      input.nationality,
+      visaType.countryRestrictions,
+    );
     if (!countryCheck.allowed) {
       result.blockedReasons.push(countryCheck.reason!);
-      result.suggestions.push('E-2 비자는 영어 원어민 국가(미국, 영국, 캐나다, 호주, 뉴질랜드, 아일랜드, 남아공) 국민 대상');
-      result.suggestions.push('비원어민 국가의 경우 E-1(교수) 또는 E-7(특정활동) 비자 검토');
+      result.suggestions.push(
+        'E-2 비자는 영어 원어민 국가(미국, 영국, 캐나다, 호주, 뉴질랜드, 아일랜드, 남아공) 국민 대상',
+      );
+      result.suggestions.push(
+        '비원어민 국가의 경우 E-1(교수) 또는 E-7(특정활동) 비자 검토',
+      );
       return result;
     }
 
@@ -42,7 +56,9 @@ export class E2Evaluator extends BaseVisaEvaluator {
     // 4. 교육 업종 확인
     const isEducation = input.ksicCode.startsWith('85');
     if (!isEducation) {
-      result.restrictions.push('E-2 비자는 교육기관(학원, 학교)에서만 활동 가능');
+      result.restrictions.push(
+        'E-2 비자는 교육기관(학원, 학교)에서만 활동 가능',
+      );
     }
 
     result.eligible = true;

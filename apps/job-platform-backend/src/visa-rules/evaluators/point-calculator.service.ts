@@ -18,7 +18,10 @@ export class PointCalculatorService {
   constructor(private readonly prisma: AuthPrismaService) {}
 
   /** 점수제 비자의 점수를 계산 */
-  async calculateScore(visaTypeId: bigint, input: EvaluateVisaInput): Promise<PointResult> {
+  async calculateScore(
+    visaTypeId: bigint,
+    input: EvaluateVisaInput,
+  ): Promise<PointResult> {
     // DB에서 카테고리 및 기준 로드
     const categories = await this.prisma.pointSystemCategory.findMany({
       where: { visaTypeId },
@@ -71,11 +74,18 @@ export class PointCalculatorService {
       case 'AGE':
         return this.evaluateRangeCriteria(category.criteria, input.age, '세');
       case 'EDUCATION':
-        return this.evaluateMatchCriteria(category.criteria, input.educationLevel);
+        return this.evaluateMatchCriteria(
+          category.criteria,
+          input.educationLevel,
+        );
       case 'KOREAN':
         return this.evaluateKoreanLevel(category.criteria, input);
       case 'INCOME':
-        return this.evaluateRangeCriteria(category.criteria, input.incomeGniPercent, '%');
+        return this.evaluateRangeCriteria(
+          category.criteria,
+          input.incomeGniPercent,
+          '%',
+        );
       case 'SOCIAL':
         return this.evaluateSocialPoints(category.criteria, input);
       default:
@@ -85,7 +95,12 @@ export class PointCalculatorService {
 
   /** 범위 기반 기준 평가 (나이, 소득) */
   private evaluateRangeCriteria(
-    criteria: Array<{ criteriaName: string; minValue: number | null; maxValue: number | null; score: number }>,
+    criteria: Array<{
+      criteriaName: string;
+      minValue: number | null;
+      maxValue: number | null;
+      score: number;
+    }>,
     value: number | undefined,
     unit: string,
   ): { score: number; detail: string } {
@@ -103,43 +118,69 @@ export class PointCalculatorService {
 
   /** 매칭 기반 기준 평가 (학력) */
   private evaluateMatchCriteria(
-    criteria: Array<{ criteriaName: string; matchValue: string | null; score: number }>,
+    criteria: Array<{
+      criteriaName: string;
+      matchValue: string | null;
+      score: number;
+    }>,
     value: string | undefined,
   ): { score: number; detail: string } {
     if (!value) return { score: 0, detail: '정보 미입력' };
 
-    const match = criteria.find(c => c.matchValue === value);
+    const match = criteria.find((c) => c.matchValue === value);
     if (match) {
-      return { score: match.score, detail: `${match.criteriaName} → ${match.score}점` };
+      return {
+        score: match.score,
+        detail: `${match.criteriaName} → ${match.score}점`,
+      };
     }
     return { score: 0, detail: `${value} - 해당 기준 없음` };
   }
 
   /** 한국어능력 평가 (TOPIK or KIIP) */
   private evaluateKoreanLevel(
-    criteria: Array<{ criteriaName: string; matchValue: string | null; score: number }>,
+    criteria: Array<{
+      criteriaName: string;
+      matchValue: string | null;
+      score: number;
+    }>,
     input: EvaluateVisaInput,
   ): { score: number; detail: string } {
     // KIIP와 TOPIK 모두 확인하고 더 높은 점수 적용
     const results: { score: number; detail: string }[] = [];
 
     if (input.koreanLevel) {
-      const topik = criteria.find(c => c.matchValue === input.koreanLevel);
-      if (topik) results.push({ score: topik.score, detail: `${topik.criteriaName} → ${topik.score}점` });
+      const topik = criteria.find((c) => c.matchValue === input.koreanLevel);
+      if (topik)
+        results.push({
+          score: topik.score,
+          detail: `${topik.criteriaName} → ${topik.score}점`,
+        });
     }
 
     if (input.socialIntegrationLevel) {
-      const kiip = criteria.find(c => c.matchValue === `KIIP${input.socialIntegrationLevel}`);
-      if (kiip) results.push({ score: kiip.score, detail: `${kiip.criteriaName} → ${kiip.score}점` });
+      const kiip = criteria.find(
+        (c) => c.matchValue === `KIIP${input.socialIntegrationLevel}`,
+      );
+      if (kiip)
+        results.push({
+          score: kiip.score,
+          detail: `${kiip.criteriaName} → ${kiip.score}점`,
+        });
     }
 
-    if (results.length === 0) return { score: 0, detail: '한국어능력 정보 미입력' };
-    return results.reduce((a, b) => a.score >= b.score ? a : b);
+    if (results.length === 0)
+      return { score: 0, detail: '한국어능력 정보 미입력' };
+    return results.reduce((a, b) => (a.score >= b.score ? a : b));
   }
 
   /** 사회통합 가산점 평가 (복수 항목 합산) */
   private evaluateSocialPoints(
-    criteria: Array<{ criteriaName: string; matchValue: string | null; score: number }>,
+    criteria: Array<{
+      criteriaName: string;
+      matchValue: string | null;
+      score: number;
+    }>,
     input: EvaluateVisaInput,
   ): { score: number; detail: string } {
     let total = 0;
@@ -147,10 +188,12 @@ export class PointCalculatorService {
 
     const check = (matchValue: string, condition: boolean) => {
       if (!condition) return;
-      const c = criteria.find(cr => cr.matchValue === matchValue);
+      const c = criteria.find((cr) => cr.matchValue === matchValue);
       if (c) {
         total += c.score;
-        details.push(`${c.criteriaName}: ${c.score > 0 ? '+' : ''}${c.score}점`);
+        details.push(
+          `${c.criteriaName}: ${c.score > 0 ? '+' : ''}${c.score}점`,
+        );
       }
     };
 

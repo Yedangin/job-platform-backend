@@ -1,5 +1,9 @@
 import { BaseVisaEvaluator } from '../base.evaluator';
-import { EvaluateVisaInput, VisaEvaluation, VisaTypeWithRelations } from '../evaluator.interface';
+import {
+  EvaluateVisaInput,
+  VisaEvaluation,
+  VisaTypeWithRelations,
+} from '../evaluator.interface';
 
 /**
  * C-4 단기취업 평가기
@@ -10,7 +14,10 @@ import { EvaluateVisaInput, VisaEvaluation, VisaTypeWithRelations } from '../eva
 export class C4Evaluator extends BaseVisaEvaluator {
   readonly visaCodes = ['C-4'];
 
-  evaluate(input: EvaluateVisaInput, visaType: VisaTypeWithRelations): VisaEvaluation {
+  evaluate(
+    input: EvaluateVisaInput,
+    visaType: VisaTypeWithRelations,
+  ): VisaEvaluation {
     const result = this.createEmptyResult();
     result.documents = ['여권 사본', '고용계약서 또는 초청장', '활동계획서'];
 

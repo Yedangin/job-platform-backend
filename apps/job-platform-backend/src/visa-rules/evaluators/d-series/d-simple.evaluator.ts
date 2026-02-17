@@ -1,5 +1,9 @@
 import { BaseVisaEvaluator } from '../base.evaluator';
-import { EvaluateVisaInput, VisaEvaluation, VisaTypeWithRelations } from '../evaluator.interface';
+import {
+  EvaluateVisaInput,
+  VisaEvaluation,
+  VisaTypeWithRelations,
+} from '../evaluator.interface';
 
 /**
  * D 시리즈 간단 평가기 (D-1, D-3, D-4, D-10)
@@ -7,7 +11,10 @@ import { EvaluateVisaInput, VisaEvaluation, VisaTypeWithRelations } from '../eva
 export class DSimpleEvaluator extends BaseVisaEvaluator {
   readonly visaCodes = ['D-1', 'D-3', 'D-4', 'D-4-1', 'D-4-7', 'D-10'];
 
-  evaluate(input: EvaluateVisaInput, visaType: VisaTypeWithRelations): VisaEvaluation {
+  evaluate(
+    input: EvaluateVisaInput,
+    visaType: VisaTypeWithRelations,
+  ): VisaEvaluation {
     const result = this.createEmptyResult();
 
     switch (visaType.parentCode ?? visaType.code) {
@@ -24,7 +31,9 @@ export class DSimpleEvaluator extends BaseVisaEvaluator {
       case 'D-4': // 일반연수 - 시간제 제한적
         if (input.jobType === 'FULL_TIME') {
           result.blockedReasons.push('D-4 일반연수 비자는 풀타임 취업 불가');
-          result.suggestions.push('시간제 취업만 가능 (체류자격외활동허가 필요)');
+          result.suggestions.push(
+            '시간제 취업만 가능 (체류자격외활동허가 필요)',
+          );
         } else {
           result.eligible = true;
           result.restrictions.push('주 20시간 이내');

@@ -121,6 +121,87 @@ exports.Prisma.SystemLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.RequestLogScalarFieldEnum = {
+  id: 'id',
+  method: 'method',
+  path: 'path',
+  statusCode: 'statusCode',
+  userId: 'userId',
+  responseTime: 'responseTime',
+  ip: 'ip',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.MatchingLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  inputData: 'inputData',
+  eligibleCount: 'eligibleCount',
+  eligibleVisas: 'eligibleVisas',
+  blockedCount: 'blockedCount',
+  durationMs: 'durationMs',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ErrorLogScalarFieldEnum = {
+  id: 'id',
+  errorType: 'errorType',
+  message: 'message',
+  stack: 'stack',
+  userId: 'userId',
+  path: 'path',
+  method: 'method',
+  statusCode: 'statusCode',
+  is500: 'is500',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ChangeLogScalarFieldEnum = {
+  id: 'id',
+  adminId: 'adminId',
+  tableName: 'tableName',
+  recordId: 'recordId',
+  action: 'action',
+  before: 'before',
+  after: 'after',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.LawAmendmentScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  source: 'source',
+  sourceUrl: 'sourceUrl',
+  detectedAt: 'detectedAt',
+  effectiveDate: 'effectiveDate',
+  status: 'status',
+  affectedVisaCodes: 'affectedVisaCodes',
+  changeSummary: 'changeSummary',
+  changeDetails: 'changeDetails',
+  impactAnalysis: 'impactAnalysis',
+  reviewedBy: 'reviewedBy',
+  reviewedAt: 'reviewedAt',
+  appliedAt: 'appliedAt',
+  rejectedAt: 'rejectedAt',
+  rejectionReason: 'rejectionReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.LawAmendmentItemScalarFieldEnum = {
+  id: 'id',
+  amendmentId: 'amendmentId',
+  targetTable: 'targetTable',
+  targetId: 'targetId',
+  action: 'action',
+  beforeData: 'beforeData',
+  afterData: 'afterData',
+  isApplied: 'isApplied',
+  appliedAt: 'appliedAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -133,7 +214,13 @@ exports.Prisma.QueryMode = {
 
 
 exports.Prisma.ModelName = {
-  SystemLog: 'SystemLog'
+  SystemLog: 'SystemLog',
+  RequestLog: 'RequestLog',
+  MatchingLog: 'MatchingLog',
+  ErrorLog: 'ErrorLog',
+  ChangeLog: 'ChangeLog',
+  LawAmendment: 'LawAmendment',
+  LawAmendmentItem: 'LawAmendmentItem'
 };
 
 /**

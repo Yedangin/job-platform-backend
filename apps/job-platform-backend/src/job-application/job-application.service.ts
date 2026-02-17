@@ -17,11 +17,14 @@ export class JobApplicationService {
   // ========================================
   // 지원하기
   // ========================================
-  async applyToJob(userId: string, data: {
-    jobId: string;
-    applicationMethod?: string;
-    coverLetter?: string;
-  }) {
+  async applyToJob(
+    userId: string,
+    data: {
+      jobId: string;
+      applicationMethod?: string;
+      coverLetter?: string;
+    },
+  ) {
     const job = await this.prisma.jobPosting.findUnique({
       where: { id: BigInt(data.jobId) },
     });
@@ -110,7 +113,10 @@ export class JobApplicationService {
   // ========================================
   // 내 지원 목록 (구직자)
   // ========================================
-  async getMyApplications(userId: string, query: { status?: string; page?: number; limit?: number }) {
+  async getMyApplications(
+    userId: string,
+    query: { status?: string; page?: number; limit?: number },
+  ) {
     const page = query.page || 1;
     const limit = query.limit || 20;
     const where: any = { applicantId: userId };
@@ -171,7 +177,11 @@ export class JobApplicationService {
   // ========================================
   // 공고별 지원자 목록 (기업회원)
   // ========================================
-  async getJobApplications(userId: string, jobId: string, query: { page?: number; limit?: number }) {
+  async getJobApplications(
+    userId: string,
+    jobId: string,
+    query: { page?: number; limit?: number },
+  ) {
     // 소유권 확인
     const corp = await this.prisma.corporateProfile.findUnique({
       where: { authId: userId },
@@ -216,7 +226,9 @@ export class JobApplicationService {
           status: app.status,
           applicationMethod: app.applicationMethod,
           coverLetter: app.coverLetter,
-          resumeSnapshot: app.resumeSnapshot ? JSON.parse(app.resumeSnapshot) : null,
+          resumeSnapshot: app.resumeSnapshot
+            ? JSON.parse(app.resumeSnapshot)
+            : null,
           selfReportedAt: app.selfReportedAt,
           interviewDate: app.interviewDate,
           interviewNote: app.interviewNote,
@@ -267,7 +279,8 @@ export class JobApplicationService {
     }
 
     const updateData: any = { status: data.status };
-    if (data.interviewDate) updateData.interviewDate = new Date(data.interviewDate);
+    if (data.interviewDate)
+      updateData.interviewDate = new Date(data.interviewDate);
     if (data.interviewNote) updateData.interviewNote = data.interviewNote;
     if (data.rejectionReason) updateData.rejectionReason = data.rejectionReason;
     if (data.status === 'ACCEPTED' || data.status === 'REJECTED') {

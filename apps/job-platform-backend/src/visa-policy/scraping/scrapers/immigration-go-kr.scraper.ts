@@ -39,7 +39,9 @@ export class ImmigrationGoKrScraper extends BaseScraper {
       const $ = cheerio.load(html);
 
       // 게시판 항목 추출
-      const rows = $('table.board_list tbody tr, .bbs_list_wrap li, .list_item');
+      const rows = $(
+        'table.board_list tbody tr, .bbs_list_wrap li, .list_item',
+      );
 
       rows.each((_i, el) => {
         try {
@@ -54,9 +56,7 @@ export class ImmigrationGoKrScraper extends BaseScraper {
           if (!title) return;
 
           // 비자 관련 키워드 필터링
-          const isRelevant = this.keywords.some((kw) =>
-            title.includes(kw),
-          );
+          const isRelevant = this.keywords.some((kw) => title.includes(kw));
 
           if (isRelevant) {
             const fullUrl = href.startsWith('http')
@@ -85,9 +85,7 @@ export class ImmigrationGoKrScraper extends BaseScraper {
           ) {
             items.push({
               title: text.substring(0, 200),
-              url: href.startsWith('http')
-                ? href
-                : `${this.siteUrl}${href}`,
+              url: href.startsWith('http') ? href : `${this.siteUrl}${href}`,
               content: `[출입국정책본부] ${text}`,
               category: 'NOTICE',
             });

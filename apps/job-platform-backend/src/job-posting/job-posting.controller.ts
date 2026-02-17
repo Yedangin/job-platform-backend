@@ -13,6 +13,7 @@ import { Public } from 'libs/common/src/common/decorator/public.decorator';
 import { Session } from 'libs/common/src/common/decorator/session.decorator';
 import { RedisService } from 'libs/common/src';
 import { JobPostingService } from './job-posting.service';
+import { JobEligibilityService } from './job-eligibility.service';
 
 interface SessionData {
   userId: string;
@@ -24,6 +25,7 @@ interface SessionData {
 export class JobPostingController {
   constructor(
     private readonly jobPostingService: JobPostingService,
+    private readonly jobEligibilityService: JobEligibilityService,
     private readonly redisService: RedisService,
   ) {}
 
@@ -56,17 +58,46 @@ export class JobPostingController {
   // ========================================
   // Public endpoints (specific routes FIRST)
   // ========================================
+  /**
+   * 공고 목록 조회 (공개 + 비자 필터 옵션)
+   * Job listings (public + optional visa filter)
+   *
+   * visaFilter=true: 로그인 사용자의 비자 기반 적격성 필터링 (Goal B)
+   * visaFilter=true: Filter by logged-in user's visa eligibility (Goal B)
+   */
   @Public()
   @Get('listing')
   async getJobListings(
+    @Session() sessionId: string,
     @Query('boardType') boardType?: string,
     @Query('tierType') tierType?: string,
     @Query('visa') visa?: string,
     @Query('keyword') keyword?: string,
     @Query('employmentSubType') employmentSubType?: string,
+    @Query('visaFilter') visaFilter?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ) {
+    // visaFilter=true이고 세션이 있으면 비자 기반 필터링
+    // If visaFilter=true and session exists, apply visa-based filtering
+    if (visaFilter === 'true' && sessionId) {
+      try {
+        return await this.jobEligibilityService.getVisaFilteredListings(
+          sessionId,
+          {
+            boardType,
+            keyword,
+            employmentSubType,
+            page: page ? parseInt(page) : 1,
+            limit: limit ? parseInt(limit) : 20,
+          },
+        );
+      } catch {
+        // 비자 인증이 없으면 기본 목록으로 fallback
+        // If no visa verification, fallback to default listing
+      }
+    }
+
     return this.jobPostingService.getJobListings({
       boardType,
       tierType,
@@ -152,13 +183,32 @@ export class JobPostingController {
   }
 
   // ========================================
+  // 비자 필터링 — 구직자 비자 기반 공고 목록 (Goal B)
+  // Visa filtering — job listings filtered by seeker's visa (Goal B)
+  // ========================================
+  @Get('eligible')
+  async getVisaFilteredListings(
+    @Session() sessionId: string,
+    @Query('boardType') boardType?: string,
+    @Query('keyword') keyword?: string,
+    @Query('employmentSubType') employmentSubType?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.jobEligibilityService.getVisaFilteredListings(sessionId, {
+      boardType,
+      keyword,
+      employmentSubType,
+      page: page ? parseInt(page) : 1,
+      limit: limit ? parseInt(limit) : 20,
+    });
+  }
+
+  // ========================================
   // Create (POST /jobs/create)
   // ========================================
   @Post('create')
-  async createJobPosting(
-    @Session() sessionId: string,
-    @Body() body: any,
-  ) {
+  async createJobPosting(@Session() sessionId: string, @Body() body: any) {
     const userId = await this.requireCorporate(sessionId);
     return this.jobPostingService.createJobPosting(userId, body);
   }
@@ -171,6 +221,18 @@ export class JobPostingController {
   async getJobDetail(@Param('id') id: string, @Req() req: any) {
     const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
     return this.jobPostingService.getJobDetail(id, ip);
+  }
+
+  /**
+   * 특정 공고에 대한 지원 가능 여부 상세 (Goal B)
+   * Detailed eligibility check for a specific job posting (Goal B)
+   */
+  @Get(':id/eligibility')
+  async checkJobEligibility(
+    @Session() sessionId: string,
+    @Param('id') id: string,
+  ) {
+    return this.jobEligibilityService.checkJobEligibility(sessionId, id);
   }
 
   @Put(':id')
@@ -194,10 +256,7 @@ export class JobPostingController {
   }
 
   @Post(':id/close')
-  async closeJobPosting(
-    @Session() sessionId: string,
-    @Param('id') id: string,
-  ) {
+  async closeJobPosting(@Session() sessionId: string, @Param('id') id: string) {
     const userId = await this.requireCorporate(sessionId);
     return this.jobPostingService.closeJobPosting(userId, id);
   }

@@ -131,7 +131,11 @@
     "testEnvironment": "node",
     "roots": [
       "<rootDir>/apps/"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^libs/common/src$": "<rootDir>/libs/common/src",
+      "^libs/common/src/(.*)$": "<rootDir>/libs/common/src/$1"
+    }
   },
   "lint-staged": {
     "*.ts": [

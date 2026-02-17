@@ -33,6 +33,7 @@ import {
 } from 'generated/prisma-user';
 import { GenerateStoreToken } from 'libs/common/src/common/helper/generate-store-token';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
+import { CouponService } from '../payment/coupon.service';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -43,6 +44,7 @@ export class AuthService implements OnModuleInit {
     private readonly prisma: AuthPrismaService,
     private readonly generateToken: GenerateStoreToken,
     private readonly redisService: RedisService,
+    private readonly couponService: CouponService,
   ) {
     // ✅ AWS SES 설정
     this.sesClient = new SESClient({
@@ -256,7 +258,7 @@ export class AuthService implements OnModuleInit {
 
     // 5. ★ 트랜잭션: User + Profile 동시 생성
     try {
-      await this.prisma.$transaction(async (prisma) => {
+      const txResult = await this.prisma.$transaction(async (prisma) => {
         // 5-1. users_auth 생성
         const newUser = await prisma.user.create({
           data: {
@@ -293,13 +295,27 @@ export class AuthService implements OnModuleInit {
             },
           });
         }
+
+        return { userId: newUser.id, userType: finalUserType };
       });
 
       // 6. 인증 티켓 삭제
       await this.redisService.del(`verified_ticket:${email}`);
 
       // 활동 로그: 회원가입
-      await this.logActivity(null, email, fullName || null, null, 'REGISTER', `${finalUserType} 회원가입`);
+      await this.logActivity(
+        null,
+        email,
+        fullName || null,
+        null,
+        'REGISTER',
+        `${finalUserType} 회원가입`,
+      );
+
+      // 기업 회원 환영 쿠폰 자동 발급 / Auto-grant welcome coupons for corporate users
+      if (txResult.userType === UserType.CORPORATE) {
+        await this.couponService.grantWelcomeCoupons(txResult.userId);
+      }
 
       return { success: true, message: 'User registered successfully' };
     } catch (error) {
@@ -478,7 +494,14 @@ export class AuthService implements OnModuleInit {
       const accessToken = await this.getAccessTokenFromSession(sessionId);
 
       // 활동 로그: 소셜 로그인
-      await this.logActivity(existingUser.id, existingUser.email, null, null, 'SOCIAL_LOGIN', `${prismaProvider} 소셜 로그인`);
+      await this.logActivity(
+        existingUser.id,
+        existingUser.email,
+        null,
+        null,
+        'SOCIAL_LOGIN',
+        `${prismaProvider} 소셜 로그인`,
+      );
 
       return {
         success: true,
@@ -569,7 +592,14 @@ export class AuthService implements OnModuleInit {
       const accessToken = await this.getAccessTokenFromSession(sessionId);
 
       // 활동 로그: 소셜 신규가입+로그인
-      await this.logActivity(newUser.id, newUser.email, fullName, null, 'SOCIAL_LOGIN', `${prismaProvider} 소셜 신규가입`);
+      await this.logActivity(
+        newUser.id,
+        newUser.email,
+        fullName,
+        null,
+        'SOCIAL_LOGIN',
+        `${prismaProvider} 소셜 신규가입`,
+      );
 
       return {
         success: true,
@@ -604,52 +634,14 @@ export class AuthService implements OnModuleInit {
     return { message: 'Password reset successful' };
   }
 
-  // --- 9. 관리자 통계 조회 ---
+  // --- 9. 관리자 대시보드 통계 조회 ---
+  // --- 9. Admin dashboard stats ---
   async getAdminStats() {
-    // 전체 회원수
-    const totalUsers = await this.prisma.user.count();
-
-    // 유저 타입별 회원수
-    const individualUsers = await this.prisma.user.count({
-      where: { userType: 'INDIVIDUAL' },
-    });
-    const corporateUsers = await this.prisma.user.count({
-      where: { userType: 'CORPORATE' },
-    });
-    const adminUsers = await this.prisma.user.count({
-      where: { userType: 'ADMIN' },
-    });
-
-    // 소셜 로그인 회원수 (NONE이 아닌 회원)
-    const socialUsers = await this.prisma.user.count({
-      where: { socialProvider: { not: 'NONE' } },
-    });
-
-    // 이메일 회원수 (소셜 로그인이 NONE인 회원, ADMIN 제외)
-    const emailUsers = await this.prisma.user.count({
-      where: { socialProvider: 'NONE', userType: { not: 'ADMIN' } },
-    });
-
-    // 오늘 로그인한 회원수 (일일 접속자)
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const dailyActiveUsers = await this.prisma.user.count({
-      where: {
-        lastLoginAt: { gte: today },
-      },
-    });
 
-    // 전체 프로필 수 (개인회원 프로필)
-    const totalProfiles = await this.prisma.individualProfile.count();
-
-    // 공고 수 통계
-    const [totalJobPostings, partTimePostings, fullTimePostings] = await Promise.all([
-      this.prisma.jobPosting.count(),
-      this.prisma.jobPosting.count({ where: { boardType: 'PART_TIME' } }),
-      this.prisma.jobPosting.count({ where: { boardType: 'FULL_TIME' } }),
-    ]);
-
-    return {
+    // 병렬 쿼리 / Parallel queries for performance
+    const [
       totalUsers,
       individualUsers,
       corporateUsers,
@@ -661,6 +653,122 @@ export class AuthService implements OnModuleInit {
       totalJobPostings,
       partTimePostings,
       fullTimePostings,
+      activeJobPostings,
+      todayMatchings,
+      pendingVisaVerifications,
+      verifiedVisaVerifications,
+      visaDistribution,
+      pendingCorporateVerifications,
+    ] = await Promise.all([
+      this.prisma.user.count(),
+      this.prisma.user.count({ where: { userType: 'INDIVIDUAL' } }),
+      this.prisma.user.count({ where: { userType: 'CORPORATE' } }),
+      this.prisma.user.count({ where: { userType: 'ADMIN' } }),
+      this.prisma.user.count({ where: { socialProvider: { not: 'NONE' } } }),
+      this.prisma.user.count({
+        where: { socialProvider: 'NONE', userType: { not: 'ADMIN' } },
+      }),
+      this.prisma.user.count({ where: { lastLoginAt: { gte: today } } }),
+      this.prisma.individualProfile.count(),
+      this.prisma.jobPosting.count(),
+      this.prisma.jobPosting.count({ where: { boardType: 'PART_TIME' } }),
+      this.prisma.jobPosting.count({ where: { boardType: 'FULL_TIME' } }),
+      this.prisma.jobPosting.count({ where: { status: 'ACTIVE' } }),
+      // 오늘 매칭수 / Today's matching count
+      this.prisma.visaEvaluationLog.count({
+        where: { evaluatedAt: { gte: today } },
+      }),
+      // 비자인증 현황 / Visa verification stats
+      this.prisma.visaVerification.count({
+        where: { verificationStatus: 'SUBMITTED' },
+      }),
+      this.prisma.visaVerification.count({
+        where: { verificationStatus: 'VERIFIED' },
+      }),
+      // 비자별 분포 / Visa distribution
+      this.prisma.visaVerification.groupBy({
+        by: ['visaCode'],
+        _count: { visaCode: true },
+        where: {
+          verificationStatus: { in: ['SUBMITTED', 'VERIFIED'] },
+        },
+      }),
+      // 기업인증 대기 / Pending corporate verifications
+      this.prisma.corporateProfile.count({
+        where: { verificationStatus: 'SUBMITTED' },
+      }),
+    ]);
+
+    // 7일 추이 — 일별 신규회원, 매칭수 / 7-day trends — daily new users, matchings
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+    sevenDaysAgo.setHours(0, 0, 0, 0);
+
+    const dailyTrends: Array<{
+      date: string;
+      newUsers: number;
+      matchings: number;
+      newJobs: number;
+    }> = [];
+
+    for (let i = 0; i < 7; i++) {
+      const dayStart = new Date(sevenDaysAgo);
+      dayStart.setDate(dayStart.getDate() + i);
+      const dayEnd = new Date(dayStart);
+      dayEnd.setDate(dayEnd.getDate() + 1);
+
+      const [newUsers, matchings, newJobs] = await Promise.all([
+        this.prisma.user.count({
+          where: {
+            joinedAt: { gte: dayStart, lt: dayEnd },
+            userType: { not: 'ADMIN' },
+          },
+        }),
+        this.prisma.visaEvaluationLog.count({
+          where: { evaluatedAt: { gte: dayStart, lt: dayEnd } },
+        }),
+        this.prisma.jobPosting.count({
+          where: { createdAt: { gte: dayStart, lt: dayEnd } },
+        }),
+      ]);
+
+      dailyTrends.push({
+        date: dayStart.toISOString().split('T')[0],
+        newUsers,
+        matchings,
+        newJobs,
+      });
+    }
+
+    return {
+      // 기본 회원 통계 / Basic user stats
+      totalUsers,
+      individualUsers,
+      corporateUsers,
+      adminUsers,
+      socialUsers,
+      emailUsers,
+      dailyActiveUsers,
+      totalProfiles,
+      // 공고 통계 / Job stats
+      totalJobPostings,
+      activeJobPostings,
+      partTimePostings,
+      fullTimePostings,
+      // 매칭 통계 / Matching stats
+      todayMatchings,
+      // 비자인증 통계 / Visa verification stats
+      pendingVisaVerifications,
+      verifiedVisaVerifications,
+      // 기업인증 대기 / Pending corporate verifications
+      pendingCorporateVerifications,
+      // 비자별 분포 / Visa distribution
+      visaDistribution: visaDistribution.map((v) => ({
+        visaCode: v.visaCode,
+        count: v._count.visaCode,
+      })),
+      // 7일 추이 / 7-day trends
+      dailyTrends,
     };
   }
 
@@ -1023,7 +1131,9 @@ export class AuthService implements OnModuleInit {
     }
     const cleanDate = dto.openDate?.replace(/[^0-9]/g, '') || '';
     if (cleanDate.length !== 8) {
-      throw new BadRequestException('개업일자는 8자리(YYYYMMDD) 형식이어야 합니다.');
+      throw new BadRequestException(
+        '개업일자는 8자리(YYYYMMDD) 형식이어야 합니다.',
+      );
     }
 
     try {
@@ -1049,16 +1159,27 @@ export class AuthService implements OnModuleInit {
 
       if (!validateResponse.ok) {
         const errorText = await validateResponse.text();
-        console.error('[NTS Validate API] HTTP 에러:', validateResponse.status, errorText);
-        throw new InternalServerErrorException('국세청 진위확인 API 호출에 실패했습니다.');
+        console.error(
+          '[NTS Validate API] HTTP 에러:',
+          validateResponse.status,
+          errorText,
+        );
+        throw new InternalServerErrorException(
+          '국세청 진위확인 API 호출에 실패했습니다.',
+        );
       }
 
       const validateResult = await validateResponse.json();
-      console.log('[NTS Validate API] 응답:', JSON.stringify(validateResult, null, 2));
+      console.log(
+        '[NTS Validate API] 응답:',
+        JSON.stringify(validateResult, null, 2),
+      );
 
       const validateData = validateResult.data?.[0];
       if (!validateData) {
-        throw new BadRequestException('사업자 진위확인 정보를 조회할 수 없습니다.');
+        throw new BadRequestException(
+          '사업자 진위확인 정보를 조회할 수 없습니다.',
+        );
       }
 
       // valid: "01" = 일치, "02" = 불일치
@@ -1071,7 +1192,8 @@ export class AuthService implements OnModuleInit {
           taxType: '',
           endDate: '',
           isValid: false,
-          message: '사업자 정보가 일치하지 않습니다. 사업자등록번호, 기업명, 대표자 성명, 개업일자를 확인해주세요.',
+          message:
+            '사업자 정보가 일치하지 않습니다. 사업자등록번호, 기업명, 대표자 성명, 개업일자를 확인해주세요.',
         };
       }
 
@@ -1088,12 +1210,21 @@ export class AuthService implements OnModuleInit {
 
       if (!statusResponse.ok) {
         const errorText = await statusResponse.text();
-        console.error('[NTS Status API] HTTP 에러:', statusResponse.status, errorText);
-        throw new InternalServerErrorException('국세청 상태조회 API 호출에 실패했습니다.');
+        console.error(
+          '[NTS Status API] HTTP 에러:',
+          statusResponse.status,
+          errorText,
+        );
+        throw new InternalServerErrorException(
+          '국세청 상태조회 API 호출에 실패했습니다.',
+        );
       }
 
       const statusResult = await statusResponse.json();
-      console.log('[NTS Status API] 응답:', JSON.stringify(statusResult, null, 2));
+      console.log(
+        '[NTS Status API] 응답:',
+        JSON.stringify(statusResult, null, 2),
+      );
 
       const statusData = statusResult.data?.[0];
       if (!statusData) {
@@ -1164,14 +1295,25 @@ export class AuthService implements OnModuleInit {
     fs.renameSync(file.path, targetPath);
 
     // 상대 경로로 저장 (DB에 저장할 경로)
-    const relativePath = path.relative(process.cwd(), targetPath).replace(/\\/g, '/');
+    const relativePath = path
+      .relative(process.cwd(), targetPath)
+      .replace(/\\/g, '/');
 
     // multer가 originalname을 latin1로 디코딩하므로 UTF-8로 재변환
-    const decodedOriginalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+    const decodedOriginalName = Buffer.from(
+      file.originalname,
+      'latin1',
+    ).toString('utf8');
 
     // 활동 로그: 서류 업로드
-    await this.logActivity(userId, user.email, null, null, 'CORPORATE_DOC_UPLOAD',
-      `${docType === 'bizReg' ? '사업자등록증' : '재직증명서'} 업로드: ${decodedOriginalName}`);
+    await this.logActivity(
+      userId,
+      user.email,
+      null,
+      null,
+      'CORPORATE_DOC_UPLOAD',
+      `${docType === 'bizReg' ? '사업자등록증' : '재직증명서'} 업로드: ${decodedOriginalName}`,
+    );
 
     return {
       success: true,
@@ -1202,7 +1344,8 @@ export class AuthService implements OnModuleInit {
       // Tesseract PSM 6 = uniform block of text (사업자등록증에 적합)
       const result = await Tesseract.recognize(absolutePath, 'kor+eng', {
         tessedit_pageseg_mode: '6' as any,
-        tessedit_char_whitelist: '0123456789-가나다라마바사아자차카타파하등록번호사업자법인 \n',
+        tessedit_char_whitelist:
+          '0123456789-가나다라마바사아자차카타파하등록번호사업자법인 \n',
       } as any);
       const text = result.data.text;
       console.log('[OCR] 추출된 전체 텍스트:', text);
@@ -1223,7 +1366,9 @@ export class AuthService implements OnModuleInit {
         // 방법 1: "등록번호" 키워드가 있는 줄에서 XXX-XX-XXXXX 패턴 찾기
         if (/등록\s*번호|사업자/.test(line) && !/법인/.test(line)) {
           // 같은 줄에서 번호 찾기
-          const dashMatch = line.match(/(\d{3})\s*[-–—]\s*(\d{2})\s*[-–—]\s*(\d{5})/);
+          const dashMatch = line.match(
+            /(\d{3})\s*[-–—]\s*(\d{2})\s*[-–—]\s*(\d{5})/,
+          );
           if (dashMatch) {
             bizNumber = dashMatch[1] + dashMatch[2] + dashMatch[3];
             console.log('[OCR] 등록번호 키워드 + 대시 패턴 매칭:', bizNumber);
@@ -1237,16 +1382,25 @@ export class AuthService implements OnModuleInit {
             break;
           }
           // 다음 줄에서 번호 찾기 (등록번호: \n 485-86-03274 형태)
-          const nextDashMatch = nextLine.match(/(\d{3})\s*[-–—]\s*(\d{2})\s*[-–—]\s*(\d{5})/);
+          const nextDashMatch = nextLine.match(
+            /(\d{3})\s*[-–—]\s*(\d{2})\s*[-–—]\s*(\d{5})/,
+          );
           if (nextDashMatch) {
             bizNumber = nextDashMatch[1] + nextDashMatch[2] + nextDashMatch[3];
-            console.log('[OCR] 등록번호 키워드(다음줄) + 대시 패턴 매칭:', bizNumber);
+            console.log(
+              '[OCR] 등록번호 키워드(다음줄) + 대시 패턴 매칭:',
+              bizNumber,
+            );
             break;
           }
           const nextPlainMatch = nextLine.match(/(\d{3})\s*(\d{2})\s*(\d{5})/);
           if (nextPlainMatch) {
-            bizNumber = nextPlainMatch[1] + nextPlainMatch[2] + nextPlainMatch[3];
-            console.log('[OCR] 등록번호 키워드(다음줄) + 연속숫자 매칭:', bizNumber);
+            bizNumber =
+              nextPlainMatch[1] + nextPlainMatch[2] + nextPlainMatch[3];
+            console.log(
+              '[OCR] 등록번호 키워드(다음줄) + 연속숫자 매칭:',
+              bizNumber,
+            );
             break;
           }
         }
@@ -1255,14 +1409,22 @@ export class AuthService implements OnModuleInit {
       // 방법 2: 키워드 없이 전체 텍스트에서 XXX-XX-XXXXX 패턴 찾기 (법인등록번호 제외)
       if (!bizNumber) {
         // 법인등록번호 근처가 아닌 XXX-XX-XXXXX 패턴 찾기
-        const allDashMatches = [...text.matchAll(/(\d{3})\s*[-–—]\s*(\d{2})\s*[-–—]\s*(\d{5})/g)];
+        const allDashMatches = [
+          ...text.matchAll(/(\d{3})\s*[-–—]\s*(\d{2})\s*[-–—]\s*(\d{5})/g),
+        ];
         for (const m of allDashMatches) {
           const matchIndex = m.index || 0;
           // 매치 앞 30자 내에 "법인"이 없는지 확인
-          const preceding = text.substring(Math.max(0, matchIndex - 30), matchIndex);
+          const preceding = text.substring(
+            Math.max(0, matchIndex - 30),
+            matchIndex,
+          );
           if (!/법인/.test(preceding)) {
             bizNumber = m[1] + m[2] + m[3];
-            console.log('[OCR] 전체텍스트 대시 패턴 매칭 (법인 제외):', bizNumber);
+            console.log(
+              '[OCR] 전체텍스트 대시 패턴 매칭 (법인 제외):',
+              bizNumber,
+            );
             break;
           }
         }
@@ -1323,6 +1485,9 @@ export class AuthService implements OnModuleInit {
       ksicCode: corp.ksicCode,
       addressRoad: corp.addressRoad,
       companySizeType: corp.companySizeType,
+      employeeCountKorean: corp.employeeCountKorean,
+      employeeCountForeign: corp.employeeCountForeign,
+      annualRevenue: Number(corp.annualRevenue), // BigInt → Number 변환 / Convert BigInt to Number
       proofDocumentUrl: corp.proofDocumentUrl,
       bizRegDocPath: corp.bizRegDocPath,
       bizRegDocOrigName: corp.bizRegDocOrigName,
@@ -1415,7 +1580,7 @@ export class AuthService implements OnModuleInit {
         // 대표자 본인 선언
         isCeoSelf,
         ceoSelfDeclaredAt: isCeoSelf ? new Date() : null,
-        ceoSelfDeclaredIp: isCeoSelf ? (clientIp || null) : null,
+        ceoSelfDeclaredIp: isCeoSelf ? clientIp || null : null,
         // OCR 결과
         ocrVerified,
         ocrExtractedBizNo,
@@ -1428,10 +1593,19 @@ export class AuthService implements OnModuleInit {
     });
 
     // 활동 로그: 기업 인증 신청
-    await this.logActivity(userId, user.email, null, null, 'CORPORATE_VERIFY_SUBMIT',
-      `기업 인증 신청: ${data.companyNameOfficial} (${data.bizRegNumber})`);
+    await this.logActivity(
+      userId,
+      user.email,
+      null,
+      null,
+      'CORPORATE_VERIFY_SUBMIT',
+      `기업 인증 신청: ${data.companyNameOfficial} (${data.bizRegNumber})`,
+    );
 
-    return { success: true, message: '기업 인증 정보가 제출되었습니다. 관리자 승인을 기다려주세요.' };
+    return {
+      success: true,
+      message: '기업 인증 정보가 제출되었습니다. 관리자 승인을 기다려주세요.',
+    };
   }
 
   // --- 22. Admin: 기업 인증 목록 조회 ---
@@ -1508,8 +1682,14 @@ export class AuthService implements OnModuleInit {
         },
       });
       // 활동 로그: 관리자 승인
-      await this.logActivity(userId, null, null, null, 'CORPORATE_VERIFY_APPROVE',
-        `기업 인증 승인: ${corp.companyNameOfficial || userId}`);
+      await this.logActivity(
+        userId,
+        null,
+        null,
+        null,
+        'CORPORATE_VERIFY_APPROVE',
+        `기업 인증 승인: ${corp.companyNameOfficial || userId}`,
+      );
       return { success: true, message: '기업 인증이 승인되었습니다.' };
     } else {
       // REJECT → PENDING으로 되돌림 + 거절 사유 저장
@@ -1525,8 +1705,15 @@ export class AuthService implements OnModuleInit {
         },
       });
       // 활동 로그: 관리자 거절
-      await this.logActivity(userId, null, null, null, 'CORPORATE_VERIFY_REJECT',
-        `기업 인증 거절: ${corp.companyNameOfficial || userId}`, reason);
+      await this.logActivity(
+        userId,
+        null,
+        null,
+        null,
+        'CORPORATE_VERIFY_REJECT',
+        `기업 인증 거절: ${corp.companyNameOfficial || userId}`,
+        reason,
+      );
       return { success: true, message: '기업 인증이 거절되었습니다.' };
     }
   }
@@ -1540,7 +1727,14 @@ export class AuthService implements OnModuleInit {
     sortBy?: string;
     sortOrder?: string;
   }) {
-    const { type = 'ALL', search, page = 1, limit = 20, sortBy = 'latest', sortOrder = 'desc' } = filters;
+    const {
+      type = 'ALL',
+      search,
+      page = 1,
+      limit = 20,
+      sortBy = 'latest',
+      sortOrder = 'desc',
+    } = filters;
 
     const where: any = {};
     // ADMIN 제외
@@ -1553,8 +1747,14 @@ export class AuthService implements OnModuleInit {
       where.OR = [
         { email: { contains: search, mode: 'insensitive' } },
         { individual: { realName: { contains: search, mode: 'insensitive' } } },
-        { corporate: { companyNameOfficial: { contains: search, mode: 'insensitive' } } },
-        { corporate: { managerName: { contains: search, mode: 'insensitive' } } },
+        {
+          corporate: {
+            companyNameOfficial: { contains: search, mode: 'insensitive' },
+          },
+        },
+        {
+          corporate: { managerName: { contains: search, mode: 'insensitive' } },
+        },
       ];
     }
 
@@ -1606,9 +1806,9 @@ export class AuthService implements OnModuleInit {
       data: users.map((u) => {
         // 조치필요 여부 판단
         const needsAction =
-          (u.corporate?.verificationStatus === 'SUBMITTED') || // 기업 인증 심사대기
-          (u.corporate?.verificationStatus === 'REJECTED') || // 거절 후 재심사 가능
-          (u.corporate?.ocrVerified === false); // OCR 불일치
+          u.corporate?.verificationStatus === 'SUBMITTED' || // 기업 인증 심사대기
+          u.corporate?.verificationStatus === 'REJECTED' || // 거절 후 재심사 가능
+          u.corporate?.ocrVerified === false; // OCR 불일치
 
         return {
           id: u.id,
@@ -1618,16 +1818,24 @@ export class AuthService implements OnModuleInit {
           isActive: u.isActive,
           joinedAt: u.joinedAt.toISOString(),
           lastLoginAt: u.lastLoginAt?.toISOString() || null,
-          updatedAt: (u.corporate?.updatedAt || u.individual?.updatedAt || u.lastLoginAt || u.joinedAt).toISOString(),
+          updatedAt: (
+            u.corporate?.updatedAt ||
+            u.individual?.updatedAt ||
+            u.lastLoginAt ||
+            u.joinedAt
+          ).toISOString(),
           needsAction,
           individual: u.individual
             ? {
                 realName: u.individual.realName,
                 nationality: u.individual.nationality,
                 gender: u.individual.gender,
-                birthDate: u.individual.birthDate?.toISOString().split('T')[0] || null,
+                birthDate:
+                  u.individual.birthDate?.toISOString().split('T')[0] || null,
                 visaType: u.individual.visaType,
-                visaExpiryDate: u.individual.visaExpiryDate?.toISOString().split('T')[0] || null,
+                visaExpiryDate:
+                  u.individual.visaExpiryDate?.toISOString().split('T')[0] ||
+                  null,
                 addressRoad: u.individual.addressRoad,
                 desiredJobType: u.individual.desiredJobType,
                 desiredSalary: u.individual.desiredSalary,
@@ -1638,7 +1846,9 @@ export class AuthService implements OnModuleInit {
                 profileImageUrl: u.individual.profileImageUrl,
                 selfIntro: u.individual.selfIntro,
                 isProfileCompleted: u.individual.isProfileCompleted,
-                profileCompletionPercent: this.calcProfileCompletion(u.individual),
+                profileCompletionPercent: this.calcProfileCompletion(
+                  u.individual,
+                ),
               }
             : null,
           corporate: u.corporate
@@ -1670,12 +1880,218 @@ export class AuthService implements OnModuleInit {
     };
   }
 
+  // --- 25. Admin: 회원 상세 조회 (이력서 + 비자인증 포함) ---
+  // --- 25. Admin: Get user detail with resume + visa verification ---
+  async getAdminUserDetail(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        individual: {
+          include: {
+            educations: true,
+            careers: true,
+            languages: true,
+          },
+        },
+        corporate: true,
+        resume: true,
+        visaVerification: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException(
+        '사용자를 찾을 수 없습니다 / User not found',
+      );
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      userType: user.userType,
+      socialProvider:
+        user.socialProvider === 'NONE' ? null : user.socialProvider,
+      isActive: user.isActive,
+      joinedAt: user.joinedAt.toISOString(),
+      lastLoginAt: user.lastLoginAt?.toISOString() || null,
+      individual: user.individual
+        ? {
+            realName: user.individual.realName,
+            nationality: user.individual.nationality,
+            gender: user.individual.gender,
+            birthDate:
+              user.individual.birthDate?.toISOString().split('T')[0] || null,
+            visaType: user.individual.visaType,
+            visaExpiryDate:
+              user.individual.visaExpiryDate?.toISOString().split('T')[0] ||
+              null,
+            addressRoad: user.individual.addressRoad,
+            desiredJobType: user.individual.desiredJobType,
+            desiredSalary: user.individual.desiredSalary,
+            desiredIndustries: user.individual.desiredIndustries,
+            finalEducationLvl: user.individual.finalEducationLvl,
+            koreanFluencyLvl: user.individual.koreanFluencyLvl,
+            totalCareerMonths: user.individual.totalCareerMonths,
+            profileImageUrl: user.individual.profileImageUrl,
+            selfIntro: user.individual.selfIntro,
+            isProfileCompleted: user.individual.isProfileCompleted,
+            profileCompletionPercent: this.calcProfileCompletion(
+              user.individual,
+            ),
+            educations: user.individual.educations,
+            careers: user.individual.careers,
+            languages: user.individual.languages,
+          }
+        : null,
+      corporate: user.corporate
+        ? {
+            companyNameOfficial: user.corporate.companyNameOfficial,
+            bizRegNumber: user.corporate.bizRegNumber,
+            ceoName: user.corporate.ceoName,
+            brandName: user.corporate.brandName,
+            ksicCode: user.corporate.ksicCode,
+            addressRoad: user.corporate.addressRoad,
+            companySizeType: user.corporate.companySizeType,
+            employeeCountKorean: user.corporate.employeeCountKorean,
+            employeeCountForeign: user.corporate.employeeCountForeign,
+            annualRevenue: Number(user.corporate.annualRevenue),
+            managerName: user.corporate.managerName,
+            managerPhone: user.corporate.managerPhone,
+            managerEmail: user.corporate.managerEmail,
+            verificationStatus: user.corporate.verificationStatus,
+            verificationMethod: user.corporate.verificationMethod,
+            isBizVerified: user.corporate.isBizVerified,
+            ocrVerified: user.corporate.ocrVerified,
+            submittedAt: user.corporate.submittedAt?.toISOString() || null,
+            approvedAt: user.corporate.approvedAt?.toISOString() || null,
+            lastRejectionReason: user.corporate.lastRejectionReason,
+          }
+        : null,
+      resume: user.resume
+        ? {
+            id: Number(user.resume.id),
+            nationality: user.resume.nationality,
+            birthDate:
+              user.resume.birthDate?.toISOString().split('T')[0] || null,
+            educations: user.resume.educations,
+            workExperiences: user.resume.workExperiences,
+            topikLevel: user.resume.topikLevel,
+            kiipLevel: user.resume.kiipLevel,
+            certificates: user.resume.certificates,
+            preferredJobTypes: user.resume.preferredJobTypes,
+            preferredRegions: user.resume.preferredRegions,
+            preferredSalary: user.resume.preferredSalary,
+            isComplete: user.resume.isComplete,
+            createdAt: user.resume.createdAt.toISOString(),
+            updatedAt: user.resume.updatedAt.toISOString(),
+          }
+        : null,
+      visaVerification: user.visaVerification
+        ? {
+            id: Number(user.visaVerification.id),
+            visaCode: user.visaVerification.visaCode,
+            visaSubType: user.visaVerification.visaSubType,
+            visaExpiryDate: user.visaVerification.visaExpiryDate,
+            foreignRegistrationNumber:
+              user.visaVerification.foreignRegistrationNumber,
+            verificationMethod: user.visaVerification.verificationMethod,
+            verificationStatus: user.visaVerification.verificationStatus,
+            verifiedAt: user.visaVerification.verifiedAt,
+            rejectionReason: user.visaVerification.rejectionReason,
+            createdAt: user.visaVerification.createdAt.toISOString(),
+            updatedAt: user.visaVerification.updatedAt.toISOString(),
+          }
+        : null,
+    };
+  }
+
+  // --- 26. Admin: 비자인증 상태 변경 (승인/거절) ---
+  // --- 26. Admin: Update visa verification status (VERIFIED/REJECTED) ---
+  async updateVisaVerification(
+    adminSessionId: string,
+    verificationId: string,
+    action: 'VERIFIED' | 'REJECTED',
+    rejectionReason?: string,
+  ) {
+    // 관리자 확인 / Verify admin
+    const adminUserId = await this.getSessionUserId(adminSessionId);
+    const admin = await this.prisma.user.findUnique({
+      where: { id: adminUserId },
+    });
+    if (!admin || admin.userType !== 'ADMIN') {
+      throw new UnauthorizedException('Admin access required');
+    }
+
+    if (action === 'REJECTED' && !rejectionReason) {
+      throw new BadRequestException(
+        '거절 사유를 입력해주세요 / Rejection reason required',
+      );
+    }
+
+    const verification = await this.prisma.visaVerification.findUnique({
+      where: { id: BigInt(verificationId) },
+    });
+    if (!verification) {
+      throw new NotFoundException(
+        '비자인증 정보를 찾을 수 없습니다 / Visa verification not found',
+      );
+    }
+
+    const updateData: any = {
+      verificationStatus: action,
+    };
+
+    if (action === 'VERIFIED') {
+      updateData.verifiedAt = new Date();
+      updateData.rejectionReason = null;
+    } else {
+      updateData.rejectionReason = rejectionReason;
+      updateData.verifiedAt = null;
+    }
+
+    const updated = await this.prisma.visaVerification.update({
+      where: { id: BigInt(verificationId) },
+      data: updateData,
+    });
+
+    // 활동 로그 기록 / Activity log
+    await this.logActivity(
+      verification.userId,
+      null,
+      null,
+      null,
+      action === 'VERIFIED'
+        ? 'VISA_VERIFY_APPROVE'
+        : 'VISA_VERIFY_REJECT',
+      `비자인증 ${action === 'VERIFIED' ? '승인' : '거절'}: ${verification.visaCode}`,
+      rejectionReason,
+    );
+
+    return {
+      success: true,
+      id: Number(updated.id),
+      verificationStatus: updated.verificationStatus,
+      visaCode: updated.visaCode,
+      message:
+        action === 'VERIFIED'
+          ? '비자인증이 승인되었습니다 / Visa verification approved'
+          : '비자인증이 거절되었습니다 / Visa verification rejected',
+    };
+  }
+
   // 프로필 완성도 계산 (0~100%)
   private calcProfileCompletion(profile: any): number {
     let score = 0;
     // 필수 기본 (30%): realName, nationality, birthDate, gender
-    const basic = [profile.realName, profile.nationality, profile.birthDate, profile.gender];
-    const basicFilled = basic.filter((v) => v && v !== 'UNKNOWN' && v !== '1900-01-01').length;
+    const basic = [
+      profile.realName,
+      profile.nationality,
+      profile.birthDate,
+      profile.gender,
+    ];
+    const basicFilled = basic.filter(
+      (v) => v && v !== 'UNKNOWN' && v !== '1900-01-01',
+    ).length;
     score += (basicFilled / 4) * 30;
     // 비자 정보 (20%): visaType, visaExpiryDate
     const visa = [profile.visaType, profile.visaExpiryDate];

@@ -31,8 +31,7 @@ export class MoelGoKrScraper extends BaseScraper {
 
     try {
       // 보도자료 목록 페이지
-      const listUrl =
-        'https://www.moel.go.kr/news/enews/report/enewsList.do';
+      const listUrl = 'https://www.moel.go.kr/news/enews/report/enewsList.do';
       await this.delay(2000);
       const html = await this.fetchPage(listUrl);
       const $ = cheerio.load(html);
@@ -49,9 +48,7 @@ export class MoelGoKrScraper extends BaseScraper {
 
           if (!title || title.length < 5) return;
 
-          const isRelevant = this.keywords.some((kw) =>
-            title.includes(kw),
-          );
+          const isRelevant = this.keywords.some((kw) => title.includes(kw));
 
           if (isRelevant) {
             const fullUrl = href.startsWith('http')

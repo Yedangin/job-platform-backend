@@ -1,5 +1,9 @@
 import { BaseVisaEvaluator } from '../base.evaluator';
-import { EvaluateVisaInput, VisaEvaluation, VisaTypeWithRelations } from '../evaluator.interface';
+import {
+  EvaluateVisaInput,
+  VisaEvaluation,
+  VisaTypeWithRelations,
+} from '../evaluator.interface';
 
 /**
  * 취업불가 비자 평가기
@@ -18,12 +22,22 @@ export class ProhibitedEvaluator extends BaseVisaEvaluator {
     'C-3': '단기방문 비자 - C-4(단기취업) 또는 E 시리즈 비자 필요',
   };
 
-  evaluate(input: EvaluateVisaInput, visaType: VisaTypeWithRelations): VisaEvaluation {
+  evaluate(
+    input: EvaluateVisaInput,
+    visaType: VisaTypeWithRelations,
+  ): VisaEvaluation {
     const result = this.createEmptyResult();
 
-    result.blockedReasons.push(`${visaType.code} ${visaType.nameKo} 비자는 취업 활동이 허용되지 않음`);
-    result.suggestions.push(this.suggestions[visaType.code] ?? '취업 가능 비자 유형으로 자격 변경 필요');
-    result.suggestions.push('취업 목적 시 E-7(특정활동), E-9(비전문취업), H-2(방문취업) 등 검토');
+    result.blockedReasons.push(
+      `${visaType.code} ${visaType.nameKo} 비자는 취업 활동이 허용되지 않음`,
+    );
+    result.suggestions.push(
+      this.suggestions[visaType.code] ??
+        '취업 가능 비자 유형으로 자격 변경 필요',
+    );
+    result.suggestions.push(
+      '취업 목적 시 E-7(특정활동), E-9(비전문취업), H-2(방문취업) 등 검토',
+    );
 
     return result;
   }

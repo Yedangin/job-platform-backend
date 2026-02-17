@@ -199,6 +199,22 @@ exports.Prisma.IndividualProfileScalarFieldEnum = {
   portfolioUrl: 'portfolioUrl',
   selfIntro: 'selfIntro',
   isProfileCompleted: 'isProfileCompleted',
+  visaSubType: 'visaSubType',
+  availableAnnualFund: 'availableAnnualFund',
+  topikLevel: 'topikLevel',
+  isEthnicKorean: 'isEthnicKorean',
+  finalGoal: 'finalGoal',
+  priorityPreference: 'priorityPreference',
+  topikExpiryDate: 'topikExpiryDate',
+  kiipStage: 'kiipStage',
+  koreanAncestryCountry: 'koreanAncestryCountry',
+  annualIncome: 'annualIncome',
+  hasCriminalRecord: 'hasCriminalRecord',
+  hasImmigrationViolation: 'hasImmigrationViolation',
+  violationCount: 'violationCount',
+  koreaStayMonths: 'koreaStayMonths',
+  currentEmployerMonths: 'currentEmployerMonths',
+  depopulationArea: 'depopulationArea',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -286,6 +302,14 @@ exports.Prisma.VisaTypeScalarFieldEnum = {
   minAge: 'minAge',
   maxAge: 'maxAge',
   metadata: 'metadata',
+  visaGroup: 'visaGroup',
+  workType: 'workType',
+  permitType: 'permitType',
+  baseWeeklyHours: 'baseWeeklyHours',
+  weekendHolidayRule: 'weekendHolidayRule',
+  vacationRule: 'vacationRule',
+  maxWorkplaces: 'maxWorkplaces',
+  permitDurationMonths: 'permitDurationMonths',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -299,7 +323,13 @@ exports.Prisma.IndustryCodeScalarFieldEnum = {
   level: 'level',
   parentCode: 'parentCode',
   isActive: 'isActive',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  isSimpleLabor: 'isSimpleLabor',
+  isEntertainment: 'isEntertainment',
+  isGambling: 'isGambling',
+  isGigWork: 'isGigWork',
+  requiresSafetyTraining: 'requiresSafetyTraining',
+  platformTag: 'platformTag'
 };
 
 exports.Prisma.VisaRuleScalarFieldEnum = {
@@ -434,6 +464,113 @@ exports.Prisma.VisaRequiredDocumentScalarFieldEnum = {
   sortOrder: 'sortOrder'
 };
 
+exports.Prisma.HireQuotaRuleScalarFieldEnum = {
+  id: 'id',
+  visaCode: 'visaCode',
+  visaTypeId: 'visaTypeId',
+  industryCodeId: 'industryCodeId',
+  domesticMin: 'domesticMin',
+  domesticMax: 'domesticMax',
+  foreignQuota: 'foreignQuota',
+  effectiveFrom: 'effectiveFrom',
+  effectiveUntil: 'effectiveUntil',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ProhibitedIndustryScalarFieldEnum = {
+  id: 'id',
+  visaCode: 'visaCode',
+  visaTypeId: 'visaTypeId',
+  ksicCode: 'ksicCode',
+  categoryLevel: 'categoryLevel',
+  hasExceptions: 'hasExceptions',
+  exceptionCodes: 'exceptionCodes',
+  reasonKo: 'reasonKo',
+  reasonEn: 'reasonEn',
+  legalBasis: 'legalBasis',
+  effectiveFrom: 'effectiveFrom',
+  effectiveUntil: 'effectiveUntil',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.WorkHourRuleScalarFieldEnum = {
+  id: 'id',
+  visaCode: 'visaCode',
+  visaTypeId: 'visaTypeId',
+  degreeLevel: 'degreeLevel',
+  academicYear: 'academicYear',
+  topikLevel: 'topikLevel',
+  topikMet: 'topikMet',
+  isCertifiedUniv: 'isCertifiedUniv',
+  hasBonus: 'hasBonus',
+  weekdayHours: 'weekdayHours',
+  weekendHoliday: 'weekendHoliday',
+  weekendHours: 'weekendHours',
+  vacation: 'vacation',
+  vacationHours: 'vacationHours',
+  annualMaxHours: 'annualMaxHours',
+  priority: 'priority',
+  effectiveFrom: 'effectiveFrom',
+  effectiveUntil: 'effectiveUntil',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.VisaTransitionScalarFieldEnum = {
+  id: 'id',
+  fromVisa: 'fromVisa',
+  toVisa: 'toVisa',
+  transitionType: 'transitionType',
+  conditions: 'conditions',
+  scoringSystemId: 'scoringSystemId',
+  scoringExemptConditions: 'scoringExemptConditions',
+  grantedStayMonths: 'grantedStayMonths',
+  maxExtensions: 'maxExtensions',
+  priority: 'priority',
+  isActive: 'isActive',
+  effectiveFrom: 'effectiveFrom',
+  effectiveUntil: 'effectiveUntil',
+  legalBasis: 'legalBasis',
+  noteKo: 'noteKo',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ScoringSystemScalarFieldEnum = {
+  id: 'id',
+  nameKo: 'nameKo',
+  nameEn: 'nameEn',
+  totalPoints: 'totalPoints',
+  passPoints: 'passPoints',
+  additionalPassConditions: 'additionalPassConditions',
+  isActive: 'isActive',
+  effectiveFrom: 'effectiveFrom',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ScoringCriteriaScalarFieldEnum = {
+  id: 'id',
+  scoringSystemId: 'scoringSystemId',
+  category: 'category',
+  itemNameKo: 'itemNameKo',
+  itemNameEn: 'itemNameEn',
+  points: 'points',
+  maxPointsInCategory: 'maxPointsInCategory',
+  matchCondition: 'matchCondition',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.VisaTransitionChainScalarFieldEnum = {
+  id: 'id',
+  chainNameKo: 'chainNameKo',
+  chainNameEn: 'chainNameEn',
+  transitionIds: 'transitionIds',
+  visaPath: 'visaPath',
+  totalEstimatedYears: 'totalEstimatedYears',
+  descriptionKo: 'descriptionKo',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.JobProductScalarFieldEnum = {
   id: 'id',
   productCode: 'productCode',
@@ -498,6 +635,12 @@ exports.Prisma.JobPostingScalarFieldEnum = {
   interviewMethod: 'interviewMethod',
   interviewPlace: 'interviewPlace',
   employmentSubType: 'employmentSubType',
+  expiresAt: 'expiresAt',
+  bumpedAt: 'bumpedAt',
+  isUrgent: 'isUrgent',
+  isFeatured: 'isFeatured',
+  featuredUntil: 'featuredUntil',
+  upgradedAt: 'upgradedAt',
   viewCount: 'viewCount',
   scrapCount: 'scrapCount',
   applyCount: 'applyCount',
@@ -558,9 +701,90 @@ exports.Prisma.AdminJobActionScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ResumeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  nationality: 'nationality',
+  birthDate: 'birthDate',
+  educations: 'educations',
+  workExperiences: 'workExperiences',
+  topikLevel: 'topikLevel',
+  kiipLevel: 'kiipLevel',
+  certificates: 'certificates',
+  preferredJobTypes: 'preferredJobTypes',
+  preferredRegions: 'preferredRegions',
+  preferredSalary: 'preferredSalary',
+  preferredEmploymentTypes: 'preferredEmploymentTypes',
+  isComplete: 'isComplete',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VisaVerificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  visaCode: 'visaCode',
+  visaSubType: 'visaSubType',
+  visaExpiryDate: 'visaExpiryDate',
+  foreignRegistrationNumber: 'foreignRegistrationNumber',
+  verificationMethod: 'verificationMethod',
+  verificationStatus: 'verificationStatus',
+  ocrImagePath: 'ocrImagePath',
+  ocrExtractedData: 'ocrExtractedData',
+  verifiedAt: 'verifiedAt',
+  rejectionReason: 'rejectionReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DiagnosisSessionScalarFieldEnum = {
+  sessionId: 'sessionId',
+  userId: 'userId',
+  anonymousId: 'anonymousId',
+  inputSnapshot: 'inputSnapshot',
+  resultsSnapshot: 'resultsSnapshot',
+  topPathwayId: 'topPathwayId',
+  pathwayCount: 'pathwayCount',
+  convertedToSignup: 'convertedToSignup',
+  convertedToPaid: 'convertedToPaid',
+  userFeedbackScore: 'userFeedbackScore',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.DiagnosisPathwayClickScalarFieldEnum = {
+  clickId: 'clickId',
+  sessionId: 'sessionId',
+  pathwayId: 'pathwayId',
+  rankPosition: 'rankPosition',
+  actionType: 'actionType',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ScoreCalibrationLogScalarFieldEnum = {
+  logId: 'logId',
+  pathwayId: 'pathwayId',
+  dimension: 'dimension',
+  dimensionValue: 'dimensionValue',
+  oldScore: 'oldScore',
+  newScore: 'newScore',
+  changeReason: 'changeReason',
+  evidence: 'evidence',
+  changedBy: 'changedBy',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -571,6 +795,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.SocialProvider = exports.$Enums.SocialProvider = {
   NONE: 'NONE',
@@ -713,6 +943,7 @@ exports.PostStatus = exports.$Enums.PostStatus = {
   DRAFT: 'DRAFT',
   ACTIVE: 'ACTIVE',
   CLOSED: 'CLOSED',
+  EXPIRED: 'EXPIRED',
   SUSPENDED: 'SUSPENDED'
 };
 
@@ -755,6 +986,18 @@ exports.AdminActionType = exports.$Enums.AdminActionType = {
   DELETE: 'DELETE'
 };
 
+exports.VisaVerifyMethod = exports.$Enums.VisaVerifyMethod = {
+  OCR: 'OCR',
+  MANUAL: 'MANUAL'
+};
+
+exports.VisaVerifyStatus = exports.$Enums.VisaVerifyStatus = {
+  PENDING: 'PENDING',
+  SUBMITTED: 'SUBMITTED',
+  VERIFIED: 'VERIFIED',
+  REJECTED: 'REJECTED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   CorporateProfile: 'CorporateProfile',
@@ -778,6 +1021,13 @@ exports.Prisma.ModelName = {
   PointSystemCategory: 'PointSystemCategory',
   PointSystemCriteria: 'PointSystemCriteria',
   VisaRequiredDocument: 'VisaRequiredDocument',
+  HireQuotaRule: 'HireQuotaRule',
+  ProhibitedIndustry: 'ProhibitedIndustry',
+  WorkHourRule: 'WorkHourRule',
+  VisaTransition: 'VisaTransition',
+  ScoringSystem: 'ScoringSystem',
+  ScoringCriteria: 'ScoringCriteria',
+  VisaTransitionChain: 'VisaTransitionChain',
   JobProduct: 'JobProduct',
   JobOrder: 'JobOrder',
   JobPosting: 'JobPosting',
@@ -785,7 +1035,12 @@ exports.Prisma.ModelName = {
   JobAttributesFulltime: 'JobAttributesFulltime',
   JobApplication: 'JobApplication',
   JobScrap: 'JobScrap',
-  AdminJobAction: 'AdminJobAction'
+  AdminJobAction: 'AdminJobAction',
+  Resume: 'Resume',
+  VisaVerification: 'VisaVerification',
+  DiagnosisSession: 'DiagnosisSession',
+  DiagnosisPathwayClick: 'DiagnosisPathwayClick',
+  ScoreCalibrationLog: 'ScoreCalibrationLog'
 };
 
 /**

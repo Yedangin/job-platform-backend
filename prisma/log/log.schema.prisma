@@ -1,5 +1,6 @@
 // Log Domain Schema - MongoDB
-// Includes: system_logs
+// Includes: system_logs, request_logs, matching_logs, error_logs, change_logs
+// 시스템 로그, 요청 로그, 매칭 로그, 에러 로그, 변경 로그
 
 datasource logDB {
   provider = "mongodb"
@@ -11,6 +12,9 @@ generator logClient {
   output   = "../../generated/prisma-log"
 }
 
+// ========================================
+// [시스템 로그] 기존 / Existing system log
+// ========================================
 model SystemLog {
   id          String   @id @default(auto()) @map("_id") @logDB.ObjectId
   userId      String?  @map("user_id")
@@ -21,4 +25,144 @@ model SystemLog {
   @@index([actionType])
   @@index([createdAt])
   @@map("system_logs")
+}
+
+// ========================================
+// [요청 로그] 전역 Interceptor 기록
+// Request log — recorded by global interceptor
+// ========================================
+model RequestLog {
+  id           String   @id @default(auto()) @map("_id") @logDB.ObjectId
+  method       String                                      // GET, POST, PUT, DELETE
+  path         String                                      // /auth/login, /jobs/create
+  statusCode   Int      @map("status_code")                // 200, 401, 500
+  userId       String?  @map("user_id")                    // 세션에서 추출 / from session
+  responseTime Int      @map("response_time")              // ms 단위 / in ms
+  ip           String?                                     // 클라이언트 IP
+  userAgent    String?  @map("user_agent")                 // 브라우저/클라이언트 정보
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([path])
+  @@index([statusCode])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("request_logs")
+}
+
+// ========================================
+// [매칭 로그] 비자 매칭 엔진 실행 기록
+// Matching log — visa rule engine evaluation
+// ========================================
+model MatchingLog {
+  id             String   @id @default(auto()) @map("_id") @logDB.ObjectId
+  userId         String?  @map("user_id")                  // 요청한 사용자 / requesting user
+  inputData      String   @map("input_data") @logDB.String // JSON: 입력 조건 / input conditions
+  eligibleCount  Int      @map("eligible_count")           // 적격 비자 수
+  eligibleVisas  String?  @map("eligible_visas") @logDB.String // JSON: 적격 비자 코드 목록
+  blockedCount   Int      @map("blocked_count")            // 부적격 비자 수
+  durationMs     Int      @map("duration_ms")              // 소요 시간(ms)
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("matching_logs")
+}
+
+// ========================================
+// [에러 로그] 전역 ExceptionFilter 기록
+// Error log — recorded by global exception filter
+// ========================================
+model ErrorLog {
+  id         String   @id @default(auto()) @map("_id") @logDB.ObjectId
+  errorType  String   @map("error_type")                   // HttpException, TypeError, etc.
+  message    String   @logDB.String                        // 에러 메시지
+  stack      String?  @logDB.String                        // 스택 트레이스
+  userId     String?  @map("user_id")                      // 세션에서 추출
+  path       String?                                       // 요청 경로
+  method     String?                                       // HTTP 메서드
+  statusCode Int      @default(500) @map("status_code")    // HTTP 상태코드
+  is500      Boolean  @default(false) @map("is_500")       // 500 에러 별도 플래그
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([errorType])
+  @@index([statusCode])
+  @@index([is500])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("error_logs")
+}
+
+// ========================================
+// [변경 로그] 비자 규칙 CUD 시 기록
+// Change log — visa rule CRUD audit trail
+// ========================================
+model ChangeLog {
+  id         String   @id @default(auto()) @map("_id") @logDB.ObjectId
+  adminId    String   @map("admin_id")                     // 변경한 관리자 ID
+  tableName  String   @map("table_name")                   // 변경 대상 테이블 (visa_rules, visa_types, etc.)
+  recordId   String   @map("record_id")                    // 변경된 레코드 ID
+  action     String                                        // CREATE, UPDATE, DELETE
+  before     String?  @logDB.String                        // JSON: 변경 전 데이터
+  after      String?  @logDB.String                        // JSON: 변경 후 데이터
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([adminId])
+  @@index([tableName])
+  @@index([createdAt])
+  @@map("change_logs")
+}
+
+// ========================================
+// [법령 변경] 법령/정책 변경 관리
+// Law amendment — regulation/policy change management
+// 상태 전이: DETECTED → REVIEWING → APPROVED → STAGING → APPLIED | REJECTED
+// ========================================
+model LawAmendment {
+  id                String   @id @default(auto()) @map("_id") @logDB.ObjectId
+  title             String                                          // 변경 제목 / Amendment title
+  source            String                                          // 출처 / Source (법령정보센터, 출입국외국인청 등)
+  sourceUrl         String?  @map("source_url")                     // 원문 URL / Source URL
+  detectedAt        DateTime @default(now()) @map("detected_at")    // 감지일 / Detection date
+  effectiveDate     DateTime @map("effective_date")                  // 시행일 / Effective date
+  status            String   @default("DETECTED")                    // DETECTED, REVIEWING, APPROVED, STAGING, APPLIED, REJECTED
+  affectedVisaCodes String[] @map("affected_visa_codes")             // 영향 비자 코드 / ["E-7", "E-9"]
+  changeSummary     String   @map("change_summary") @logDB.String   // JSON: 변경 요약 / Change summary
+  changeDetails     String   @map("change_details") @logDB.String   // JSON: 변경 상세 / Change details
+  impactAnalysis    String?  @map("impact_analysis") @logDB.String  // JSON: 영향 분석 결과 / Impact analysis result
+  reviewedBy        String?  @map("reviewed_by")                     // 검토 관리자 ID / Reviewing admin ID
+  reviewedAt        DateTime? @map("reviewed_at")                    // 검토일 / Review date
+  appliedAt         DateTime? @map("applied_at")                     // 적용일 / Applied date
+  rejectedAt        DateTime? @map("rejected_at")                    // 반려일 / Rejected date
+  rejectionReason   String?  @map("rejection_reason")                // 반려 사유 / Rejection reason
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  items             LawAmendmentItem[]
+
+  @@index([status])
+  @@index([effectiveDate])
+  @@index([createdAt])
+  @@map("law_amendments")
+}
+
+// ========================================
+// [법령 변경 항목] 개별 변경 사항 (테이블/레코드/액션/전후 데이터)
+// Law amendment item — individual change entry (table/record/action/before-after)
+// ========================================
+model LawAmendmentItem {
+  id            String          @id @default(auto()) @map("_id") @logDB.ObjectId
+  amendmentId   String          @map("amendment_id") @logDB.ObjectId
+  amendment     LawAmendment    @relation(fields: [amendmentId], references: [id])
+  targetTable   String          @map("target_table")                // "VisaType", "VisaJobCode", "VisaWorkCondition", "VisaRule"
+  targetId      String?         @map("target_id")                   // 대상 레코드 ID / Target record ID
+  action        String                                              // "CREATE", "UPDATE", "DELETE"
+  beforeData    String?         @map("before_data") @logDB.String  // JSON: 변경 전 데이터 / Before data
+  afterData     String          @map("after_data") @logDB.String   // JSON: 변경 후 데이터 / After data
+  isApplied     Boolean         @default(false) @map("is_applied") // 적용 여부 / Applied flag
+  appliedAt     DateTime?       @map("applied_at")                  // 적용일 / Applied date
+  createdAt     DateTime        @default(now()) @map("created_at")
+
+  @@index([amendmentId])
+  @@index([targetTable])
+  @@index([isApplied])
+  @@map("law_amendment_items")
 }

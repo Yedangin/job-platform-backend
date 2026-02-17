@@ -120,53 +120,94 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.ServiceProductScalarFieldEnum = {
-  productId: 'productId',
-  productCode: 'productCode',
-  productName: 'productName',
-  productCategory: 'productCategory',
-  isActive: 'isActive'
-};
-
-exports.Prisma.ProductPricingRuleScalarFieldEnum = {
-  ruleId: 'ruleId',
-  productId: 'productId',
-  originalPrice: 'originalPrice',
-  salePrice: 'salePrice',
-  validFrom: 'validFrom',
-  validUntil: 'validUntil'
+exports.Prisma.ProductScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  nameEn: 'nameEn',
+  category: 'category',
+  price: 'price',
+  description: 'description',
+  isActive: 'isActive',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.OrderScalarFieldEnum = {
-  orderId: 'orderId',
-  corporateId: 'corporateId',
-  totalSaleAmount: 'totalSaleAmount',
-  status: 'status',
-  createdAt: 'createdAt'
-};
-
-exports.Prisma.OrderItemScalarFieldEnum = {
-  itemId: 'itemId',
-  orderId: 'orderId',
+  id: 'id',
+  orderNo: 'orderNo',
+  userId: 'userId',
   productId: 'productId',
-  snapProductName: 'snapProductName',
-  snapSalePrice: 'snapSalePrice'
+  targetJobId: 'targetJobId',
+  quantity: 'quantity',
+  totalAmount: 'totalAmount',
+  originalAmount: 'originalAmount',
+  couponId: 'couponId',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
-exports.Prisma.PointLedgerScalarFieldEnum = {
-  ledgerId: 'ledgerId',
-  corporateId: 'corporateId',
-  amount: 'amount',
-  balanceSnapshot: 'balanceSnapshot',
+exports.Prisma.PaymentScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  portonePaymentId: 'portonePaymentId',
+  method: 'method',
+  status: 'status',
+  paidAmount: 'paidAmount',
+  paidAt: 'paidAt',
+  receiptUrl: 'receiptUrl',
+  cardInfo: 'cardInfo',
+  cancelledAmount: 'cancelledAmount',
+  cancelledAt: 'cancelledAt',
+  cancelReason: 'cancelReason',
+  webhookData: 'webhookData',
+  failReason: 'failReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.CouponScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  type: 'type',
+  value: 'value',
+  targetProduct: 'targetProduct',
+  minOrderAmount: 'minOrderAmount',
+  maxUses: 'maxUses',
+  usedCount: 'usedCount',
+  maxUsesPerUser: 'maxUsesPerUser',
+  startsAt: 'startsAt',
+  expiresAt: 'expiresAt',
+  isActive: 'isActive',
   createdAt: 'createdAt'
 };
 
-exports.Prisma.CorporateCouponScalarFieldEnum = {
+exports.Prisma.CouponUsageScalarFieldEnum = {
+  id: 'id',
   couponId: 'couponId',
-  corporateId: 'corporateId',
-  couponType: 'couponType',
-  status: 'status',
-  expiresAt: 'expiresAt'
+  userId: 'userId',
+  usedAt: 'usedAt'
+};
+
+exports.Prisma.ViewingCreditScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  totalCredits: 'totalCredits',
+  usedCredits: 'usedCredits',
+  source: 'source',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.ViewingLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  resumeId: 'resumeId',
+  creditId: 'creditId',
+  viewedAt: 'viewedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -183,15 +224,49 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+exports.ProductCategory = exports.$Enums.ProductCategory = {
+  JOB_POSTING: 'JOB_POSTING',
+  TALENT_VIEW: 'TALENT_VIEW',
+  ADDON: 'ADDON'
+};
 
+exports.OrderStatus = exports.$Enums.OrderStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED',
+  FAILED: 'FAILED'
+};
+
+exports.PaymentMethod = exports.$Enums.PaymentMethod = {
+  CARD: 'CARD',
+  VIRTUAL_ACCOUNT: 'VIRTUAL_ACCOUNT',
+  EASY_PAY: 'EASY_PAY',
+  TRANSFER: 'TRANSFER'
+};
+
+exports.PaymentStatus = exports.$Enums.PaymentStatus = {
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED',
+  PARTIAL_CANCELLED: 'PARTIAL_CANCELLED'
+};
+
+exports.CouponType = exports.$Enums.CouponType = {
+  FIXED_DISCOUNT: 'FIXED_DISCOUNT',
+  PERCENT_DISCOUNT: 'PERCENT_DISCOUNT',
+  FREE_ITEM: 'FREE_ITEM'
+};
 
 exports.Prisma.ModelName = {
-  ServiceProduct: 'ServiceProduct',
-  ProductPricingRule: 'ProductPricingRule',
+  Product: 'Product',
   Order: 'Order',
-  OrderItem: 'OrderItem',
-  PointLedger: 'PointLedger',
-  CorporateCoupon: 'CorporateCoupon'
+  Payment: 'Payment',
+  Coupon: 'Coupon',
+  CouponUsage: 'CouponUsage',
+  ViewingCredit: 'ViewingCredit',
+  ViewingLog: 'ViewingLog'
 };
 
 /**

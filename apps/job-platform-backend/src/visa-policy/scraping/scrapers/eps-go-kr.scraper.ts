@@ -41,39 +41,32 @@ export class EpsGoKrScraper extends BaseScraper {
           const $ = cheerio.load(html);
 
           // 게시판 항목 추출
-          $('table tbody tr, .board_list tr, .list_wrap li').each(
-            (_i, el) => {
-              try {
-                const titleEl = $(el).find('a').first();
-                const title = titleEl.text().trim();
-                const href = titleEl.attr('href') || '';
-                const dateText = $(el)
-                  .find('td:last-child, .date')
-                  .text()
-                  .trim();
+          $('table tbody tr, .board_list tr, .list_wrap li').each((_i, el) => {
+            try {
+              const titleEl = $(el).find('a').first();
+              const title = titleEl.text().trim();
+              const href = titleEl.attr('href') || '';
+              const dateText = $(el).find('td:last-child, .date').text().trim();
 
-                if (!title || title.length < 3) return;
+              if (!title || title.length < 3) return;
 
-                const isRelevant = this.keywords.some((kw) =>
-                  title.includes(kw),
-                );
+              const isRelevant = this.keywords.some((kw) => title.includes(kw));
 
-                if (isRelevant) {
-                  const fullUrl = href.startsWith('http')
-                    ? href
-                    : `${this.siteUrl}${href}`;
+              if (isRelevant) {
+                const fullUrl = href.startsWith('http')
+                  ? href
+                  : `${this.siteUrl}${href}`;
 
-                  items.push({
-                    title,
-                    url: fullUrl,
-                    content: `[EPS 공지] ${title}`,
-                    publishedDate: this.extractDate(dateText),
-                    category: 'EPS_NOTICE',
-                  });
-                }
-              } catch {}
-            },
-          );
+                items.push({
+                  title,
+                  url: fullUrl,
+                  content: `[EPS 공지] ${title}`,
+                  publishedDate: this.extractDate(dateText),
+                  category: 'EPS_NOTICE',
+                });
+              }
+            } catch {}
+          });
         } catch (error) {
           console.error(
             `[EpsGoKr] ${listUrl} 스크래핑 실패:`,

@@ -5,7 +5,7 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "assets": ["proto/**/*.proto"],
+    "assets": ["proto/**/*.proto", "data/**/*.json"],
     "watchAssets": true,
     "tsConfigPath": "apps/job-platform-backend/tsconfig.app.json"
   },

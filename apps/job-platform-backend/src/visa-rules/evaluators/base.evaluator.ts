@@ -12,7 +12,10 @@ import {
 
 export abstract class BaseVisaEvaluator implements IVisaEvaluator {
   abstract readonly visaCodes: string[];
-  abstract evaluate(input: EvaluateVisaInput, visaType: VisaTypeWithRelations): VisaEvaluation;
+  abstract evaluate(
+    input: EvaluateVisaInput,
+    visaType: VisaTypeWithRelations,
+  ): VisaEvaluation;
 
   /** 빈 평가 결과 생성 */
   protected createEmptyResult(): VisaEvaluation {
@@ -36,12 +39,18 @@ export abstract class BaseVisaEvaluator implements IVisaEvaluator {
     if (!nationality) return { allowed: true }; // 국적 미입력 시 패스
     if (restrictions.length === 0) return { allowed: true }; // 제한 없으면 패스
 
-    const match = restrictions.find(r => r.countryCode === nationality);
+    const match = restrictions.find((r) => r.countryCode === nationality);
     if (!match) {
-      return { allowed: false, reason: `국적 ${nationality}은(는) 허용 국가 목록에 포함되지 않음` };
+      return {
+        allowed: false,
+        reason: `국적 ${nationality}은(는) 허용 국가 목록에 포함되지 않음`,
+      };
     }
     if (match.restrictionType === 'BLOCKED') {
-      return { allowed: false, reason: `국적 ${nationality}(${match.countryNameKo})은(는) 금지 국가` };
+      return {
+        allowed: false,
+        reason: `국적 ${nationality}(${match.countryNameKo})은(는) 금지 국가`,
+      };
     }
     return { allowed: true };
   }
@@ -55,14 +64,23 @@ export abstract class BaseVisaEvaluator implements IVisaEvaluator {
 
     // prefix 매칭으로 가장 구체적인 것을 찾음
     const match = mappings
-      .filter(m => ksicCode.startsWith(m.industryCode.ksicCode))
-      .sort((a, b) => b.industryCode.ksicCode.length - a.industryCode.ksicCode.length)[0];
+      .filter((m) => ksicCode.startsWith(m.industryCode.ksicCode))
+      .sort(
+        (a, b) =>
+          b.industryCode.ksicCode.length - a.industryCode.ksicCode.length,
+      )[0];
 
     if (!match) {
-      return { allowed: false, reason: `업종코드 ${ksicCode}은(는) 허용 업종에 포함되지 않음` };
+      return {
+        allowed: false,
+        reason: `업종코드 ${ksicCode}은(는) 허용 업종에 포함되지 않음`,
+      };
     }
     if (!match.isAllowed) {
-      return { allowed: false, reason: `업종 ${match.industryCode.nameKo}은(는) 금지 업종` };
+      return {
+        allowed: false,
+        reason: `업종 ${match.industryCode.nameKo}은(는) 금지 업종`,
+      };
     }
     return { allowed: true, matched: match.industryCode.ksicCode };
   }
@@ -76,14 +94,23 @@ export abstract class BaseVisaEvaluator implements IVisaEvaluator {
     if (mappings.length === 0) return { allowed: true }; // 매핑 없으면 패스
 
     const match = mappings
-      .filter(m => kscoCode.startsWith(m.occupationCode.kscoCode))
-      .sort((a, b) => b.occupationCode.kscoCode.length - a.occupationCode.kscoCode.length)[0];
+      .filter((m) => kscoCode.startsWith(m.occupationCode.kscoCode))
+      .sort(
+        (a, b) =>
+          b.occupationCode.kscoCode.length - a.occupationCode.kscoCode.length,
+      )[0];
 
     if (!match) {
-      return { allowed: false, reason: `직종코드 ${kscoCode}은(는) 허용 직종에 포함되지 않음` };
+      return {
+        allowed: false,
+        reason: `직종코드 ${kscoCode}은(는) 허용 직종에 포함되지 않음`,
+      };
     }
     if (!match.isAllowed) {
-      return { allowed: false, reason: `직종 ${match.occupationCode.nameKo}은(는) 금지 직종` };
+      return {
+        allowed: false,
+        reason: `직종 ${match.occupationCode.nameKo}은(는) 금지 직종`,
+      };
     }
     return { allowed: true, matched: match.occupationCode.kscoCode };
   }
@@ -115,17 +142,25 @@ export abstract class BaseVisaEvaluator implements IVisaEvaluator {
   ): { allowed: boolean; reason?: string } {
     if (age === undefined) return { allowed: true };
     if (minAge !== null && age < minAge) {
-      return { allowed: false, reason: `만 ${age}세 - 최소 연령 ${minAge}세 미충족` };
+      return {
+        allowed: false,
+        reason: `만 ${age}세 - 최소 연령 ${minAge}세 미충족`,
+      };
     }
     if (maxAge !== null && age > maxAge) {
-      return { allowed: false, reason: `만 ${age}세 - 최대 연령 ${maxAge}세 초과` };
+      return {
+        allowed: false,
+        reason: `만 ${age}세 - 최대 연령 ${maxAge}세 초과`,
+      };
     }
     return { allowed: true };
   }
 
   /** 필요 서류 목록 추출 */
-  protected getRequiredDocuments(docs: VisaTypeWithRelations['requiredDocuments']): string[] {
-    return docs.filter(d => d.isRequired).map(d => d.documentName);
+  protected getRequiredDocuments(
+    docs: VisaTypeWithRelations['requiredDocuments'],
+  ): string[] {
+    return docs.filter((d) => d.isRequired).map((d) => d.documentName);
   }
 
   /** 학력 레벨 숫자 변환 (비교용) */

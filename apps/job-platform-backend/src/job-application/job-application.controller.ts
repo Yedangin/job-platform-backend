@@ -54,7 +54,8 @@ export class JobApplicationController {
   @Post('applications/apply')
   async applyToJob(
     @Session() sessionId: string,
-    @Body() body: { jobId: string; applicationMethod?: string; coverLetter?: string },
+    @Body()
+    body: { jobId: string; applicationMethod?: string; coverLetter?: string },
   ) {
     const userId = await this.requireIndividual(sessionId);
     return this.jobApplicationService.applyToJob(userId, body);
@@ -93,7 +94,8 @@ export class JobApplicationController {
   async updateApplicationStatus(
     @Session() sessionId: string,
     @Param('id') id: string,
-    @Body() body: {
+    @Body()
+    body: {
       status: string;
       interviewDate?: string;
       interviewNote?: string;

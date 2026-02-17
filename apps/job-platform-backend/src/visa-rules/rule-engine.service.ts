@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import { AuthPrismaService, RedisService } from 'libs/common/src';
 import { EvaluatorRegistryService } from './evaluators/evaluator-registry.service';
+import { LoggingService } from '../logging/logging.service';
 import {
   EvaluateVisaInput as EnhancedInput,
   VisaTypeWithRelations,
@@ -43,7 +44,13 @@ interface VisaResult {
   suggestions: string[];
   score?: number;
   requiredScore?: number;
-  scoreBreakdown?: Array<{ categoryCode: string; categoryName: string; score: number; maxScore: number; detail: string }>;
+  scoreBreakdown?: Array<{
+    categoryCode: string;
+    categoryName: string;
+    score: number;
+    maxScore: number;
+    detail: string;
+  }>;
   matchedIndustries?: string[];
   matchedOccupations?: string[];
 }
@@ -57,7 +64,13 @@ export interface EvaluationResult {
     notes: string[];
     score?: number;
     requiredScore?: number;
-    scoreBreakdown?: Array<{ categoryCode: string; categoryName: string; score: number; maxScore: number; detail: string }>;
+    scoreBreakdown?: Array<{
+      categoryCode: string;
+      categoryName: string;
+      score: number;
+      maxScore: number;
+      detail: string;
+    }>;
     matchedIndustries?: string[];
     matchedOccupations?: string[];
   }[];
@@ -81,6 +94,7 @@ export class RuleEngineService {
     private readonly prisma: AuthPrismaService,
     private readonly redisService: RedisService,
     private readonly evaluatorRegistry: EvaluatorRegistryService,
+    @Optional() private readonly loggingService?: LoggingService,
   ) {}
 
   /**
@@ -103,8 +117,47 @@ export class RuleEngineService {
         industryMappings: { include: { industryCode: true } },
         occupationMappings: { include: { occupationCode: true } },
         requiredDocuments: { orderBy: { sortOrder: 'asc' } },
+        // [신규] Step 2 관계 포함 / Include new Step 2 relations
+        prohibitedIndustries: true,
+        workHourRules: { orderBy: { priority: 'desc' } },
+        hireQuotaRules: { include: { industryCode: true } },
+        // [신규] 점수제 카테고리 포함 / Include point system categories
+        pointCategories: {
+          include: { criteria: { orderBy: { sortOrder: 'asc' } } },
+          orderBy: { sortOrder: 'asc' },
+        },
       },
     });
+
+    // [신규] 입력 업종코드의 DB 플래그 사전 로드 / Pre-load industry flags for input KSIC code
+    const industryRecord = await this.prisma.industryCode.findFirst({
+      where: { ksicCode: input.ksicCode },
+    });
+    if (industryRecord) {
+      (input as any).inputIndustryFlags = {
+        isSimpleLabor: industryRecord.isSimpleLabor,
+        isEntertainment: industryRecord.isEntertainment,
+        isGambling: industryRecord.isGambling,
+        isGigWork: industryRecord.isGigWork,
+        requiresSafetyTraining: industryRecord.requiresSafetyTraining,
+        platformTag: industryRecord.platformTag,
+      };
+    } else {
+      // 상위 코드로 prefix 매칭 시도 / Try prefix match with parent code
+      const parentIndustry = await this.prisma.industryCode.findFirst({
+        where: { ksicCode: input.ksicCode.substring(0, 2) },
+      });
+      if (parentIndustry) {
+        (input as any).inputIndustryFlags = {
+          isSimpleLabor: parentIndustry.isSimpleLabor,
+          isEntertainment: parentIndustry.isEntertainment,
+          isGambling: parentIndustry.isGambling,
+          isGigWork: parentIndustry.isGigWork,
+          requiresSafetyTraining: parentIndustry.requiresSafetyTraining,
+          platformTag: parentIndustry.platformTag,
+        };
+      }
+    }
 
     const resultsMap = new Map<string, VisaResult>();
     for (const vt of visaTypes) {
@@ -125,8 +178,7 @@ export class RuleEngineService {
     const inputData = this.flattenInput(input);
 
     for (const rule of rules) {
-      const visaCode =
-        visaTypes.find((vt) => vt.id === rule.visaTypeId)?.code;
+      const visaCode = visaTypes.find((vt) => vt.id === rule.visaTypeId)?.code;
       if (!visaCode) continue;
 
       const result = resultsMap.get(visaCode);
@@ -141,10 +193,7 @@ export class RuleEngineService {
           this.applyActions(actions, result);
         }
       } catch (e) {
-        console.error(
-          `[RuleEngine] 규칙 평가 오류 (ruleId=${rule.id}):`,
-          e,
-        );
+        console.error(`[RuleEngine] 규칙 평가 오류 (ruleId=${rule.id}):`, e);
       }
     }
 
@@ -172,8 +221,10 @@ export class RuleEngineService {
       existing.restrictions.push(...evalResult.restrictions);
       existing.notes.push(...evalResult.notes);
       if (evalResult.score !== undefined) existing.score = evalResult.score;
-      if (evalResult.requiredScore !== undefined) existing.requiredScore = evalResult.requiredScore;
-      if (evalResult.scoreBreakdown) existing.scoreBreakdown = evalResult.scoreBreakdown;
+      if (evalResult.requiredScore !== undefined)
+        existing.requiredScore = evalResult.requiredScore;
+      if (evalResult.scoreBreakdown)
+        existing.scoreBreakdown = evalResult.scoreBreakdown;
       existing.matchedIndustries = evalResult.matchedIndustries;
       existing.matchedOccupations = evalResult.matchedOccupations;
     }
@@ -214,7 +265,7 @@ export class RuleEngineService {
       evaluatedAt: new Date().toISOString(),
     };
 
-    // 6. 로그 기록
+    // 6. 로그 기록 (PostgreSQL + MongoDB)
     if (log) {
       const durationMs = Date.now() - startTime;
       try {
@@ -229,6 +280,18 @@ export class RuleEngineService {
         });
       } catch (e) {
         console.error('[RuleEngine] 평가 로그 기록 실패:', e);
+      }
+
+      // 매칭 로그 (MongoDB) / Matching log to MongoDB
+      if (this.loggingService) {
+        const eligibleCodes = eligibleVisas.map((v) => v.code);
+        this.loggingService.logMatching({
+          inputData: JSON.stringify(input),
+          eligibleCount: eligibleVisas.length,
+          eligibleVisas: JSON.stringify(eligibleCodes),
+          blockedCount: blockedVisas.length,
+          durationMs,
+        });
       }
     }
 
@@ -291,7 +354,9 @@ export class RuleEngineService {
       age: input.age ? Number(input.age) : undefined,
       educationLevel: input.educationLevel,
       koreanLevel: input.koreanLevel,
-      workExperienceYears: input.workExperienceYears ? Number(input.workExperienceYears) : undefined,
+      workExperienceYears: input.workExperienceYears
+        ? Number(input.workExperienceYears)
+        : undefined,
       currentVisaCode: input.currentVisaCode,
       targetOccupationCode: input.targetOccupationCode,
       isEthnicKorean: input.isEthnicKorean,
@@ -308,23 +373,16 @@ export class RuleEngineService {
     if (!block.clauses || block.clauses.length === 0) return true;
 
     if (block.operator === 'OR') {
-      return block.clauses.some((clause) =>
-        this.evaluateClause(clause, input),
-      );
+      return block.clauses.some((clause) => this.evaluateClause(clause, input));
     }
     // AND (기본값)
-    return block.clauses.every((clause) =>
-      this.evaluateClause(clause, input),
-    );
+    return block.clauses.every((clause) => this.evaluateClause(clause, input));
   }
 
   /**
    * 개별 clause 평가
    */
-  private evaluateClause(
-    clause: Clause,
-    input: Record<string, any>,
-  ): boolean {
+  private evaluateClause(clause: Clause, input: Record<string, any>): boolean {
     const fieldValue = input[clause.field];
     if (fieldValue === undefined || fieldValue === null) return false;
 
@@ -342,9 +400,7 @@ export class RuleEngineService {
       case 'LTE':
         return Number(fieldValue) <= Number(clause.value);
       case 'IN':
-        return (
-          Array.isArray(clause.value) && clause.value.includes(fieldValue)
-        );
+        return Array.isArray(clause.value) && clause.value.includes(fieldValue);
       case 'NOT_IN':
         return (
           Array.isArray(clause.value) && !clause.value.includes(fieldValue)
@@ -390,6 +446,207 @@ export class RuleEngineService {
         if (actions.notes) result.notes.push(actions.notes);
         break;
     }
+  }
+
+  /**
+   * 단일 비자 적격성 평가 (특정 비자 코드만 평가 — Goal B 필터링용)
+   * Evaluate a single visa code against a job/company + individual input
+   */
+  async evaluateSingleVisa(
+    input: EvaluateVisaInput,
+    targetVisaCode: string,
+  ): Promise<{
+    eligible: boolean;
+    documents: string[];
+    restrictions: string[];
+    notes: string[];
+    blockedReasons: string[];
+    suggestions: string[];
+    score?: number;
+    requiredScore?: number;
+    scoreBreakdown?: Array<{
+      categoryCode: string;
+      categoryName: string;
+      score: number;
+      maxScore: number;
+      detail: string;
+    }>;
+    matchedIndustries?: string[];
+    matchedOccupations?: string[];
+  }> {
+    // 1. 대상 비자 타입 로드 (관계 포함)
+    // 1. Load target visa type with relations
+    const visaType = await this.prisma.visaType.findFirst({
+      where: {
+        code: targetVisaCode,
+        isActive: true,
+      },
+      include: {
+        countryRestrictions: true,
+        industryMappings: { include: { industryCode: true } },
+        occupationMappings: { include: { occupationCode: true } },
+        requiredDocuments: { orderBy: { sortOrder: 'asc' } },
+        // [신규] Step 2 관계 포함 / Include new Step 2 relations
+        prohibitedIndustries: true,
+        workHourRules: { orderBy: { priority: 'desc' } },
+        hireQuotaRules: { include: { industryCode: true } },
+        // [신규] 점수제 카테고리 포함 / Include point system categories
+        pointCategories: {
+          include: { criteria: { orderBy: { sortOrder: 'asc' } } },
+          orderBy: { sortOrder: 'asc' },
+        },
+      },
+    });
+
+    // [신규] 입력 업종코드의 DB 플래그 사전 로드 / Pre-load industry flags
+    if (!input.inputIndustryFlags) {
+      const industryRecord = await this.prisma.industryCode.findFirst({
+        where: { ksicCode: input.ksicCode },
+      });
+      if (industryRecord) {
+        (input as any).inputIndustryFlags = {
+          isSimpleLabor: industryRecord.isSimpleLabor,
+          isEntertainment: industryRecord.isEntertainment,
+          isGambling: industryRecord.isGambling,
+          isGigWork: industryRecord.isGigWork,
+          requiresSafetyTraining: industryRecord.requiresSafetyTraining,
+          platformTag: industryRecord.platformTag,
+        };
+      } else {
+        const parentIndustry = await this.prisma.industryCode.findFirst({
+          where: { ksicCode: input.ksicCode.substring(0, 2) },
+        });
+        if (parentIndustry) {
+          (input as any).inputIndustryFlags = {
+            isSimpleLabor: parentIndustry.isSimpleLabor,
+            isEntertainment: parentIndustry.isEntertainment,
+            isGambling: parentIndustry.isGambling,
+            isGigWork: parentIndustry.isGigWork,
+            requiresSafetyTraining: parentIndustry.requiresSafetyTraining,
+            platformTag: parentIndustry.platformTag,
+          };
+        }
+      }
+    }
+
+    if (!visaType) {
+      return {
+        eligible: false,
+        documents: [],
+        restrictions: [],
+        notes: [],
+        blockedReasons: [
+          `비자 유형을 찾을 수 없습니다: ${targetVisaCode} / Visa type not found: ${targetVisaCode}`,
+        ],
+        suggestions: [],
+      };
+    }
+
+    // 2. 초기 결과
+    // 2. Initialize result
+    const result = {
+      eligible: true,
+      documents: [] as string[],
+      restrictions: [] as string[],
+      notes: [] as string[],
+      blockedReasons: [] as string[],
+      suggestions: [] as string[],
+      score: undefined as number | undefined,
+      requiredScore: undefined as number | undefined,
+      scoreBreakdown: undefined as
+        | Array<{
+            categoryCode: string;
+            categoryName: string;
+            score: number;
+            maxScore: number;
+            detail: string;
+          }>
+        | undefined,
+      matchedIndustries: undefined as string[] | undefined,
+      matchedOccupations: undefined as string[] | undefined,
+    };
+
+    // 3. JSON 규칙 평가 (해당 비자만)
+    // 3. Evaluate JSON rules (for this visa only)
+    const rules = await this.loadActiveRules();
+    const inputData = this.flattenInput(input);
+
+    for (const rule of rules) {
+      if (rule.visaTypeId !== visaType.id.toString()) continue;
+
+      try {
+        const conditions: ConditionBlock = JSON.parse(rule.conditions);
+        const actions: RuleAction = JSON.parse(rule.actions);
+
+        if (this.evaluateConditions(conditions, inputData)) {
+          switch (actions.type) {
+            case 'ELIGIBLE':
+              if (actions.documents)
+                result.documents.push(...actions.documents);
+              if (actions.restrictions)
+                result.restrictions.push(...actions.restrictions);
+              if (actions.notes) result.notes.push(actions.notes);
+              break;
+            case 'BLOCKED':
+              result.eligible = false;
+              if (actions.reason)
+                result.blockedReasons.push(actions.reason);
+              if (actions.suggestion)
+                result.suggestions.push(actions.suggestion);
+              break;
+            case 'DOCUMENT':
+              if (actions.documents)
+                result.documents.push(...actions.documents);
+              break;
+            case 'RESTRICTION':
+              if (actions.restrictions)
+                result.restrictions.push(...actions.restrictions);
+              if (actions.notes) result.notes.push(actions.notes);
+              break;
+          }
+        }
+      } catch (e) {
+        // 규칙 파싱 오류 무시 / Ignore rule parse errors
+      }
+    }
+
+    // 4. Strategy Evaluator 실행 (해당 비자만)
+    // 4. Run strategy evaluator (for this visa only)
+    if (this.evaluatorRegistry.hasEvaluator(visaType.code)) {
+      const evalResult = this.evaluatorRegistry.evaluate(
+        visaType.code,
+        input,
+        visaType as unknown as VisaTypeWithRelations,
+      );
+
+      if (evalResult) {
+        if (!evalResult.eligible) {
+          result.eligible = false;
+          result.blockedReasons.push(...evalResult.blockedReasons);
+          result.suggestions.push(...evalResult.suggestions);
+        }
+        result.documents.push(...evalResult.documents);
+        result.restrictions.push(...evalResult.restrictions);
+        result.notes.push(...evalResult.notes);
+        if (evalResult.score !== undefined) result.score = evalResult.score;
+        if (evalResult.requiredScore !== undefined)
+          result.requiredScore = evalResult.requiredScore;
+        if (evalResult.scoreBreakdown)
+          result.scoreBreakdown = evalResult.scoreBreakdown;
+        result.matchedIndustries = evalResult.matchedIndustries;
+        result.matchedOccupations = evalResult.matchedOccupations;
+      }
+    }
+
+    // 5. 중복 제거
+    // 5. Deduplicate
+    result.documents = [...new Set(result.documents)];
+    result.restrictions = [...new Set(result.restrictions)];
+    result.notes = [...new Set(result.notes)];
+    result.blockedReasons = [...new Set(result.blockedReasons)];
+    result.suggestions = [...new Set(result.suggestions)];
+
+    return result;
   }
 
   /**

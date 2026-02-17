@@ -65,7 +65,10 @@ export class JobPaymentService {
   // ========================================
   // 주문 생성 (가격 스냅샷)
   // ========================================
-  async createOrder(userId: string, data: { productCode: string; jobPostingId?: string }) {
+  async createOrder(
+    userId: string,
+    data: { productCode: string; jobPostingId?: string },
+  ) {
     const corp = await this.prisma.corporateProfile.findUnique({
       where: { authId: userId },
     });
@@ -79,7 +82,9 @@ export class JobPaymentService {
     // 주문번호 생성
     const now = new Date();
     const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
-    const random = Math.floor(Math.random() * 99999).toString().padStart(5, '0');
+    const random = Math.floor(Math.random() * 99999)
+      .toString()
+      .padStart(5, '0');
     const orderNo = `ORD-${dateStr}-${random}`;
     const merchantUid = `merchant_${Date.now()}_${random}`;
 
@@ -125,7 +130,11 @@ export class JobPaymentService {
   // ========================================
   // 결제 검증 (PortOne)
   // ========================================
-  async verifyPayment(userId: string, orderNo: string, data: { impUid: string }) {
+  async verifyPayment(
+    userId: string,
+    orderNo: string,
+    data: { impUid: string },
+  ) {
     const corp = await this.prisma.corporateProfile.findUnique({
       where: { authId: userId },
     });
@@ -240,15 +249,22 @@ export class JobPaymentService {
     ]);
 
     // 공고 정보 조회
-    const jobIds = items.filter((i) => i.jobPostingId).map((i) => i.jobPostingId!);
-    const jobs = jobIds.length > 0
-      ? await this.prisma.jobPosting.findMany({ where: { id: { in: jobIds } } })
-      : [];
+    const jobIds = items
+      .filter((i) => i.jobPostingId)
+      .map((i) => i.jobPostingId!);
+    const jobs =
+      jobIds.length > 0
+        ? await this.prisma.jobPosting.findMany({
+            where: { id: { in: jobIds } },
+          })
+        : [];
     const jobMap = new Map(jobs.map((j) => [j.id.toString(), j]));
 
     return {
       items: items.map((o) => {
-        const job = o.jobPostingId ? jobMap.get(o.jobPostingId.toString()) : null;
+        const job = o.jobPostingId
+          ? jobMap.get(o.jobPostingId.toString())
+          : null;
         return {
           id: o.id.toString(),
           orderNo: o.orderNo,
@@ -347,7 +363,10 @@ export class JobPaymentService {
     const totalOrders = allOrders.length;
 
     // 상품별 집계
-    const byProduct: Record<string, { count: number; revenue: number; name: string }> = {};
+    const byProduct: Record<
+      string,
+      { count: number; revenue: number; name: string }
+    > = {};
     for (const o of allOrders) {
       const key = o.product.productCode;
       if (!byProduct[key]) {
@@ -360,7 +379,9 @@ export class JobPaymentService {
     // 월별 매출
     const byMonth: Record<string, number> = {};
     for (const o of allOrders) {
-      const month = o.paidAt ? o.paidAt.toISOString().slice(0, 7) : o.createdAt.toISOString().slice(0, 7);
+      const month = o.paidAt
+        ? o.paidAt.toISOString().slice(0, 7)
+        : o.createdAt.toISOString().slice(0, 7);
       byMonth[month] = (byMonth[month] || 0) + o.paidAmount;
     }
 
@@ -382,7 +403,9 @@ export class JobPaymentService {
   // ========================================
   // PortOne (Iamport) API
   // ========================================
-  private async verifyWithIamport(impUid: string): Promise<{ amount: number; status: string }> {
+  private async verifyWithIamport(
+    impUid: string,
+  ): Promise<{ amount: number; status: string }> {
     const apiKey = process.env.IAMPORT_API_KEY;
     const apiSecret = process.env.IAMPORT_API_SECRET;
 
@@ -406,9 +429,12 @@ export class JobPaymentService {
     }
 
     // 2. 결제 정보 조회
-    const paymentRes = await fetch(`https://api.iamport.kr/payments/${impUid}`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
+    const paymentRes = await fetch(
+      `https://api.iamport.kr/payments/${impUid}`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      },
+    );
     const paymentData = await paymentRes.json();
 
     if (paymentData.code !== 0) {

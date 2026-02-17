@@ -12,10 +12,7 @@ import {
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Session } from 'libs/common/src';
 import { VisaRulesService } from './visa-rules.service';
-import {
-  RuleEngineService,
-  EvaluateVisaInput,
-} from './rule-engine.service';
+import { RuleEngineService, EvaluateVisaInput } from './rule-engine.service';
 import { PointCalculatorService } from './evaluators/point-calculator.service';
 import { AuthPrismaService, RedisService, SessionData } from 'libs/common/src';
 
@@ -195,30 +192,21 @@ export class VisaRulesController {
 
   @Delete('rules/:id')
   @ApiOperation({ summary: 'Deactivate rule' })
-  async deactivateRule(
-    @Session() sessionId: string,
-    @Param('id') id: string,
-  ) {
+  async deactivateRule(@Session() sessionId: string, @Param('id') id: string) {
     const adminId = await this.requireAdmin(sessionId);
     return await this.visaRulesService.deactivateRule(id, adminId);
   }
 
   @Post('rules/:id/activate')
   @ApiOperation({ summary: 'Activate a DRAFT rule' })
-  async activateRule(
-    @Session() sessionId: string,
-    @Param('id') id: string,
-  ) {
+  async activateRule(@Session() sessionId: string, @Param('id') id: string) {
     const adminId = await this.requireAdmin(sessionId);
     return await this.visaRulesService.activateDraftRule(id, adminId);
   }
 
   @Get('rules/:id/versions')
   @ApiOperation({ summary: 'Get rule version history' })
-  async getRuleVersions(
-    @Session() sessionId: string,
-    @Param('id') id: string,
-  ) {
+  async getRuleVersions(@Session() sessionId: string, @Param('id') id: string) {
     await this.requireAdmin(sessionId);
     return await this.visaRulesService.getRuleVersionHistory(id);
   }
@@ -246,7 +234,9 @@ export class VisaRulesController {
   // ==========================================
 
   @Get('visa-types/:code/details')
-  @ApiOperation({ summary: 'Get full visa type details with mappings, countries, documents' })
+  @ApiOperation({
+    summary: 'Get full visa type details with mappings, countries, documents',
+  })
   async getVisaTypeDetails(
     @Session() sessionId: string,
     @Param('code') code: string,
@@ -273,17 +263,25 @@ export class VisaRulesController {
       orderBy: { code: 'asc' },
     });
 
-    return { ...vt, id: vt.id.toString(), subTypes: subTypes.map(s => ({ ...s, id: s.id.toString() })) };
+    return {
+      ...vt,
+      id: vt.id.toString(),
+      subTypes: subTypes.map((s) => ({ ...s, id: s.id.toString() })),
+    };
   }
 
   @Get('point-system/:visaCode')
-  @ApiOperation({ summary: 'Get point system categories and criteria for a visa' })
+  @ApiOperation({
+    summary: 'Get point system categories and criteria for a visa',
+  })
   async getPointSystem(
     @Session() sessionId: string,
     @Param('visaCode') visaCode: string,
   ) {
     await this.requireAuth(sessionId);
-    const vt = await this.prisma.visaType.findUnique({ where: { code: visaCode } });
+    const vt = await this.prisma.visaType.findUnique({
+      where: { code: visaCode },
+    });
     if (!vt) return { error: 'Visa type not found' };
 
     const categories = await this.prisma.pointSystemCategory.findMany({
@@ -297,17 +295,23 @@ export class VisaRulesController {
       visaName: vt.nameKo,
       totalMaxScore: categories.reduce((sum, c) => sum + c.maxScore, 0),
       requiredScore: 80,
-      categories: categories.map(c => ({
+      categories: categories.map((c) => ({
         ...c,
         id: c.id.toString(),
         visaTypeId: c.visaTypeId.toString(),
-        criteria: c.criteria.map(cr => ({ ...cr, id: cr.id.toString(), categoryId: cr.categoryId.toString() })),
+        criteria: c.criteria.map((cr) => ({
+          ...cr,
+          id: cr.id.toString(),
+          categoryId: cr.categoryId.toString(),
+        })),
       })),
     };
   }
 
   @Post('evaluate-individual')
-  @ApiOperation({ summary: 'Evaluate visa eligibility with individual-side data' })
+  @ApiOperation({
+    summary: 'Evaluate visa eligibility with individual-side data',
+  })
   async evaluateIndividual(
     @Session() sessionId: string,
     @Body() input: EvaluateVisaInput,
@@ -323,7 +327,9 @@ export class VisaRulesController {
     @Body() body: { visaCode: string; input: EvaluateVisaInput },
   ) {
     await this.requireAuth(sessionId);
-    const vt = await this.prisma.visaType.findUnique({ where: { code: body.visaCode } });
+    const vt = await this.prisma.visaType.findUnique({
+      where: { code: body.visaCode },
+    });
     if (!vt) return { error: 'Visa type not found' };
     return await this.pointCalculator.calculateScore(vt.id, body.input);
   }
@@ -352,7 +358,7 @@ export class VisaRulesController {
       orderBy: { kscoCode: 'asc' },
       take: 200,
     });
-    return codes.map(c => ({ ...c, id: c.id.toString() }));
+    return codes.map((c) => ({ ...c, id: c.id.toString() }));
   }
 
   @Get('countries/:visaCode')
@@ -362,12 +368,18 @@ export class VisaRulesController {
     @Param('visaCode') visaCode: string,
   ) {
     await this.requireAuth(sessionId);
-    const vt = await this.prisma.visaType.findUnique({ where: { code: visaCode } });
+    const vt = await this.prisma.visaType.findUnique({
+      where: { code: visaCode },
+    });
     if (!vt) return { error: 'Visa type not found' };
     const restrictions = await this.prisma.visaCountryRestriction.findMany({
       where: { visaTypeId: vt.id },
       orderBy: { countryNameKo: 'asc' },
     });
-    return restrictions.map(r => ({ ...r, id: r.id.toString(), visaTypeId: r.visaTypeId.toString() }));
+    return restrictions.map((r) => ({
+      ...r,
+      id: r.id.toString(),
+      visaTypeId: r.visaTypeId.toString(),
+    }));
   }
 }

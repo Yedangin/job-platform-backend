@@ -51,9 +51,7 @@ export class HikoreaGoKrScraper extends BaseScraper {
 
           if (!title || title.length < 3) return;
 
-          const isRelevant = this.keywords.some((kw) =>
-            title.includes(kw),
-          );
+          const isRelevant = this.keywords.some((kw) => title.includes(kw));
 
           if (isRelevant) {
             const fullUrl = href.startsWith('http')
@@ -71,10 +69,7 @@ export class HikoreaGoKrScraper extends BaseScraper {
         } catch {}
       });
     } catch (error) {
-      console.error(
-        '[HikoreaGoKr] 스크래핑 실패:',
-        (error as Error).message,
-      );
+      console.error('[HikoreaGoKr] 스크래핑 실패:', (error as Error).message);
     }
 
     return items.slice(0, 20);

@@ -4,7 +4,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { JwtModule } from '@nestjs/jwt';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import {
@@ -27,6 +27,14 @@ import { VisaRulesModule } from './visa-rules/visa-rules.module';
 import { JobPostingModule } from './job-posting/job-posting.module';
 import { JobPaymentModule } from './job-payment/job-payment.module';
 import { JobApplicationModule } from './job-application/job-application.module';
+import { ResumeModule } from './resume/resume.module';
+import { VisaVerificationModule } from './visa-verification/visa-verification.module';
+import { LoggingModule } from './logging/logging.module';
+import { LawAmendmentModule } from './law-amendment/law-amendment.module';
+import { PaymentModule } from './payment/payment.module';
+import { DiagnosisModule } from './diagnosis/diagnosis.module';
+import { RequestLogInterceptor } from './logging/request-log.interceptor';
+import { ErrorLogFilter } from './logging/error-log.filter';
 
 @Module({
   imports: [
@@ -79,6 +87,12 @@ import { JobApplicationModule } from './job-application/job-application.module';
     JobPostingModule,
     JobPaymentModule,
     JobApplicationModule,
+    ResumeModule,
+    VisaVerificationModule,
+    LoggingModule,
+    LawAmendmentModule,
+    PaymentModule,
+    DiagnosisModule,
   ],
   controllers: [],
   providers: [
@@ -87,6 +101,14 @@ import { JobApplicationModule } from './job-application/job-application.module';
       useClass: ThrottlerBehindProxyGuard,
     },
     SessionAuthGuard,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: RequestLogInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ErrorLogFilter,
+    },
   ],
 })
 export class AppModule {}

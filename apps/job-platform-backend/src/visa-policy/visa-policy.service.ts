@@ -64,7 +64,8 @@ export class VisaPolicyService {
     const change = await this.prisma.policyChange.findUnique({
       where: { id: BigInt(id) },
     });
-    if (!change) throw new NotFoundException('정책 변경 건을 찾을 수 없습니다.');
+    if (!change)
+      throw new NotFoundException('정책 변경 건을 찾을 수 없습니다.');
 
     return {
       id: change.id.toString(),
@@ -101,7 +102,8 @@ export class VisaPolicyService {
     const change = await this.prisma.policyChange.findUnique({
       where: { id: BigInt(id) },
     });
-    if (!change) throw new NotFoundException('정책 변경 건을 찾을 수 없습니다.');
+    if (!change)
+      throw new NotFoundException('정책 변경 건을 찾을 수 없습니다.');
 
     await this.prisma.policyChange.update({
       where: { id: BigInt(id) },
@@ -124,10 +126,12 @@ export class VisaPolicyService {
     const change = await this.prisma.policyChange.findUnique({
       where: { id: BigInt(changeId) },
     });
-    if (!change) throw new NotFoundException('정책 변경 건을 찾을 수 없습니다.');
+    if (!change)
+      throw new NotFoundException('정책 변경 건을 찾을 수 없습니다.');
 
     // 영향받는 비자 유형에서 첫 번째 비자를 기본 대상으로
-    const visaCodes = change.affectedVisaTypes?.split(',').map((s) => s.trim()) || [];
+    const visaCodes =
+      change.affectedVisaTypes?.split(',').map((s) => s.trim()) || [];
     let visaTypeId: bigint | null = null;
 
     if (visaCodes.length > 0) {
@@ -138,9 +142,7 @@ export class VisaPolicyService {
     }
 
     if (!visaTypeId) {
-      throw new BadRequestException(
-        '영향받는 비자 유형을 먼저 지정해주세요.',
-      );
+      throw new BadRequestException('영향받는 비자 유형을 먼저 지정해주세요.');
     }
 
     // DRAFT 규칙 생성
@@ -166,7 +168,10 @@ export class VisaPolicyService {
     const rule = await this.prisma.visaRule.create({
       data: {
         visaTypeId,
-        ruleName: `[초안] ${change.pageTitle || '정책 변경 반영'}`.substring(0, 100),
+        ruleName: `[초안] ${change.pageTitle || '정책 변경 반영'}`.substring(
+          0,
+          100,
+        ),
         ruleDescription: `정책 변경 ID: ${changeId}\n출처: ${change.sourceSite}\n요약: ${change.summary}`,
         priority: 100,
         ruleType: 'ELIGIBILITY',

@@ -1,5 +1,9 @@
 import { BaseVisaEvaluator } from '../base.evaluator';
-import { EvaluateVisaInput, VisaEvaluation, VisaTypeWithRelations } from '../evaluator.interface';
+import {
+  EvaluateVisaInput,
+  VisaEvaluation,
+  VisaTypeWithRelations,
+} from '../evaluator.interface';
 
 /**
  * H-1 관광취업(워킹홀리데이) 평가기
@@ -13,15 +17,23 @@ import { EvaluateVisaInput, VisaEvaluation, VisaTypeWithRelations } from '../eva
 export class H1Evaluator extends BaseVisaEvaluator {
   readonly visaCodes = ['H-1'];
 
-  evaluate(input: EvaluateVisaInput, visaType: VisaTypeWithRelations): VisaEvaluation {
+  evaluate(
+    input: EvaluateVisaInput,
+    visaType: VisaTypeWithRelations,
+  ): VisaEvaluation {
     const result = this.createEmptyResult();
     result.documents = this.getRequiredDocuments(visaType.requiredDocuments);
 
     // 1. 협정국 확인
-    const countryCheck = this.checkCountryAllowed(input.nationality, visaType.countryRestrictions);
+    const countryCheck = this.checkCountryAllowed(
+      input.nationality,
+      visaType.countryRestrictions,
+    );
     if (!countryCheck.allowed) {
       result.blockedReasons.push(countryCheck.reason!);
-      result.suggestions.push('H-1 비자는 워킹홀리데이 협정국(25개국) 국민만 신청 가능');
+      result.suggestions.push(
+        'H-1 비자는 워킹홀리데이 협정국(25개국) 국민만 신청 가능',
+      );
       return result;
     }
 

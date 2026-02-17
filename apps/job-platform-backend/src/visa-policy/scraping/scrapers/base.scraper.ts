@@ -27,7 +27,8 @@ export abstract class BaseScraper {
         headers: {
           'User-Agent':
             'JobChaja-PolicyBot/1.0 (https://jobchaja.com; policy-monitoring)',
-          Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          Accept:
+            'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
           'Accept-Language': 'ko-KR,ko;q=0.9,en;q=0.8',
         },
         signal: controller.signal,
