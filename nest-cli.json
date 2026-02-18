@@ -65,7 +65,9 @@
       "entryFile": "main",
       "sourceRoot": "apps/notification-service/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/notification-service/tsconfig.app.json"
+        "tsConfigPath": "apps/notification-service/tsconfig.app.json",
+        "assets": ["email/templates/**/*.hbs"],
+        "watchAssets": true
       }
     },
     "payment-services": {

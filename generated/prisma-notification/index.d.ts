@@ -49,10 +49,20 @@ export type NotificationType = (typeof NotificationType)[keyof typeof Notificati
 export const NotificationStatus: {
   PENDING: 'PENDING',
   SENDING: 'SENDING',
+  SENT: 'SENT',
   FAILED: 'FAILED'
 };
 
 export type NotificationStatus = (typeof NotificationStatus)[keyof typeof NotificationStatus]
+
+
+export const NotificationChannel: {
+  EMAIL: 'EMAIL',
+  PUSH: 'PUSH',
+  BOTH: 'BOTH'
+};
+
+export type NotificationChannel = (typeof NotificationChannel)[keyof typeof NotificationChannel]
 
 }
 
@@ -63,6 +73,10 @@ export const NotificationType: typeof $Enums.NotificationType
 export type NotificationStatus = $Enums.NotificationStatus
 
 export const NotificationStatus: typeof $Enums.NotificationStatus
+
+export type NotificationChannel = $Enums.NotificationChannel
+
+export const NotificationChannel: typeof $Enums.NotificationChannel
 
 /**
  * ##  Prisma Client ʲˢ
@@ -1128,6 +1142,8 @@ export namespace Prisma {
     createdAt: Date | null
     sendedAt: Date | null
     failedAt: Date | null
+    channel: $Enums.NotificationChannel | null
+    readAt: Date | null
     errorMessage: string | null
   }
 
@@ -1149,6 +1165,8 @@ export namespace Prisma {
     createdAt: Date | null
     sendedAt: Date | null
     failedAt: Date | null
+    channel: $Enums.NotificationChannel | null
+    readAt: Date | null
     errorMessage: string | null
   }
 
@@ -1170,6 +1188,8 @@ export namespace Prisma {
     createdAt: number
     sendedAt: number
     failedAt: number
+    channel: number
+    readAt: number
     errorMessage: number
     _all: number
   }
@@ -1205,6 +1225,8 @@ export namespace Prisma {
     createdAt?: true
     sendedAt?: true
     failedAt?: true
+    channel?: true
+    readAt?: true
     errorMessage?: true
   }
 
@@ -1226,6 +1248,8 @@ export namespace Prisma {
     createdAt?: true
     sendedAt?: true
     failedAt?: true
+    channel?: true
+    readAt?: true
     errorMessage?: true
   }
 
@@ -1247,6 +1271,8 @@ export namespace Prisma {
     createdAt?: true
     sendedAt?: true
     failedAt?: true
+    channel?: true
+    readAt?: true
     errorMessage?: true
     _all?: true
   }
@@ -1355,6 +1381,8 @@ export namespace Prisma {
     createdAt: Date
     sendedAt: Date | null
     failedAt: Date | null
+    channel: $Enums.NotificationChannel
+    readAt: Date | null
     errorMessage: string | null
     _count: NotificationCountAggregateOutputType | null
     _avg: NotificationAvgAggregateOutputType | null
@@ -1395,6 +1423,8 @@ export namespace Prisma {
     createdAt?: boolean
     sendedAt?: boolean
     failedAt?: boolean
+    channel?: boolean
+    readAt?: boolean
     errorMessage?: boolean
   }, ExtArgs["result"]["notification"]>
 
@@ -1416,6 +1446,8 @@ export namespace Prisma {
     createdAt?: boolean
     sendedAt?: boolean
     failedAt?: boolean
+    channel?: boolean
+    readAt?: boolean
     errorMessage?: boolean
   }, ExtArgs["result"]["notification"]>
 
@@ -1437,6 +1469,8 @@ export namespace Prisma {
     createdAt?: boolean
     sendedAt?: boolean
     failedAt?: boolean
+    channel?: boolean
+    readAt?: boolean
     errorMessage?: boolean
   }, ExtArgs["result"]["notification"]>
 
@@ -1458,10 +1492,12 @@ export namespace Prisma {
     createdAt?: boolean
     sendedAt?: boolean
     failedAt?: boolean
+    channel?: boolean
+    readAt?: boolean
     errorMessage?: boolean
   }
 
-  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "email" | "subject" | "content" | "notificationType" | "status" | "priority" | "attempts" | "maxAttempts" | "metadata" | "isRead" | "relatedInterviewId" | "relatedJobPostId" | "createdAt" | "sendedAt" | "failedAt" | "errorMessage", ExtArgs["result"]["notification"]>
+  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "email" | "subject" | "content" | "notificationType" | "status" | "priority" | "attempts" | "maxAttempts" | "metadata" | "isRead" | "relatedInterviewId" | "relatedJobPostId" | "createdAt" | "sendedAt" | "failedAt" | "channel" | "readAt" | "errorMessage", ExtArgs["result"]["notification"]>
 
   export type $NotificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Notification"
@@ -1484,6 +1520,8 @@ export namespace Prisma {
       createdAt: Date
       sendedAt: Date | null
       failedAt: Date | null
+      channel: $Enums.NotificationChannel
+      readAt: Date | null
       errorMessage: string | null
     }, ExtArgs["result"]["notification"]>
     composites: {}
@@ -1925,6 +1963,8 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Notification", 'DateTime'>
     readonly sendedAt: FieldRef<"Notification", 'DateTime'>
     readonly failedAt: FieldRef<"Notification", 'DateTime'>
+    readonly channel: FieldRef<"Notification", 'NotificationChannel'>
+    readonly readAt: FieldRef<"Notification", 'DateTime'>
     readonly errorMessage: FieldRef<"Notification", 'String'>
   }
     
@@ -4327,6 +4367,8 @@ export namespace Prisma {
     createdAt: 'createdAt',
     sendedAt: 'sendedAt',
     failedAt: 'failedAt',
+    channel: 'channel',
+    readAt: 'readAt',
     errorMessage: 'errorMessage'
   };
 
@@ -4463,6 +4505,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'NotificationChannel'
+   */
+  export type EnumNotificationChannelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationChannel'>
+    
+
+
+  /**
+   * Reference to a field of type 'NotificationChannel[]'
+   */
+  export type ListEnumNotificationChannelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationChannel[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -4500,6 +4556,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Notification"> | Date | string
     sendedAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
     failedAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    channel?: EnumNotificationChannelFilter<"Notification"> | $Enums.NotificationChannel
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
     errorMessage?: StringNullableFilter<"Notification"> | string | null
   }
 
@@ -4521,6 +4579,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     sendedAt?: SortOrderInput | SortOrder
     failedAt?: SortOrderInput | SortOrder
+    channel?: SortOrder
+    readAt?: SortOrderInput | SortOrder
     errorMessage?: SortOrderInput | SortOrder
   }
 
@@ -4545,6 +4605,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Notification"> | Date | string
     sendedAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
     failedAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    channel?: EnumNotificationChannelFilter<"Notification"> | $Enums.NotificationChannel
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
     errorMessage?: StringNullableFilter<"Notification"> | string | null
   }, "id">
 
@@ -4566,6 +4628,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     sendedAt?: SortOrderInput | SortOrder
     failedAt?: SortOrderInput | SortOrder
+    channel?: SortOrder
+    readAt?: SortOrderInput | SortOrder
     errorMessage?: SortOrderInput | SortOrder
     _count?: NotificationCountOrderByAggregateInput
     _avg?: NotificationAvgOrderByAggregateInput
@@ -4595,6 +4659,8 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Notification"> | Date | string
     sendedAt?: DateTimeNullableWithAggregatesFilter<"Notification"> | Date | string | null
     failedAt?: DateTimeNullableWithAggregatesFilter<"Notification"> | Date | string | null
+    channel?: EnumNotificationChannelWithAggregatesFilter<"Notification"> | $Enums.NotificationChannel
+    readAt?: DateTimeNullableWithAggregatesFilter<"Notification"> | Date | string | null
     errorMessage?: StringNullableWithAggregatesFilter<"Notification"> | string | null
   }
 
@@ -4725,6 +4791,8 @@ export namespace Prisma {
     createdAt?: Date | string
     sendedAt?: Date | string | null
     failedAt?: Date | string | null
+    channel?: $Enums.NotificationChannel
+    readAt?: Date | string | null
     errorMessage?: string | null
   }
 
@@ -4746,6 +4814,8 @@ export namespace Prisma {
     createdAt?: Date | string
     sendedAt?: Date | string | null
     failedAt?: Date | string | null
+    channel?: $Enums.NotificationChannel
+    readAt?: Date | string | null
     errorMessage?: string | null
   }
 
@@ -4767,6 +4837,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -4788,6 +4860,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -4809,6 +4883,8 @@ export namespace Prisma {
     createdAt?: Date | string
     sendedAt?: Date | string | null
     failedAt?: Date | string | null
+    channel?: $Enums.NotificationChannel
+    readAt?: Date | string | null
     errorMessage?: string | null
   }
 
@@ -4830,6 +4906,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -4851,6 +4929,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     failedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -5055,6 +5135,13 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
+  export type EnumNotificationChannelFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationChannel | EnumNotificationChannelFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationChannelFilter<$PrismaModel> | $Enums.NotificationChannel
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -5078,6 +5165,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     sendedAt?: SortOrder
     failedAt?: SortOrder
+    channel?: SortOrder
+    readAt?: SortOrder
     errorMessage?: SortOrder
   }
 
@@ -5105,6 +5194,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     sendedAt?: SortOrder
     failedAt?: SortOrder
+    channel?: SortOrder
+    readAt?: SortOrder
     errorMessage?: SortOrder
   }
 
@@ -5126,6 +5217,8 @@ export namespace Prisma {
     createdAt?: SortOrder
     sendedAt?: SortOrder
     failedAt?: SortOrder
+    channel?: SortOrder
+    readAt?: SortOrder
     errorMessage?: SortOrder
   }
 
@@ -5243,6 +5336,16 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type EnumNotificationChannelWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationChannel | EnumNotificationChannelFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationChannelWithAggregatesFilter<$PrismaModel> | $Enums.NotificationChannel
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationChannelFilter<$PrismaModel>
+    _max?: NestedEnumNotificationChannelFilter<$PrismaModel>
+  }
+
   export type ChatCountOrderByAggregateInput = {
     id?: SortOrder
     userOne?: SortOrder
@@ -5343,6 +5446,10 @@ export namespace Prisma {
     set?: Date | string | null
   }
 
+  export type EnumNotificationChannelFieldUpdateOperationsInput = {
+    set?: $Enums.NotificationChannel
+  }
+
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
   }
@@ -5425,6 +5532,13 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedEnumNotificationChannelFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationChannel | EnumNotificationChannelFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationChannelFilter<$PrismaModel> | $Enums.NotificationChannel
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -5553,6 +5667,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumNotificationChannelWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationChannel | EnumNotificationChannelFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationChannelWithAggregatesFilter<$PrismaModel> | $Enums.NotificationChannel
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationChannelFilter<$PrismaModel>
+    _max?: NestedEnumNotificationChannelFilter<$PrismaModel>
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {

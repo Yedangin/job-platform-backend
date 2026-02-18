@@ -14,12 +14,30 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
 
+  const clientUrl = (process.env.CLIENT_URL || 'http://localhost:3000').replace(
+    /\/$/,
+    '',
+  );
+  const allowedOrigins = [
+    clientUrl,
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://127.0.0.1:3000',
+  ];
+
   app.enableCors({
-    origin: ['http://localhost:3001', 'http://3.36.79.172:3001'],
-    allowedHeaders: ['Authorization', 'Content-Type', 'Cookie'],
-    exposedHeaders: ['Authorization'],
-    credentials: true, // 쿠키 전송 허용
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, etc.)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, origin || true);
+      } else {
+        callback(null, false);
+      }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Authorization, Content-Type, Accept, Cookie',
+    exposedHeaders: 'Authorization',
+    credentials: true,
   });
   const config = new DocumentBuilder()
     .setTitle('JobChaja API Documentation')

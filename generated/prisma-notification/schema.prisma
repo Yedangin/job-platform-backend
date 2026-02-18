@@ -24,33 +24,44 @@ enum NotificationType {
 enum NotificationStatus {
   PENDING
   SENDING
+  SENT
   FAILED
 }
 
+enum NotificationChannel {
+  EMAIL
+  PUSH
+  BOTH
+}
+
 model Notification {
-  id                 String             @id @default(cuid()) @map("id")
-  userId             String             @map("user_id")
-  email              String?            @notiDB.VarChar(50)
-  subject            String?            @notiDB.VarChar(100)
-  content            String?            @notiDB.VarChar(255)
-  notificationType   NotificationType   @default(REMINDER) @map("notification_type")
-  status             NotificationStatus @default(PENDING)
+  id                 String              @id @default(cuid()) @map("id")
+  userId             String              @map("user_id")
+  email              String?             @notiDB.VarChar(50)
+  subject            String?             @notiDB.VarChar(100)
+  content            String?             @notiDB.VarChar(255)
+  notificationType   NotificationType    @default(REMINDER) @map("notification_type")
+  status             NotificationStatus  @default(PENDING)
   priority           Int?
   attempts           Int?
-  maxAttempts        Int?               @map("max_attempts")
-  metadata           String?            @notiDB.VarChar(255)
-  isRead             Boolean?           @map("is_read")
-  relatedInterviewId String?            @map("related_interview_id")
-  relatedJobPostId   String?            @map("related_job_post_id")
-  createdAt          DateTime           @default(now()) @map("created_at")
-  sendedAt           DateTime?          @map("sended_at")
-  failedAt           DateTime?          @map("failed_at")
-  errorMessage       String?            @map("error_message") @notiDB.Text
+  maxAttempts        Int?                @map("max_attempts")
+  metadata           String?             @notiDB.VarChar(255)
+  isRead             Boolean?            @map("is_read")
+  relatedInterviewId String?             @map("related_interview_id")
+  relatedJobPostId   String?             @map("related_job_post_id")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  sendedAt           DateTime?           @map("sended_at")
+  failedAt           DateTime?           @map("failed_at")
+  channel            NotificationChannel @default(BOTH)
+  readAt             DateTime?           @map("read_at")
+  errorMessage       String?             @map("error_message") @notiDB.Text
 
+  @@index([userId])
   @@index([email])
   @@index([subject])
   @@index([notificationType])
   @@index([metadata])
+  @@index([status])
   @@map("notifications")
 }
 

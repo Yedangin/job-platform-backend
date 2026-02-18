@@ -8,10 +8,20 @@ services:
     restart: always
     env_file:
       - .env
+    environment:
+      USER_DATABASE_URL: postgres://postgres:password@postgres:5432/users
+      JOB_DATABASE_URL: postgres://postgres:password@postgres:5432/jobs
+      PAYMENT_DATABASE_URL: postgres://postgres:password@postgres:5432/payments
+      NOTIFICATION_DATABASE_URL: postgres://postgres:password@notification-postgres:5432/notifications
+      LOG_MONGODB_URL: mongodb://mongodb:27017/logs
+      REDIS_HOST: redis
+      NOTIFICATION_SERVICE_URL: notification-service:8004
     depends_on:
       - postgres
       - mongodb
       - redis
+      - notification-postgres
+      - notification-service
       
     command: >
              sh -c "npx prisma db push --schema=./prisma/user/user.schema.prisma && 
@@ -27,7 +37,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: users
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
@@ -59,6 +69,38 @@ services:
     ports:
       - "6379:6379"
 
+  notification-postgres:
+    image: postgres:15-alpine
+    container_name: notification-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: notifications
+    ports:
+      - "5435:5432"
+    volumes:
+      - notification-postgres-data:/var/lib/postgresql/data
+
+  notification-service:
+    build: .
+    container_name: notification-service
+    ports:
+      - "8004:8004"
+    restart: always
+    env_file:
+      - .env
+    environment:
+      NOTIFICATION_DATABASE_URL: postgres://postgres:password@notification-postgres:5432/notifications
+      REDIS_HOST: redis
+    depends_on:
+      - notification-postgres
+      - redis
+    command: >
+             sh -c "npx prisma db push --schema=./prisma/notification/notification.schema.prisma &&
+             npx nest start notification-service"
+
 volumes:
   postgres-data:
   mongo-data:
+  notification-postgres-data:

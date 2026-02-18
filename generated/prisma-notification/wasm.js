@@ -138,6 +138,8 @@ exports.Prisma.NotificationScalarFieldEnum = {
   createdAt: 'createdAt',
   sendedAt: 'sendedAt',
   failedAt: 'failedAt',
+  channel: 'channel',
+  readAt: 'readAt',
   errorMessage: 'errorMessage'
 };
 
@@ -185,7 +187,14 @@ exports.NotificationType = exports.$Enums.NotificationType = {
 exports.NotificationStatus = exports.$Enums.NotificationStatus = {
   PENDING: 'PENDING',
   SENDING: 'SENDING',
+  SENT: 'SENT',
   FAILED: 'FAILED'
+};
+
+exports.NotificationChannel = exports.$Enums.NotificationChannel = {
+  EMAIL: 'EMAIL',
+  PUSH: 'PUSH',
+  BOTH: 'BOTH'
 };
 
 exports.Prisma.ModelName = {

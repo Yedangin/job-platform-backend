@@ -22,6 +22,9 @@ RUN npx prisma generate --schema=./prisma/user/user.schema.prisma && \
 # Build NestJS app
 RUN npm run build
 
+# Copy email templates to where webpack's __dirname expects them
+RUN cp -r apps/notification-service/src/email/templates dist/apps/notification-service/templates 2>/dev/null || true
+
 # Expose the configured app port
 EXPOSE 8000
 

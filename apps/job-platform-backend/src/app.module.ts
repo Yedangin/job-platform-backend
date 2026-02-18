@@ -38,6 +38,7 @@ import { FulltimeVisaModule } from './fulltime-visa/fulltime-visa.module';
 import { InstitutionsModule } from './institutions/institutions.module';
 import { RequestLogInterceptor } from './logging/request-log.interceptor';
 import { ErrorLogFilter } from './logging/error-log.filter';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -99,6 +100,7 @@ import { ErrorLogFilter } from './logging/error-log.filter';
     AlbaVisaMatchingModule,
     FulltimeVisaModule,
     InstitutionsModule,
+    NotificationModule,
   ],
   controllers: [],
   providers: [

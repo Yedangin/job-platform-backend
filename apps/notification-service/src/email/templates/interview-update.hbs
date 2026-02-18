@@ -1,0 +1,18 @@
+<h2 style="color: #1f2937; margin-top: 0;">{{subject}}</h2>
+<p>{{content}}</p>
+{{#if interviewDate}}
+<div style="background-color: #f3f4f6; padding: 16px; border-radius: 8px; margin: 16px 0;">
+  <p style="margin: 0 0 8px 0;"><strong>Date:</strong> {{interviewDate}}</p>
+  {{#if interviewTime}}
+  <p style="margin: 0 0 8px 0;"><strong>Time:</strong> {{interviewTime}}</p>
+  {{/if}}
+  {{#if interviewLocation}}
+  <p style="margin: 0 0 8px 0;"><strong>Location:</strong> {{interviewLocation}}</p>
+  {{/if}}
+  {{#if interviewMethod}}
+  <p style="margin: 0;"><strong>Method:</strong> {{interviewMethod}}</p>
+  {{/if}}
+</div>
+{{/if}}
+<p>Please log in to your account for more details.</p>
+<a href="{{actionUrl}}" class="btn" style="color: #ffffff;">View Details</a>

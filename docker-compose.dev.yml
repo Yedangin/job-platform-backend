@@ -1,0 +1,57 @@
+services:
+  backend-service:
+    build: .
+    container_name: job-backend
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
+      USER_DATABASE_URL: postgres://postgres:password@postgres:5432/users
+      JOB_DATABASE_URL: postgres://postgres:password@postgres:5432/jobs
+      PAYMENT_DATABASE_URL: postgres://postgres:password@postgres:5432/payments
+      NOTIFICATION_DATABASE_URL: postgres://postgres:password@notification-postgres:5432/notifications
+      LOG_MONGODB_URL: mongodb://mongodb:27017/logs
+      REDIS_HOST: redis
+      NOTIFICATION_SERVICE_URL: notification-service:8004
+      CLIENT_URL: http://localhost:3000
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/generated
+    depends_on:
+      - postgres
+      - mongodb
+      - redis
+      - notification-postgres
+      - notification-service
+    command: >
+             sh -c "npx prisma db push --schema=./prisma/user/user.schema.prisma &&
+             npx nest start auth-service --watch &
+             npx nest start job-platform-backend --watch"
+
+  notification-service:
+    build: .
+    container_name: notification-service
+    ports:
+      - "8004:8004"
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
+      NOTIFICATION_DATABASE_URL: postgres://postgres:password@notification-postgres:5432/notifications
+      REDIS_HOST: redis
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/generated
+    depends_on:
+      - notification-postgres
+      - redis
+    command: >
+             sh -c "npx prisma db push --schema=./prisma/notification/notification.schema.prisma &&
+             npx nest start notification-service --watch"

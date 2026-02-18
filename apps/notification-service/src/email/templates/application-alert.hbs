@@ -1,0 +1,15 @@
+<h2 style="color: #1f2937; margin-top: 0;">{{subject}}</h2>
+<p>{{content}}</p>
+{{#if jobTitle}}
+<div style="background-color: #f3f4f6; padding: 16px; border-radius: 8px; margin: 16px 0;">
+  <p style="margin: 0 0 8px 0;"><strong>Job Title:</strong> {{jobTitle}}</p>
+  {{#if applicantName}}
+  <p style="margin: 0 0 8px 0;"><strong>Applicant:</strong> {{applicantName}}</p>
+  {{/if}}
+  {{#if appliedAt}}
+  <p style="margin: 0;"><strong>Applied At:</strong> {{appliedAt}}</p>
+  {{/if}}
+</div>
+{{/if}}
+<p>Please log in to your account to review and take action.</p>
+<a href="{{actionUrl}}" class="btn" style="color: #ffffff;">View Application</a>

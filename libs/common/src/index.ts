@@ -3,6 +3,7 @@ export * from './common.service';
 
 // Decorators
 export * from './common/decorator/current-user.decorator';
+export * from './common/decorator/current-session.decorator';
 export * from './common/decorator/public.decorator';
 export * from './common/decorator/role.decorator';
 export * from './common/decorator/session.decorator';
@@ -41,6 +42,7 @@ export * from './common/interfaces/session.interface';
 
 // Redis
 export * from './common/redis/redis.service';
+export * from './common/redis/redis-pubsub.service';
 export * from './common/redis/redis.module';
 
 // Prisma

@@ -1,0 +1,146 @@
+syntax = "proto3";
+
+package notification;
+
+import "common/basic.proto";
+import "common/basic-query.proto";
+
+// Enums
+enum NotificationType {
+  NOTIFICATION_TYPE_UNSPECIFIED = 0;
+  APPLICATION_ALERT = 1;
+  INTERVIEW_UPDATE = 2;
+  REMINDER = 3;
+  PROMOTION = 4;
+  EMAIL_VERIFICATION = 5;
+  FINANCIAL_ALERT = 6;
+  STATUS_ALERT = 7;
+}
+
+enum NotificationStatus {
+  NOTIFICATION_STATUS_UNSPECIFIED = 0;
+  PENDING = 1;
+  SENDING = 2;
+  SENT = 3;
+  FAILED = 4;
+}
+
+enum NotificationChannel {
+  NOTIFICATION_CHANNEL_UNSPECIFIED = 0;
+  EMAIL = 1;
+  PUSH = 2;
+  BOTH = 3;
+}
+
+// Messages
+message Notification {
+  string id = 1;
+  string userId = 2;
+  optional string email = 3;
+  optional string subject = 4;
+  optional string content = 5;
+  NotificationType notificationType = 6;
+  NotificationStatus status = 7;
+  NotificationChannel channel = 8;
+  optional int32 priority = 9;
+  optional bool isRead = 10;
+  optional string relatedInterviewId = 11;
+  optional string relatedJobPostId = 12;
+  optional string metadata = 13;
+  string createdAt = 14;
+  optional string readAt = 15;
+  optional string sendedAt = 16;
+}
+
+// ---------------------
+// Broadcast
+// ---------------------
+message BroadcastNotificationRequest {
+  repeated string userIds = 1;
+  optional string subject = 2;
+  optional string content = 3;
+  NotificationType notificationType = 4;
+  NotificationChannel channel = 5;
+  optional string metadata = 6;
+}
+
+message BroadcastNotificationResponse {
+  bool success = 1;
+  int32 sent = 2;
+  int32 failed = 3;
+  optional string message = 4;
+}
+
+// ---------------------
+// User IDs
+// ---------------------
+message GetAllUserIdsRequest {}
+message GetAllUserIdsResponse {
+  repeated string userIds = 1;
+}
+
+// ---------------------
+// Requests
+// ---------------------
+message SendNotificationRequest {
+  string userId = 1;
+  optional string email = 2;
+  optional string subject = 3;
+  optional string content = 4;
+  NotificationType notificationType = 5;
+  NotificationChannel channel = 6;
+  optional string relatedInterviewId = 7;
+  optional string relatedJobPostId = 8;
+  optional int32 priority = 9;
+  optional string metadata = 10;
+}
+
+message GetNotificationsRequest {
+  common.basic.query.BasicQuery basicQuery = 1;
+  string userId = 2;
+  optional NotificationType notificationType = 3;
+}
+
+message MarkAsReadRequest {
+  string notificationId = 1;
+  string userId = 2;
+}
+
+message MarkAllAsReadRequest {
+  string userId = 1;
+}
+
+message GetUnreadCountRequest {
+  string userId = 1;
+}
+
+// ---------------------
+// Responses
+// ---------------------
+message NotificationResponse {
+  bool success = 1;
+  optional string message = 2;
+  optional Notification notification = 3;
+}
+
+message NotificationsListResponse {
+  repeated Notification data = 1;
+  common.basic.usage.PaginationMeta meta = 2;
+}
+
+message UnreadCountResponse {
+  int32 count = 1;
+}
+
+// ---------------------
+// Service
+// ---------------------
+service NotificationService {
+  rpc SendNotification (SendNotificationRequest) returns (NotificationResponse);
+  rpc BroadcastNotification (BroadcastNotificationRequest) returns (BroadcastNotificationResponse);
+  rpc GetNotifications (GetNotificationsRequest) returns (NotificationsListResponse);
+  rpc MarkAsRead (MarkAsReadRequest) returns (NotificationResponse);
+  rpc MarkAllAsRead (MarkAllAsReadRequest) returns (NotificationResponse);
+  rpc GetUnreadCount (GetUnreadCountRequest) returns (UnreadCountResponse);
+  rpc GetAllUserIds (GetAllUserIdsRequest) returns (GetAllUserIdsResponse);
+}
