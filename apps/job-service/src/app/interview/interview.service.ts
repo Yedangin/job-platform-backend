@@ -18,15 +18,14 @@ import {
   DeleteInterviewResponse,
   ListInterviewResponse,
 } from 'types/job/interview';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class InterviewService {
   constructor(
     private readonly userPrisma: AuthPrismaService,
     private readonly prisma: JobPrismaService,
-    private readonly paginationService: PaginationService,
-    @Inject('NOTIFICATION_SERVICE')
-    private readonly notificationClient: ClientProxy
+    private readonly paginationService: PaginationService
   ) {}
 
   private mapInterviewToResponse(
@@ -37,6 +36,10 @@ export class InterviewService {
       jobPostId: interview.jobPostId,
       memberId: interview.memberId,
       corporateId: interview.corporateId,
+      memberFullName: interview.memberFullName ?? undefined,
+      memberEmail: interview.memberEmail ?? undefined,
+      memberPhone: interview.memberPhone ?? undefined,
+      corporateName: interview.corporateName ?? undefined,
       roomId: interview.roomId ?? undefined,
       interviewDate: interview.interviewDate?.toISOString() ?? undefined,
       status: interview.status,
@@ -167,12 +170,14 @@ export class InterviewService {
       where: { id: data.memberId },
     });
 
+    const generateRoomId = uuidv4();
+
     const interview = await this.prisma.interview.create({
       data: {
         jobPostId: data.jobPostId,
         memberId: data.memberId,
         corporateId: data.corporateId,
-        roomId: data.roomId,
+        roomId: generateRoomId,
         interviewDate: data.interviewDate
           ? new Date(data.interviewDate)
           : undefined,
