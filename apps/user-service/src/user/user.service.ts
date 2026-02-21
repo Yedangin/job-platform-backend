@@ -30,14 +30,17 @@ export class UserService {
 
   // --- Career Management & Calculation Logic ---
 
-  async addCareer(individualId: bigint, data: Prisma.ProfileCareerCreateWithoutProfileIndividualInput) {
+  async addCareer(
+    individualId: bigint,
+    data: Prisma.ProfileCareerCreateWithoutProfileIndividualInput,
+  ) {
     const career = await this.prisma.profileCareer.create({
       data: {
         ...data,
         profileIndividual: { connect: { individualId } },
       },
     });
-    
+
     // Career အသစ်ထည့်ပြီးတိုင်း လအရေအတွက် ပြန်တွက်မယ်
     await this.updateTotalCareerMonths(individualId);
     return career;
@@ -78,11 +81,17 @@ export class UserService {
     for (const career of careers) {
       const startDate = new Date(career.startDate);
       // လက်ရှိလုပ်ကိုင်နေဆဲဆိုရင် ယနေ့ရက်စွဲကို ယူမယ်၊ မဟုတ်ရင် ထွက်ခဲ့တဲ့ရက်စွဲကို ယူမယ်
-      const endDate = career.isCurrent ? now : (career.endDate ? new Date(career.endDate) : now);
+      const endDate = career.isCurrent
+        ? now
+        : career.endDate
+          ? new Date(career.endDate)
+          : now;
 
       // လအရေအတွက် ကွာခြားချက်ကို တွက်ချက်ခြင်း
-      const months = (endDate.getFullYear() - startDate.getFullYear()) * 12 + (endDate.getMonth() - startDate.getMonth());
-      
+      const months =
+        (endDate.getFullYear() - startDate.getFullYear()) * 12 +
+        (endDate.getMonth() - startDate.getMonth());
+
       if (months > 0) {
         totalMonths += months;
       }
