@@ -303,15 +303,15 @@ export function convertHourlyToAnnual(
 export function meetsE7MinimumWageThreshold(
   salaryAnnual: number,
   weeklyWorkHours: number = 40,
-  e7Subtype: \"E-7-2\" | \"E-7-3\" | \"E-7-4\" = \"E-7-2\",
+  e7Subtype: "E-7-2" | "E-7-3" | "E-7-4" = "E-7-2",
   referenceDate?: Date
 ): boolean {
   const gni = getCurrentGni(referenceDate);
-  if (\!gni.mojFixedSalary) {
+  if (!gni.mojFixedSalary) {
     return false; // 고정금액 기준 없음
   }
 
-  const minimumHourlyWage = gni.mojFixedSalary[e7Subtype === \"E-7-2\" ? \"e72\" : e7Subtype === \"E-7-3\" ? \"e73\" : \"e74\"];
+  const minimumHourlyWage = gni.mojFixedSalary[e7Subtype === "E-7-2" ? "e72" : e7Subtype === "E-7-3" ? "e73" : "e74"];
   const minimumAnnualSalary = convertHourlyToAnnual(minimumHourlyWage, weeklyWorkHours);
   return salaryAnnual >= minimumAnnualSalary;
 }

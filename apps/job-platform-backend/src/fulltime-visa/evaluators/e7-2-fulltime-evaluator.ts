@@ -163,7 +163,7 @@ export class E72FulltimeEvaluator implements IFulltimeVisaEvaluator {
     // ====================================================================
     // STEP 4: 학력/경력 조건 확인 / Check education/experience conditions
     // ====================================================================
-    const occupation = getE7Occupation(input.occupationCode);
+    const occupation = E7_JOB_CATEGORIES.find((cat) => cat.code === input.occupationCode);
 
     // 조건부 적합 — 학력/경력 요구사항은 지원자 검증 시 확인
     // Conditional eligible — education/experience checked during applicant validation
