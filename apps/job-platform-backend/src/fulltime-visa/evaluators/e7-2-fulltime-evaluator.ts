@@ -163,7 +163,9 @@ export class E72FulltimeEvaluator implements IFulltimeVisaEvaluator {
     // ====================================================================
     // STEP 4: 학력/경력 조건 확인 / Check education/experience conditions
     // ====================================================================
-    const occupation = E7_JOB_CATEGORIES.find((cat) => cat.code === input.occupationCode);
+    const occupation = E7_JOB_CATEGORIES.find(
+      (cat) => cat.code === input.occupationCode,
+    );
 
     // 조건부 적합 — 학력/경력 요구사항은 지원자 검증 시 확인
     // Conditional eligible — education/experience checked during applicant validation
@@ -182,9 +184,9 @@ export class E72FulltimeEvaluator implements IFulltimeVisaEvaluator {
     result.requiredPermit = null; // 비자 자체가 취업허가 / Visa itself is work permit
 
     result.notes =
-      `E-7-2 준전문직종 비자 — ${occupation?.occupationName || '해당 직종'} 취업 가능. ` +
+      `E-7-2 준전문직종 비자 — ${occupation?.nameKo || '해당 직종'} 취업 가능. ` +
       `최소 연봉: ${e72MinSalary.toLocaleString()}원 충족 ` +
-      `(E-7-2 Semi-Professional visa — Employment allowed for ${occupation?.occupationNameEn || 'this occupation'}. ` +
+      `(E-7-2 Semi-Professional visa — Employment allowed for ${occupation?.nameEn || 'this occupation'}. ` +
       `Minimum salary ${e72MinSalary.toLocaleString()} KRW met)`;
 
     // 해외 스폰서 채용 vs 이직 채용
