@@ -120,72 +120,75 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.CategoryScalarFieldEnum = {
+exports.Prisma.IndustryVisaRuleScalarFieldEnum = {
   id: 'id',
-  name: 'name',
+  industryCode: 'industryCode',
+  allowedVisa: 'allowedVisa'
+};
+
+exports.Prisma.JobPostingScalarFieldEnum = {
+  jobId: 'jobId',
+  corporateId: 'corporateId',
+  boardType: 'boardType',
+  title: 'title',
   description: 'description',
-  parentCategoryId: 'parentCategoryId',
+  workContentImg: 'workContentImg',
+  status: 'status',
+  isPremium: 'isPremium',
+  premiumStartAt: 'premiumStartAt',
+  premiumEndAt: 'premiumEndAt',
+  closingDate: 'closingDate',
+  isRecruitmentEnd: 'isRecruitmentEnd',
+  displayAddress: 'displayAddress',
+  actualAddress: 'actualAddress',
+  workIntensity: 'workIntensity',
+  benefits: 'benefits',
+  allowedVisas: 'allowedVisas',
+  minKoreanLevel: 'minKoreanLevel',
+  contactName: 'contactName',
+  contactPhone: 'contactPhone',
+  interviewMethod: 'interviewMethod',
+  interviewPlace: 'interviewPlace',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.JobPostScalarFieldEnum = {
-  id: 'id',
-  corporateId: 'corporateId',
-  title: 'title',
-  description: 'description',
-  location: 'location',
-  salaryRange: 'salaryRange',
-  categoryId: 'categoryId',
-  feeType: 'feeType',
-  status: 'status',
-  approvedBy: 'approvedBy',
-  appliesCount: 'appliesCount',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  expiredAt: 'expiredAt'
+exports.Prisma.JobAttributesAlbaScalarFieldEnum = {
+  jobId: 'jobId',
+  hourlyWage: 'hourlyWage',
+  workPeriod: 'workPeriod',
+  workDaysMask: 'workDaysMask',
+  workTimeStart: 'workTimeStart',
+  workTimeEnd: 'workTimeEnd'
 };
 
-exports.Prisma.ApplyScalarFieldEnum = {
-  id: 'id',
-  jobPostId: 'jobPostId',
-  userId: 'userId',
-  userInfoId: 'userInfoId',
-  isReviewed: 'isReviewed',
-  status: 'status',
-  appliedAt: 'appliedAt'
+exports.Prisma.JobAttributesFulltimeScalarFieldEnum = {
+  jobId: 'jobId',
+  salaryMin: 'salaryMin',
+  salaryMax: 'salaryMax',
+  experienceLevel: 'experienceLevel',
+  educationLevel: 'educationLevel'
 };
 
-exports.Prisma.InterviewScalarFieldEnum = {
-  id: 'id',
-  jobPostId: 'jobPostId',
-  memberId: 'memberId',
-  corporateId: 'corporateId',
-  roomId: 'roomId',
-  interviewDate: 'interviewDate',
+exports.Prisma.InterviewSlotScalarFieldEnum = {
+  slotId: 'slotId',
+  jobId: 'jobId',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  isBooked: 'isBooked'
+};
+
+exports.Prisma.JobApplicationScalarFieldEnum = {
+  appId: 'appId',
+  jobId: 'jobId',
+  applicantId: 'applicantId',
   status: 'status',
-  failureReason: 'failureReason',
+  selectedSlotId: 'selectedSlotId',
+  proposedBy: 'proposedBy',
+  proposedTime: 'proposedTime',
+  rejectionReason: 'rejectionReason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ReviewScalarFieldEnum = {
-  id: 'id',
-  interviewId: 'interviewId',
-  reviewerId: 'reviewerId',
-  rating: 'rating',
-  comment: 'comment',
-  createdAt: 'createdAt'
-};
-
-exports.Prisma.ReportScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  reporterId: 'reporterId',
-  reportedUserId: 'reportedUserId',
-  reason: 'reason',
-  status: 'status',
-  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -193,44 +196,68 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.JobPostStatus = exports.$Enums.JobPostStatus = {
-  PENDING: 'PENDING',
-  APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED'
+exports.BoardType = exports.$Enums.BoardType = {
+  PART_TIME: 'PART_TIME',
+  FULL_TIME: 'FULL_TIME'
 };
 
-exports.AppliedStatus = exports.$Enums.AppliedStatus = {
+exports.PostStatus = exports.$Enums.PostStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED'
+};
+
+exports.Intensity = exports.$Enums.Intensity = {
+  UPPER: 'UPPER',
+  MIDDLE: 'MIDDLE',
+  LOWER: 'LOWER'
+};
+
+exports.InterviewType = exports.$Enums.InterviewType = {
+  OFFLINE: 'OFFLINE',
+  ONLINE: 'ONLINE'
+};
+
+exports.ApplicationStatus = exports.$Enums.ApplicationStatus = {
   PENDING: 'PENDING',
+  INTERVIEW_REQUESTED: 'INTERVIEW_REQUESTED',
+  COORDINATION_NEEDED: 'COORDINATION_NEEDED',
   CONFIRMED: 'CONFIRMED',
-  INTERVIEW: 'INTERVIEW',
-  SUCCESS: 'SUCCESS',
-  REJECTED: 'REJECTED'
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
 };
 
-exports.InterviewStatus = exports.$Enums.InterviewStatus = {
-  PENDING: 'PENDING',
-  STARTING: 'STARTING',
-  SUCCESS: 'SUCCESS',
-  REJECTED: 'REJECTED',
-  PENALTY: 'PENALTY'
+exports.ActorType = exports.$Enums.ActorType = {
+  EMPLOYER: 'EMPLOYER',
+  APPLICANT: 'APPLICANT'
 };
 
 exports.Prisma.ModelName = {
-  Category: 'Category',
-  JobPost: 'JobPost',
-  Apply: 'Apply',
-  Interview: 'Interview',
-  Review: 'Review',
-  Report: 'Report'
+  IndustryVisaRule: 'IndustryVisaRule',
+  JobPosting: 'JobPosting',
+  JobAttributesAlba: 'JobAttributesAlba',
+  JobAttributesFulltime: 'JobAttributesFulltime',
+  InterviewSlot: 'InterviewSlot',
+  JobApplication: 'JobApplication'
 };
 
 /**

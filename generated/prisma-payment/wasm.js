@@ -120,64 +120,58 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.WalletScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  beforeAmount: 'beforeAmount',
-  balance: 'balance',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+exports.Prisma.ServiceProductScalarFieldEnum = {
+  productId: 'productId',
+  productCode: 'productCode',
+  productName: 'productName',
+  productCategory: 'productCategory',
+  isActive: 'isActive'
 };
 
-exports.Prisma.DepositScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  walletId: 'walletId',
-  depositedAmount: 'depositedAmount',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+exports.Prisma.ProductPricingRuleScalarFieldEnum = {
+  ruleId: 'ruleId',
+  productId: 'productId',
+  originalPrice: 'originalPrice',
+  salePrice: 'salePrice',
+  validFrom: 'validFrom',
+  validUntil: 'validUntil'
 };
 
-exports.Prisma.TransactionScalarFieldEnum = {
-  id: 'id',
-  tossOrderId: 'tossOrderId',
-  tossPaymentKey: 'tossPaymentKey',
-  amount: 'amount',
-  currency: 'currency',
-  method: 'method',
+exports.Prisma.OrderScalarFieldEnum = {
+  orderId: 'orderId',
+  corporateId: 'corporateId',
+  totalSaleAmount: 'totalSaleAmount',
   status: 'status',
-  failureReason: 'failureReason',
-  userId: 'userId',
-  userName: 'userName',
-  userEmail: 'userEmail',
-  userPhone: 'userPhone',
-  depositeName: 'depositeName',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  paidAt: 'paidAt'
-};
-
-exports.Prisma.TransactionLogScalarFieldEnum = {
-  id: 'id',
-  transactionId: 'transactionId',
-  status: 'status',
-  message: 'message',
-  requestData: 'requestData',
-  responseData: 'responseData',
-  errorData: 'errorData',
-  source: 'source',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.OrderItemScalarFieldEnum = {
+  itemId: 'itemId',
+  orderId: 'orderId',
+  productId: 'productId',
+  snapProductName: 'snapProductName',
+  snapSalePrice: 'snapSalePrice'
+};
+
+exports.Prisma.PointLedgerScalarFieldEnum = {
+  ledgerId: 'ledgerId',
+  corporateId: 'corporateId',
+  amount: 'amount',
+  balanceSnapshot: 'balanceSnapshot',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CorporateCouponScalarFieldEnum = {
+  couponId: 'couponId',
+  corporateId: 'corporateId',
+  couponType: 'couponType',
+  status: 'status',
+  expiresAt: 'expiresAt'
 };
 
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
-};
-
-exports.Prisma.NullableJsonNullValueInput = {
-  DbNull: Prisma.DbNull,
-  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -190,46 +184,14 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 
-exports.Prisma.JsonNullValueFilter = {
-  DbNull: Prisma.DbNull,
-  JsonNull: Prisma.JsonNull,
-  AnyNull: Prisma.AnyNull
-};
-exports.DepositStatus = exports.$Enums.DepositStatus = {
-  PENDING: 'PENDING',
-  APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED'
-};
-
-exports.PaymentMethod = exports.$Enums.PaymentMethod = {
-  CARD: 'CARD',
-  VIRTUAL_ACCOUNT: 'VIRTUAL_ACCOUNT',
-  SIMPLE_PAY: 'SIMPLE_PAY',
-  MOBILE_PHONE: 'MOBILE_PHONE',
-  ACCOUNT_TRANSFER: 'ACCOUNT_TRANSFER',
-  CULTURE_GIFT_CERTIFICATE: 'CULTURE_GIFT_CERTIFICATE',
-  BOOK_CULTURE_GIFT_CERTIFICATE: 'BOOK_CULTURE_GIFT_CERTIFICATE',
-  GAME_CULTURE_GIFT_CERTIFICATE: 'GAME_CULTURE_GIFT_CERTIFICATE'
-};
-
-exports.TransactionStatus = exports.$Enums.TransactionStatus = {
-  PENDING: 'PENDING',
-  READY: 'READY',
-  IN_PROGRESS: 'IN_PROGRESS',
-  WAITING_FOR_DEPOSIT: 'WAITING_FOR_DEPOSIT',
-  DONE: 'DONE',
-  CANCELED: 'CANCELED',
-  PARTIAL_CANCELED: 'PARTIAL_CANCELED',
-  ABORTED: 'ABORTED',
-  EXPIRED: 'EXPIRED',
-  FAILED: 'FAILED'
-};
 
 exports.Prisma.ModelName = {
-  Wallet: 'Wallet',
-  Deposit: 'Deposit',
-  Transaction: 'Transaction',
-  TransactionLog: 'TransactionLog'
+  ServiceProduct: 'ServiceProduct',
+  ProductPricingRule: 'ProductPricingRule',
+  Order: 'Order',
+  OrderItem: 'OrderItem',
+  PointLedger: 'PointLedger',
+  CorporateCoupon: 'CorporateCoupon'
 };
 
 /**

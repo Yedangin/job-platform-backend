@@ -92,64 +92,58 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.WalletScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  beforeAmount: 'beforeAmount',
-  balance: 'balance',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+exports.Prisma.ServiceProductScalarFieldEnum = {
+  productId: 'productId',
+  productCode: 'productCode',
+  productName: 'productName',
+  productCategory: 'productCategory',
+  isActive: 'isActive'
 };
 
-exports.Prisma.DepositScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  walletId: 'walletId',
-  depositedAmount: 'depositedAmount',
-  status: 'status',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+exports.Prisma.ProductPricingRuleScalarFieldEnum = {
+  ruleId: 'ruleId',
+  productId: 'productId',
+  originalPrice: 'originalPrice',
+  salePrice: 'salePrice',
+  validFrom: 'validFrom',
+  validUntil: 'validUntil'
 };
 
-exports.Prisma.TransactionScalarFieldEnum = {
-  id: 'id',
-  tossOrderId: 'tossOrderId',
-  tossPaymentKey: 'tossPaymentKey',
-  amount: 'amount',
-  currency: 'currency',
-  method: 'method',
+exports.Prisma.OrderScalarFieldEnum = {
+  orderId: 'orderId',
+  corporateId: 'corporateId',
+  totalSaleAmount: 'totalSaleAmount',
   status: 'status',
-  failureReason: 'failureReason',
-  userId: 'userId',
-  userName: 'userName',
-  userEmail: 'userEmail',
-  userPhone: 'userPhone',
-  depositeName: 'depositeName',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  paidAt: 'paidAt'
-};
-
-exports.Prisma.TransactionLogScalarFieldEnum = {
-  id: 'id',
-  transactionId: 'transactionId',
-  status: 'status',
-  message: 'message',
-  requestData: 'requestData',
-  responseData: 'responseData',
-  errorData: 'errorData',
-  source: 'source',
   createdAt: 'createdAt'
+};
+
+exports.Prisma.OrderItemScalarFieldEnum = {
+  itemId: 'itemId',
+  orderId: 'orderId',
+  productId: 'productId',
+  snapProductName: 'snapProductName',
+  snapSalePrice: 'snapSalePrice'
+};
+
+exports.Prisma.PointLedgerScalarFieldEnum = {
+  ledgerId: 'ledgerId',
+  corporateId: 'corporateId',
+  amount: 'amount',
+  balanceSnapshot: 'balanceSnapshot',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.CorporateCouponScalarFieldEnum = {
+  couponId: 'couponId',
+  corporateId: 'corporateId',
+  couponType: 'couponType',
+  status: 'status',
+  expiresAt: 'expiresAt'
 };
 
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
-};
-
-exports.Prisma.NullableJsonNullValueInput = {
-  DbNull: Prisma.DbNull,
-  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -162,59 +156,27 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 
-exports.Prisma.JsonNullValueFilter = {
-  DbNull: Prisma.DbNull,
-  JsonNull: Prisma.JsonNull,
-  AnyNull: Prisma.AnyNull
-};
-exports.PaymentMethod = exports.$Enums.PaymentMethod = {
-  CARD: 'CARD',
-  VIRTUAL_ACCOUNT: 'VIRTUAL_ACCOUNT',
-  SIMPLE_PAY: 'SIMPLE_PAY',
-  MOBILE_PHONE: 'MOBILE_PHONE',
-  ACCOUNT_TRANSFER: 'ACCOUNT_TRANSFER',
-  CULTURE_GIFT_CERTIFICATE: 'CULTURE_GIFT_CERTIFICATE',
-  BOOK_CULTURE_GIFT_CERTIFICATE: 'BOOK_CULTURE_GIFT_CERTIFICATE',
-  GAME_CULTURE_GIFT_CERTIFICATE: 'GAME_CULTURE_GIFT_CERTIFICATE'
-};
-
-exports.TransactionStatus = exports.$Enums.TransactionStatus = {
-  PENDING: 'PENDING',
-  READY: 'READY',
-  IN_PROGRESS: 'IN_PROGRESS',
-  WAITING_FOR_DEPOSIT: 'WAITING_FOR_DEPOSIT',
-  DONE: 'DONE',
-  CANCELED: 'CANCELED',
-  PARTIAL_CANCELED: 'PARTIAL_CANCELED',
-  ABORTED: 'ABORTED',
-  EXPIRED: 'EXPIRED',
-  FAILED: 'FAILED'
-};
-
-exports.DepositStatus = exports.$Enums.DepositStatus = {
-  PENDING: 'PENDING',
-  APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED'
-};
 
 exports.Prisma.ModelName = {
-  Wallet: 'Wallet',
-  Deposit: 'Deposit',
-  Transaction: 'Transaction',
-  TransactionLog: 'TransactionLog'
+  ServiceProduct: 'ServiceProduct',
+  ProductPricingRule: 'ProductPricingRule',
+  Order: 'Order',
+  OrderItem: 'OrderItem',
+  PointLedger: 'PointLedger',
+  CorporateCoupon: 'CorporateCoupon'
 };
 /**
  * Create the Client
  */
 const config = {
   "generator": {
-    "name": "paymentClient",
+    "name": "client",
     "provider": {
       "fromEnvVar": null,
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/lord/Desktop/Yedanginn/Job-Platform/api-gateway/generated/prisma-payment",
+      "value": "/home/acer/Desktop/job-platform-backend/generated/prisma-payment",
       "fromEnvVar": null
     },
     "config": {
@@ -223,41 +185,41 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "darwin-arm64",
+        "value": "debian-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/lord/Desktop/Yedanginn/Job-Platform/api-gateway/prisma/payment/payment.schema.prisma",
+    "sourceFilePath": "/home/acer/Desktop/job-platform-backend/prisma/payment/payment.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
+    "rootEnvPath": "../../.env",
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma/payment",
   "clientVersion": "6.10.0",
   "engineVersion": "aee10d5a411e4360c6d3445ce4810ca65adbf3e8",
   "datasourceNames": [
-    "paymentDB"
+    "db"
   ],
   "activeProvider": "postgresql",
   "postinstall": false,
   "inlineDatasources": {
-    "paymentDB": {
+    "db": {
       "url": {
         "fromEnvVar": "PAYMENT_DATABASE_URL",
         "value": null
       }
     }
   },
-  "inlineSchema": "// Payment Domain Schema - PostgreSQL\n// Includes: wallets, deposits, transactions, transaction_logs\n\ndatasource paymentDB {\n  provider = \"postgresql\"\n  url      = env(\"PAYMENT_DATABASE_URL\")\n}\n\ngenerator paymentClient {\n  provider = \"prisma-client-js\"\n  output   = \"../../generated/prisma-payment\"\n}\n\nenum PaymentMethod {\n  CARD\n  VIRTUAL_ACCOUNT\n  SIMPLE_PAY\n  MOBILE_PHONE\n  ACCOUNT_TRANSFER\n  CULTURE_GIFT_CERTIFICATE\n  BOOK_CULTURE_GIFT_CERTIFICATE\n  GAME_CULTURE_GIFT_CERTIFICATE\n}\n\nenum TransactionStatus {\n  PENDING\n  READY\n  IN_PROGRESS\n  WAITING_FOR_DEPOSIT\n  DONE\n  CANCELED\n  PARTIAL_CANCELED\n  ABORTED\n  EXPIRED\n  FAILED\n}\n\nenum DepositStatus {\n  PENDING\n  APPROVED\n  REJECTED\n}\n\nmodel Wallet {\n  id           String   @id @default(cuid()) @map(\"id\")\n  userId       String   @unique @map(\"user_id\")\n  beforeAmount String?  @map(\"before_amount\") @paymentDB.VarChar(50)\n  balance      String?  @paymentDB.VarChar(50)\n  createdAt    DateTime @default(now()) @map(\"created_at\")\n  updatedAt    DateTime @updatedAt @map(\"updated_at\")\n\n  deposits Deposit[]\n\n  @@index([createdAt])\n  @@index([userId])\n  @@map(\"wallets\")\n}\n\nmodel Deposit {\n  id              String        @id @default(cuid()) @map(\"id\")\n  userId          String        @map(\"user_id\")\n  walletId        String        @map(\"wallet_id\")\n  depositedAmount Int?          @map(\"deposited_amount\")\n  status          DepositStatus @default(PENDING)\n  createdAt       DateTime      @default(now()) @map(\"created_at\")\n  updatedAt       DateTime      @updatedAt @map(\"updated_at\")\n\n  wallet       Wallet        @relation(fields: [walletId], references: [id])\n  transactions Transaction[]\n\n  @@index([userId])\n  @@index([status])\n  @@index([createdAt])\n  @@map(\"deposits\")\n}\n\nmodel Transaction {\n  id             String            @id @default(cuid()) @map(\"id\")\n  tossOrderId    String?           @map(\"toss_order_id\")\n  tossPaymentKey String?           @map(\"toss_payment_key\") @paymentDB.VarChar(255)\n  amount         Int?\n  currency       String?           @paymentDB.VarChar(25)\n  method         PaymentMethod?    @default(CARD)\n  status         TransactionStatus @default(PENDING)\n  failureReason  String?           @map(\"failure_reason\") @paymentDB.VarChar(255)\n  userId         String?           @map(\"user_id\") @paymentDB.VarChar(50)\n  userName       String?           @map(\"user_name\") @paymentDB.VarChar(50)\n  userEmail      String?           @map(\"user_email\") @paymentDB.VarChar(50)\n  userPhone      String?           @map(\"user_phone\") @paymentDB.VarChar(50)\n  depositeName   String?           @map(\"deposite_name\") @paymentDB.VarChar(50)\n  createdAt      DateTime          @default(now()) @map(\"created_at\")\n  updatedAt      DateTime          @updatedAt @map(\"updated_at\")\n  paidAt         DateTime?         @map(\"paid_at\")\n\n  deposit         Deposit?         @relation(fields: [tossOrderId], references: [id])\n  transactionLogs TransactionLog[]\n\n  @@index([currency])\n  @@index([method])\n  @@index([status])\n  @@index([userEmail, userId, userName, userPhone], name: \"User\")\n  @@index([createdAt])\n  @@map(\"transactions\")\n}\n\nmodel TransactionLog {\n  id            String             @id @default(cuid()) @map(\"id\")\n  transactionId String?            @map(\"transaction_id\")\n  status        TransactionStatus?\n  message       String?            @paymentDB.VarChar(255)\n  requestData   Json?              @map(\"request_data\")\n  responseData  Json?              @map(\"response_data\")\n  errorData     Json?              @map(\"error_data\")\n  source        String?            @paymentDB.VarChar(50)\n  createdAt     DateTime           @default(now()) @map(\"created_at\")\n\n  transactionRef Transaction? @relation(fields: [transactionId], references: [id])\n\n  @@index([transactionId])\n  @@index([createdAt])\n  @@index([status])\n  @@map(\"transaction_logs\")\n}\n",
-  "inlineSchemaHash": "9ea19d24c28767f0275302393c57b761ebe00f59d5358bfcc1e662aa05ee58ae",
+  "inlineSchema": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"PAYMENT_DATABASE_URL\")\n}\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../../generated/prisma-payment\"\n}\n\nmodel ServiceProduct {\n  productId       Int                  @id @default(autoincrement()) @map(\"product_id\")\n  productCode     String               @unique @map(\"product_code\")\n  productName     String               @map(\"product_name\")\n  productCategory String               @map(\"product_category\")\n  isActive        Boolean              @default(true) @map(\"is_active\")\n  pricingRules    ProductPricingRule[]\n\n  @@map(\"service_products\")\n}\n\nmodel ProductPricingRule {\n  ruleId        BigInt         @id @default(autoincrement()) @map(\"rule_id\")\n  productId     Int            @map(\"product_id\")\n  product       ServiceProduct @relation(fields: [productId], references: [productId])\n  originalPrice Decimal        @map(\"original_price\") @db.Decimal(12, 0)\n  salePrice     Decimal        @map(\"sale_price\") @db.Decimal(12, 0)\n  validFrom     DateTime       @map(\"valid_from\")\n  validUntil    DateTime?      @map(\"valid_until\")\n\n  @@map(\"product_pricing_rules\")\n}\n\nmodel Order {\n  orderId         BigInt      @id @default(autoincrement()) @map(\"order_id\")\n  corporateId     BigInt      @map(\"corporate_id\")\n  totalSaleAmount Decimal     @map(\"total_sale_amount\") @db.Decimal(12, 0)\n  status          String      @default(\"PENDING\")\n  createdAt       DateTime    @default(now()) @map(\"created_at\")\n  items           OrderItem[]\n\n  @@map(\"orders\")\n}\n\nmodel OrderItem {\n  itemId    BigInt @id @default(autoincrement()) @map(\"item_id\")\n  orderId   BigInt @map(\"order_id\")\n  order     Order  @relation(fields: [orderId], references: [orderId])\n  productId Int    @map(\"product_id\")\n\n  snapProductName String  @map(\"snap_product_name\")\n  snapSalePrice   Decimal @map(\"snap_sale_price\") @db.Decimal(12, 0)\n\n  @@map(\"order_items\")\n}\n\nmodel PointLedger {\n  ledgerId        BigInt   @id @default(autoincrement()) @map(\"ledger_id\")\n  corporateId     BigInt   @map(\"corporate_id\")\n  amount          Int      @map(\"amount\")\n  balanceSnapshot Int      @map(\"balance_snapshot\")\n  createdAt       DateTime @default(now()) @map(\"created_at\")\n\n  @@map(\"point_ledger\")\n}\n\nmodel CorporateCoupon {\n  couponId    BigInt   @id @default(autoincrement()) @map(\"coupon_id\")\n  corporateId BigInt   @map(\"corporate_id\")\n  couponType  String   @map(\"coupon_type\")\n  status      String   @default(\"ACTIVE\")\n  expiresAt   DateTime @map(\"expires_at\")\n\n  @@map(\"corporate_coupons\")\n}\n",
+  "inlineSchemaHash": "77b592877a9d5dffd28bbd661a68e9aa8f4ab5fe9218ecc3db4597101c5f8231",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Wallet\":{\"dbName\":\"wallets\",\"schema\":null,\"fields\":[{\"name\":\"id\",\"dbName\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"userId\",\"dbName\":\"user_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":true,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"beforeAmount\",\"dbName\":\"before_amount\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"50\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"balance\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"50\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"dbName\":\"created_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"dbName\":\"updated_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true},{\"name\":\"deposits\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Deposit\",\"nativeType\":null,\"relationName\":\"DepositToWallet\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"Deposit\":{\"dbName\":\"deposits\",\"schema\":null,\"fields\":[{\"name\":\"id\",\"dbName\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"userId\",\"dbName\":\"user_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"walletId\",\"dbName\":\"wallet_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"depositedAmount\",\"dbName\":\"deposited_amount\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Int\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"status\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DepositStatus\",\"nativeType\":null,\"default\":\"PENDING\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"dbName\":\"created_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"dbName\":\"updated_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true},{\"name\":\"wallet\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Wallet\",\"nativeType\":null,\"relationName\":\"DepositToWallet\",\"relationFromFields\":[\"walletId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"transactions\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Transaction\",\"nativeType\":null,\"relationName\":\"DepositToTransaction\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"Transaction\":{\"dbName\":\"transactions\",\"schema\":null,\"fields\":[{\"name\":\"id\",\"dbName\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"tossOrderId\",\"dbName\":\"toss_order_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"tossPaymentKey\",\"dbName\":\"toss_payment_key\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"255\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"amount\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Int\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"currency\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"25\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"method\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"PaymentMethod\",\"nativeType\":null,\"default\":\"CARD\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"status\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"TransactionStatus\",\"nativeType\":null,\"default\":\"PENDING\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"failureReason\",\"dbName\":\"failure_reason\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"255\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"userId\",\"dbName\":\"user_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"50\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"userName\",\"dbName\":\"user_name\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"50\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"userEmail\",\"dbName\":\"user_email\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"50\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"userPhone\",\"dbName\":\"user_phone\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"50\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"depositeName\",\"dbName\":\"deposite_name\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"50\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"dbName\":\"created_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"dbName\":\"updated_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true},{\"name\":\"paidAt\",\"dbName\":\"paid_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"deposit\",\"kind\":\"object\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Deposit\",\"nativeType\":null,\"relationName\":\"DepositToTransaction\",\"relationFromFields\":[\"tossOrderId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"transactionLogs\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"TransactionLog\",\"nativeType\":null,\"relationName\":\"TransactionToTransactionLog\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"TransactionLog\":{\"dbName\":\"transaction_logs\",\"schema\":null,\"fields\":[{\"name\":\"id\",\"dbName\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"transactionId\",\"dbName\":\"transaction_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"status\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"TransactionStatus\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"message\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"255\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"requestData\",\"dbName\":\"request_data\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Json\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"responseData\",\"dbName\":\"response_data\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Json\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"errorData\",\"dbName\":\"error_data\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Json\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"source\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"50\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"dbName\":\"created_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"transactionRef\",\"kind\":\"object\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Transaction\",\"nativeType\":null,\"relationName\":\"TransactionToTransactionLog\",\"relationFromFields\":[\"transactionId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false}},\"enums\":{\"PaymentMethod\":{\"values\":[{\"name\":\"CARD\",\"dbName\":null},{\"name\":\"VIRTUAL_ACCOUNT\",\"dbName\":null},{\"name\":\"SIMPLE_PAY\",\"dbName\":null},{\"name\":\"MOBILE_PHONE\",\"dbName\":null},{\"name\":\"ACCOUNT_TRANSFER\",\"dbName\":null},{\"name\":\"CULTURE_GIFT_CERTIFICATE\",\"dbName\":null},{\"name\":\"BOOK_CULTURE_GIFT_CERTIFICATE\",\"dbName\":null},{\"name\":\"GAME_CULTURE_GIFT_CERTIFICATE\",\"dbName\":null}],\"dbName\":null},\"TransactionStatus\":{\"values\":[{\"name\":\"PENDING\",\"dbName\":null},{\"name\":\"READY\",\"dbName\":null},{\"name\":\"IN_PROGRESS\",\"dbName\":null},{\"name\":\"WAITING_FOR_DEPOSIT\",\"dbName\":null},{\"name\":\"DONE\",\"dbName\":null},{\"name\":\"CANCELED\",\"dbName\":null},{\"name\":\"PARTIAL_CANCELED\",\"dbName\":null},{\"name\":\"ABORTED\",\"dbName\":null},{\"name\":\"EXPIRED\",\"dbName\":null},{\"name\":\"FAILED\",\"dbName\":null}],\"dbName\":null},\"DepositStatus\":{\"values\":[{\"name\":\"PENDING\",\"dbName\":null},{\"name\":\"APPROVED\",\"dbName\":null},{\"name\":\"REJECTED\",\"dbName\":null}],\"dbName\":null}},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"ServiceProduct\":{\"dbName\":\"service_products\",\"schema\":null,\"fields\":[{\"name\":\"productId\",\"dbName\":\"product_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Int\",\"nativeType\":null,\"default\":{\"name\":\"autoincrement\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"productCode\",\"dbName\":\"product_code\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":true,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"productName\",\"dbName\":\"product_name\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"productCategory\",\"dbName\":\"product_category\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"isActive\",\"dbName\":\"is_active\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Boolean\",\"nativeType\":null,\"default\":true,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"pricingRules\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"ProductPricingRule\",\"nativeType\":null,\"relationName\":\"ProductPricingRuleToServiceProduct\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"ProductPricingRule\":{\"dbName\":\"product_pricing_rules\",\"schema\":null,\"fields\":[{\"name\":\"ruleId\",\"dbName\":\"rule_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"BigInt\",\"nativeType\":null,\"default\":{\"name\":\"autoincrement\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"productId\",\"dbName\":\"product_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"Int\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"product\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"ServiceProduct\",\"nativeType\":null,\"relationName\":\"ProductPricingRuleToServiceProduct\",\"relationFromFields\":[\"productId\"],\"relationToFields\":[\"productId\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"originalPrice\",\"dbName\":\"original_price\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Decimal\",\"nativeType\":[\"Decimal\",[\"12\",\"0\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"salePrice\",\"dbName\":\"sale_price\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Decimal\",\"nativeType\":[\"Decimal\",[\"12\",\"0\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"validFrom\",\"dbName\":\"valid_from\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"validUntil\",\"dbName\":\"valid_until\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"Order\":{\"dbName\":\"orders\",\"schema\":null,\"fields\":[{\"name\":\"orderId\",\"dbName\":\"order_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"BigInt\",\"nativeType\":null,\"default\":{\"name\":\"autoincrement\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"corporateId\",\"dbName\":\"corporate_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"BigInt\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"totalSaleAmount\",\"dbName\":\"total_sale_amount\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Decimal\",\"nativeType\":[\"Decimal\",[\"12\",\"0\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"status\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":\"PENDING\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"dbName\":\"created_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"items\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"OrderItem\",\"nativeType\":null,\"relationName\":\"OrderToOrderItem\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"OrderItem\":{\"dbName\":\"order_items\",\"schema\":null,\"fields\":[{\"name\":\"itemId\",\"dbName\":\"item_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"BigInt\",\"nativeType\":null,\"default\":{\"name\":\"autoincrement\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"orderId\",\"dbName\":\"order_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"BigInt\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"order\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Order\",\"nativeType\":null,\"relationName\":\"OrderToOrderItem\",\"relationFromFields\":[\"orderId\"],\"relationToFields\":[\"orderId\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"productId\",\"dbName\":\"product_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Int\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"snapProductName\",\"dbName\":\"snap_product_name\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"snapSalePrice\",\"dbName\":\"snap_sale_price\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Decimal\",\"nativeType\":[\"Decimal\",[\"12\",\"0\"]],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"PointLedger\":{\"dbName\":\"point_ledger\",\"schema\":null,\"fields\":[{\"name\":\"ledgerId\",\"dbName\":\"ledger_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"BigInt\",\"nativeType\":null,\"default\":{\"name\":\"autoincrement\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"corporateId\",\"dbName\":\"corporate_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"BigInt\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"amount\",\"dbName\":\"amount\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Int\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"balanceSnapshot\",\"dbName\":\"balance_snapshot\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Int\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"dbName\":\"created_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"CorporateCoupon\":{\"dbName\":\"corporate_coupons\",\"schema\":null,\"fields\":[{\"name\":\"couponId\",\"dbName\":\"coupon_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"BigInt\",\"nativeType\":null,\"default\":{\"name\":\"autoincrement\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"corporateId\",\"dbName\":\"corporate_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"BigInt\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"couponType\",\"dbName\":\"coupon_type\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"status\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":\"ACTIVE\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"expiresAt\",\"dbName\":\"expires_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = undefined
 config.compilerWasm = undefined

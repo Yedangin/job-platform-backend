@@ -118,7 +118,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/lord/Desktop/Yedanginn/Job-Platform/api-gateway/generated/prisma-log",
+      "value": "/home/acer/Desktop/job-platform-backend/generated/prisma-log",
       "fromEnvVar": null
     },
     "config": {
@@ -127,16 +127,16 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "darwin-arm64",
+        "value": "debian-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/lord/Desktop/Yedanginn/Job-Platform/api-gateway/prisma/log/log.schema.prisma",
+    "sourceFilePath": "/home/acer/Desktop/job-platform-backend/prisma/log/log.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
+    "rootEnvPath": "../../.env",
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma/log",

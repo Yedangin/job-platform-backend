@@ -5,7 +5,9 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "assets": ["proto/**/*.proto"],
+    "assets": [
+      "proto/**/*.proto"
+    ],
     "watchAssets": true,
     "tsConfigPath": "apps/job-platform-backend/tsconfig.app.json"
   },
@@ -28,7 +30,9 @@
       "sourceRoot": "apps/auth-service/src",
       "compilerOptions": {
         "tsConfigPath": "apps/auth-service/tsconfig.app.json",
-        "assets": ["proto/**/*.proto"],
+        "assets": [
+          "proto/**/*.proto"
+        ],
         "watchAssets": true
       }
     },
@@ -75,6 +79,15 @@
       "sourceRoot": "apps/payment-services/src",
       "compilerOptions": {
         "tsConfigPath": "apps/payment-services/tsconfig.app.json"
+      }
+    },
+    "job-platform-service": {
+      "type": "application",
+      "root": "apps/job-platform-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/job-platform-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/job-platform-service/tsconfig.app.json"
       }
     }
   }

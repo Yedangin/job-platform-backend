@@ -46,6 +46,9 @@ model JobPosting {
   interviewMethod  InterviewType @default(OFFLINE) @map("interview_method")
   interviewPlace   String?       @map("interview_place")
 
+  createdAt        DateTime      @default(now()) 
+  updatedAt        DateTime      @updatedAt 
+
   albaAttributes     JobAttributesAlba?
   fulltimeAttributes JobAttributesFulltime?
   interviewSlots     InterviewSlot[]
@@ -107,10 +110,23 @@ model JobApplication {
   @@map("job_applications")
 }
 
-enum BoardType { PART_TIME; FULL_TIME }
-enum PostStatus { OPEN; CLOSED }
-enum Intensity { UPPER; MIDDLE; LOWER }
-enum InterviewType { OFFLINE; ONLINE }
+enum BoardType { 
+  PART_TIME
+  FULL_TIME 
+}
+enum PostStatus { 
+  OPEN 
+  CLOSED 
+}
+enum Intensity { 
+  UPPER
+  MIDDLE 
+  LOWER 
+}
+enum InterviewType { 
+  OFFLINE
+  ONLINE 
+}
 enum ApplicationStatus { 
   PENDING
   INTERVIEW_REQUESTED
@@ -119,4 +135,7 @@ enum ApplicationStatus {
   REJECTED
   CANCELLED
 }
-enum ActorType { EMPLOYER; APPLICANT }
+enum ActorType { 
+  EMPLOYER
+  APPLICANT
+ }

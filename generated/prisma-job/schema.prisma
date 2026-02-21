@@ -1,266 +1,146 @@
-// User Domain Schema - PostgreSQL
-// Includes: users_auth, profiles_corporate, profiles_individual, educations, careers, languages
-
 datasource db {
   provider = "postgresql"
-  url      = env("USER_DATABASE_URL")
+  url      = env("JOB_DATABASE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../../../generated/prisma-user"
+  output   = "../../generated/prisma-job"
 }
 
-enum SocialProvider {
-  NONE
-  KAKAO
-  GOOGLE
-  APPLE
+model IndustryVisaRule {
+  id           Int    @id @default(autoincrement())
+  industryCode String @map("industry_code")
+  allowedVisa  String @map("allowed_visa")
+
+  @@unique([industryCode, allowedVisa])
+  @@map("industry_visa_rules")
 }
 
-enum UserType {
-  INDIVIDUAL
-  CORPORATE
-  ADMIN
+model JobPosting {
+  jobId       BigInt @id @default(autoincrement()) @map("job_id")
+  corporateId BigInt @map("corporate_id")
+
+  boardType      BoardType @map("board_type")
+  title          String
+  description    String    @db.Text
+  workContentImg String?   @map("work_content_img")
+
+  status           PostStatus @default(OPEN)
+  isPremium        Boolean    @default(false) @map("is_premium")
+  premiumStartAt   DateTime?  @map("premium_start_at")
+  premiumEndAt     DateTime?  @map("premium_end_at")
+  closingDate      DateTime?  @map("closing_date")
+  isRecruitmentEnd Boolean    @default(false) @map("is_recruitment_end")
+
+  displayAddress String    @map("display_address")
+  actualAddress  String    @map("actual_address")
+  workIntensity  Intensity @default(MIDDLE) @map("work_intensity")
+  benefits       Json?     @map("benefits_json")
+
+  allowedVisas   String @map("allowed_visas")
+  minKoreanLevel Int    @default(0) @map("min_korean_level")
+
+  contactName     String        @map("contact_name")
+  contactPhone    String        @map("contact_phone")
+  interviewMethod InterviewType @default(OFFLINE) @map("interview_method")
+  interviewPlace  String?       @map("interview_place")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  albaAttributes     JobAttributesAlba?
+  fulltimeAttributes JobAttributesFulltime?
+  interviewSlots     InterviewSlot[]
+  applications       JobApplication[]
+
+  @@map("job_postings")
 }
 
-enum VerificationStatus {
-  PENDING
-  APPROVED
-  REJECTED
+model JobAttributesAlba {
+  jobId         BigInt     @id @map("job_id")
+  job           JobPosting @relation(fields: [jobId], references: [jobId], onDelete: Cascade)
+  hourlyWage    Int        @map("hourly_wage")
+  workPeriod    String?    @map("work_period")
+  workDaysMask  String     @map("work_days_mask")
+  workTimeStart DateTime?  @map("work_time_start") @db.Time
+  workTimeEnd   DateTime?  @map("work_time_end") @db.Time
+
+  @@map("job_attributes_alba")
 }
 
-enum VerificationMethod {
-  CEO_MATCH
-  CORP_EMAIL
-  DOCUMENT_MANUAL
+model JobAttributesFulltime {
+  jobId           BigInt     @id @map("job_id")
+  job             JobPosting @relation(fields: [jobId], references: [jobId], onDelete: Cascade)
+  salaryMin       Int?       @map("salary_min")
+  salaryMax       Int?       @map("salary_max")
+  experienceLevel String     @map("experience_level")
+  educationLevel  String     @map("education_level")
+
+  @@map("job_attributes_fulltime")
 }
 
-enum CompanySize {
-  SME
-  MID
-  LARGE
-  STARTUP
+model InterviewSlot {
+  slotId    BigInt     @id @default(autoincrement()) @map("slot_id")
+  jobId     BigInt     @map("job_id")
+  job       JobPosting @relation(fields: [jobId], references: [jobId])
+  startTime DateTime   @map("start_time")
+  endTime   DateTime   @map("end_time")
+  isBooked  Boolean    @default(false) @map("is_booked")
+
+  @@map("interview_slots")
 }
 
-enum Gender {
-  M
-  F
+model JobApplication {
+  appId       BigInt     @id @default(autoincrement()) @map("app_id")
+  jobId       BigInt     @map("job_id")
+  job         JobPosting @relation(fields: [jobId], references: [jobId])
+  applicantId BigInt     @map("applicant_id")
+
+  status ApplicationStatus @default(PENDING)
+
+  selectedSlotId BigInt?    @map("selected_slot_id")
+  proposedBy     ActorType? @map("proposed_by")
+  proposedTime   DateTime?  @map("proposed_time")
+
+  rejectionReason String?  @map("rejection_reason")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("job_applications")
 }
 
-enum JobType {
-  FULL_TIME
+enum BoardType {
   PART_TIME
-  INTERN
+  FULL_TIME
 }
 
-enum EducationLevel {
-  HIGH_SCHOOL
-  COLLEGE
-  BACHELOR
-  MASTER
-  DOCTOR
+enum PostStatus {
+  OPEN
+  CLOSED
 }
 
-enum KoreanFluency {
-  NONE
-  BASIC
-  INTERMEDIATE
-  ADVANCED
-  NATIVE
+enum Intensity {
+  UPPER
+  MIDDLE
+  LOWER
 }
 
-enum GraduationStatus {
-  GRADUATED
-  ATTENDING
-  LEAVE
-  DROPOUT
-}
-enum TermType {
-  SERVICE
-  PRIVACY
-  THIRD_PARTY
-  OVERSEAS_TRANSFER
-  MARKETING
-  LOCATION
-}
-model UserAuth {
-  authId           BigInt    @id @default(autoincrement()) @map("auth_id")
-  email            String    @unique
-  passwordHash     String?   @map("password_hash")
-  socialProvider   SocialProvider @default(NONE) @map("social_provider")
-  socialProviderId String?   @map("social_provider_id")
-  
-  userType         UserType  @map("user_type")
-  isActive         Boolean   @default(true) @map("is_active")
-  joinedAt         DateTime  @default(now()) @map("joined_at")
-  lastLoginAt      DateTime? @map("last_login_at")
-
-  profileCorporate  ProfileCorporate?
-  profileIndividual ProfileIndividual?
-  agreements        UserAgreement[]
-
-  @@map("users_auth")
+enum InterviewType {
+  OFFLINE
+  ONLINE
 }
 
-model ProfileCorporate {
-  companyId             BigInt    @id @default(autoincrement()) @map("company_id")
-  authId                BigInt    @unique @map("auth_id")
-  userAuth              UserAuth  @relation(fields: [authId], references: [authId], onDelete: Cascade)
-  
-  bizRegNumber          String    @unique @map("biz_reg_number") @db.VarChar(12)
-  companyNameOfficial   String    @map("company_name_official") @db.VarChar(100)
-  ceoName               String    @map("ceo_name") @db.VarChar(50)
-  foundingDate          DateTime? @map("founding_date") @db.Date
-  
-  managerName           String    @map("manager_name") @db.VarChar(50)
-  managerPhone          String    @map("manager_phone") @db.VarChar(20)
-  managerEmail          String    @map("manager_email") @db.VarChar(255)
-  
-  verificationStatus    VerificationStatus @default(PENDING) @map("verification_status")
-  verificationMethod    VerificationMethod? @map("verification_method")
-  proofDocumentUrl      String?   @map("proof_document_url")
-  
-  brandName             String?   @map("brand_name") @db.VarChar(100)
-  logoImageUrl          String?   @map("logo_image_url")
-  companyIntro          String?   @map("company_intro") @db.Text
-  
-  ksicCode              String    @map("ksic_code") @db.VarChar(10)
-  addressRoad           String    @map("address_road")
-  
-  companySizeType       CompanySize @default(SME) @map("company_size_type")
-  employeeCountKorean   Int       @default(0) @map("employee_count_korean")
-  employeeCountForeign  Int       @default(0) @map("employee_count_foreign")
-  annualRevenue         BigInt    @default(0) @map("annual_revenue")
-  
-  isBizVerified         Boolean   @default(false) @map("is_biz_verified")
-  createdAt             DateTime  @default(now()) @map("created_at")
-
-  @@map("profiles_corporate")
+enum ApplicationStatus {
+  PENDING
+  INTERVIEW_REQUESTED
+  COORDINATION_NEEDED
+  CONFIRMED
+  REJECTED
+  CANCELLED
 }
 
-model ProfileIndividual {
-  individualId      BigInt    @id @default(autoincrement()) @map("individual_id")
-  authId            BigInt    @unique @map("auth_id")
-  userAuth          UserAuth  @relation(fields: [authId], references: [authId], onDelete: Cascade)
-
-  realName          String    @map("real_name") @db.VarChar(100)
-  nationality       String    @map("nationality") @db.VarChar(3)
-  birthDate         DateTime  @map("birth_date") @db.Date
-  gender            Gender
-  addressRoad       String?   @map("address_road")
-  
-  visaType          String    @map("visa_type") @db.VarChar(10)
-  visaExpiryDate    DateTime  @map("visa_expiry_date") @db.Date
-  
-  desiredJobType    JobType   @default(FULL_TIME) @map("desired_job_type")
-  desiredSalary     Int       @default(0) @map("desired_salary")
-  desiredIndustries String?   @map("desired_industries")
-  isOpenToScout     Boolean   @default(true) @map("is_open_to_scout")
-  
-  finalEducationLvl EducationLevel? @map("final_education_lvl")
-  koreanFluencyLvl  KoreanFluency?  @map("korean_fluency_lvl")
-  totalCareerMonths Int       @default(0) @map("total_career_months")
-  
-  profileImageUrl   String?   @map("profile_image_url")
-  resumeFileUrl     String?   @map("resume_file_url")
-  portfolioUrl      String?   @map("portfolio_url")
-  selfIntro         String?   @map("self_intro") @db.Text
-  
-  isProfileCompleted Boolean  @default(false) @map("is_profile_completed")
-  createdAt          DateTime @default(now()) @map("created_at")
-  updatedAt          DateTime @updatedAt @map("updated_at")
-
-  educations        ProfileEducation[]
-  careers           ProfileCareer[]
-  languages         ProfileLanguage[]
-
-  @@map("profiles_individual")
-}
-
-model ProfileEducation {
-  eduId             BigInt    @id @default(autoincrement()) @map("edu_id")
-  individualId      BigInt    @map("individual_id")
-  profileIndividual ProfileIndividual @relation(fields: [individualId], references: [individualId], onDelete: Cascade)
-  
-  schoolName        String    @map("school_name") @db.VarChar(100)
-  majorName         String    @map("major_name") @db.VarChar(100)
-  degreeLevel       EducationLevel @map("degree_level")
-  
-  startDate         DateTime  @map("start_date") @db.Date
-  graduationDate    DateTime? @map("graduation_date") @db.Date
-  graduationStatus  GraduationStatus @map("graduation_status")
-  
-  gpaScore          Decimal?  @map("gpa_score") @db.Decimal(3, 2)
-
-
-  @@map("profile_educations")
-}
-
-model ProfileCareer {
-  careerId          BigInt    @id @default(autoincrement()) @map("career_id")
-  individualId      BigInt    @map("individual_id")
-  profileIndividual ProfileIndividual @relation(fields: [individualId], references: [individualId], onDelete: Cascade)
-  
-  companyName       String    @map("company_name") @db.VarChar(100)
-  dutyRole          String    @map("duty_role") @db.VarChar(100)
-  jobPosition       String?   @map("job_position") @db.VarChar(50)
-  
-  startDate         DateTime  @map("start_date") @db.Date
-  endDate           DateTime? @map("end_date") @db.Date
-  isCurrent         Boolean   @default(false) @map("is_current")
-  
-  description       String?   @db.Text
-
-  @@map("profile_careers")
-}
-
-model ProfileLanguage {
-  langId            BigInt    @id @default(autoincrement()) @map("lang_id")
-  individualId      BigInt    @map("individual_id")
-  profileIndividual ProfileIndividual @relation(fields: [individualId], references: [individualId], onDelete: Cascade)
-  
-  languageType      String    @map("language_type") @db.VarChar(50)
-  testType          String?   @map("test_type") @db.VarChar(50)
-  scoreLevel        String    @map("score_level") @db.VarChar(50)
-  obtainedDate      DateTime? @map("obtained_date") @db.Date
-  expiryDate        DateTime? @map("expiry_date") @db.Date
-  
-  isVerified        Boolean   @default(false) @map("is_verified")
-
-  @@map("profile_languages")
-}
-
-model Term {
-  termId      Int       @id @default(autoincrement()) @map("term_id")
-  type        TermType  @map("type")
-  title       String    @db.VarChar(100)
-  content     String    @db.Text
-  version     String    @db.VarChar(10)
-  
-  isRequired  Boolean   @default(true) @map("is_required")
-  isActive    Boolean   @default(true) @map("is_active")
-  
-  language    String    @default("ko") @db.Char(2)
-  publishedAt DateTime  @default(now()) @map("published_at")
-
-  agreements  UserAgreement[]
-
-  @@map("terms")
-}
-
-model UserAgreement {
-  agreementId BigInt   @id @default(autoincrement()) @map("agreement_id")
-  
-  authId      BigInt   @map("auth_id")
-  userAuth    UserAuth @relation(fields: [authId], references: [authId], onDelete: Cascade)
-  
-  termId      Int      @map("term_id")
-  term        Term     @relation(fields: [termId], references: [termId])
-
-  isAgreed    Boolean  @default(true) @map("is_agreed")
-  agreedAt    DateTime @default(now()) @map("agreed_at")
-
-  @@unique([authId, termId])
-  @@map("user_agreements")
+enum ActorType {
+  EMPLOYER
+  APPLICANT
 }

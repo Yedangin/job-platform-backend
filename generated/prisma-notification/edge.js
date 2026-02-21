@@ -176,7 +176,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/lord/Desktop/Yedanginn/Job-Platform/api-gateway/generated/prisma-notification",
+      "value": "/home/acer/Desktop/job-platform-backend/generated/prisma-notification",
       "fromEnvVar": null
     },
     "config": {
@@ -185,16 +185,16 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "darwin-arm64",
+        "value": "debian-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/lord/Desktop/Yedanginn/Job-Platform/api-gateway/prisma/notification/notification.schema.prisma",
+    "sourceFilePath": "/home/acer/Desktop/job-platform-backend/prisma/notification/notification.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
+    "rootEnvPath": "../../.env",
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma/notification",

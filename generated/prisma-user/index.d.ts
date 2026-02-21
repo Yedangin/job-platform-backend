@@ -19,60 +19,36 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
- * Model UserInformation
+ * Model CorporateProfile
  * 
  */
-export type UserInformation = $Result.DefaultSelection<Prisma.$UserInformationPayload>
+export type CorporateProfile = $Result.DefaultSelection<Prisma.$CorporateProfilePayload>
+/**
+ * Model IndividualProfile
+ * 
+ */
+export type IndividualProfile = $Result.DefaultSelection<Prisma.$IndividualProfilePayload>
+/**
+ * Model TalentAccessLog
+ * 
+ */
+export type TalentAccessLog = $Result.DefaultSelection<Prisma.$TalentAccessLogPayload>
 /**
  * Model SocialAuth
  * 
  */
 export type SocialAuth = $Result.DefaultSelection<Prisma.$SocialAuthPayload>
-/**
- * Model MemberIdentityVerification
- * 
- */
-export type MemberIdentityVerification = $Result.DefaultSelection<Prisma.$MemberIdentityVerificationPayload>
-/**
- * Model CorporateRegistration
- * 
- */
-export type CorporateRegistration = $Result.DefaultSelection<Prisma.$CorporateRegistrationPayload>
-/**
- * Model VerificationToken
- * 
- */
-export type VerificationToken = $Result.DefaultSelection<Prisma.$VerificationTokenPayload>
-/**
- * Model Sanction
- * 
- */
-export type Sanction = $Result.DefaultSelection<Prisma.$SanctionPayload>
 
 /**
  * Enums
  */
 export namespace $Enums {
-  export const UserRole: {
-  GUEST: 'GUEST',
-  MEMBER: 'MEMBER',
+  export const UserType: {
   CORPORATE: 'CORPORATE',
-  ADMIN: 'ADMIN',
-  SUPERADMIN: 'SUPERADMIN'
+  INDIVIDUAL: 'INDIVIDUAL'
 };
 
-export type UserRole = (typeof UserRole)[keyof typeof UserRole]
-
-
-export const UserStatus: {
-  PENDING: 'PENDING',
-  ACTIVE: 'ACTIVE',
-  SUSPENDED: 'SUSPENDED',
-  REJECTED: 'REJECTED',
-  INACTIVE: 'INACTIVE'
-};
-
-export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
+export type UserType = (typeof UserType)[keyof typeof UserType]
 
 
 export const SocialProvider: {
@@ -84,45 +60,15 @@ export const SocialProvider: {
 
 export type SocialProvider = (typeof SocialProvider)[keyof typeof SocialProvider]
 
-
-export const VerificationStatus: {
-  PENDING: 'PENDING',
-  APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED'
-};
-
-export type VerificationStatus = (typeof VerificationStatus)[keyof typeof VerificationStatus]
-
-
-export const SanctionType: {
-  SUSPENSION: 'SUSPENSION',
-  WARNING: 'WARNING',
-  BANNED: 'BANNED'
-};
-
-export type SanctionType = (typeof SanctionType)[keyof typeof SanctionType]
-
 }
 
-export type UserRole = $Enums.UserRole
+export type UserType = $Enums.UserType
 
-export const UserRole: typeof $Enums.UserRole
-
-export type UserStatus = $Enums.UserStatus
-
-export const UserStatus: typeof $Enums.UserStatus
+export const UserType: typeof $Enums.UserType
 
 export type SocialProvider = $Enums.SocialProvider
 
 export const SocialProvider: typeof $Enums.SocialProvider
-
-export type VerificationStatus = $Enums.VerificationStatus
-
-export const VerificationStatus: typeof $Enums.VerificationStatus
-
-export type SanctionType = $Enums.SanctionType
-
-export const SanctionType: typeof $Enums.SanctionType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -260,14 +206,34 @@ export class PrismaClient<
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.userInformation`: Exposes CRUD operations for the **UserInformation** model.
+   * `prisma.corporateProfile`: Exposes CRUD operations for the **CorporateProfile** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more UserInformations
-    * const userInformations = await prisma.userInformation.findMany()
+    * // Fetch zero or more CorporateProfiles
+    * const corporateProfiles = await prisma.corporateProfile.findMany()
     * ```
     */
-  get userInformation(): Prisma.UserInformationDelegate<ExtArgs, ClientOptions>;
+  get corporateProfile(): Prisma.CorporateProfileDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.individualProfile`: Exposes CRUD operations for the **IndividualProfile** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more IndividualProfiles
+    * const individualProfiles = await prisma.individualProfile.findMany()
+    * ```
+    */
+  get individualProfile(): Prisma.IndividualProfileDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.talentAccessLog`: Exposes CRUD operations for the **TalentAccessLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TalentAccessLogs
+    * const talentAccessLogs = await prisma.talentAccessLog.findMany()
+    * ```
+    */
+  get talentAccessLog(): Prisma.TalentAccessLogDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.socialAuth`: Exposes CRUD operations for the **SocialAuth** model.
@@ -278,46 +244,6 @@ export class PrismaClient<
     * ```
     */
   get socialAuth(): Prisma.SocialAuthDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.memberIdentityVerification`: Exposes CRUD operations for the **MemberIdentityVerification** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more MemberIdentityVerifications
-    * const memberIdentityVerifications = await prisma.memberIdentityVerification.findMany()
-    * ```
-    */
-  get memberIdentityVerification(): Prisma.MemberIdentityVerificationDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.corporateRegistration`: Exposes CRUD operations for the **CorporateRegistration** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more CorporateRegistrations
-    * const corporateRegistrations = await prisma.corporateRegistration.findMany()
-    * ```
-    */
-  get corporateRegistration(): Prisma.CorporateRegistrationDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.verificationToken`: Exposes CRUD operations for the **VerificationToken** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more VerificationTokens
-    * const verificationTokens = await prisma.verificationToken.findMany()
-    * ```
-    */
-  get verificationToken(): Prisma.VerificationTokenDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.sanction`: Exposes CRUD operations for the **Sanction** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Sanctions
-    * const sanctions = await prisma.sanction.findMany()
-    * ```
-    */
-  get sanction(): Prisma.SanctionDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -759,19 +685,17 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
-    UserInformation: 'UserInformation',
-    SocialAuth: 'SocialAuth',
-    MemberIdentityVerification: 'MemberIdentityVerification',
-    CorporateRegistration: 'CorporateRegistration',
-    VerificationToken: 'VerificationToken',
-    Sanction: 'Sanction'
+    CorporateProfile: 'CorporateProfile',
+    IndividualProfile: 'IndividualProfile',
+    TalentAccessLog: 'TalentAccessLog',
+    SocialAuth: 'SocialAuth'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
 
 
   export type Datasources = {
-    userDB?: Datasource
+    db?: Datasource
   }
 
   interface TypeMapCb<ClientOptions = {}> extends $Utils.Fn<{extArgs: $Extensions.InternalArgs }, $Utils.Record<string, any>> {
@@ -783,7 +707,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "userInformation" | "socialAuth" | "memberIdentityVerification" | "corporateRegistration" | "verificationToken" | "sanction"
+      modelProps: "user" | "corporateProfile" | "individualProfile" | "talentAccessLog" | "socialAuth"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -861,77 +785,225 @@ export namespace Prisma {
           }
         }
       }
-      UserInformation: {
-        payload: Prisma.$UserInformationPayload<ExtArgs>
-        fields: Prisma.UserInformationFieldRefs
+      CorporateProfile: {
+        payload: Prisma.$CorporateProfilePayload<ExtArgs>
+        fields: Prisma.CorporateProfileFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.UserInformationFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$UserInformationPayload> | null
+            args: Prisma.CorporateProfileFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CorporateProfilePayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.UserInformationFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$UserInformationPayload>
+            args: Prisma.CorporateProfileFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CorporateProfilePayload>
           }
           findFirst: {
-            args: Prisma.UserInformationFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$UserInformationPayload> | null
+            args: Prisma.CorporateProfileFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CorporateProfilePayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.UserInformationFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$UserInformationPayload>
+            args: Prisma.CorporateProfileFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CorporateProfilePayload>
           }
           findMany: {
-            args: Prisma.UserInformationFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$UserInformationPayload>[]
+            args: Prisma.CorporateProfileFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CorporateProfilePayload>[]
           }
           create: {
-            args: Prisma.UserInformationCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$UserInformationPayload>
+            args: Prisma.CorporateProfileCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CorporateProfilePayload>
           }
           createMany: {
-            args: Prisma.UserInformationCreateManyArgs<ExtArgs>
+            args: Prisma.CorporateProfileCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.UserInformationCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$UserInformationPayload>[]
+            args: Prisma.CorporateProfileCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CorporateProfilePayload>[]
           }
           delete: {
-            args: Prisma.UserInformationDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$UserInformationPayload>
+            args: Prisma.CorporateProfileDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CorporateProfilePayload>
           }
           update: {
-            args: Prisma.UserInformationUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$UserInformationPayload>
+            args: Prisma.CorporateProfileUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CorporateProfilePayload>
           }
           deleteMany: {
-            args: Prisma.UserInformationDeleteManyArgs<ExtArgs>
+            args: Prisma.CorporateProfileDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.UserInformationUpdateManyArgs<ExtArgs>
+            args: Prisma.CorporateProfileUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.UserInformationUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$UserInformationPayload>[]
+            args: Prisma.CorporateProfileUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CorporateProfilePayload>[]
           }
           upsert: {
-            args: Prisma.UserInformationUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$UserInformationPayload>
+            args: Prisma.CorporateProfileUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CorporateProfilePayload>
           }
           aggregate: {
-            args: Prisma.UserInformationAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateUserInformation>
+            args: Prisma.CorporateProfileAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCorporateProfile>
           }
           groupBy: {
-            args: Prisma.UserInformationGroupByArgs<ExtArgs>
-            result: $Utils.Optional<UserInformationGroupByOutputType>[]
+            args: Prisma.CorporateProfileGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CorporateProfileGroupByOutputType>[]
           }
           count: {
-            args: Prisma.UserInformationCountArgs<ExtArgs>
-            result: $Utils.Optional<UserInformationCountAggregateOutputType> | number
+            args: Prisma.CorporateProfileCountArgs<ExtArgs>
+            result: $Utils.Optional<CorporateProfileCountAggregateOutputType> | number
+          }
+        }
+      }
+      IndividualProfile: {
+        payload: Prisma.$IndividualProfilePayload<ExtArgs>
+        fields: Prisma.IndividualProfileFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.IndividualProfileFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IndividualProfilePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.IndividualProfileFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IndividualProfilePayload>
+          }
+          findFirst: {
+            args: Prisma.IndividualProfileFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IndividualProfilePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.IndividualProfileFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IndividualProfilePayload>
+          }
+          findMany: {
+            args: Prisma.IndividualProfileFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IndividualProfilePayload>[]
+          }
+          create: {
+            args: Prisma.IndividualProfileCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IndividualProfilePayload>
+          }
+          createMany: {
+            args: Prisma.IndividualProfileCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.IndividualProfileCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IndividualProfilePayload>[]
+          }
+          delete: {
+            args: Prisma.IndividualProfileDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IndividualProfilePayload>
+          }
+          update: {
+            args: Prisma.IndividualProfileUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IndividualProfilePayload>
+          }
+          deleteMany: {
+            args: Prisma.IndividualProfileDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.IndividualProfileUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.IndividualProfileUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IndividualProfilePayload>[]
+          }
+          upsert: {
+            args: Prisma.IndividualProfileUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$IndividualProfilePayload>
+          }
+          aggregate: {
+            args: Prisma.IndividualProfileAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateIndividualProfile>
+          }
+          groupBy: {
+            args: Prisma.IndividualProfileGroupByArgs<ExtArgs>
+            result: $Utils.Optional<IndividualProfileGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.IndividualProfileCountArgs<ExtArgs>
+            result: $Utils.Optional<IndividualProfileCountAggregateOutputType> | number
+          }
+        }
+      }
+      TalentAccessLog: {
+        payload: Prisma.$TalentAccessLogPayload<ExtArgs>
+        fields: Prisma.TalentAccessLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TalentAccessLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentAccessLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TalentAccessLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentAccessLogPayload>
+          }
+          findFirst: {
+            args: Prisma.TalentAccessLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentAccessLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TalentAccessLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentAccessLogPayload>
+          }
+          findMany: {
+            args: Prisma.TalentAccessLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentAccessLogPayload>[]
+          }
+          create: {
+            args: Prisma.TalentAccessLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentAccessLogPayload>
+          }
+          createMany: {
+            args: Prisma.TalentAccessLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TalentAccessLogCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentAccessLogPayload>[]
+          }
+          delete: {
+            args: Prisma.TalentAccessLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentAccessLogPayload>
+          }
+          update: {
+            args: Prisma.TalentAccessLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentAccessLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.TalentAccessLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TalentAccessLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TalentAccessLogUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentAccessLogPayload>[]
+          }
+          upsert: {
+            args: Prisma.TalentAccessLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentAccessLogPayload>
+          }
+          aggregate: {
+            args: Prisma.TalentAccessLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTalentAccessLog>
+          }
+          groupBy: {
+            args: Prisma.TalentAccessLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TalentAccessLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TalentAccessLogCountArgs<ExtArgs>
+            result: $Utils.Optional<TalentAccessLogCountAggregateOutputType> | number
           }
         }
       }
@@ -1006,302 +1078,6 @@ export namespace Prisma {
           count: {
             args: Prisma.SocialAuthCountArgs<ExtArgs>
             result: $Utils.Optional<SocialAuthCountAggregateOutputType> | number
-          }
-        }
-      }
-      MemberIdentityVerification: {
-        payload: Prisma.$MemberIdentityVerificationPayload<ExtArgs>
-        fields: Prisma.MemberIdentityVerificationFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.MemberIdentityVerificationFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MemberIdentityVerificationPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.MemberIdentityVerificationFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MemberIdentityVerificationPayload>
-          }
-          findFirst: {
-            args: Prisma.MemberIdentityVerificationFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MemberIdentityVerificationPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.MemberIdentityVerificationFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MemberIdentityVerificationPayload>
-          }
-          findMany: {
-            args: Prisma.MemberIdentityVerificationFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MemberIdentityVerificationPayload>[]
-          }
-          create: {
-            args: Prisma.MemberIdentityVerificationCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MemberIdentityVerificationPayload>
-          }
-          createMany: {
-            args: Prisma.MemberIdentityVerificationCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.MemberIdentityVerificationCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MemberIdentityVerificationPayload>[]
-          }
-          delete: {
-            args: Prisma.MemberIdentityVerificationDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MemberIdentityVerificationPayload>
-          }
-          update: {
-            args: Prisma.MemberIdentityVerificationUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MemberIdentityVerificationPayload>
-          }
-          deleteMany: {
-            args: Prisma.MemberIdentityVerificationDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.MemberIdentityVerificationUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.MemberIdentityVerificationUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MemberIdentityVerificationPayload>[]
-          }
-          upsert: {
-            args: Prisma.MemberIdentityVerificationUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MemberIdentityVerificationPayload>
-          }
-          aggregate: {
-            args: Prisma.MemberIdentityVerificationAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateMemberIdentityVerification>
-          }
-          groupBy: {
-            args: Prisma.MemberIdentityVerificationGroupByArgs<ExtArgs>
-            result: $Utils.Optional<MemberIdentityVerificationGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.MemberIdentityVerificationCountArgs<ExtArgs>
-            result: $Utils.Optional<MemberIdentityVerificationCountAggregateOutputType> | number
-          }
-        }
-      }
-      CorporateRegistration: {
-        payload: Prisma.$CorporateRegistrationPayload<ExtArgs>
-        fields: Prisma.CorporateRegistrationFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.CorporateRegistrationFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CorporateRegistrationPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.CorporateRegistrationFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CorporateRegistrationPayload>
-          }
-          findFirst: {
-            args: Prisma.CorporateRegistrationFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CorporateRegistrationPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.CorporateRegistrationFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CorporateRegistrationPayload>
-          }
-          findMany: {
-            args: Prisma.CorporateRegistrationFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CorporateRegistrationPayload>[]
-          }
-          create: {
-            args: Prisma.CorporateRegistrationCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CorporateRegistrationPayload>
-          }
-          createMany: {
-            args: Prisma.CorporateRegistrationCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.CorporateRegistrationCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CorporateRegistrationPayload>[]
-          }
-          delete: {
-            args: Prisma.CorporateRegistrationDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CorporateRegistrationPayload>
-          }
-          update: {
-            args: Prisma.CorporateRegistrationUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CorporateRegistrationPayload>
-          }
-          deleteMany: {
-            args: Prisma.CorporateRegistrationDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.CorporateRegistrationUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.CorporateRegistrationUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CorporateRegistrationPayload>[]
-          }
-          upsert: {
-            args: Prisma.CorporateRegistrationUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CorporateRegistrationPayload>
-          }
-          aggregate: {
-            args: Prisma.CorporateRegistrationAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateCorporateRegistration>
-          }
-          groupBy: {
-            args: Prisma.CorporateRegistrationGroupByArgs<ExtArgs>
-            result: $Utils.Optional<CorporateRegistrationGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.CorporateRegistrationCountArgs<ExtArgs>
-            result: $Utils.Optional<CorporateRegistrationCountAggregateOutputType> | number
-          }
-        }
-      }
-      VerificationToken: {
-        payload: Prisma.$VerificationTokenPayload<ExtArgs>
-        fields: Prisma.VerificationTokenFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.VerificationTokenFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.VerificationTokenFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>
-          }
-          findFirst: {
-            args: Prisma.VerificationTokenFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.VerificationTokenFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>
-          }
-          findMany: {
-            args: Prisma.VerificationTokenFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>[]
-          }
-          create: {
-            args: Prisma.VerificationTokenCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>
-          }
-          createMany: {
-            args: Prisma.VerificationTokenCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.VerificationTokenCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>[]
-          }
-          delete: {
-            args: Prisma.VerificationTokenDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>
-          }
-          update: {
-            args: Prisma.VerificationTokenUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>
-          }
-          deleteMany: {
-            args: Prisma.VerificationTokenDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.VerificationTokenUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.VerificationTokenUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>[]
-          }
-          upsert: {
-            args: Prisma.VerificationTokenUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$VerificationTokenPayload>
-          }
-          aggregate: {
-            args: Prisma.VerificationTokenAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateVerificationToken>
-          }
-          groupBy: {
-            args: Prisma.VerificationTokenGroupByArgs<ExtArgs>
-            result: $Utils.Optional<VerificationTokenGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.VerificationTokenCountArgs<ExtArgs>
-            result: $Utils.Optional<VerificationTokenCountAggregateOutputType> | number
-          }
-        }
-      }
-      Sanction: {
-        payload: Prisma.$SanctionPayload<ExtArgs>
-        fields: Prisma.SanctionFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.SanctionFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SanctionPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.SanctionFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SanctionPayload>
-          }
-          findFirst: {
-            args: Prisma.SanctionFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SanctionPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.SanctionFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SanctionPayload>
-          }
-          findMany: {
-            args: Prisma.SanctionFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SanctionPayload>[]
-          }
-          create: {
-            args: Prisma.SanctionCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SanctionPayload>
-          }
-          createMany: {
-            args: Prisma.SanctionCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.SanctionCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SanctionPayload>[]
-          }
-          delete: {
-            args: Prisma.SanctionDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SanctionPayload>
-          }
-          update: {
-            args: Prisma.SanctionUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SanctionPayload>
-          }
-          deleteMany: {
-            args: Prisma.SanctionDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.SanctionUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.SanctionUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SanctionPayload>[]
-          }
-          upsert: {
-            args: Prisma.SanctionUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$SanctionPayload>
-          }
-          aggregate: {
-            args: Prisma.SanctionAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateSanction>
-          }
-          groupBy: {
-            args: Prisma.SanctionGroupByArgs<ExtArgs>
-            result: $Utils.Optional<SanctionGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.SanctionCountArgs<ExtArgs>
-            result: $Utils.Optional<SanctionCountAggregateOutputType> | number
           }
         }
       }
@@ -1390,12 +1166,10 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     user?: UserOmit
-    userInformation?: UserInformationOmit
+    corporateProfile?: CorporateProfileOmit
+    individualProfile?: IndividualProfileOmit
+    talentAccessLog?: TalentAccessLogOmit
     socialAuth?: SocialAuthOmit
-    memberIdentityVerification?: MemberIdentityVerificationOmit
-    corporateRegistration?: CorporateRegistrationOmit
-    verificationToken?: VerificationTokenOmit
-    sanction?: SanctionOmit
   }
 
   /* Types for Logging */
@@ -1490,17 +1264,11 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
-    verifiedMemberIdentities: number
-    verifiedCorporateRegistrations: number
-    sanctions: number
-    verificationTokens: number
+    socialAuths: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    verifiedMemberIdentities?: boolean | UserCountOutputTypeCountVerifiedMemberIdentitiesArgs
-    verifiedCorporateRegistrations?: boolean | UserCountOutputTypeCountVerifiedCorporateRegistrationsArgs
-    sanctions?: boolean | UserCountOutputTypeCountSanctionsArgs
-    verificationTokens?: boolean | UserCountOutputTypeCountVerificationTokensArgs
+    socialAuths?: boolean | UserCountOutputTypeCountSocialAuthsArgs
   }
 
   // Custom InputTypes
@@ -1517,29 +1285,70 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountVerifiedMemberIdentitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MemberIdentityVerificationWhereInput
+  export type UserCountOutputTypeCountSocialAuthsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SocialAuthWhereInput
+  }
+
+
+  /**
+   * Count Type CorporateProfileCountOutputType
+   */
+
+  export type CorporateProfileCountOutputType = {
+    accessLogs: number
+  }
+
+  export type CorporateProfileCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    accessLogs?: boolean | CorporateProfileCountOutputTypeCountAccessLogsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CorporateProfileCountOutputType without action
+   */
+  export type CorporateProfileCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CorporateProfileCountOutputType
+     */
+    select?: CorporateProfileCountOutputTypeSelect<ExtArgs> | null
   }
 
   /**
-   * UserCountOutputType without action
+   * CorporateProfileCountOutputType without action
    */
-  export type UserCountOutputTypeCountVerifiedCorporateRegistrationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CorporateRegistrationWhereInput
+  export type CorporateProfileCountOutputTypeCountAccessLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TalentAccessLogWhereInput
+  }
+
+
+  /**
+   * Count Type IndividualProfileCountOutputType
+   */
+
+  export type IndividualProfileCountOutputType = {
+    accessLogs: number
+  }
+
+  export type IndividualProfileCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    accessLogs?: boolean | IndividualProfileCountOutputTypeCountAccessLogsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * IndividualProfileCountOutputType without action
+   */
+  export type IndividualProfileCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IndividualProfileCountOutputType
+     */
+    select?: IndividualProfileCountOutputTypeSelect<ExtArgs> | null
   }
 
   /**
-   * UserCountOutputType without action
+   * IndividualProfileCountOutputType without action
    */
-  export type UserCountOutputTypeCountSanctionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SanctionWhereInput
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
-  export type UserCountOutputTypeCountVerificationTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: VerificationTokenWhereInput
+  export type IndividualProfileCountOutputTypeCountAccessLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TalentAccessLogWhereInput
   }
 
 
@@ -1559,48 +1368,27 @@ export namespace Prisma {
 
   export type UserMinAggregateOutputType = {
     id: string | null
-    role: $Enums.UserRole | null
     email: string | null
     password: string | null
-    phone: string | null
-    fullName: string | null
-    status: $Enums.UserStatus | null
-    isEmailedVerified: boolean | null
-    isPhoneVerified: boolean | null
-    walletId: string | null
-    userInfoId: string | null
+    userType: $Enums.UserType | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
   export type UserMaxAggregateOutputType = {
     id: string | null
-    role: $Enums.UserRole | null
     email: string | null
     password: string | null
-    phone: string | null
-    fullName: string | null
-    status: $Enums.UserStatus | null
-    isEmailedVerified: boolean | null
-    isPhoneVerified: boolean | null
-    walletId: string | null
-    userInfoId: string | null
+    userType: $Enums.UserType | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
   export type UserCountAggregateOutputType = {
     id: number
-    role: number
     email: number
     password: number
-    phone: number
-    fullName: number
-    status: number
-    isEmailedVerified: number
-    isPhoneVerified: number
-    walletId: number
-    userInfoId: number
+    userType: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -1609,48 +1397,27 @@ export namespace Prisma {
 
   export type UserMinAggregateInputType = {
     id?: true
-    role?: true
     email?: true
     password?: true
-    phone?: true
-    fullName?: true
-    status?: true
-    isEmailedVerified?: true
-    isPhoneVerified?: true
-    walletId?: true
-    userInfoId?: true
+    userType?: true
     createdAt?: true
     updatedAt?: true
   }
 
   export type UserMaxAggregateInputType = {
     id?: true
-    role?: true
     email?: true
     password?: true
-    phone?: true
-    fullName?: true
-    status?: true
-    isEmailedVerified?: true
-    isPhoneVerified?: true
-    walletId?: true
-    userInfoId?: true
+    userType?: true
     createdAt?: true
     updatedAt?: true
   }
 
   export type UserCountAggregateInputType = {
     id?: true
-    role?: true
     email?: true
     password?: true
-    phone?: true
-    fullName?: true
-    status?: true
-    isEmailedVerified?: true
-    isPhoneVerified?: true
-    walletId?: true
-    userInfoId?: true
+    userType?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -1730,16 +1497,9 @@ export namespace Prisma {
 
   export type UserGroupByOutputType = {
     id: string
-    role: $Enums.UserRole
     email: string | null
     password: string | null
-    phone: string | null
-    fullName: string | null
-    status: $Enums.UserStatus
-    isEmailedVerified: boolean
-    isPhoneVerified: boolean
-    walletId: string | null
-    userInfoId: string | null
+    userType: $Enums.UserType
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -1763,87 +1523,49 @@ export namespace Prisma {
 
   export type UserSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    role?: boolean
     email?: boolean
     password?: boolean
-    phone?: boolean
-    fullName?: boolean
-    status?: boolean
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: boolean
-    userInfoId?: boolean
+    userType?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    memberIdentityVerification?: boolean | User$memberIdentityVerificationArgs<ExtArgs>
-    corporateRegistration?: boolean | User$corporateRegistrationArgs<ExtArgs>
-    verifiedMemberIdentities?: boolean | User$verifiedMemberIdentitiesArgs<ExtArgs>
-    verifiedCorporateRegistrations?: boolean | User$verifiedCorporateRegistrationsArgs<ExtArgs>
-    sanctions?: boolean | User$sanctionsArgs<ExtArgs>
-    userInformation?: boolean | User$userInformationArgs<ExtArgs>
+    corporate?: boolean | User$corporateArgs<ExtArgs>
+    individual?: boolean | User$individualArgs<ExtArgs>
     socialAuths?: boolean | User$socialAuthsArgs<ExtArgs>
-    verificationTokens?: boolean | User$verificationTokensArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    role?: boolean
     email?: boolean
     password?: boolean
-    phone?: boolean
-    fullName?: boolean
-    status?: boolean
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: boolean
-    userInfoId?: boolean
+    userType?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    role?: boolean
     email?: boolean
     password?: boolean
-    phone?: boolean
-    fullName?: boolean
-    status?: boolean
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: boolean
-    userInfoId?: boolean
+    userType?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
     id?: boolean
-    role?: boolean
     email?: boolean
     password?: boolean
-    phone?: boolean
-    fullName?: boolean
-    status?: boolean
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: boolean
-    userInfoId?: boolean
+    userType?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "role" | "email" | "password" | "phone" | "fullName" | "status" | "isEmailedVerified" | "isPhoneVerified" | "walletId" | "userInfoId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "userType" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    memberIdentityVerification?: boolean | User$memberIdentityVerificationArgs<ExtArgs>
-    corporateRegistration?: boolean | User$corporateRegistrationArgs<ExtArgs>
-    verifiedMemberIdentities?: boolean | User$verifiedMemberIdentitiesArgs<ExtArgs>
-    verifiedCorporateRegistrations?: boolean | User$verifiedCorporateRegistrationsArgs<ExtArgs>
-    sanctions?: boolean | User$sanctionsArgs<ExtArgs>
-    userInformation?: boolean | User$userInformationArgs<ExtArgs>
+    corporate?: boolean | User$corporateArgs<ExtArgs>
+    individual?: boolean | User$individualArgs<ExtArgs>
     socialAuths?: boolean | User$socialAuthsArgs<ExtArgs>
-    verificationTokens?: boolean | User$verificationTokensArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1852,27 +1574,15 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
-      memberIdentityVerification: Prisma.$MemberIdentityVerificationPayload<ExtArgs> | null
-      corporateRegistration: Prisma.$CorporateRegistrationPayload<ExtArgs> | null
-      verifiedMemberIdentities: Prisma.$MemberIdentityVerificationPayload<ExtArgs>[]
-      verifiedCorporateRegistrations: Prisma.$CorporateRegistrationPayload<ExtArgs>[]
-      sanctions: Prisma.$SanctionPayload<ExtArgs>[]
-      userInformation: Prisma.$UserInformationPayload<ExtArgs> | null
-      socialAuths: Prisma.$SocialAuthPayload<ExtArgs> | null
-      verificationTokens: Prisma.$VerificationTokenPayload<ExtArgs>[]
+      corporate: Prisma.$CorporateProfilePayload<ExtArgs> | null
+      individual: Prisma.$IndividualProfilePayload<ExtArgs> | null
+      socialAuths: Prisma.$SocialAuthPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      role: $Enums.UserRole
       email: string | null
       password: string | null
-      phone: string | null
-      fullName: string | null
-      status: $Enums.UserStatus
-      isEmailedVerified: boolean
-      isPhoneVerified: boolean
-      walletId: string | null
-      userInfoId: string | null
+      userType: $Enums.UserType
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -2269,14 +1979,9 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    memberIdentityVerification<T extends User$memberIdentityVerificationArgs<ExtArgs> = {}>(args?: Subset<T, User$memberIdentityVerificationArgs<ExtArgs>>): Prisma__MemberIdentityVerificationClient<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    corporateRegistration<T extends User$corporateRegistrationArgs<ExtArgs> = {}>(args?: Subset<T, User$corporateRegistrationArgs<ExtArgs>>): Prisma__CorporateRegistrationClient<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    verifiedMemberIdentities<T extends User$verifiedMemberIdentitiesArgs<ExtArgs> = {}>(args?: Subset<T, User$verifiedMemberIdentitiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    verifiedCorporateRegistrations<T extends User$verifiedCorporateRegistrationsArgs<ExtArgs> = {}>(args?: Subset<T, User$verifiedCorporateRegistrationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    sanctions<T extends User$sanctionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sanctionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SanctionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    userInformation<T extends User$userInformationArgs<ExtArgs> = {}>(args?: Subset<T, User$userInformationArgs<ExtArgs>>): Prisma__UserInformationClient<$Result.GetResult<Prisma.$UserInformationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    socialAuths<T extends User$socialAuthsArgs<ExtArgs> = {}>(args?: Subset<T, User$socialAuthsArgs<ExtArgs>>): Prisma__SocialAuthClient<$Result.GetResult<Prisma.$SocialAuthPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    verificationTokens<T extends User$verificationTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$verificationTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    corporate<T extends User$corporateArgs<ExtArgs> = {}>(args?: Subset<T, User$corporateArgs<ExtArgs>>): Prisma__CorporateProfileClient<$Result.GetResult<Prisma.$CorporateProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    individual<T extends User$individualArgs<ExtArgs> = {}>(args?: Subset<T, User$individualArgs<ExtArgs>>): Prisma__IndividualProfileClient<$Result.GetResult<Prisma.$IndividualProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    socialAuths<T extends User$socialAuthsArgs<ExtArgs> = {}>(args?: Subset<T, User$socialAuthsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SocialAuthPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2307,16 +2012,9 @@ export namespace Prisma {
    */
   interface UserFieldRefs {
     readonly id: FieldRef<"User", 'String'>
-    readonly role: FieldRef<"User", 'UserRole'>
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
-    readonly phone: FieldRef<"User", 'String'>
-    readonly fullName: FieldRef<"User", 'String'>
-    readonly status: FieldRef<"User", 'UserStatus'>
-    readonly isEmailedVerified: FieldRef<"User", 'Boolean'>
-    readonly isPhoneVerified: FieldRef<"User", 'Boolean'>
-    readonly walletId: FieldRef<"User", 'String'>
-    readonly userInfoId: FieldRef<"User", 'String'>
+    readonly userType: FieldRef<"User", 'UserType'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -2707,132 +2405,41 @@ export namespace Prisma {
   }
 
   /**
-   * User.memberIdentityVerification
+   * User.corporate
    */
-  export type User$memberIdentityVerificationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$corporateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the MemberIdentityVerification
+     * Select specific fields to fetch from the CorporateProfile
      */
-    select?: MemberIdentityVerificationSelect<ExtArgs> | null
+    select?: CorporateProfileSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the MemberIdentityVerification
+     * Omit specific fields from the CorporateProfile
      */
-    omit?: MemberIdentityVerificationOmit<ExtArgs> | null
+    omit?: CorporateProfileOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: MemberIdentityVerificationInclude<ExtArgs> | null
-    where?: MemberIdentityVerificationWhereInput
+    include?: CorporateProfileInclude<ExtArgs> | null
+    where?: CorporateProfileWhereInput
   }
 
   /**
-   * User.corporateRegistration
+   * User.individual
    */
-  export type User$corporateRegistrationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$individualArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CorporateRegistration
+     * Select specific fields to fetch from the IndividualProfile
      */
-    select?: CorporateRegistrationSelect<ExtArgs> | null
+    select?: IndividualProfileSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CorporateRegistration
+     * Omit specific fields from the IndividualProfile
      */
-    omit?: CorporateRegistrationOmit<ExtArgs> | null
+    omit?: IndividualProfileOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CorporateRegistrationInclude<ExtArgs> | null
-    where?: CorporateRegistrationWhereInput
-  }
-
-  /**
-   * User.verifiedMemberIdentities
-   */
-  export type User$verifiedMemberIdentitiesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MemberIdentityVerification
-     */
-    select?: MemberIdentityVerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MemberIdentityVerification
-     */
-    omit?: MemberIdentityVerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MemberIdentityVerificationInclude<ExtArgs> | null
-    where?: MemberIdentityVerificationWhereInput
-    orderBy?: MemberIdentityVerificationOrderByWithRelationInput | MemberIdentityVerificationOrderByWithRelationInput[]
-    cursor?: MemberIdentityVerificationWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: MemberIdentityVerificationScalarFieldEnum | MemberIdentityVerificationScalarFieldEnum[]
-  }
-
-  /**
-   * User.verifiedCorporateRegistrations
-   */
-  export type User$verifiedCorporateRegistrationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CorporateRegistration
-     */
-    select?: CorporateRegistrationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CorporateRegistration
-     */
-    omit?: CorporateRegistrationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CorporateRegistrationInclude<ExtArgs> | null
-    where?: CorporateRegistrationWhereInput
-    orderBy?: CorporateRegistrationOrderByWithRelationInput | CorporateRegistrationOrderByWithRelationInput[]
-    cursor?: CorporateRegistrationWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: CorporateRegistrationScalarFieldEnum | CorporateRegistrationScalarFieldEnum[]
-  }
-
-  /**
-   * User.sanctions
-   */
-  export type User$sanctionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Sanction
-     */
-    select?: SanctionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Sanction
-     */
-    omit?: SanctionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SanctionInclude<ExtArgs> | null
-    where?: SanctionWhereInput
-    orderBy?: SanctionOrderByWithRelationInput | SanctionOrderByWithRelationInput[]
-    cursor?: SanctionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SanctionScalarFieldEnum | SanctionScalarFieldEnum[]
-  }
-
-  /**
-   * User.userInformation
-   */
-  export type User$userInformationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the UserInformation
-     */
-    select?: UserInformationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the UserInformation
-     */
-    omit?: UserInformationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInformationInclude<ExtArgs> | null
-    where?: UserInformationWhereInput
+    include?: IndividualProfileInclude<ExtArgs> | null
+    where?: IndividualProfileWhereInput
   }
 
   /**
@@ -2852,30 +2459,11 @@ export namespace Prisma {
      */
     include?: SocialAuthInclude<ExtArgs> | null
     where?: SocialAuthWhereInput
-  }
-
-  /**
-   * User.verificationTokens
-   */
-  export type User$verificationTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the VerificationToken
-     */
-    select?: VerificationTokenSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the VerificationToken
-     */
-    omit?: VerificationTokenOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationTokenInclude<ExtArgs> | null
-    where?: VerificationTokenWhereInput
-    orderBy?: VerificationTokenOrderByWithRelationInput | VerificationTokenOrderByWithRelationInput[]
-    cursor?: VerificationTokenWhereUniqueInput
+    orderBy?: SocialAuthOrderByWithRelationInput | SocialAuthOrderByWithRelationInput[]
+    cursor?: SocialAuthWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: VerificationTokenScalarFieldEnum | VerificationTokenScalarFieldEnum[]
+    distinct?: SocialAuthScalarFieldEnum | SocialAuthScalarFieldEnum[]
   }
 
   /**
@@ -2898,423 +2486,390 @@ export namespace Prisma {
 
 
   /**
-   * Model UserInformation
+   * Model CorporateProfile
    */
 
-  export type AggregateUserInformation = {
-    _count: UserInformationCountAggregateOutputType | null
-    _min: UserInformationMinAggregateOutputType | null
-    _max: UserInformationMaxAggregateOutputType | null
+  export type AggregateCorporateProfile = {
+    _count: CorporateProfileCountAggregateOutputType | null
+    _avg: CorporateProfileAvgAggregateOutputType | null
+    _sum: CorporateProfileSumAggregateOutputType | null
+    _min: CorporateProfileMinAggregateOutputType | null
+    _max: CorporateProfileMaxAggregateOutputType | null
   }
 
-  export type UserInformationMinAggregateOutputType = {
-    id: string | null
+  export type CorporateProfileAvgAggregateOutputType = {
+    companyId: number | null
+  }
+
+  export type CorporateProfileSumAggregateOutputType = {
+    companyId: bigint | null
+  }
+
+  export type CorporateProfileMinAggregateOutputType = {
+    companyId: bigint | null
     userId: string | null
-    profileImage: string | null
-    gender: string | null
-    address: string | null
-    country: string | null
-    city: string | null
-    cvForm: string | null
-    additionalInformation: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
+    companyName: string | null
+    industryCode: string | null
+    businessRegNo: string | null
   }
 
-  export type UserInformationMaxAggregateOutputType = {
-    id: string | null
+  export type CorporateProfileMaxAggregateOutputType = {
+    companyId: bigint | null
     userId: string | null
-    profileImage: string | null
-    gender: string | null
-    address: string | null
-    country: string | null
-    city: string | null
-    cvForm: string | null
-    additionalInformation: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
+    companyName: string | null
+    industryCode: string | null
+    businessRegNo: string | null
   }
 
-  export type UserInformationCountAggregateOutputType = {
-    id: number
+  export type CorporateProfileCountAggregateOutputType = {
+    companyId: number
     userId: number
-    profileImage: number
-    gender: number
-    address: number
-    country: number
-    city: number
-    cvForm: number
-    additionalInformation: number
-    createdAt: number
-    updatedAt: number
+    companyName: number
+    industryCode: number
+    businessRegNo: number
     _all: number
   }
 
 
-  export type UserInformationMinAggregateInputType = {
-    id?: true
-    userId?: true
-    profileImage?: true
-    gender?: true
-    address?: true
-    country?: true
-    city?: true
-    cvForm?: true
-    additionalInformation?: true
-    createdAt?: true
-    updatedAt?: true
+  export type CorporateProfileAvgAggregateInputType = {
+    companyId?: true
   }
 
-  export type UserInformationMaxAggregateInputType = {
-    id?: true
-    userId?: true
-    profileImage?: true
-    gender?: true
-    address?: true
-    country?: true
-    city?: true
-    cvForm?: true
-    additionalInformation?: true
-    createdAt?: true
-    updatedAt?: true
+  export type CorporateProfileSumAggregateInputType = {
+    companyId?: true
   }
 
-  export type UserInformationCountAggregateInputType = {
-    id?: true
+  export type CorporateProfileMinAggregateInputType = {
+    companyId?: true
     userId?: true
-    profileImage?: true
-    gender?: true
-    address?: true
-    country?: true
-    city?: true
-    cvForm?: true
-    additionalInformation?: true
-    createdAt?: true
-    updatedAt?: true
+    companyName?: true
+    industryCode?: true
+    businessRegNo?: true
+  }
+
+  export type CorporateProfileMaxAggregateInputType = {
+    companyId?: true
+    userId?: true
+    companyName?: true
+    industryCode?: true
+    businessRegNo?: true
+  }
+
+  export type CorporateProfileCountAggregateInputType = {
+    companyId?: true
+    userId?: true
+    companyName?: true
+    industryCode?: true
+    businessRegNo?: true
     _all?: true
   }
 
-  export type UserInformationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which UserInformation to aggregate.
+     * Filter which CorporateProfile to aggregate.
      */
-    where?: UserInformationWhereInput
+    where?: CorporateProfileWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of UserInformations to fetch.
+     * Determine the order of CorporateProfiles to fetch.
      */
-    orderBy?: UserInformationOrderByWithRelationInput | UserInformationOrderByWithRelationInput[]
+    orderBy?: CorporateProfileOrderByWithRelationInput | CorporateProfileOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: UserInformationWhereUniqueInput
+    cursor?: CorporateProfileWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` UserInformations from the position of the cursor.
+     * Take `±n` CorporateProfiles from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` UserInformations.
+     * Skip the first `n` CorporateProfiles.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned UserInformations
+     * Count returned CorporateProfiles
     **/
-    _count?: true | UserInformationCountAggregateInputType
+    _count?: true | CorporateProfileCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: CorporateProfileAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: CorporateProfileSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: UserInformationMinAggregateInputType
+    _min?: CorporateProfileMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: UserInformationMaxAggregateInputType
+    _max?: CorporateProfileMaxAggregateInputType
   }
 
-  export type GetUserInformationAggregateType<T extends UserInformationAggregateArgs> = {
-        [P in keyof T & keyof AggregateUserInformation]: P extends '_count' | 'count'
+  export type GetCorporateProfileAggregateType<T extends CorporateProfileAggregateArgs> = {
+        [P in keyof T & keyof AggregateCorporateProfile]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateUserInformation[P]>
-      : GetScalarType<T[P], AggregateUserInformation[P]>
+        : GetScalarType<T[P], AggregateCorporateProfile[P]>
+      : GetScalarType<T[P], AggregateCorporateProfile[P]>
   }
 
 
 
 
-  export type UserInformationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: UserInformationWhereInput
-    orderBy?: UserInformationOrderByWithAggregationInput | UserInformationOrderByWithAggregationInput[]
-    by: UserInformationScalarFieldEnum[] | UserInformationScalarFieldEnum
-    having?: UserInformationScalarWhereWithAggregatesInput
+  export type CorporateProfileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CorporateProfileWhereInput
+    orderBy?: CorporateProfileOrderByWithAggregationInput | CorporateProfileOrderByWithAggregationInput[]
+    by: CorporateProfileScalarFieldEnum[] | CorporateProfileScalarFieldEnum
+    having?: CorporateProfileScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: UserInformationCountAggregateInputType | true
-    _min?: UserInformationMinAggregateInputType
-    _max?: UserInformationMaxAggregateInputType
+    _count?: CorporateProfileCountAggregateInputType | true
+    _avg?: CorporateProfileAvgAggregateInputType
+    _sum?: CorporateProfileSumAggregateInputType
+    _min?: CorporateProfileMinAggregateInputType
+    _max?: CorporateProfileMaxAggregateInputType
   }
 
-  export type UserInformationGroupByOutputType = {
-    id: string
+  export type CorporateProfileGroupByOutputType = {
+    companyId: bigint
     userId: string
-    profileImage: string | null
-    gender: string | null
-    address: string | null
-    country: string | null
-    city: string | null
-    cvForm: string | null
-    additionalInformation: string | null
-    createdAt: Date
-    updatedAt: Date
-    _count: UserInformationCountAggregateOutputType | null
-    _min: UserInformationMinAggregateOutputType | null
-    _max: UserInformationMaxAggregateOutputType | null
+    companyName: string
+    industryCode: string
+    businessRegNo: string
+    _count: CorporateProfileCountAggregateOutputType | null
+    _avg: CorporateProfileAvgAggregateOutputType | null
+    _sum: CorporateProfileSumAggregateOutputType | null
+    _min: CorporateProfileMinAggregateOutputType | null
+    _max: CorporateProfileMaxAggregateOutputType | null
   }
 
-  type GetUserInformationGroupByPayload<T extends UserInformationGroupByArgs> = Prisma.PrismaPromise<
+  type GetCorporateProfileGroupByPayload<T extends CorporateProfileGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<UserInformationGroupByOutputType, T['by']> &
+      PickEnumerable<CorporateProfileGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof UserInformationGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof CorporateProfileGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], UserInformationGroupByOutputType[P]>
-            : GetScalarType<T[P], UserInformationGroupByOutputType[P]>
+              : GetScalarType<T[P], CorporateProfileGroupByOutputType[P]>
+            : GetScalarType<T[P], CorporateProfileGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type UserInformationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
+  export type CorporateProfileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    companyId?: boolean
     userId?: boolean
-    profileImage?: boolean
-    gender?: boolean
-    address?: boolean
-    country?: boolean
-    city?: boolean
-    cvForm?: boolean
-    additionalInformation?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    companyName?: boolean
+    industryCode?: boolean
+    businessRegNo?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["userInformation"]>
+    accessLogs?: boolean | CorporateProfile$accessLogsArgs<ExtArgs>
+    _count?: boolean | CorporateProfileCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["corporateProfile"]>
 
-  export type UserInformationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
+  export type CorporateProfileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    companyId?: boolean
     userId?: boolean
-    profileImage?: boolean
-    gender?: boolean
-    address?: boolean
-    country?: boolean
-    city?: boolean
-    cvForm?: boolean
-    additionalInformation?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    companyName?: boolean
+    industryCode?: boolean
+    businessRegNo?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["userInformation"]>
+  }, ExtArgs["result"]["corporateProfile"]>
 
-  export type UserInformationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
+  export type CorporateProfileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    companyId?: boolean
     userId?: boolean
-    profileImage?: boolean
-    gender?: boolean
-    address?: boolean
-    country?: boolean
-    city?: boolean
-    cvForm?: boolean
-    additionalInformation?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    companyName?: boolean
+    industryCode?: boolean
+    businessRegNo?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["userInformation"]>
+  }, ExtArgs["result"]["corporateProfile"]>
 
-  export type UserInformationSelectScalar = {
-    id?: boolean
+  export type CorporateProfileSelectScalar = {
+    companyId?: boolean
     userId?: boolean
-    profileImage?: boolean
-    gender?: boolean
-    address?: boolean
-    country?: boolean
-    city?: boolean
-    cvForm?: boolean
-    additionalInformation?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
+    companyName?: boolean
+    industryCode?: boolean
+    businessRegNo?: boolean
   }
 
-  export type UserInformationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "profileImage" | "gender" | "address" | "country" | "city" | "cvForm" | "additionalInformation" | "createdAt" | "updatedAt", ExtArgs["result"]["userInformation"]>
-  export type UserInformationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"companyId" | "userId" | "companyName" | "industryCode" | "businessRegNo", ExtArgs["result"]["corporateProfile"]>
+  export type CorporateProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    accessLogs?: boolean | CorporateProfile$accessLogsArgs<ExtArgs>
+    _count?: boolean | CorporateProfileCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type CorporateProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
-  export type UserInformationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type UserInformationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
-  export type $UserInformationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "UserInformation"
+  export type $CorporateProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CorporateProfile"
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
+      accessLogs: Prisma.$TalentAccessLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
-      id: string
+      companyId: bigint
       userId: string
-      profileImage: string | null
-      gender: string | null
-      address: string | null
-      country: string | null
-      city: string | null
-      cvForm: string | null
-      additionalInformation: string | null
-      createdAt: Date
-      updatedAt: Date
-    }, ExtArgs["result"]["userInformation"]>
+      companyName: string
+      industryCode: string
+      businessRegNo: string
+    }, ExtArgs["result"]["corporateProfile"]>
     composites: {}
   }
 
-  type UserInformationGetPayload<S extends boolean | null | undefined | UserInformationDefaultArgs> = $Result.GetResult<Prisma.$UserInformationPayload, S>
+  type CorporateProfileGetPayload<S extends boolean | null | undefined | CorporateProfileDefaultArgs> = $Result.GetResult<Prisma.$CorporateProfilePayload, S>
 
-  type UserInformationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<UserInformationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: UserInformationCountAggregateInputType | true
+  type CorporateProfileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CorporateProfileFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CorporateProfileCountAggregateInputType | true
     }
 
-  export interface UserInformationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserInformation'], meta: { name: 'UserInformation' } }
+  export interface CorporateProfileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CorporateProfile'], meta: { name: 'CorporateProfile' } }
     /**
-     * Find zero or one UserInformation that matches the filter.
-     * @param {UserInformationFindUniqueArgs} args - Arguments to find a UserInformation
+     * Find zero or one CorporateProfile that matches the filter.
+     * @param {CorporateProfileFindUniqueArgs} args - Arguments to find a CorporateProfile
      * @example
-     * // Get one UserInformation
-     * const userInformation = await prisma.userInformation.findUnique({
+     * // Get one CorporateProfile
+     * const corporateProfile = await prisma.corporateProfile.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends UserInformationFindUniqueArgs>(args: SelectSubset<T, UserInformationFindUniqueArgs<ExtArgs>>): Prisma__UserInformationClient<$Result.GetResult<Prisma.$UserInformationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends CorporateProfileFindUniqueArgs>(args: SelectSubset<T, CorporateProfileFindUniqueArgs<ExtArgs>>): Prisma__CorporateProfileClient<$Result.GetResult<Prisma.$CorporateProfilePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one UserInformation that matches the filter or throw an error with `error.code='P2025'`
+     * Find one CorporateProfile that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {UserInformationFindUniqueOrThrowArgs} args - Arguments to find a UserInformation
+     * @param {CorporateProfileFindUniqueOrThrowArgs} args - Arguments to find a CorporateProfile
      * @example
-     * // Get one UserInformation
-     * const userInformation = await prisma.userInformation.findUniqueOrThrow({
+     * // Get one CorporateProfile
+     * const corporateProfile = await prisma.corporateProfile.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends UserInformationFindUniqueOrThrowArgs>(args: SelectSubset<T, UserInformationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserInformationClient<$Result.GetResult<Prisma.$UserInformationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends CorporateProfileFindUniqueOrThrowArgs>(args: SelectSubset<T, CorporateProfileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CorporateProfileClient<$Result.GetResult<Prisma.$CorporateProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first UserInformation that matches the filter.
+     * Find the first CorporateProfile that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {UserInformationFindFirstArgs} args - Arguments to find a UserInformation
+     * @param {CorporateProfileFindFirstArgs} args - Arguments to find a CorporateProfile
      * @example
-     * // Get one UserInformation
-     * const userInformation = await prisma.userInformation.findFirst({
+     * // Get one CorporateProfile
+     * const corporateProfile = await prisma.corporateProfile.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends UserInformationFindFirstArgs>(args?: SelectSubset<T, UserInformationFindFirstArgs<ExtArgs>>): Prisma__UserInformationClient<$Result.GetResult<Prisma.$UserInformationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends CorporateProfileFindFirstArgs>(args?: SelectSubset<T, CorporateProfileFindFirstArgs<ExtArgs>>): Prisma__CorporateProfileClient<$Result.GetResult<Prisma.$CorporateProfilePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first UserInformation that matches the filter or
+     * Find the first CorporateProfile that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {UserInformationFindFirstOrThrowArgs} args - Arguments to find a UserInformation
+     * @param {CorporateProfileFindFirstOrThrowArgs} args - Arguments to find a CorporateProfile
      * @example
-     * // Get one UserInformation
-     * const userInformation = await prisma.userInformation.findFirstOrThrow({
+     * // Get one CorporateProfile
+     * const corporateProfile = await prisma.corporateProfile.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends UserInformationFindFirstOrThrowArgs>(args?: SelectSubset<T, UserInformationFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserInformationClient<$Result.GetResult<Prisma.$UserInformationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends CorporateProfileFindFirstOrThrowArgs>(args?: SelectSubset<T, CorporateProfileFindFirstOrThrowArgs<ExtArgs>>): Prisma__CorporateProfileClient<$Result.GetResult<Prisma.$CorporateProfilePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more UserInformations that matches the filter.
+     * Find zero or more CorporateProfiles that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {UserInformationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {CorporateProfileFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all UserInformations
-     * const userInformations = await prisma.userInformation.findMany()
+     * // Get all CorporateProfiles
+     * const corporateProfiles = await prisma.corporateProfile.findMany()
      * 
-     * // Get first 10 UserInformations
-     * const userInformations = await prisma.userInformation.findMany({ take: 10 })
+     * // Get first 10 CorporateProfiles
+     * const corporateProfiles = await prisma.corporateProfile.findMany({ take: 10 })
      * 
-     * // Only select the `id`
-     * const userInformationWithIdOnly = await prisma.userInformation.findMany({ select: { id: true } })
+     * // Only select the `companyId`
+     * const corporateProfileWithCompanyIdOnly = await prisma.corporateProfile.findMany({ select: { companyId: true } })
      * 
      */
-    findMany<T extends UserInformationFindManyArgs>(args?: SelectSubset<T, UserInformationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserInformationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends CorporateProfileFindManyArgs>(args?: SelectSubset<T, CorporateProfileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CorporateProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a UserInformation.
-     * @param {UserInformationCreateArgs} args - Arguments to create a UserInformation.
+     * Create a CorporateProfile.
+     * @param {CorporateProfileCreateArgs} args - Arguments to create a CorporateProfile.
      * @example
-     * // Create one UserInformation
-     * const UserInformation = await prisma.userInformation.create({
+     * // Create one CorporateProfile
+     * const CorporateProfile = await prisma.corporateProfile.create({
      *   data: {
-     *     // ... data to create a UserInformation
+     *     // ... data to create a CorporateProfile
      *   }
      * })
      * 
      */
-    create<T extends UserInformationCreateArgs>(args: SelectSubset<T, UserInformationCreateArgs<ExtArgs>>): Prisma__UserInformationClient<$Result.GetResult<Prisma.$UserInformationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends CorporateProfileCreateArgs>(args: SelectSubset<T, CorporateProfileCreateArgs<ExtArgs>>): Prisma__CorporateProfileClient<$Result.GetResult<Prisma.$CorporateProfilePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many UserInformations.
-     * @param {UserInformationCreateManyArgs} args - Arguments to create many UserInformations.
+     * Create many CorporateProfiles.
+     * @param {CorporateProfileCreateManyArgs} args - Arguments to create many CorporateProfiles.
      * @example
-     * // Create many UserInformations
-     * const userInformation = await prisma.userInformation.createMany({
+     * // Create many CorporateProfiles
+     * const corporateProfile = await prisma.corporateProfile.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends UserInformationCreateManyArgs>(args?: SelectSubset<T, UserInformationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends CorporateProfileCreateManyArgs>(args?: SelectSubset<T, CorporateProfileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many UserInformations and returns the data saved in the database.
-     * @param {UserInformationCreateManyAndReturnArgs} args - Arguments to create many UserInformations.
+     * Create many CorporateProfiles and returns the data saved in the database.
+     * @param {CorporateProfileCreateManyAndReturnArgs} args - Arguments to create many CorporateProfiles.
      * @example
-     * // Create many UserInformations
-     * const userInformation = await prisma.userInformation.createManyAndReturn({
+     * // Create many CorporateProfiles
+     * const corporateProfile = await prisma.corporateProfile.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many UserInformations and only return the `id`
-     * const userInformationWithIdOnly = await prisma.userInformation.createManyAndReturn({
-     *   select: { id: true },
+     * // Create many CorporateProfiles and only return the `companyId`
+     * const corporateProfileWithCompanyIdOnly = await prisma.corporateProfile.createManyAndReturn({
+     *   select: { companyId: true },
      *   data: [
      *     // ... provide data here
      *   ]
@@ -3323,28 +2878,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends UserInformationCreateManyAndReturnArgs>(args?: SelectSubset<T, UserInformationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserInformationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends CorporateProfileCreateManyAndReturnArgs>(args?: SelectSubset<T, CorporateProfileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CorporateProfilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a UserInformation.
-     * @param {UserInformationDeleteArgs} args - Arguments to delete one UserInformation.
+     * Delete a CorporateProfile.
+     * @param {CorporateProfileDeleteArgs} args - Arguments to delete one CorporateProfile.
      * @example
-     * // Delete one UserInformation
-     * const UserInformation = await prisma.userInformation.delete({
+     * // Delete one CorporateProfile
+     * const CorporateProfile = await prisma.corporateProfile.delete({
      *   where: {
-     *     // ... filter to delete one UserInformation
+     *     // ... filter to delete one CorporateProfile
      *   }
      * })
      * 
      */
-    delete<T extends UserInformationDeleteArgs>(args: SelectSubset<T, UserInformationDeleteArgs<ExtArgs>>): Prisma__UserInformationClient<$Result.GetResult<Prisma.$UserInformationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends CorporateProfileDeleteArgs>(args: SelectSubset<T, CorporateProfileDeleteArgs<ExtArgs>>): Prisma__CorporateProfileClient<$Result.GetResult<Prisma.$CorporateProfilePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one UserInformation.
-     * @param {UserInformationUpdateArgs} args - Arguments to update one UserInformation.
+     * Update one CorporateProfile.
+     * @param {CorporateProfileUpdateArgs} args - Arguments to update one CorporateProfile.
      * @example
-     * // Update one UserInformation
-     * const userInformation = await prisma.userInformation.update({
+     * // Update one CorporateProfile
+     * const corporateProfile = await prisma.corporateProfile.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -3354,30 +2909,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends UserInformationUpdateArgs>(args: SelectSubset<T, UserInformationUpdateArgs<ExtArgs>>): Prisma__UserInformationClient<$Result.GetResult<Prisma.$UserInformationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends CorporateProfileUpdateArgs>(args: SelectSubset<T, CorporateProfileUpdateArgs<ExtArgs>>): Prisma__CorporateProfileClient<$Result.GetResult<Prisma.$CorporateProfilePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more UserInformations.
-     * @param {UserInformationDeleteManyArgs} args - Arguments to filter UserInformations to delete.
+     * Delete zero or more CorporateProfiles.
+     * @param {CorporateProfileDeleteManyArgs} args - Arguments to filter CorporateProfiles to delete.
      * @example
-     * // Delete a few UserInformations
-     * const { count } = await prisma.userInformation.deleteMany({
+     * // Delete a few CorporateProfiles
+     * const { count } = await prisma.corporateProfile.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends UserInformationDeleteManyArgs>(args?: SelectSubset<T, UserInformationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends CorporateProfileDeleteManyArgs>(args?: SelectSubset<T, CorporateProfileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more UserInformations.
+     * Update zero or more CorporateProfiles.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {UserInformationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {CorporateProfileUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many UserInformations
-     * const userInformation = await prisma.userInformation.updateMany({
+     * // Update many CorporateProfiles
+     * const corporateProfile = await prisma.corporateProfile.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -3387,14 +2942,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends UserInformationUpdateManyArgs>(args: SelectSubset<T, UserInformationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends CorporateProfileUpdateManyArgs>(args: SelectSubset<T, CorporateProfileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more UserInformations and returns the data updated in the database.
-     * @param {UserInformationUpdateManyAndReturnArgs} args - Arguments to update many UserInformations.
+     * Update zero or more CorporateProfiles and returns the data updated in the database.
+     * @param {CorporateProfileUpdateManyAndReturnArgs} args - Arguments to update many CorporateProfiles.
      * @example
-     * // Update many UserInformations
-     * const userInformation = await prisma.userInformation.updateManyAndReturn({
+     * // Update many CorporateProfiles
+     * const corporateProfile = await prisma.corporateProfile.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -3403,9 +2958,9 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more UserInformations and only return the `id`
-     * const userInformationWithIdOnly = await prisma.userInformation.updateManyAndReturn({
-     *   select: { id: true },
+     * // Update zero or more CorporateProfiles and only return the `companyId`
+     * const corporateProfileWithCompanyIdOnly = await prisma.corporateProfile.updateManyAndReturn({
+     *   select: { companyId: true },
      *   where: {
      *     // ... provide filter here
      *   },
@@ -3417,56 +2972,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends UserInformationUpdateManyAndReturnArgs>(args: SelectSubset<T, UserInformationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserInformationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends CorporateProfileUpdateManyAndReturnArgs>(args: SelectSubset<T, CorporateProfileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CorporateProfilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one UserInformation.
-     * @param {UserInformationUpsertArgs} args - Arguments to update or create a UserInformation.
+     * Create or update one CorporateProfile.
+     * @param {CorporateProfileUpsertArgs} args - Arguments to update or create a CorporateProfile.
      * @example
-     * // Update or create a UserInformation
-     * const userInformation = await prisma.userInformation.upsert({
+     * // Update or create a CorporateProfile
+     * const corporateProfile = await prisma.corporateProfile.upsert({
      *   create: {
-     *     // ... data to create a UserInformation
+     *     // ... data to create a CorporateProfile
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the UserInformation we want to update
+     *     // ... the filter for the CorporateProfile we want to update
      *   }
      * })
      */
-    upsert<T extends UserInformationUpsertArgs>(args: SelectSubset<T, UserInformationUpsertArgs<ExtArgs>>): Prisma__UserInformationClient<$Result.GetResult<Prisma.$UserInformationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends CorporateProfileUpsertArgs>(args: SelectSubset<T, CorporateProfileUpsertArgs<ExtArgs>>): Prisma__CorporateProfileClient<$Result.GetResult<Prisma.$CorporateProfilePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of UserInformations.
+     * Count the number of CorporateProfiles.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {UserInformationCountArgs} args - Arguments to filter UserInformations to count.
+     * @param {CorporateProfileCountArgs} args - Arguments to filter CorporateProfiles to count.
      * @example
-     * // Count the number of UserInformations
-     * const count = await prisma.userInformation.count({
+     * // Count the number of CorporateProfiles
+     * const count = await prisma.corporateProfile.count({
      *   where: {
-     *     // ... the filter for the UserInformations we want to count
+     *     // ... the filter for the CorporateProfiles we want to count
      *   }
      * })
     **/
-    count<T extends UserInformationCountArgs>(
-      args?: Subset<T, UserInformationCountArgs>,
+    count<T extends CorporateProfileCountArgs>(
+      args?: Subset<T, CorporateProfileCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], UserInformationCountAggregateOutputType>
+          : GetScalarType<T['select'], CorporateProfileCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a UserInformation.
+     * Allows you to perform aggregations operations on a CorporateProfile.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {UserInformationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {CorporateProfileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -3486,13 +3041,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends UserInformationAggregateArgs>(args: Subset<T, UserInformationAggregateArgs>): Prisma.PrismaPromise<GetUserInformationAggregateType<T>>
+    aggregate<T extends CorporateProfileAggregateArgs>(args: Subset<T, CorporateProfileAggregateArgs>): Prisma.PrismaPromise<GetCorporateProfileAggregateType<T>>
 
     /**
-     * Group by UserInformation.
+     * Group by CorporateProfile.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {UserInformationGroupByArgs} args - Group by arguments.
+     * @param {CorporateProfileGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -3507,14 +3062,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends UserInformationGroupByArgs,
+      T extends CorporateProfileGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: UserInformationGroupByArgs['orderBy'] }
-        : { orderBy?: UserInformationGroupByArgs['orderBy'] },
+        ? { orderBy: CorporateProfileGroupByArgs['orderBy'] }
+        : { orderBy?: CorporateProfileGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -3563,22 +3118,23 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, UserInformationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserInformationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, CorporateProfileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCorporateProfileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the UserInformation model
+   * Fields of the CorporateProfile model
    */
-  readonly fields: UserInformationFieldRefs;
+  readonly fields: CorporateProfileFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for UserInformation.
+   * The delegate class that acts as a "Promise-like" for CorporateProfile.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__UserInformationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__CorporateProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    accessLogs<T extends CorporateProfile$accessLogsArgs<ExtArgs> = {}>(args?: Subset<T, CorporateProfile$accessLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TalentAccessLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3605,431 +3161,2683 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the UserInformation model
+   * Fields of the CorporateProfile model
    */
-  interface UserInformationFieldRefs {
-    readonly id: FieldRef<"UserInformation", 'String'>
-    readonly userId: FieldRef<"UserInformation", 'String'>
-    readonly profileImage: FieldRef<"UserInformation", 'String'>
-    readonly gender: FieldRef<"UserInformation", 'String'>
-    readonly address: FieldRef<"UserInformation", 'String'>
-    readonly country: FieldRef<"UserInformation", 'String'>
-    readonly city: FieldRef<"UserInformation", 'String'>
-    readonly cvForm: FieldRef<"UserInformation", 'String'>
-    readonly additionalInformation: FieldRef<"UserInformation", 'String'>
-    readonly createdAt: FieldRef<"UserInformation", 'DateTime'>
-    readonly updatedAt: FieldRef<"UserInformation", 'DateTime'>
+  interface CorporateProfileFieldRefs {
+    readonly companyId: FieldRef<"CorporateProfile", 'BigInt'>
+    readonly userId: FieldRef<"CorporateProfile", 'String'>
+    readonly companyName: FieldRef<"CorporateProfile", 'String'>
+    readonly industryCode: FieldRef<"CorporateProfile", 'String'>
+    readonly businessRegNo: FieldRef<"CorporateProfile", 'String'>
   }
     
 
   // Custom InputTypes
   /**
-   * UserInformation findUnique
+   * CorporateProfile findUnique
    */
-  export type UserInformationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the UserInformation
+     * Select specific fields to fetch from the CorporateProfile
      */
-    select?: UserInformationSelect<ExtArgs> | null
+    select?: CorporateProfileSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the UserInformation
+     * Omit specific fields from the CorporateProfile
      */
-    omit?: UserInformationOmit<ExtArgs> | null
+    omit?: CorporateProfileOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInformationInclude<ExtArgs> | null
+    include?: CorporateProfileInclude<ExtArgs> | null
     /**
-     * Filter, which UserInformation to fetch.
+     * Filter, which CorporateProfile to fetch.
      */
-    where: UserInformationWhereUniqueInput
+    where: CorporateProfileWhereUniqueInput
   }
 
   /**
-   * UserInformation findUniqueOrThrow
+   * CorporateProfile findUniqueOrThrow
    */
-  export type UserInformationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the UserInformation
+     * Select specific fields to fetch from the CorporateProfile
      */
-    select?: UserInformationSelect<ExtArgs> | null
+    select?: CorporateProfileSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the UserInformation
+     * Omit specific fields from the CorporateProfile
      */
-    omit?: UserInformationOmit<ExtArgs> | null
+    omit?: CorporateProfileOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInformationInclude<ExtArgs> | null
+    include?: CorporateProfileInclude<ExtArgs> | null
     /**
-     * Filter, which UserInformation to fetch.
+     * Filter, which CorporateProfile to fetch.
      */
-    where: UserInformationWhereUniqueInput
+    where: CorporateProfileWhereUniqueInput
   }
 
   /**
-   * UserInformation findFirst
+   * CorporateProfile findFirst
    */
-  export type UserInformationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the UserInformation
+     * Select specific fields to fetch from the CorporateProfile
      */
-    select?: UserInformationSelect<ExtArgs> | null
+    select?: CorporateProfileSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the UserInformation
+     * Omit specific fields from the CorporateProfile
      */
-    omit?: UserInformationOmit<ExtArgs> | null
+    omit?: CorporateProfileOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInformationInclude<ExtArgs> | null
+    include?: CorporateProfileInclude<ExtArgs> | null
     /**
-     * Filter, which UserInformation to fetch.
+     * Filter, which CorporateProfile to fetch.
      */
-    where?: UserInformationWhereInput
+    where?: CorporateProfileWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of UserInformations to fetch.
+     * Determine the order of CorporateProfiles to fetch.
      */
-    orderBy?: UserInformationOrderByWithRelationInput | UserInformationOrderByWithRelationInput[]
+    orderBy?: CorporateProfileOrderByWithRelationInput | CorporateProfileOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for UserInformations.
+     * Sets the position for searching for CorporateProfiles.
      */
-    cursor?: UserInformationWhereUniqueInput
+    cursor?: CorporateProfileWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` UserInformations from the position of the cursor.
+     * Take `±n` CorporateProfiles from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` UserInformations.
+     * Skip the first `n` CorporateProfiles.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of UserInformations.
+     * Filter by unique combinations of CorporateProfiles.
      */
-    distinct?: UserInformationScalarFieldEnum | UserInformationScalarFieldEnum[]
+    distinct?: CorporateProfileScalarFieldEnum | CorporateProfileScalarFieldEnum[]
   }
 
   /**
-   * UserInformation findFirstOrThrow
+   * CorporateProfile findFirstOrThrow
    */
-  export type UserInformationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the UserInformation
+     * Select specific fields to fetch from the CorporateProfile
      */
-    select?: UserInformationSelect<ExtArgs> | null
+    select?: CorporateProfileSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the UserInformation
+     * Omit specific fields from the CorporateProfile
      */
-    omit?: UserInformationOmit<ExtArgs> | null
+    omit?: CorporateProfileOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInformationInclude<ExtArgs> | null
+    include?: CorporateProfileInclude<ExtArgs> | null
     /**
-     * Filter, which UserInformation to fetch.
+     * Filter, which CorporateProfile to fetch.
      */
-    where?: UserInformationWhereInput
+    where?: CorporateProfileWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of UserInformations to fetch.
+     * Determine the order of CorporateProfiles to fetch.
      */
-    orderBy?: UserInformationOrderByWithRelationInput | UserInformationOrderByWithRelationInput[]
+    orderBy?: CorporateProfileOrderByWithRelationInput | CorporateProfileOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for UserInformations.
+     * Sets the position for searching for CorporateProfiles.
      */
-    cursor?: UserInformationWhereUniqueInput
+    cursor?: CorporateProfileWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` UserInformations from the position of the cursor.
+     * Take `±n` CorporateProfiles from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` UserInformations.
+     * Skip the first `n` CorporateProfiles.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of UserInformations.
+     * Filter by unique combinations of CorporateProfiles.
      */
-    distinct?: UserInformationScalarFieldEnum | UserInformationScalarFieldEnum[]
+    distinct?: CorporateProfileScalarFieldEnum | CorporateProfileScalarFieldEnum[]
   }
 
   /**
-   * UserInformation findMany
+   * CorporateProfile findMany
    */
-  export type UserInformationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the UserInformation
+     * Select specific fields to fetch from the CorporateProfile
      */
-    select?: UserInformationSelect<ExtArgs> | null
+    select?: CorporateProfileSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the UserInformation
+     * Omit specific fields from the CorporateProfile
      */
-    omit?: UserInformationOmit<ExtArgs> | null
+    omit?: CorporateProfileOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInformationInclude<ExtArgs> | null
+    include?: CorporateProfileInclude<ExtArgs> | null
     /**
-     * Filter, which UserInformations to fetch.
+     * Filter, which CorporateProfiles to fetch.
      */
-    where?: UserInformationWhereInput
+    where?: CorporateProfileWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of UserInformations to fetch.
+     * Determine the order of CorporateProfiles to fetch.
      */
-    orderBy?: UserInformationOrderByWithRelationInput | UserInformationOrderByWithRelationInput[]
+    orderBy?: CorporateProfileOrderByWithRelationInput | CorporateProfileOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing UserInformations.
+     * Sets the position for listing CorporateProfiles.
      */
-    cursor?: UserInformationWhereUniqueInput
+    cursor?: CorporateProfileWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` UserInformations from the position of the cursor.
+     * Take `±n` CorporateProfiles from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` UserInformations.
+     * Skip the first `n` CorporateProfiles.
      */
     skip?: number
-    distinct?: UserInformationScalarFieldEnum | UserInformationScalarFieldEnum[]
+    distinct?: CorporateProfileScalarFieldEnum | CorporateProfileScalarFieldEnum[]
   }
 
   /**
-   * UserInformation create
+   * CorporateProfile create
    */
-  export type UserInformationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the UserInformation
+     * Select specific fields to fetch from the CorporateProfile
      */
-    select?: UserInformationSelect<ExtArgs> | null
+    select?: CorporateProfileSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the UserInformation
+     * Omit specific fields from the CorporateProfile
      */
-    omit?: UserInformationOmit<ExtArgs> | null
+    omit?: CorporateProfileOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInformationInclude<ExtArgs> | null
+    include?: CorporateProfileInclude<ExtArgs> | null
     /**
-     * The data needed to create a UserInformation.
+     * The data needed to create a CorporateProfile.
      */
-    data: XOR<UserInformationCreateInput, UserInformationUncheckedCreateInput>
+    data: XOR<CorporateProfileCreateInput, CorporateProfileUncheckedCreateInput>
   }
 
   /**
-   * UserInformation createMany
+   * CorporateProfile createMany
    */
-  export type UserInformationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many UserInformations.
+     * The data used to create many CorporateProfiles.
      */
-    data: UserInformationCreateManyInput | UserInformationCreateManyInput[]
+    data: CorporateProfileCreateManyInput | CorporateProfileCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * UserInformation createManyAndReturn
+   * CorporateProfile createManyAndReturn
    */
-  export type UserInformationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the UserInformation
+     * Select specific fields to fetch from the CorporateProfile
      */
-    select?: UserInformationSelectCreateManyAndReturn<ExtArgs> | null
+    select?: CorporateProfileSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the UserInformation
+     * Omit specific fields from the CorporateProfile
      */
-    omit?: UserInformationOmit<ExtArgs> | null
+    omit?: CorporateProfileOmit<ExtArgs> | null
     /**
-     * The data used to create many UserInformations.
+     * The data used to create many CorporateProfiles.
      */
-    data: UserInformationCreateManyInput | UserInformationCreateManyInput[]
+    data: CorporateProfileCreateManyInput | CorporateProfileCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInformationIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: CorporateProfileIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * UserInformation update
+   * CorporateProfile update
    */
-  export type UserInformationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the UserInformation
+     * Select specific fields to fetch from the CorporateProfile
      */
-    select?: UserInformationSelect<ExtArgs> | null
+    select?: CorporateProfileSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the UserInformation
+     * Omit specific fields from the CorporateProfile
      */
-    omit?: UserInformationOmit<ExtArgs> | null
+    omit?: CorporateProfileOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInformationInclude<ExtArgs> | null
+    include?: CorporateProfileInclude<ExtArgs> | null
     /**
-     * The data needed to update a UserInformation.
+     * The data needed to update a CorporateProfile.
      */
-    data: XOR<UserInformationUpdateInput, UserInformationUncheckedUpdateInput>
+    data: XOR<CorporateProfileUpdateInput, CorporateProfileUncheckedUpdateInput>
     /**
-     * Choose, which UserInformation to update.
+     * Choose, which CorporateProfile to update.
      */
-    where: UserInformationWhereUniqueInput
+    where: CorporateProfileWhereUniqueInput
   }
 
   /**
-   * UserInformation updateMany
+   * CorporateProfile updateMany
    */
-  export type UserInformationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update UserInformations.
+     * The data used to update CorporateProfiles.
      */
-    data: XOR<UserInformationUpdateManyMutationInput, UserInformationUncheckedUpdateManyInput>
+    data: XOR<CorporateProfileUpdateManyMutationInput, CorporateProfileUncheckedUpdateManyInput>
     /**
-     * Filter which UserInformations to update
+     * Filter which CorporateProfiles to update
      */
-    where?: UserInformationWhereInput
+    where?: CorporateProfileWhereInput
     /**
-     * Limit how many UserInformations to update.
+     * Limit how many CorporateProfiles to update.
      */
     limit?: number
   }
 
   /**
-   * UserInformation updateManyAndReturn
+   * CorporateProfile updateManyAndReturn
    */
-  export type UserInformationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the UserInformation
+     * Select specific fields to fetch from the CorporateProfile
      */
-    select?: UserInformationSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: CorporateProfileSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the UserInformation
+     * Omit specific fields from the CorporateProfile
      */
-    omit?: UserInformationOmit<ExtArgs> | null
+    omit?: CorporateProfileOmit<ExtArgs> | null
     /**
-     * The data used to update UserInformations.
+     * The data used to update CorporateProfiles.
      */
-    data: XOR<UserInformationUpdateManyMutationInput, UserInformationUncheckedUpdateManyInput>
+    data: XOR<CorporateProfileUpdateManyMutationInput, CorporateProfileUncheckedUpdateManyInput>
     /**
-     * Filter which UserInformations to update
+     * Filter which CorporateProfiles to update
      */
-    where?: UserInformationWhereInput
+    where?: CorporateProfileWhereInput
     /**
-     * Limit how many UserInformations to update.
+     * Limit how many CorporateProfiles to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInformationIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: CorporateProfileIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * UserInformation upsert
+   * CorporateProfile upsert
    */
-  export type UserInformationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the UserInformation
+     * Select specific fields to fetch from the CorporateProfile
      */
-    select?: UserInformationSelect<ExtArgs> | null
+    select?: CorporateProfileSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the UserInformation
+     * Omit specific fields from the CorporateProfile
      */
-    omit?: UserInformationOmit<ExtArgs> | null
+    omit?: CorporateProfileOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInformationInclude<ExtArgs> | null
+    include?: CorporateProfileInclude<ExtArgs> | null
     /**
-     * The filter to search for the UserInformation to update in case it exists.
+     * The filter to search for the CorporateProfile to update in case it exists.
      */
-    where: UserInformationWhereUniqueInput
+    where: CorporateProfileWhereUniqueInput
     /**
-     * In case the UserInformation found by the `where` argument doesn't exist, create a new UserInformation with this data.
+     * In case the CorporateProfile found by the `where` argument doesn't exist, create a new CorporateProfile with this data.
      */
-    create: XOR<UserInformationCreateInput, UserInformationUncheckedCreateInput>
+    create: XOR<CorporateProfileCreateInput, CorporateProfileUncheckedCreateInput>
     /**
-     * In case the UserInformation was found with the provided `where` argument, update it with this data.
+     * In case the CorporateProfile was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<UserInformationUpdateInput, UserInformationUncheckedUpdateInput>
+    update: XOR<CorporateProfileUpdateInput, CorporateProfileUncheckedUpdateInput>
   }
 
   /**
-   * UserInformation delete
+   * CorporateProfile delete
    */
-  export type UserInformationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the UserInformation
+     * Select specific fields to fetch from the CorporateProfile
      */
-    select?: UserInformationSelect<ExtArgs> | null
+    select?: CorporateProfileSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the UserInformation
+     * Omit specific fields from the CorporateProfile
      */
-    omit?: UserInformationOmit<ExtArgs> | null
+    omit?: CorporateProfileOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInformationInclude<ExtArgs> | null
+    include?: CorporateProfileInclude<ExtArgs> | null
     /**
-     * Filter which UserInformation to delete.
+     * Filter which CorporateProfile to delete.
      */
-    where: UserInformationWhereUniqueInput
+    where: CorporateProfileWhereUniqueInput
   }
 
   /**
-   * UserInformation deleteMany
+   * CorporateProfile deleteMany
    */
-  export type UserInformationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which UserInformations to delete
+     * Filter which CorporateProfiles to delete
      */
-    where?: UserInformationWhereInput
+    where?: CorporateProfileWhereInput
     /**
-     * Limit how many UserInformations to delete.
+     * Limit how many CorporateProfiles to delete.
      */
     limit?: number
   }
 
   /**
-   * UserInformation without action
+   * CorporateProfile.accessLogs
    */
-  export type UserInformationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CorporateProfile$accessLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the UserInformation
+     * Select specific fields to fetch from the TalentAccessLog
      */
-    select?: UserInformationSelect<ExtArgs> | null
+    select?: TalentAccessLogSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the UserInformation
+     * Omit specific fields from the TalentAccessLog
      */
-    omit?: UserInformationOmit<ExtArgs> | null
+    omit?: TalentAccessLogOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: UserInformationInclude<ExtArgs> | null
+    include?: TalentAccessLogInclude<ExtArgs> | null
+    where?: TalentAccessLogWhereInput
+    orderBy?: TalentAccessLogOrderByWithRelationInput | TalentAccessLogOrderByWithRelationInput[]
+    cursor?: TalentAccessLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TalentAccessLogScalarFieldEnum | TalentAccessLogScalarFieldEnum[]
+  }
+
+  /**
+   * CorporateProfile without action
+   */
+  export type CorporateProfileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CorporateProfile
+     */
+    select?: CorporateProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CorporateProfile
+     */
+    omit?: CorporateProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CorporateProfileInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model IndividualProfile
+   */
+
+  export type AggregateIndividualProfile = {
+    _count: IndividualProfileCountAggregateOutputType | null
+    _avg: IndividualProfileAvgAggregateOutputType | null
+    _sum: IndividualProfileSumAggregateOutputType | null
+    _min: IndividualProfileMinAggregateOutputType | null
+    _max: IndividualProfileMaxAggregateOutputType | null
+  }
+
+  export type IndividualProfileAvgAggregateOutputType = {
+    individualId: number | null
+    koreanLevel: number | null
+  }
+
+  export type IndividualProfileSumAggregateOutputType = {
+    individualId: bigint | null
+    koreanLevel: number | null
+  }
+
+  export type IndividualProfileMinAggregateOutputType = {
+    individualId: bigint | null
+    userId: string | null
+    fullName: string | null
+    visaStatus: string | null
+    isVisaVerified: boolean | null
+    koreanLevel: number | null
+  }
+
+  export type IndividualProfileMaxAggregateOutputType = {
+    individualId: bigint | null
+    userId: string | null
+    fullName: string | null
+    visaStatus: string | null
+    isVisaVerified: boolean | null
+    koreanLevel: number | null
+  }
+
+  export type IndividualProfileCountAggregateOutputType = {
+    individualId: number
+    userId: number
+    fullName: number
+    visaStatus: number
+    isVisaVerified: number
+    koreanLevel: number
+    _all: number
+  }
+
+
+  export type IndividualProfileAvgAggregateInputType = {
+    individualId?: true
+    koreanLevel?: true
+  }
+
+  export type IndividualProfileSumAggregateInputType = {
+    individualId?: true
+    koreanLevel?: true
+  }
+
+  export type IndividualProfileMinAggregateInputType = {
+    individualId?: true
+    userId?: true
+    fullName?: true
+    visaStatus?: true
+    isVisaVerified?: true
+    koreanLevel?: true
+  }
+
+  export type IndividualProfileMaxAggregateInputType = {
+    individualId?: true
+    userId?: true
+    fullName?: true
+    visaStatus?: true
+    isVisaVerified?: true
+    koreanLevel?: true
+  }
+
+  export type IndividualProfileCountAggregateInputType = {
+    individualId?: true
+    userId?: true
+    fullName?: true
+    visaStatus?: true
+    isVisaVerified?: true
+    koreanLevel?: true
+    _all?: true
+  }
+
+  export type IndividualProfileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which IndividualProfile to aggregate.
+     */
+    where?: IndividualProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IndividualProfiles to fetch.
+     */
+    orderBy?: IndividualProfileOrderByWithRelationInput | IndividualProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: IndividualProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IndividualProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IndividualProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned IndividualProfiles
+    **/
+    _count?: true | IndividualProfileCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: IndividualProfileAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: IndividualProfileSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: IndividualProfileMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: IndividualProfileMaxAggregateInputType
+  }
+
+  export type GetIndividualProfileAggregateType<T extends IndividualProfileAggregateArgs> = {
+        [P in keyof T & keyof AggregateIndividualProfile]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateIndividualProfile[P]>
+      : GetScalarType<T[P], AggregateIndividualProfile[P]>
+  }
+
+
+
+
+  export type IndividualProfileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: IndividualProfileWhereInput
+    orderBy?: IndividualProfileOrderByWithAggregationInput | IndividualProfileOrderByWithAggregationInput[]
+    by: IndividualProfileScalarFieldEnum[] | IndividualProfileScalarFieldEnum
+    having?: IndividualProfileScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: IndividualProfileCountAggregateInputType | true
+    _avg?: IndividualProfileAvgAggregateInputType
+    _sum?: IndividualProfileSumAggregateInputType
+    _min?: IndividualProfileMinAggregateInputType
+    _max?: IndividualProfileMaxAggregateInputType
+  }
+
+  export type IndividualProfileGroupByOutputType = {
+    individualId: bigint
+    userId: string
+    fullName: string
+    visaStatus: string
+    isVisaVerified: boolean
+    koreanLevel: number
+    _count: IndividualProfileCountAggregateOutputType | null
+    _avg: IndividualProfileAvgAggregateOutputType | null
+    _sum: IndividualProfileSumAggregateOutputType | null
+    _min: IndividualProfileMinAggregateOutputType | null
+    _max: IndividualProfileMaxAggregateOutputType | null
+  }
+
+  type GetIndividualProfileGroupByPayload<T extends IndividualProfileGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<IndividualProfileGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof IndividualProfileGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], IndividualProfileGroupByOutputType[P]>
+            : GetScalarType<T[P], IndividualProfileGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type IndividualProfileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    individualId?: boolean
+    userId?: boolean
+    fullName?: boolean
+    visaStatus?: boolean
+    isVisaVerified?: boolean
+    koreanLevel?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    accessLogs?: boolean | IndividualProfile$accessLogsArgs<ExtArgs>
+    _count?: boolean | IndividualProfileCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["individualProfile"]>
+
+  export type IndividualProfileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    individualId?: boolean
+    userId?: boolean
+    fullName?: boolean
+    visaStatus?: boolean
+    isVisaVerified?: boolean
+    koreanLevel?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["individualProfile"]>
+
+  export type IndividualProfileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    individualId?: boolean
+    userId?: boolean
+    fullName?: boolean
+    visaStatus?: boolean
+    isVisaVerified?: boolean
+    koreanLevel?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["individualProfile"]>
+
+  export type IndividualProfileSelectScalar = {
+    individualId?: boolean
+    userId?: boolean
+    fullName?: boolean
+    visaStatus?: boolean
+    isVisaVerified?: boolean
+    koreanLevel?: boolean
+  }
+
+  export type IndividualProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"individualId" | "userId" | "fullName" | "visaStatus" | "isVisaVerified" | "koreanLevel", ExtArgs["result"]["individualProfile"]>
+  export type IndividualProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    accessLogs?: boolean | IndividualProfile$accessLogsArgs<ExtArgs>
+    _count?: boolean | IndividualProfileCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type IndividualProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type IndividualProfileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $IndividualProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "IndividualProfile"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      accessLogs: Prisma.$TalentAccessLogPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      individualId: bigint
+      userId: string
+      fullName: string
+      visaStatus: string
+      isVisaVerified: boolean
+      koreanLevel: number
+    }, ExtArgs["result"]["individualProfile"]>
+    composites: {}
+  }
+
+  type IndividualProfileGetPayload<S extends boolean | null | undefined | IndividualProfileDefaultArgs> = $Result.GetResult<Prisma.$IndividualProfilePayload, S>
+
+  type IndividualProfileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<IndividualProfileFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: IndividualProfileCountAggregateInputType | true
+    }
+
+  export interface IndividualProfileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['IndividualProfile'], meta: { name: 'IndividualProfile' } }
+    /**
+     * Find zero or one IndividualProfile that matches the filter.
+     * @param {IndividualProfileFindUniqueArgs} args - Arguments to find a IndividualProfile
+     * @example
+     * // Get one IndividualProfile
+     * const individualProfile = await prisma.individualProfile.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends IndividualProfileFindUniqueArgs>(args: SelectSubset<T, IndividualProfileFindUniqueArgs<ExtArgs>>): Prisma__IndividualProfileClient<$Result.GetResult<Prisma.$IndividualProfilePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one IndividualProfile that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {IndividualProfileFindUniqueOrThrowArgs} args - Arguments to find a IndividualProfile
+     * @example
+     * // Get one IndividualProfile
+     * const individualProfile = await prisma.individualProfile.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends IndividualProfileFindUniqueOrThrowArgs>(args: SelectSubset<T, IndividualProfileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__IndividualProfileClient<$Result.GetResult<Prisma.$IndividualProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first IndividualProfile that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IndividualProfileFindFirstArgs} args - Arguments to find a IndividualProfile
+     * @example
+     * // Get one IndividualProfile
+     * const individualProfile = await prisma.individualProfile.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends IndividualProfileFindFirstArgs>(args?: SelectSubset<T, IndividualProfileFindFirstArgs<ExtArgs>>): Prisma__IndividualProfileClient<$Result.GetResult<Prisma.$IndividualProfilePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first IndividualProfile that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IndividualProfileFindFirstOrThrowArgs} args - Arguments to find a IndividualProfile
+     * @example
+     * // Get one IndividualProfile
+     * const individualProfile = await prisma.individualProfile.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends IndividualProfileFindFirstOrThrowArgs>(args?: SelectSubset<T, IndividualProfileFindFirstOrThrowArgs<ExtArgs>>): Prisma__IndividualProfileClient<$Result.GetResult<Prisma.$IndividualProfilePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more IndividualProfiles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IndividualProfileFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all IndividualProfiles
+     * const individualProfiles = await prisma.individualProfile.findMany()
+     * 
+     * // Get first 10 IndividualProfiles
+     * const individualProfiles = await prisma.individualProfile.findMany({ take: 10 })
+     * 
+     * // Only select the `individualId`
+     * const individualProfileWithIndividualIdOnly = await prisma.individualProfile.findMany({ select: { individualId: true } })
+     * 
+     */
+    findMany<T extends IndividualProfileFindManyArgs>(args?: SelectSubset<T, IndividualProfileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IndividualProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a IndividualProfile.
+     * @param {IndividualProfileCreateArgs} args - Arguments to create a IndividualProfile.
+     * @example
+     * // Create one IndividualProfile
+     * const IndividualProfile = await prisma.individualProfile.create({
+     *   data: {
+     *     // ... data to create a IndividualProfile
+     *   }
+     * })
+     * 
+     */
+    create<T extends IndividualProfileCreateArgs>(args: SelectSubset<T, IndividualProfileCreateArgs<ExtArgs>>): Prisma__IndividualProfileClient<$Result.GetResult<Prisma.$IndividualProfilePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many IndividualProfiles.
+     * @param {IndividualProfileCreateManyArgs} args - Arguments to create many IndividualProfiles.
+     * @example
+     * // Create many IndividualProfiles
+     * const individualProfile = await prisma.individualProfile.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends IndividualProfileCreateManyArgs>(args?: SelectSubset<T, IndividualProfileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many IndividualProfiles and returns the data saved in the database.
+     * @param {IndividualProfileCreateManyAndReturnArgs} args - Arguments to create many IndividualProfiles.
+     * @example
+     * // Create many IndividualProfiles
+     * const individualProfile = await prisma.individualProfile.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many IndividualProfiles and only return the `individualId`
+     * const individualProfileWithIndividualIdOnly = await prisma.individualProfile.createManyAndReturn({
+     *   select: { individualId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends IndividualProfileCreateManyAndReturnArgs>(args?: SelectSubset<T, IndividualProfileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IndividualProfilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a IndividualProfile.
+     * @param {IndividualProfileDeleteArgs} args - Arguments to delete one IndividualProfile.
+     * @example
+     * // Delete one IndividualProfile
+     * const IndividualProfile = await prisma.individualProfile.delete({
+     *   where: {
+     *     // ... filter to delete one IndividualProfile
+     *   }
+     * })
+     * 
+     */
+    delete<T extends IndividualProfileDeleteArgs>(args: SelectSubset<T, IndividualProfileDeleteArgs<ExtArgs>>): Prisma__IndividualProfileClient<$Result.GetResult<Prisma.$IndividualProfilePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one IndividualProfile.
+     * @param {IndividualProfileUpdateArgs} args - Arguments to update one IndividualProfile.
+     * @example
+     * // Update one IndividualProfile
+     * const individualProfile = await prisma.individualProfile.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends IndividualProfileUpdateArgs>(args: SelectSubset<T, IndividualProfileUpdateArgs<ExtArgs>>): Prisma__IndividualProfileClient<$Result.GetResult<Prisma.$IndividualProfilePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more IndividualProfiles.
+     * @param {IndividualProfileDeleteManyArgs} args - Arguments to filter IndividualProfiles to delete.
+     * @example
+     * // Delete a few IndividualProfiles
+     * const { count } = await prisma.individualProfile.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends IndividualProfileDeleteManyArgs>(args?: SelectSubset<T, IndividualProfileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more IndividualProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IndividualProfileUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many IndividualProfiles
+     * const individualProfile = await prisma.individualProfile.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends IndividualProfileUpdateManyArgs>(args: SelectSubset<T, IndividualProfileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more IndividualProfiles and returns the data updated in the database.
+     * @param {IndividualProfileUpdateManyAndReturnArgs} args - Arguments to update many IndividualProfiles.
+     * @example
+     * // Update many IndividualProfiles
+     * const individualProfile = await prisma.individualProfile.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more IndividualProfiles and only return the `individualId`
+     * const individualProfileWithIndividualIdOnly = await prisma.individualProfile.updateManyAndReturn({
+     *   select: { individualId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends IndividualProfileUpdateManyAndReturnArgs>(args: SelectSubset<T, IndividualProfileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$IndividualProfilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one IndividualProfile.
+     * @param {IndividualProfileUpsertArgs} args - Arguments to update or create a IndividualProfile.
+     * @example
+     * // Update or create a IndividualProfile
+     * const individualProfile = await prisma.individualProfile.upsert({
+     *   create: {
+     *     // ... data to create a IndividualProfile
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the IndividualProfile we want to update
+     *   }
+     * })
+     */
+    upsert<T extends IndividualProfileUpsertArgs>(args: SelectSubset<T, IndividualProfileUpsertArgs<ExtArgs>>): Prisma__IndividualProfileClient<$Result.GetResult<Prisma.$IndividualProfilePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of IndividualProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IndividualProfileCountArgs} args - Arguments to filter IndividualProfiles to count.
+     * @example
+     * // Count the number of IndividualProfiles
+     * const count = await prisma.individualProfile.count({
+     *   where: {
+     *     // ... the filter for the IndividualProfiles we want to count
+     *   }
+     * })
+    **/
+    count<T extends IndividualProfileCountArgs>(
+      args?: Subset<T, IndividualProfileCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], IndividualProfileCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a IndividualProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IndividualProfileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends IndividualProfileAggregateArgs>(args: Subset<T, IndividualProfileAggregateArgs>): Prisma.PrismaPromise<GetIndividualProfileAggregateType<T>>
+
+    /**
+     * Group by IndividualProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {IndividualProfileGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends IndividualProfileGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: IndividualProfileGroupByArgs['orderBy'] }
+        : { orderBy?: IndividualProfileGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, IndividualProfileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetIndividualProfileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the IndividualProfile model
+   */
+  readonly fields: IndividualProfileFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for IndividualProfile.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__IndividualProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    accessLogs<T extends IndividualProfile$accessLogsArgs<ExtArgs> = {}>(args?: Subset<T, IndividualProfile$accessLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TalentAccessLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the IndividualProfile model
+   */
+  interface IndividualProfileFieldRefs {
+    readonly individualId: FieldRef<"IndividualProfile", 'BigInt'>
+    readonly userId: FieldRef<"IndividualProfile", 'String'>
+    readonly fullName: FieldRef<"IndividualProfile", 'String'>
+    readonly visaStatus: FieldRef<"IndividualProfile", 'String'>
+    readonly isVisaVerified: FieldRef<"IndividualProfile", 'Boolean'>
+    readonly koreanLevel: FieldRef<"IndividualProfile", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * IndividualProfile findUnique
+   */
+  export type IndividualProfileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IndividualProfile
+     */
+    select?: IndividualProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IndividualProfile
+     */
+    omit?: IndividualProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IndividualProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which IndividualProfile to fetch.
+     */
+    where: IndividualProfileWhereUniqueInput
+  }
+
+  /**
+   * IndividualProfile findUniqueOrThrow
+   */
+  export type IndividualProfileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IndividualProfile
+     */
+    select?: IndividualProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IndividualProfile
+     */
+    omit?: IndividualProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IndividualProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which IndividualProfile to fetch.
+     */
+    where: IndividualProfileWhereUniqueInput
+  }
+
+  /**
+   * IndividualProfile findFirst
+   */
+  export type IndividualProfileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IndividualProfile
+     */
+    select?: IndividualProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IndividualProfile
+     */
+    omit?: IndividualProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IndividualProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which IndividualProfile to fetch.
+     */
+    where?: IndividualProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IndividualProfiles to fetch.
+     */
+    orderBy?: IndividualProfileOrderByWithRelationInput | IndividualProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for IndividualProfiles.
+     */
+    cursor?: IndividualProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IndividualProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IndividualProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of IndividualProfiles.
+     */
+    distinct?: IndividualProfileScalarFieldEnum | IndividualProfileScalarFieldEnum[]
+  }
+
+  /**
+   * IndividualProfile findFirstOrThrow
+   */
+  export type IndividualProfileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IndividualProfile
+     */
+    select?: IndividualProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IndividualProfile
+     */
+    omit?: IndividualProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IndividualProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which IndividualProfile to fetch.
+     */
+    where?: IndividualProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IndividualProfiles to fetch.
+     */
+    orderBy?: IndividualProfileOrderByWithRelationInput | IndividualProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for IndividualProfiles.
+     */
+    cursor?: IndividualProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IndividualProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IndividualProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of IndividualProfiles.
+     */
+    distinct?: IndividualProfileScalarFieldEnum | IndividualProfileScalarFieldEnum[]
+  }
+
+  /**
+   * IndividualProfile findMany
+   */
+  export type IndividualProfileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IndividualProfile
+     */
+    select?: IndividualProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IndividualProfile
+     */
+    omit?: IndividualProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IndividualProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which IndividualProfiles to fetch.
+     */
+    where?: IndividualProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of IndividualProfiles to fetch.
+     */
+    orderBy?: IndividualProfileOrderByWithRelationInput | IndividualProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing IndividualProfiles.
+     */
+    cursor?: IndividualProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` IndividualProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` IndividualProfiles.
+     */
+    skip?: number
+    distinct?: IndividualProfileScalarFieldEnum | IndividualProfileScalarFieldEnum[]
+  }
+
+  /**
+   * IndividualProfile create
+   */
+  export type IndividualProfileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IndividualProfile
+     */
+    select?: IndividualProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IndividualProfile
+     */
+    omit?: IndividualProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IndividualProfileInclude<ExtArgs> | null
+    /**
+     * The data needed to create a IndividualProfile.
+     */
+    data: XOR<IndividualProfileCreateInput, IndividualProfileUncheckedCreateInput>
+  }
+
+  /**
+   * IndividualProfile createMany
+   */
+  export type IndividualProfileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many IndividualProfiles.
+     */
+    data: IndividualProfileCreateManyInput | IndividualProfileCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * IndividualProfile createManyAndReturn
+   */
+  export type IndividualProfileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IndividualProfile
+     */
+    select?: IndividualProfileSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the IndividualProfile
+     */
+    omit?: IndividualProfileOmit<ExtArgs> | null
+    /**
+     * The data used to create many IndividualProfiles.
+     */
+    data: IndividualProfileCreateManyInput | IndividualProfileCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IndividualProfileIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * IndividualProfile update
+   */
+  export type IndividualProfileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IndividualProfile
+     */
+    select?: IndividualProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IndividualProfile
+     */
+    omit?: IndividualProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IndividualProfileInclude<ExtArgs> | null
+    /**
+     * The data needed to update a IndividualProfile.
+     */
+    data: XOR<IndividualProfileUpdateInput, IndividualProfileUncheckedUpdateInput>
+    /**
+     * Choose, which IndividualProfile to update.
+     */
+    where: IndividualProfileWhereUniqueInput
+  }
+
+  /**
+   * IndividualProfile updateMany
+   */
+  export type IndividualProfileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update IndividualProfiles.
+     */
+    data: XOR<IndividualProfileUpdateManyMutationInput, IndividualProfileUncheckedUpdateManyInput>
+    /**
+     * Filter which IndividualProfiles to update
+     */
+    where?: IndividualProfileWhereInput
+    /**
+     * Limit how many IndividualProfiles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * IndividualProfile updateManyAndReturn
+   */
+  export type IndividualProfileUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IndividualProfile
+     */
+    select?: IndividualProfileSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the IndividualProfile
+     */
+    omit?: IndividualProfileOmit<ExtArgs> | null
+    /**
+     * The data used to update IndividualProfiles.
+     */
+    data: XOR<IndividualProfileUpdateManyMutationInput, IndividualProfileUncheckedUpdateManyInput>
+    /**
+     * Filter which IndividualProfiles to update
+     */
+    where?: IndividualProfileWhereInput
+    /**
+     * Limit how many IndividualProfiles to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IndividualProfileIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * IndividualProfile upsert
+   */
+  export type IndividualProfileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IndividualProfile
+     */
+    select?: IndividualProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IndividualProfile
+     */
+    omit?: IndividualProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IndividualProfileInclude<ExtArgs> | null
+    /**
+     * The filter to search for the IndividualProfile to update in case it exists.
+     */
+    where: IndividualProfileWhereUniqueInput
+    /**
+     * In case the IndividualProfile found by the `where` argument doesn't exist, create a new IndividualProfile with this data.
+     */
+    create: XOR<IndividualProfileCreateInput, IndividualProfileUncheckedCreateInput>
+    /**
+     * In case the IndividualProfile was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<IndividualProfileUpdateInput, IndividualProfileUncheckedUpdateInput>
+  }
+
+  /**
+   * IndividualProfile delete
+   */
+  export type IndividualProfileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IndividualProfile
+     */
+    select?: IndividualProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IndividualProfile
+     */
+    omit?: IndividualProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IndividualProfileInclude<ExtArgs> | null
+    /**
+     * Filter which IndividualProfile to delete.
+     */
+    where: IndividualProfileWhereUniqueInput
+  }
+
+  /**
+   * IndividualProfile deleteMany
+   */
+  export type IndividualProfileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which IndividualProfiles to delete
+     */
+    where?: IndividualProfileWhereInput
+    /**
+     * Limit how many IndividualProfiles to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * IndividualProfile.accessLogs
+   */
+  export type IndividualProfile$accessLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentAccessLog
+     */
+    select?: TalentAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentAccessLog
+     */
+    omit?: TalentAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentAccessLogInclude<ExtArgs> | null
+    where?: TalentAccessLogWhereInput
+    orderBy?: TalentAccessLogOrderByWithRelationInput | TalentAccessLogOrderByWithRelationInput[]
+    cursor?: TalentAccessLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TalentAccessLogScalarFieldEnum | TalentAccessLogScalarFieldEnum[]
+  }
+
+  /**
+   * IndividualProfile without action
+   */
+  export type IndividualProfileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the IndividualProfile
+     */
+    select?: IndividualProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the IndividualProfile
+     */
+    omit?: IndividualProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: IndividualProfileInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TalentAccessLog
+   */
+
+  export type AggregateTalentAccessLog = {
+    _count: TalentAccessLogCountAggregateOutputType | null
+    _avg: TalentAccessLogAvgAggregateOutputType | null
+    _sum: TalentAccessLogSumAggregateOutputType | null
+    _min: TalentAccessLogMinAggregateOutputType | null
+    _max: TalentAccessLogMaxAggregateOutputType | null
+  }
+
+  export type TalentAccessLogAvgAggregateOutputType = {
+    accessId: number | null
+    corporateId: number | null
+    individualId: number | null
+  }
+
+  export type TalentAccessLogSumAggregateOutputType = {
+    accessId: bigint | null
+    corporateId: bigint | null
+    individualId: bigint | null
+  }
+
+  export type TalentAccessLogMinAggregateOutputType = {
+    accessId: bigint | null
+    corporateId: bigint | null
+    individualId: bigint | null
+    accessedAt: Date | null
+  }
+
+  export type TalentAccessLogMaxAggregateOutputType = {
+    accessId: bigint | null
+    corporateId: bigint | null
+    individualId: bigint | null
+    accessedAt: Date | null
+  }
+
+  export type TalentAccessLogCountAggregateOutputType = {
+    accessId: number
+    corporateId: number
+    individualId: number
+    accessedAt: number
+    _all: number
+  }
+
+
+  export type TalentAccessLogAvgAggregateInputType = {
+    accessId?: true
+    corporateId?: true
+    individualId?: true
+  }
+
+  export type TalentAccessLogSumAggregateInputType = {
+    accessId?: true
+    corporateId?: true
+    individualId?: true
+  }
+
+  export type TalentAccessLogMinAggregateInputType = {
+    accessId?: true
+    corporateId?: true
+    individualId?: true
+    accessedAt?: true
+  }
+
+  export type TalentAccessLogMaxAggregateInputType = {
+    accessId?: true
+    corporateId?: true
+    individualId?: true
+    accessedAt?: true
+  }
+
+  export type TalentAccessLogCountAggregateInputType = {
+    accessId?: true
+    corporateId?: true
+    individualId?: true
+    accessedAt?: true
+    _all?: true
+  }
+
+  export type TalentAccessLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TalentAccessLog to aggregate.
+     */
+    where?: TalentAccessLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TalentAccessLogs to fetch.
+     */
+    orderBy?: TalentAccessLogOrderByWithRelationInput | TalentAccessLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TalentAccessLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TalentAccessLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TalentAccessLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TalentAccessLogs
+    **/
+    _count?: true | TalentAccessLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TalentAccessLogAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TalentAccessLogSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TalentAccessLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TalentAccessLogMaxAggregateInputType
+  }
+
+  export type GetTalentAccessLogAggregateType<T extends TalentAccessLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateTalentAccessLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTalentAccessLog[P]>
+      : GetScalarType<T[P], AggregateTalentAccessLog[P]>
+  }
+
+
+
+
+  export type TalentAccessLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TalentAccessLogWhereInput
+    orderBy?: TalentAccessLogOrderByWithAggregationInput | TalentAccessLogOrderByWithAggregationInput[]
+    by: TalentAccessLogScalarFieldEnum[] | TalentAccessLogScalarFieldEnum
+    having?: TalentAccessLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TalentAccessLogCountAggregateInputType | true
+    _avg?: TalentAccessLogAvgAggregateInputType
+    _sum?: TalentAccessLogSumAggregateInputType
+    _min?: TalentAccessLogMinAggregateInputType
+    _max?: TalentAccessLogMaxAggregateInputType
+  }
+
+  export type TalentAccessLogGroupByOutputType = {
+    accessId: bigint
+    corporateId: bigint
+    individualId: bigint
+    accessedAt: Date
+    _count: TalentAccessLogCountAggregateOutputType | null
+    _avg: TalentAccessLogAvgAggregateOutputType | null
+    _sum: TalentAccessLogSumAggregateOutputType | null
+    _min: TalentAccessLogMinAggregateOutputType | null
+    _max: TalentAccessLogMaxAggregateOutputType | null
+  }
+
+  type GetTalentAccessLogGroupByPayload<T extends TalentAccessLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TalentAccessLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TalentAccessLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TalentAccessLogGroupByOutputType[P]>
+            : GetScalarType<T[P], TalentAccessLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TalentAccessLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    accessId?: boolean
+    corporateId?: boolean
+    individualId?: boolean
+    accessedAt?: boolean
+    corporate?: boolean | CorporateProfileDefaultArgs<ExtArgs>
+    individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["talentAccessLog"]>
+
+  export type TalentAccessLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    accessId?: boolean
+    corporateId?: boolean
+    individualId?: boolean
+    accessedAt?: boolean
+    corporate?: boolean | CorporateProfileDefaultArgs<ExtArgs>
+    individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["talentAccessLog"]>
+
+  export type TalentAccessLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    accessId?: boolean
+    corporateId?: boolean
+    individualId?: boolean
+    accessedAt?: boolean
+    corporate?: boolean | CorporateProfileDefaultArgs<ExtArgs>
+    individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["talentAccessLog"]>
+
+  export type TalentAccessLogSelectScalar = {
+    accessId?: boolean
+    corporateId?: boolean
+    individualId?: boolean
+    accessedAt?: boolean
+  }
+
+  export type TalentAccessLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"accessId" | "corporateId" | "individualId" | "accessedAt", ExtArgs["result"]["talentAccessLog"]>
+  export type TalentAccessLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    corporate?: boolean | CorporateProfileDefaultArgs<ExtArgs>
+    individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
+  }
+  export type TalentAccessLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    corporate?: boolean | CorporateProfileDefaultArgs<ExtArgs>
+    individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
+  }
+  export type TalentAccessLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    corporate?: boolean | CorporateProfileDefaultArgs<ExtArgs>
+    individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
+  }
+
+  export type $TalentAccessLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TalentAccessLog"
+    objects: {
+      corporate: Prisma.$CorporateProfilePayload<ExtArgs>
+      individual: Prisma.$IndividualProfilePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      accessId: bigint
+      corporateId: bigint
+      individualId: bigint
+      accessedAt: Date
+    }, ExtArgs["result"]["talentAccessLog"]>
+    composites: {}
+  }
+
+  type TalentAccessLogGetPayload<S extends boolean | null | undefined | TalentAccessLogDefaultArgs> = $Result.GetResult<Prisma.$TalentAccessLogPayload, S>
+
+  type TalentAccessLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TalentAccessLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TalentAccessLogCountAggregateInputType | true
+    }
+
+  export interface TalentAccessLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TalentAccessLog'], meta: { name: 'TalentAccessLog' } }
+    /**
+     * Find zero or one TalentAccessLog that matches the filter.
+     * @param {TalentAccessLogFindUniqueArgs} args - Arguments to find a TalentAccessLog
+     * @example
+     * // Get one TalentAccessLog
+     * const talentAccessLog = await prisma.talentAccessLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TalentAccessLogFindUniqueArgs>(args: SelectSubset<T, TalentAccessLogFindUniqueArgs<ExtArgs>>): Prisma__TalentAccessLogClient<$Result.GetResult<Prisma.$TalentAccessLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TalentAccessLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TalentAccessLogFindUniqueOrThrowArgs} args - Arguments to find a TalentAccessLog
+     * @example
+     * // Get one TalentAccessLog
+     * const talentAccessLog = await prisma.talentAccessLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TalentAccessLogFindUniqueOrThrowArgs>(args: SelectSubset<T, TalentAccessLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TalentAccessLogClient<$Result.GetResult<Prisma.$TalentAccessLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TalentAccessLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TalentAccessLogFindFirstArgs} args - Arguments to find a TalentAccessLog
+     * @example
+     * // Get one TalentAccessLog
+     * const talentAccessLog = await prisma.talentAccessLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TalentAccessLogFindFirstArgs>(args?: SelectSubset<T, TalentAccessLogFindFirstArgs<ExtArgs>>): Prisma__TalentAccessLogClient<$Result.GetResult<Prisma.$TalentAccessLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TalentAccessLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TalentAccessLogFindFirstOrThrowArgs} args - Arguments to find a TalentAccessLog
+     * @example
+     * // Get one TalentAccessLog
+     * const talentAccessLog = await prisma.talentAccessLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TalentAccessLogFindFirstOrThrowArgs>(args?: SelectSubset<T, TalentAccessLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__TalentAccessLogClient<$Result.GetResult<Prisma.$TalentAccessLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TalentAccessLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TalentAccessLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TalentAccessLogs
+     * const talentAccessLogs = await prisma.talentAccessLog.findMany()
+     * 
+     * // Get first 10 TalentAccessLogs
+     * const talentAccessLogs = await prisma.talentAccessLog.findMany({ take: 10 })
+     * 
+     * // Only select the `accessId`
+     * const talentAccessLogWithAccessIdOnly = await prisma.talentAccessLog.findMany({ select: { accessId: true } })
+     * 
+     */
+    findMany<T extends TalentAccessLogFindManyArgs>(args?: SelectSubset<T, TalentAccessLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TalentAccessLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TalentAccessLog.
+     * @param {TalentAccessLogCreateArgs} args - Arguments to create a TalentAccessLog.
+     * @example
+     * // Create one TalentAccessLog
+     * const TalentAccessLog = await prisma.talentAccessLog.create({
+     *   data: {
+     *     // ... data to create a TalentAccessLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends TalentAccessLogCreateArgs>(args: SelectSubset<T, TalentAccessLogCreateArgs<ExtArgs>>): Prisma__TalentAccessLogClient<$Result.GetResult<Prisma.$TalentAccessLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TalentAccessLogs.
+     * @param {TalentAccessLogCreateManyArgs} args - Arguments to create many TalentAccessLogs.
+     * @example
+     * // Create many TalentAccessLogs
+     * const talentAccessLog = await prisma.talentAccessLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TalentAccessLogCreateManyArgs>(args?: SelectSubset<T, TalentAccessLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TalentAccessLogs and returns the data saved in the database.
+     * @param {TalentAccessLogCreateManyAndReturnArgs} args - Arguments to create many TalentAccessLogs.
+     * @example
+     * // Create many TalentAccessLogs
+     * const talentAccessLog = await prisma.talentAccessLog.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TalentAccessLogs and only return the `accessId`
+     * const talentAccessLogWithAccessIdOnly = await prisma.talentAccessLog.createManyAndReturn({
+     *   select: { accessId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TalentAccessLogCreateManyAndReturnArgs>(args?: SelectSubset<T, TalentAccessLogCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TalentAccessLogPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TalentAccessLog.
+     * @param {TalentAccessLogDeleteArgs} args - Arguments to delete one TalentAccessLog.
+     * @example
+     * // Delete one TalentAccessLog
+     * const TalentAccessLog = await prisma.talentAccessLog.delete({
+     *   where: {
+     *     // ... filter to delete one TalentAccessLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TalentAccessLogDeleteArgs>(args: SelectSubset<T, TalentAccessLogDeleteArgs<ExtArgs>>): Prisma__TalentAccessLogClient<$Result.GetResult<Prisma.$TalentAccessLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TalentAccessLog.
+     * @param {TalentAccessLogUpdateArgs} args - Arguments to update one TalentAccessLog.
+     * @example
+     * // Update one TalentAccessLog
+     * const talentAccessLog = await prisma.talentAccessLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TalentAccessLogUpdateArgs>(args: SelectSubset<T, TalentAccessLogUpdateArgs<ExtArgs>>): Prisma__TalentAccessLogClient<$Result.GetResult<Prisma.$TalentAccessLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TalentAccessLogs.
+     * @param {TalentAccessLogDeleteManyArgs} args - Arguments to filter TalentAccessLogs to delete.
+     * @example
+     * // Delete a few TalentAccessLogs
+     * const { count } = await prisma.talentAccessLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TalentAccessLogDeleteManyArgs>(args?: SelectSubset<T, TalentAccessLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TalentAccessLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TalentAccessLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TalentAccessLogs
+     * const talentAccessLog = await prisma.talentAccessLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TalentAccessLogUpdateManyArgs>(args: SelectSubset<T, TalentAccessLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TalentAccessLogs and returns the data updated in the database.
+     * @param {TalentAccessLogUpdateManyAndReturnArgs} args - Arguments to update many TalentAccessLogs.
+     * @example
+     * // Update many TalentAccessLogs
+     * const talentAccessLog = await prisma.talentAccessLog.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TalentAccessLogs and only return the `accessId`
+     * const talentAccessLogWithAccessIdOnly = await prisma.talentAccessLog.updateManyAndReturn({
+     *   select: { accessId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TalentAccessLogUpdateManyAndReturnArgs>(args: SelectSubset<T, TalentAccessLogUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TalentAccessLogPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TalentAccessLog.
+     * @param {TalentAccessLogUpsertArgs} args - Arguments to update or create a TalentAccessLog.
+     * @example
+     * // Update or create a TalentAccessLog
+     * const talentAccessLog = await prisma.talentAccessLog.upsert({
+     *   create: {
+     *     // ... data to create a TalentAccessLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TalentAccessLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TalentAccessLogUpsertArgs>(args: SelectSubset<T, TalentAccessLogUpsertArgs<ExtArgs>>): Prisma__TalentAccessLogClient<$Result.GetResult<Prisma.$TalentAccessLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TalentAccessLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TalentAccessLogCountArgs} args - Arguments to filter TalentAccessLogs to count.
+     * @example
+     * // Count the number of TalentAccessLogs
+     * const count = await prisma.talentAccessLog.count({
+     *   where: {
+     *     // ... the filter for the TalentAccessLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends TalentAccessLogCountArgs>(
+      args?: Subset<T, TalentAccessLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TalentAccessLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TalentAccessLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TalentAccessLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TalentAccessLogAggregateArgs>(args: Subset<T, TalentAccessLogAggregateArgs>): Prisma.PrismaPromise<GetTalentAccessLogAggregateType<T>>
+
+    /**
+     * Group by TalentAccessLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TalentAccessLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TalentAccessLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TalentAccessLogGroupByArgs['orderBy'] }
+        : { orderBy?: TalentAccessLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TalentAccessLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTalentAccessLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TalentAccessLog model
+   */
+  readonly fields: TalentAccessLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TalentAccessLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TalentAccessLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    corporate<T extends CorporateProfileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CorporateProfileDefaultArgs<ExtArgs>>): Prisma__CorporateProfileClient<$Result.GetResult<Prisma.$CorporateProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    individual<T extends IndividualProfileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, IndividualProfileDefaultArgs<ExtArgs>>): Prisma__IndividualProfileClient<$Result.GetResult<Prisma.$IndividualProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TalentAccessLog model
+   */
+  interface TalentAccessLogFieldRefs {
+    readonly accessId: FieldRef<"TalentAccessLog", 'BigInt'>
+    readonly corporateId: FieldRef<"TalentAccessLog", 'BigInt'>
+    readonly individualId: FieldRef<"TalentAccessLog", 'BigInt'>
+    readonly accessedAt: FieldRef<"TalentAccessLog", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TalentAccessLog findUnique
+   */
+  export type TalentAccessLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentAccessLog
+     */
+    select?: TalentAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentAccessLog
+     */
+    omit?: TalentAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentAccessLogInclude<ExtArgs> | null
+    /**
+     * Filter, which TalentAccessLog to fetch.
+     */
+    where: TalentAccessLogWhereUniqueInput
+  }
+
+  /**
+   * TalentAccessLog findUniqueOrThrow
+   */
+  export type TalentAccessLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentAccessLog
+     */
+    select?: TalentAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentAccessLog
+     */
+    omit?: TalentAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentAccessLogInclude<ExtArgs> | null
+    /**
+     * Filter, which TalentAccessLog to fetch.
+     */
+    where: TalentAccessLogWhereUniqueInput
+  }
+
+  /**
+   * TalentAccessLog findFirst
+   */
+  export type TalentAccessLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentAccessLog
+     */
+    select?: TalentAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentAccessLog
+     */
+    omit?: TalentAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentAccessLogInclude<ExtArgs> | null
+    /**
+     * Filter, which TalentAccessLog to fetch.
+     */
+    where?: TalentAccessLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TalentAccessLogs to fetch.
+     */
+    orderBy?: TalentAccessLogOrderByWithRelationInput | TalentAccessLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TalentAccessLogs.
+     */
+    cursor?: TalentAccessLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TalentAccessLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TalentAccessLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TalentAccessLogs.
+     */
+    distinct?: TalentAccessLogScalarFieldEnum | TalentAccessLogScalarFieldEnum[]
+  }
+
+  /**
+   * TalentAccessLog findFirstOrThrow
+   */
+  export type TalentAccessLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentAccessLog
+     */
+    select?: TalentAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentAccessLog
+     */
+    omit?: TalentAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentAccessLogInclude<ExtArgs> | null
+    /**
+     * Filter, which TalentAccessLog to fetch.
+     */
+    where?: TalentAccessLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TalentAccessLogs to fetch.
+     */
+    orderBy?: TalentAccessLogOrderByWithRelationInput | TalentAccessLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TalentAccessLogs.
+     */
+    cursor?: TalentAccessLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TalentAccessLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TalentAccessLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TalentAccessLogs.
+     */
+    distinct?: TalentAccessLogScalarFieldEnum | TalentAccessLogScalarFieldEnum[]
+  }
+
+  /**
+   * TalentAccessLog findMany
+   */
+  export type TalentAccessLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentAccessLog
+     */
+    select?: TalentAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentAccessLog
+     */
+    omit?: TalentAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentAccessLogInclude<ExtArgs> | null
+    /**
+     * Filter, which TalentAccessLogs to fetch.
+     */
+    where?: TalentAccessLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TalentAccessLogs to fetch.
+     */
+    orderBy?: TalentAccessLogOrderByWithRelationInput | TalentAccessLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TalentAccessLogs.
+     */
+    cursor?: TalentAccessLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TalentAccessLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TalentAccessLogs.
+     */
+    skip?: number
+    distinct?: TalentAccessLogScalarFieldEnum | TalentAccessLogScalarFieldEnum[]
+  }
+
+  /**
+   * TalentAccessLog create
+   */
+  export type TalentAccessLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentAccessLog
+     */
+    select?: TalentAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentAccessLog
+     */
+    omit?: TalentAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentAccessLogInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TalentAccessLog.
+     */
+    data: XOR<TalentAccessLogCreateInput, TalentAccessLogUncheckedCreateInput>
+  }
+
+  /**
+   * TalentAccessLog createMany
+   */
+  export type TalentAccessLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TalentAccessLogs.
+     */
+    data: TalentAccessLogCreateManyInput | TalentAccessLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TalentAccessLog createManyAndReturn
+   */
+  export type TalentAccessLogCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentAccessLog
+     */
+    select?: TalentAccessLogSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentAccessLog
+     */
+    omit?: TalentAccessLogOmit<ExtArgs> | null
+    /**
+     * The data used to create many TalentAccessLogs.
+     */
+    data: TalentAccessLogCreateManyInput | TalentAccessLogCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentAccessLogIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TalentAccessLog update
+   */
+  export type TalentAccessLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentAccessLog
+     */
+    select?: TalentAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentAccessLog
+     */
+    omit?: TalentAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentAccessLogInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TalentAccessLog.
+     */
+    data: XOR<TalentAccessLogUpdateInput, TalentAccessLogUncheckedUpdateInput>
+    /**
+     * Choose, which TalentAccessLog to update.
+     */
+    where: TalentAccessLogWhereUniqueInput
+  }
+
+  /**
+   * TalentAccessLog updateMany
+   */
+  export type TalentAccessLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TalentAccessLogs.
+     */
+    data: XOR<TalentAccessLogUpdateManyMutationInput, TalentAccessLogUncheckedUpdateManyInput>
+    /**
+     * Filter which TalentAccessLogs to update
+     */
+    where?: TalentAccessLogWhereInput
+    /**
+     * Limit how many TalentAccessLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TalentAccessLog updateManyAndReturn
+   */
+  export type TalentAccessLogUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentAccessLog
+     */
+    select?: TalentAccessLogSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentAccessLog
+     */
+    omit?: TalentAccessLogOmit<ExtArgs> | null
+    /**
+     * The data used to update TalentAccessLogs.
+     */
+    data: XOR<TalentAccessLogUpdateManyMutationInput, TalentAccessLogUncheckedUpdateManyInput>
+    /**
+     * Filter which TalentAccessLogs to update
+     */
+    where?: TalentAccessLogWhereInput
+    /**
+     * Limit how many TalentAccessLogs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentAccessLogIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TalentAccessLog upsert
+   */
+  export type TalentAccessLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentAccessLog
+     */
+    select?: TalentAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentAccessLog
+     */
+    omit?: TalentAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentAccessLogInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TalentAccessLog to update in case it exists.
+     */
+    where: TalentAccessLogWhereUniqueInput
+    /**
+     * In case the TalentAccessLog found by the `where` argument doesn't exist, create a new TalentAccessLog with this data.
+     */
+    create: XOR<TalentAccessLogCreateInput, TalentAccessLogUncheckedCreateInput>
+    /**
+     * In case the TalentAccessLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TalentAccessLogUpdateInput, TalentAccessLogUncheckedUpdateInput>
+  }
+
+  /**
+   * TalentAccessLog delete
+   */
+  export type TalentAccessLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentAccessLog
+     */
+    select?: TalentAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentAccessLog
+     */
+    omit?: TalentAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentAccessLogInclude<ExtArgs> | null
+    /**
+     * Filter which TalentAccessLog to delete.
+     */
+    where: TalentAccessLogWhereUniqueInput
+  }
+
+  /**
+   * TalentAccessLog deleteMany
+   */
+  export type TalentAccessLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TalentAccessLogs to delete
+     */
+    where?: TalentAccessLogWhereInput
+    /**
+     * Limit how many TalentAccessLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TalentAccessLog without action
+   */
+  export type TalentAccessLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentAccessLog
+     */
+    select?: TalentAccessLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentAccessLog
+     */
+    omit?: TalentAccessLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentAccessLogInclude<ExtArgs> | null
   }
 
 
@@ -5079,4422 +6887,6 @@ export namespace Prisma {
 
 
   /**
-   * Model MemberIdentityVerification
-   */
-
-  export type AggregateMemberIdentityVerification = {
-    _count: MemberIdentityVerificationCountAggregateOutputType | null
-    _min: MemberIdentityVerificationMinAggregateOutputType | null
-    _max: MemberIdentityVerificationMaxAggregateOutputType | null
-  }
-
-  export type MemberIdentityVerificationMinAggregateOutputType = {
-    id: string | null
-    userId: string | null
-    passportPhoto: string | null
-    selfiePhoto: string | null
-    verificationStatus: $Enums.VerificationStatus | null
-    isVerifiedBy: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type MemberIdentityVerificationMaxAggregateOutputType = {
-    id: string | null
-    userId: string | null
-    passportPhoto: string | null
-    selfiePhoto: string | null
-    verificationStatus: $Enums.VerificationStatus | null
-    isVerifiedBy: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type MemberIdentityVerificationCountAggregateOutputType = {
-    id: number
-    userId: number
-    passportPhoto: number
-    selfiePhoto: number
-    verificationStatus: number
-    isVerifiedBy: number
-    createdAt: number
-    updatedAt: number
-    _all: number
-  }
-
-
-  export type MemberIdentityVerificationMinAggregateInputType = {
-    id?: true
-    userId?: true
-    passportPhoto?: true
-    selfiePhoto?: true
-    verificationStatus?: true
-    isVerifiedBy?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type MemberIdentityVerificationMaxAggregateInputType = {
-    id?: true
-    userId?: true
-    passportPhoto?: true
-    selfiePhoto?: true
-    verificationStatus?: true
-    isVerifiedBy?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type MemberIdentityVerificationCountAggregateInputType = {
-    id?: true
-    userId?: true
-    passportPhoto?: true
-    selfiePhoto?: true
-    verificationStatus?: true
-    isVerifiedBy?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
-  }
-
-  export type MemberIdentityVerificationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which MemberIdentityVerification to aggregate.
-     */
-    where?: MemberIdentityVerificationWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MemberIdentityVerifications to fetch.
-     */
-    orderBy?: MemberIdentityVerificationOrderByWithRelationInput | MemberIdentityVerificationOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: MemberIdentityVerificationWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MemberIdentityVerifications from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MemberIdentityVerifications.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned MemberIdentityVerifications
-    **/
-    _count?: true | MemberIdentityVerificationCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: MemberIdentityVerificationMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: MemberIdentityVerificationMaxAggregateInputType
-  }
-
-  export type GetMemberIdentityVerificationAggregateType<T extends MemberIdentityVerificationAggregateArgs> = {
-        [P in keyof T & keyof AggregateMemberIdentityVerification]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateMemberIdentityVerification[P]>
-      : GetScalarType<T[P], AggregateMemberIdentityVerification[P]>
-  }
-
-
-
-
-  export type MemberIdentityVerificationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MemberIdentityVerificationWhereInput
-    orderBy?: MemberIdentityVerificationOrderByWithAggregationInput | MemberIdentityVerificationOrderByWithAggregationInput[]
-    by: MemberIdentityVerificationScalarFieldEnum[] | MemberIdentityVerificationScalarFieldEnum
-    having?: MemberIdentityVerificationScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: MemberIdentityVerificationCountAggregateInputType | true
-    _min?: MemberIdentityVerificationMinAggregateInputType
-    _max?: MemberIdentityVerificationMaxAggregateInputType
-  }
-
-  export type MemberIdentityVerificationGroupByOutputType = {
-    id: string
-    userId: string
-    passportPhoto: string | null
-    selfiePhoto: string | null
-    verificationStatus: $Enums.VerificationStatus
-    isVerifiedBy: string | null
-    createdAt: Date
-    updatedAt: Date
-    _count: MemberIdentityVerificationCountAggregateOutputType | null
-    _min: MemberIdentityVerificationMinAggregateOutputType | null
-    _max: MemberIdentityVerificationMaxAggregateOutputType | null
-  }
-
-  type GetMemberIdentityVerificationGroupByPayload<T extends MemberIdentityVerificationGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<MemberIdentityVerificationGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof MemberIdentityVerificationGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], MemberIdentityVerificationGroupByOutputType[P]>
-            : GetScalarType<T[P], MemberIdentityVerificationGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type MemberIdentityVerificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    passportPhoto?: boolean
-    selfiePhoto?: boolean
-    verificationStatus?: boolean
-    isVerifiedBy?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    verifier?: boolean | MemberIdentityVerification$verifierArgs<ExtArgs>
-  }, ExtArgs["result"]["memberIdentityVerification"]>
-
-  export type MemberIdentityVerificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    passportPhoto?: boolean
-    selfiePhoto?: boolean
-    verificationStatus?: boolean
-    isVerifiedBy?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    verifier?: boolean | MemberIdentityVerification$verifierArgs<ExtArgs>
-  }, ExtArgs["result"]["memberIdentityVerification"]>
-
-  export type MemberIdentityVerificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    passportPhoto?: boolean
-    selfiePhoto?: boolean
-    verificationStatus?: boolean
-    isVerifiedBy?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    verifier?: boolean | MemberIdentityVerification$verifierArgs<ExtArgs>
-  }, ExtArgs["result"]["memberIdentityVerification"]>
-
-  export type MemberIdentityVerificationSelectScalar = {
-    id?: boolean
-    userId?: boolean
-    passportPhoto?: boolean
-    selfiePhoto?: boolean
-    verificationStatus?: boolean
-    isVerifiedBy?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }
-
-  export type MemberIdentityVerificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "passportPhoto" | "selfiePhoto" | "verificationStatus" | "isVerifiedBy" | "createdAt" | "updatedAt", ExtArgs["result"]["memberIdentityVerification"]>
-  export type MemberIdentityVerificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    verifier?: boolean | MemberIdentityVerification$verifierArgs<ExtArgs>
-  }
-  export type MemberIdentityVerificationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    verifier?: boolean | MemberIdentityVerification$verifierArgs<ExtArgs>
-  }
-  export type MemberIdentityVerificationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    verifier?: boolean | MemberIdentityVerification$verifierArgs<ExtArgs>
-  }
-
-  export type $MemberIdentityVerificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "MemberIdentityVerification"
-    objects: {
-      user: Prisma.$UserPayload<ExtArgs>
-      verifier: Prisma.$UserPayload<ExtArgs> | null
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      userId: string
-      passportPhoto: string | null
-      selfiePhoto: string | null
-      verificationStatus: $Enums.VerificationStatus
-      isVerifiedBy: string | null
-      createdAt: Date
-      updatedAt: Date
-    }, ExtArgs["result"]["memberIdentityVerification"]>
-    composites: {}
-  }
-
-  type MemberIdentityVerificationGetPayload<S extends boolean | null | undefined | MemberIdentityVerificationDefaultArgs> = $Result.GetResult<Prisma.$MemberIdentityVerificationPayload, S>
-
-  type MemberIdentityVerificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<MemberIdentityVerificationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: MemberIdentityVerificationCountAggregateInputType | true
-    }
-
-  export interface MemberIdentityVerificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MemberIdentityVerification'], meta: { name: 'MemberIdentityVerification' } }
-    /**
-     * Find zero or one MemberIdentityVerification that matches the filter.
-     * @param {MemberIdentityVerificationFindUniqueArgs} args - Arguments to find a MemberIdentityVerification
-     * @example
-     * // Get one MemberIdentityVerification
-     * const memberIdentityVerification = await prisma.memberIdentityVerification.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends MemberIdentityVerificationFindUniqueArgs>(args: SelectSubset<T, MemberIdentityVerificationFindUniqueArgs<ExtArgs>>): Prisma__MemberIdentityVerificationClient<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one MemberIdentityVerification that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {MemberIdentityVerificationFindUniqueOrThrowArgs} args - Arguments to find a MemberIdentityVerification
-     * @example
-     * // Get one MemberIdentityVerification
-     * const memberIdentityVerification = await prisma.memberIdentityVerification.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends MemberIdentityVerificationFindUniqueOrThrowArgs>(args: SelectSubset<T, MemberIdentityVerificationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MemberIdentityVerificationClient<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first MemberIdentityVerification that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MemberIdentityVerificationFindFirstArgs} args - Arguments to find a MemberIdentityVerification
-     * @example
-     * // Get one MemberIdentityVerification
-     * const memberIdentityVerification = await prisma.memberIdentityVerification.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends MemberIdentityVerificationFindFirstArgs>(args?: SelectSubset<T, MemberIdentityVerificationFindFirstArgs<ExtArgs>>): Prisma__MemberIdentityVerificationClient<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first MemberIdentityVerification that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MemberIdentityVerificationFindFirstOrThrowArgs} args - Arguments to find a MemberIdentityVerification
-     * @example
-     * // Get one MemberIdentityVerification
-     * const memberIdentityVerification = await prisma.memberIdentityVerification.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends MemberIdentityVerificationFindFirstOrThrowArgs>(args?: SelectSubset<T, MemberIdentityVerificationFindFirstOrThrowArgs<ExtArgs>>): Prisma__MemberIdentityVerificationClient<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more MemberIdentityVerifications that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MemberIdentityVerificationFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all MemberIdentityVerifications
-     * const memberIdentityVerifications = await prisma.memberIdentityVerification.findMany()
-     * 
-     * // Get first 10 MemberIdentityVerifications
-     * const memberIdentityVerifications = await prisma.memberIdentityVerification.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const memberIdentityVerificationWithIdOnly = await prisma.memberIdentityVerification.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends MemberIdentityVerificationFindManyArgs>(args?: SelectSubset<T, MemberIdentityVerificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a MemberIdentityVerification.
-     * @param {MemberIdentityVerificationCreateArgs} args - Arguments to create a MemberIdentityVerification.
-     * @example
-     * // Create one MemberIdentityVerification
-     * const MemberIdentityVerification = await prisma.memberIdentityVerification.create({
-     *   data: {
-     *     // ... data to create a MemberIdentityVerification
-     *   }
-     * })
-     * 
-     */
-    create<T extends MemberIdentityVerificationCreateArgs>(args: SelectSubset<T, MemberIdentityVerificationCreateArgs<ExtArgs>>): Prisma__MemberIdentityVerificationClient<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many MemberIdentityVerifications.
-     * @param {MemberIdentityVerificationCreateManyArgs} args - Arguments to create many MemberIdentityVerifications.
-     * @example
-     * // Create many MemberIdentityVerifications
-     * const memberIdentityVerification = await prisma.memberIdentityVerification.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends MemberIdentityVerificationCreateManyArgs>(args?: SelectSubset<T, MemberIdentityVerificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many MemberIdentityVerifications and returns the data saved in the database.
-     * @param {MemberIdentityVerificationCreateManyAndReturnArgs} args - Arguments to create many MemberIdentityVerifications.
-     * @example
-     * // Create many MemberIdentityVerifications
-     * const memberIdentityVerification = await prisma.memberIdentityVerification.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many MemberIdentityVerifications and only return the `id`
-     * const memberIdentityVerificationWithIdOnly = await prisma.memberIdentityVerification.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends MemberIdentityVerificationCreateManyAndReturnArgs>(args?: SelectSubset<T, MemberIdentityVerificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a MemberIdentityVerification.
-     * @param {MemberIdentityVerificationDeleteArgs} args - Arguments to delete one MemberIdentityVerification.
-     * @example
-     * // Delete one MemberIdentityVerification
-     * const MemberIdentityVerification = await prisma.memberIdentityVerification.delete({
-     *   where: {
-     *     // ... filter to delete one MemberIdentityVerification
-     *   }
-     * })
-     * 
-     */
-    delete<T extends MemberIdentityVerificationDeleteArgs>(args: SelectSubset<T, MemberIdentityVerificationDeleteArgs<ExtArgs>>): Prisma__MemberIdentityVerificationClient<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one MemberIdentityVerification.
-     * @param {MemberIdentityVerificationUpdateArgs} args - Arguments to update one MemberIdentityVerification.
-     * @example
-     * // Update one MemberIdentityVerification
-     * const memberIdentityVerification = await prisma.memberIdentityVerification.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends MemberIdentityVerificationUpdateArgs>(args: SelectSubset<T, MemberIdentityVerificationUpdateArgs<ExtArgs>>): Prisma__MemberIdentityVerificationClient<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more MemberIdentityVerifications.
-     * @param {MemberIdentityVerificationDeleteManyArgs} args - Arguments to filter MemberIdentityVerifications to delete.
-     * @example
-     * // Delete a few MemberIdentityVerifications
-     * const { count } = await prisma.memberIdentityVerification.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends MemberIdentityVerificationDeleteManyArgs>(args?: SelectSubset<T, MemberIdentityVerificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more MemberIdentityVerifications.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MemberIdentityVerificationUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many MemberIdentityVerifications
-     * const memberIdentityVerification = await prisma.memberIdentityVerification.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends MemberIdentityVerificationUpdateManyArgs>(args: SelectSubset<T, MemberIdentityVerificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more MemberIdentityVerifications and returns the data updated in the database.
-     * @param {MemberIdentityVerificationUpdateManyAndReturnArgs} args - Arguments to update many MemberIdentityVerifications.
-     * @example
-     * // Update many MemberIdentityVerifications
-     * const memberIdentityVerification = await prisma.memberIdentityVerification.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more MemberIdentityVerifications and only return the `id`
-     * const memberIdentityVerificationWithIdOnly = await prisma.memberIdentityVerification.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends MemberIdentityVerificationUpdateManyAndReturnArgs>(args: SelectSubset<T, MemberIdentityVerificationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one MemberIdentityVerification.
-     * @param {MemberIdentityVerificationUpsertArgs} args - Arguments to update or create a MemberIdentityVerification.
-     * @example
-     * // Update or create a MemberIdentityVerification
-     * const memberIdentityVerification = await prisma.memberIdentityVerification.upsert({
-     *   create: {
-     *     // ... data to create a MemberIdentityVerification
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the MemberIdentityVerification we want to update
-     *   }
-     * })
-     */
-    upsert<T extends MemberIdentityVerificationUpsertArgs>(args: SelectSubset<T, MemberIdentityVerificationUpsertArgs<ExtArgs>>): Prisma__MemberIdentityVerificationClient<$Result.GetResult<Prisma.$MemberIdentityVerificationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of MemberIdentityVerifications.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MemberIdentityVerificationCountArgs} args - Arguments to filter MemberIdentityVerifications to count.
-     * @example
-     * // Count the number of MemberIdentityVerifications
-     * const count = await prisma.memberIdentityVerification.count({
-     *   where: {
-     *     // ... the filter for the MemberIdentityVerifications we want to count
-     *   }
-     * })
-    **/
-    count<T extends MemberIdentityVerificationCountArgs>(
-      args?: Subset<T, MemberIdentityVerificationCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], MemberIdentityVerificationCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a MemberIdentityVerification.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MemberIdentityVerificationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends MemberIdentityVerificationAggregateArgs>(args: Subset<T, MemberIdentityVerificationAggregateArgs>): Prisma.PrismaPromise<GetMemberIdentityVerificationAggregateType<T>>
-
-    /**
-     * Group by MemberIdentityVerification.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MemberIdentityVerificationGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends MemberIdentityVerificationGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: MemberIdentityVerificationGroupByArgs['orderBy'] }
-        : { orderBy?: MemberIdentityVerificationGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, MemberIdentityVerificationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMemberIdentityVerificationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the MemberIdentityVerification model
-   */
-  readonly fields: MemberIdentityVerificationFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for MemberIdentityVerification.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__MemberIdentityVerificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    verifier<T extends MemberIdentityVerification$verifierArgs<ExtArgs> = {}>(args?: Subset<T, MemberIdentityVerification$verifierArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the MemberIdentityVerification model
-   */
-  interface MemberIdentityVerificationFieldRefs {
-    readonly id: FieldRef<"MemberIdentityVerification", 'String'>
-    readonly userId: FieldRef<"MemberIdentityVerification", 'String'>
-    readonly passportPhoto: FieldRef<"MemberIdentityVerification", 'String'>
-    readonly selfiePhoto: FieldRef<"MemberIdentityVerification", 'String'>
-    readonly verificationStatus: FieldRef<"MemberIdentityVerification", 'VerificationStatus'>
-    readonly isVerifiedBy: FieldRef<"MemberIdentityVerification", 'String'>
-    readonly createdAt: FieldRef<"MemberIdentityVerification", 'DateTime'>
-    readonly updatedAt: FieldRef<"MemberIdentityVerification", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * MemberIdentityVerification findUnique
-   */
-  export type MemberIdentityVerificationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MemberIdentityVerification
-     */
-    select?: MemberIdentityVerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MemberIdentityVerification
-     */
-    omit?: MemberIdentityVerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MemberIdentityVerificationInclude<ExtArgs> | null
-    /**
-     * Filter, which MemberIdentityVerification to fetch.
-     */
-    where: MemberIdentityVerificationWhereUniqueInput
-  }
-
-  /**
-   * MemberIdentityVerification findUniqueOrThrow
-   */
-  export type MemberIdentityVerificationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MemberIdentityVerification
-     */
-    select?: MemberIdentityVerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MemberIdentityVerification
-     */
-    omit?: MemberIdentityVerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MemberIdentityVerificationInclude<ExtArgs> | null
-    /**
-     * Filter, which MemberIdentityVerification to fetch.
-     */
-    where: MemberIdentityVerificationWhereUniqueInput
-  }
-
-  /**
-   * MemberIdentityVerification findFirst
-   */
-  export type MemberIdentityVerificationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MemberIdentityVerification
-     */
-    select?: MemberIdentityVerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MemberIdentityVerification
-     */
-    omit?: MemberIdentityVerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MemberIdentityVerificationInclude<ExtArgs> | null
-    /**
-     * Filter, which MemberIdentityVerification to fetch.
-     */
-    where?: MemberIdentityVerificationWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MemberIdentityVerifications to fetch.
-     */
-    orderBy?: MemberIdentityVerificationOrderByWithRelationInput | MemberIdentityVerificationOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for MemberIdentityVerifications.
-     */
-    cursor?: MemberIdentityVerificationWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MemberIdentityVerifications from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MemberIdentityVerifications.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of MemberIdentityVerifications.
-     */
-    distinct?: MemberIdentityVerificationScalarFieldEnum | MemberIdentityVerificationScalarFieldEnum[]
-  }
-
-  /**
-   * MemberIdentityVerification findFirstOrThrow
-   */
-  export type MemberIdentityVerificationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MemberIdentityVerification
-     */
-    select?: MemberIdentityVerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MemberIdentityVerification
-     */
-    omit?: MemberIdentityVerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MemberIdentityVerificationInclude<ExtArgs> | null
-    /**
-     * Filter, which MemberIdentityVerification to fetch.
-     */
-    where?: MemberIdentityVerificationWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MemberIdentityVerifications to fetch.
-     */
-    orderBy?: MemberIdentityVerificationOrderByWithRelationInput | MemberIdentityVerificationOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for MemberIdentityVerifications.
-     */
-    cursor?: MemberIdentityVerificationWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MemberIdentityVerifications from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MemberIdentityVerifications.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of MemberIdentityVerifications.
-     */
-    distinct?: MemberIdentityVerificationScalarFieldEnum | MemberIdentityVerificationScalarFieldEnum[]
-  }
-
-  /**
-   * MemberIdentityVerification findMany
-   */
-  export type MemberIdentityVerificationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MemberIdentityVerification
-     */
-    select?: MemberIdentityVerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MemberIdentityVerification
-     */
-    omit?: MemberIdentityVerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MemberIdentityVerificationInclude<ExtArgs> | null
-    /**
-     * Filter, which MemberIdentityVerifications to fetch.
-     */
-    where?: MemberIdentityVerificationWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MemberIdentityVerifications to fetch.
-     */
-    orderBy?: MemberIdentityVerificationOrderByWithRelationInput | MemberIdentityVerificationOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing MemberIdentityVerifications.
-     */
-    cursor?: MemberIdentityVerificationWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MemberIdentityVerifications from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MemberIdentityVerifications.
-     */
-    skip?: number
-    distinct?: MemberIdentityVerificationScalarFieldEnum | MemberIdentityVerificationScalarFieldEnum[]
-  }
-
-  /**
-   * MemberIdentityVerification create
-   */
-  export type MemberIdentityVerificationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MemberIdentityVerification
-     */
-    select?: MemberIdentityVerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MemberIdentityVerification
-     */
-    omit?: MemberIdentityVerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MemberIdentityVerificationInclude<ExtArgs> | null
-    /**
-     * The data needed to create a MemberIdentityVerification.
-     */
-    data: XOR<MemberIdentityVerificationCreateInput, MemberIdentityVerificationUncheckedCreateInput>
-  }
-
-  /**
-   * MemberIdentityVerification createMany
-   */
-  export type MemberIdentityVerificationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many MemberIdentityVerifications.
-     */
-    data: MemberIdentityVerificationCreateManyInput | MemberIdentityVerificationCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * MemberIdentityVerification createManyAndReturn
-   */
-  export type MemberIdentityVerificationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MemberIdentityVerification
-     */
-    select?: MemberIdentityVerificationSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the MemberIdentityVerification
-     */
-    omit?: MemberIdentityVerificationOmit<ExtArgs> | null
-    /**
-     * The data used to create many MemberIdentityVerifications.
-     */
-    data: MemberIdentityVerificationCreateManyInput | MemberIdentityVerificationCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MemberIdentityVerificationIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * MemberIdentityVerification update
-   */
-  export type MemberIdentityVerificationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MemberIdentityVerification
-     */
-    select?: MemberIdentityVerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MemberIdentityVerification
-     */
-    omit?: MemberIdentityVerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MemberIdentityVerificationInclude<ExtArgs> | null
-    /**
-     * The data needed to update a MemberIdentityVerification.
-     */
-    data: XOR<MemberIdentityVerificationUpdateInput, MemberIdentityVerificationUncheckedUpdateInput>
-    /**
-     * Choose, which MemberIdentityVerification to update.
-     */
-    where: MemberIdentityVerificationWhereUniqueInput
-  }
-
-  /**
-   * MemberIdentityVerification updateMany
-   */
-  export type MemberIdentityVerificationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update MemberIdentityVerifications.
-     */
-    data: XOR<MemberIdentityVerificationUpdateManyMutationInput, MemberIdentityVerificationUncheckedUpdateManyInput>
-    /**
-     * Filter which MemberIdentityVerifications to update
-     */
-    where?: MemberIdentityVerificationWhereInput
-    /**
-     * Limit how many MemberIdentityVerifications to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * MemberIdentityVerification updateManyAndReturn
-   */
-  export type MemberIdentityVerificationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MemberIdentityVerification
-     */
-    select?: MemberIdentityVerificationSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the MemberIdentityVerification
-     */
-    omit?: MemberIdentityVerificationOmit<ExtArgs> | null
-    /**
-     * The data used to update MemberIdentityVerifications.
-     */
-    data: XOR<MemberIdentityVerificationUpdateManyMutationInput, MemberIdentityVerificationUncheckedUpdateManyInput>
-    /**
-     * Filter which MemberIdentityVerifications to update
-     */
-    where?: MemberIdentityVerificationWhereInput
-    /**
-     * Limit how many MemberIdentityVerifications to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MemberIdentityVerificationIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * MemberIdentityVerification upsert
-   */
-  export type MemberIdentityVerificationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MemberIdentityVerification
-     */
-    select?: MemberIdentityVerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MemberIdentityVerification
-     */
-    omit?: MemberIdentityVerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MemberIdentityVerificationInclude<ExtArgs> | null
-    /**
-     * The filter to search for the MemberIdentityVerification to update in case it exists.
-     */
-    where: MemberIdentityVerificationWhereUniqueInput
-    /**
-     * In case the MemberIdentityVerification found by the `where` argument doesn't exist, create a new MemberIdentityVerification with this data.
-     */
-    create: XOR<MemberIdentityVerificationCreateInput, MemberIdentityVerificationUncheckedCreateInput>
-    /**
-     * In case the MemberIdentityVerification was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<MemberIdentityVerificationUpdateInput, MemberIdentityVerificationUncheckedUpdateInput>
-  }
-
-  /**
-   * MemberIdentityVerification delete
-   */
-  export type MemberIdentityVerificationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MemberIdentityVerification
-     */
-    select?: MemberIdentityVerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MemberIdentityVerification
-     */
-    omit?: MemberIdentityVerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MemberIdentityVerificationInclude<ExtArgs> | null
-    /**
-     * Filter which MemberIdentityVerification to delete.
-     */
-    where: MemberIdentityVerificationWhereUniqueInput
-  }
-
-  /**
-   * MemberIdentityVerification deleteMany
-   */
-  export type MemberIdentityVerificationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which MemberIdentityVerifications to delete
-     */
-    where?: MemberIdentityVerificationWhereInput
-    /**
-     * Limit how many MemberIdentityVerifications to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * MemberIdentityVerification.verifier
-   */
-  export type MemberIdentityVerification$verifierArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the User
-     */
-    select?: UserSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the User
-     */
-    omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    where?: UserWhereInput
-  }
-
-  /**
-   * MemberIdentityVerification without action
-   */
-  export type MemberIdentityVerificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MemberIdentityVerification
-     */
-    select?: MemberIdentityVerificationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MemberIdentityVerification
-     */
-    omit?: MemberIdentityVerificationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MemberIdentityVerificationInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model CorporateRegistration
-   */
-
-  export type AggregateCorporateRegistration = {
-    _count: CorporateRegistrationCountAggregateOutputType | null
-    _min: CorporateRegistrationMinAggregateOutputType | null
-    _max: CorporateRegistrationMaxAggregateOutputType | null
-  }
-
-  export type CorporateRegistrationMinAggregateOutputType = {
-    id: string | null
-    userId: string | null
-    companyName: string | null
-    businessLicenseFile: string | null
-    verificationStatus: $Enums.VerificationStatus | null
-    isVerifiedBy: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type CorporateRegistrationMaxAggregateOutputType = {
-    id: string | null
-    userId: string | null
-    companyName: string | null
-    businessLicenseFile: string | null
-    verificationStatus: $Enums.VerificationStatus | null
-    isVerifiedBy: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
-  }
-
-  export type CorporateRegistrationCountAggregateOutputType = {
-    id: number
-    userId: number
-    companyName: number
-    businessLicenseFile: number
-    verificationStatus: number
-    isVerifiedBy: number
-    createdAt: number
-    updatedAt: number
-    _all: number
-  }
-
-
-  export type CorporateRegistrationMinAggregateInputType = {
-    id?: true
-    userId?: true
-    companyName?: true
-    businessLicenseFile?: true
-    verificationStatus?: true
-    isVerifiedBy?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type CorporateRegistrationMaxAggregateInputType = {
-    id?: true
-    userId?: true
-    companyName?: true
-    businessLicenseFile?: true
-    verificationStatus?: true
-    isVerifiedBy?: true
-    createdAt?: true
-    updatedAt?: true
-  }
-
-  export type CorporateRegistrationCountAggregateInputType = {
-    id?: true
-    userId?: true
-    companyName?: true
-    businessLicenseFile?: true
-    verificationStatus?: true
-    isVerifiedBy?: true
-    createdAt?: true
-    updatedAt?: true
-    _all?: true
-  }
-
-  export type CorporateRegistrationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which CorporateRegistration to aggregate.
-     */
-    where?: CorporateRegistrationWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CorporateRegistrations to fetch.
-     */
-    orderBy?: CorporateRegistrationOrderByWithRelationInput | CorporateRegistrationOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: CorporateRegistrationWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CorporateRegistrations from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CorporateRegistrations.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned CorporateRegistrations
-    **/
-    _count?: true | CorporateRegistrationCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: CorporateRegistrationMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: CorporateRegistrationMaxAggregateInputType
-  }
-
-  export type GetCorporateRegistrationAggregateType<T extends CorporateRegistrationAggregateArgs> = {
-        [P in keyof T & keyof AggregateCorporateRegistration]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateCorporateRegistration[P]>
-      : GetScalarType<T[P], AggregateCorporateRegistration[P]>
-  }
-
-
-
-
-  export type CorporateRegistrationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CorporateRegistrationWhereInput
-    orderBy?: CorporateRegistrationOrderByWithAggregationInput | CorporateRegistrationOrderByWithAggregationInput[]
-    by: CorporateRegistrationScalarFieldEnum[] | CorporateRegistrationScalarFieldEnum
-    having?: CorporateRegistrationScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: CorporateRegistrationCountAggregateInputType | true
-    _min?: CorporateRegistrationMinAggregateInputType
-    _max?: CorporateRegistrationMaxAggregateInputType
-  }
-
-  export type CorporateRegistrationGroupByOutputType = {
-    id: string
-    userId: string
-    companyName: string | null
-    businessLicenseFile: string | null
-    verificationStatus: $Enums.VerificationStatus
-    isVerifiedBy: string | null
-    createdAt: Date
-    updatedAt: Date
-    _count: CorporateRegistrationCountAggregateOutputType | null
-    _min: CorporateRegistrationMinAggregateOutputType | null
-    _max: CorporateRegistrationMaxAggregateOutputType | null
-  }
-
-  type GetCorporateRegistrationGroupByPayload<T extends CorporateRegistrationGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<CorporateRegistrationGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof CorporateRegistrationGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], CorporateRegistrationGroupByOutputType[P]>
-            : GetScalarType<T[P], CorporateRegistrationGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type CorporateRegistrationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    companyName?: boolean
-    businessLicenseFile?: boolean
-    verificationStatus?: boolean
-    isVerifiedBy?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    verifier?: boolean | CorporateRegistration$verifierArgs<ExtArgs>
-  }, ExtArgs["result"]["corporateRegistration"]>
-
-  export type CorporateRegistrationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    companyName?: boolean
-    businessLicenseFile?: boolean
-    verificationStatus?: boolean
-    isVerifiedBy?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    verifier?: boolean | CorporateRegistration$verifierArgs<ExtArgs>
-  }, ExtArgs["result"]["corporateRegistration"]>
-
-  export type CorporateRegistrationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    companyName?: boolean
-    businessLicenseFile?: boolean
-    verificationStatus?: boolean
-    isVerifiedBy?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    verifier?: boolean | CorporateRegistration$verifierArgs<ExtArgs>
-  }, ExtArgs["result"]["corporateRegistration"]>
-
-  export type CorporateRegistrationSelectScalar = {
-    id?: boolean
-    userId?: boolean
-    companyName?: boolean
-    businessLicenseFile?: boolean
-    verificationStatus?: boolean
-    isVerifiedBy?: boolean
-    createdAt?: boolean
-    updatedAt?: boolean
-  }
-
-  export type CorporateRegistrationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "companyName" | "businessLicenseFile" | "verificationStatus" | "isVerifiedBy" | "createdAt" | "updatedAt", ExtArgs["result"]["corporateRegistration"]>
-  export type CorporateRegistrationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    verifier?: boolean | CorporateRegistration$verifierArgs<ExtArgs>
-  }
-  export type CorporateRegistrationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    verifier?: boolean | CorporateRegistration$verifierArgs<ExtArgs>
-  }
-  export type CorporateRegistrationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    verifier?: boolean | CorporateRegistration$verifierArgs<ExtArgs>
-  }
-
-  export type $CorporateRegistrationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "CorporateRegistration"
-    objects: {
-      user: Prisma.$UserPayload<ExtArgs>
-      verifier: Prisma.$UserPayload<ExtArgs> | null
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      userId: string
-      companyName: string | null
-      businessLicenseFile: string | null
-      verificationStatus: $Enums.VerificationStatus
-      isVerifiedBy: string | null
-      createdAt: Date
-      updatedAt: Date
-    }, ExtArgs["result"]["corporateRegistration"]>
-    composites: {}
-  }
-
-  type CorporateRegistrationGetPayload<S extends boolean | null | undefined | CorporateRegistrationDefaultArgs> = $Result.GetResult<Prisma.$CorporateRegistrationPayload, S>
-
-  type CorporateRegistrationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<CorporateRegistrationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: CorporateRegistrationCountAggregateInputType | true
-    }
-
-  export interface CorporateRegistrationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CorporateRegistration'], meta: { name: 'CorporateRegistration' } }
-    /**
-     * Find zero or one CorporateRegistration that matches the filter.
-     * @param {CorporateRegistrationFindUniqueArgs} args - Arguments to find a CorporateRegistration
-     * @example
-     * // Get one CorporateRegistration
-     * const corporateRegistration = await prisma.corporateRegistration.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends CorporateRegistrationFindUniqueArgs>(args: SelectSubset<T, CorporateRegistrationFindUniqueArgs<ExtArgs>>): Prisma__CorporateRegistrationClient<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one CorporateRegistration that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {CorporateRegistrationFindUniqueOrThrowArgs} args - Arguments to find a CorporateRegistration
-     * @example
-     * // Get one CorporateRegistration
-     * const corporateRegistration = await prisma.corporateRegistration.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends CorporateRegistrationFindUniqueOrThrowArgs>(args: SelectSubset<T, CorporateRegistrationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CorporateRegistrationClient<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first CorporateRegistration that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CorporateRegistrationFindFirstArgs} args - Arguments to find a CorporateRegistration
-     * @example
-     * // Get one CorporateRegistration
-     * const corporateRegistration = await prisma.corporateRegistration.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends CorporateRegistrationFindFirstArgs>(args?: SelectSubset<T, CorporateRegistrationFindFirstArgs<ExtArgs>>): Prisma__CorporateRegistrationClient<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first CorporateRegistration that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CorporateRegistrationFindFirstOrThrowArgs} args - Arguments to find a CorporateRegistration
-     * @example
-     * // Get one CorporateRegistration
-     * const corporateRegistration = await prisma.corporateRegistration.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends CorporateRegistrationFindFirstOrThrowArgs>(args?: SelectSubset<T, CorporateRegistrationFindFirstOrThrowArgs<ExtArgs>>): Prisma__CorporateRegistrationClient<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more CorporateRegistrations that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CorporateRegistrationFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all CorporateRegistrations
-     * const corporateRegistrations = await prisma.corporateRegistration.findMany()
-     * 
-     * // Get first 10 CorporateRegistrations
-     * const corporateRegistrations = await prisma.corporateRegistration.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const corporateRegistrationWithIdOnly = await prisma.corporateRegistration.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends CorporateRegistrationFindManyArgs>(args?: SelectSubset<T, CorporateRegistrationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a CorporateRegistration.
-     * @param {CorporateRegistrationCreateArgs} args - Arguments to create a CorporateRegistration.
-     * @example
-     * // Create one CorporateRegistration
-     * const CorporateRegistration = await prisma.corporateRegistration.create({
-     *   data: {
-     *     // ... data to create a CorporateRegistration
-     *   }
-     * })
-     * 
-     */
-    create<T extends CorporateRegistrationCreateArgs>(args: SelectSubset<T, CorporateRegistrationCreateArgs<ExtArgs>>): Prisma__CorporateRegistrationClient<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many CorporateRegistrations.
-     * @param {CorporateRegistrationCreateManyArgs} args - Arguments to create many CorporateRegistrations.
-     * @example
-     * // Create many CorporateRegistrations
-     * const corporateRegistration = await prisma.corporateRegistration.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends CorporateRegistrationCreateManyArgs>(args?: SelectSubset<T, CorporateRegistrationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many CorporateRegistrations and returns the data saved in the database.
-     * @param {CorporateRegistrationCreateManyAndReturnArgs} args - Arguments to create many CorporateRegistrations.
-     * @example
-     * // Create many CorporateRegistrations
-     * const corporateRegistration = await prisma.corporateRegistration.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many CorporateRegistrations and only return the `id`
-     * const corporateRegistrationWithIdOnly = await prisma.corporateRegistration.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends CorporateRegistrationCreateManyAndReturnArgs>(args?: SelectSubset<T, CorporateRegistrationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a CorporateRegistration.
-     * @param {CorporateRegistrationDeleteArgs} args - Arguments to delete one CorporateRegistration.
-     * @example
-     * // Delete one CorporateRegistration
-     * const CorporateRegistration = await prisma.corporateRegistration.delete({
-     *   where: {
-     *     // ... filter to delete one CorporateRegistration
-     *   }
-     * })
-     * 
-     */
-    delete<T extends CorporateRegistrationDeleteArgs>(args: SelectSubset<T, CorporateRegistrationDeleteArgs<ExtArgs>>): Prisma__CorporateRegistrationClient<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one CorporateRegistration.
-     * @param {CorporateRegistrationUpdateArgs} args - Arguments to update one CorporateRegistration.
-     * @example
-     * // Update one CorporateRegistration
-     * const corporateRegistration = await prisma.corporateRegistration.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends CorporateRegistrationUpdateArgs>(args: SelectSubset<T, CorporateRegistrationUpdateArgs<ExtArgs>>): Prisma__CorporateRegistrationClient<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more CorporateRegistrations.
-     * @param {CorporateRegistrationDeleteManyArgs} args - Arguments to filter CorporateRegistrations to delete.
-     * @example
-     * // Delete a few CorporateRegistrations
-     * const { count } = await prisma.corporateRegistration.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends CorporateRegistrationDeleteManyArgs>(args?: SelectSubset<T, CorporateRegistrationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more CorporateRegistrations.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CorporateRegistrationUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many CorporateRegistrations
-     * const corporateRegistration = await prisma.corporateRegistration.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends CorporateRegistrationUpdateManyArgs>(args: SelectSubset<T, CorporateRegistrationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more CorporateRegistrations and returns the data updated in the database.
-     * @param {CorporateRegistrationUpdateManyAndReturnArgs} args - Arguments to update many CorporateRegistrations.
-     * @example
-     * // Update many CorporateRegistrations
-     * const corporateRegistration = await prisma.corporateRegistration.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more CorporateRegistrations and only return the `id`
-     * const corporateRegistrationWithIdOnly = await prisma.corporateRegistration.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends CorporateRegistrationUpdateManyAndReturnArgs>(args: SelectSubset<T, CorporateRegistrationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one CorporateRegistration.
-     * @param {CorporateRegistrationUpsertArgs} args - Arguments to update or create a CorporateRegistration.
-     * @example
-     * // Update or create a CorporateRegistration
-     * const corporateRegistration = await prisma.corporateRegistration.upsert({
-     *   create: {
-     *     // ... data to create a CorporateRegistration
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the CorporateRegistration we want to update
-     *   }
-     * })
-     */
-    upsert<T extends CorporateRegistrationUpsertArgs>(args: SelectSubset<T, CorporateRegistrationUpsertArgs<ExtArgs>>): Prisma__CorporateRegistrationClient<$Result.GetResult<Prisma.$CorporateRegistrationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of CorporateRegistrations.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CorporateRegistrationCountArgs} args - Arguments to filter CorporateRegistrations to count.
-     * @example
-     * // Count the number of CorporateRegistrations
-     * const count = await prisma.corporateRegistration.count({
-     *   where: {
-     *     // ... the filter for the CorporateRegistrations we want to count
-     *   }
-     * })
-    **/
-    count<T extends CorporateRegistrationCountArgs>(
-      args?: Subset<T, CorporateRegistrationCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], CorporateRegistrationCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a CorporateRegistration.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CorporateRegistrationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends CorporateRegistrationAggregateArgs>(args: Subset<T, CorporateRegistrationAggregateArgs>): Prisma.PrismaPromise<GetCorporateRegistrationAggregateType<T>>
-
-    /**
-     * Group by CorporateRegistration.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CorporateRegistrationGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends CorporateRegistrationGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: CorporateRegistrationGroupByArgs['orderBy'] }
-        : { orderBy?: CorporateRegistrationGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, CorporateRegistrationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCorporateRegistrationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the CorporateRegistration model
-   */
-  readonly fields: CorporateRegistrationFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for CorporateRegistration.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__CorporateRegistrationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    verifier<T extends CorporateRegistration$verifierArgs<ExtArgs> = {}>(args?: Subset<T, CorporateRegistration$verifierArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the CorporateRegistration model
-   */
-  interface CorporateRegistrationFieldRefs {
-    readonly id: FieldRef<"CorporateRegistration", 'String'>
-    readonly userId: FieldRef<"CorporateRegistration", 'String'>
-    readonly companyName: FieldRef<"CorporateRegistration", 'String'>
-    readonly businessLicenseFile: FieldRef<"CorporateRegistration", 'String'>
-    readonly verificationStatus: FieldRef<"CorporateRegistration", 'VerificationStatus'>
-    readonly isVerifiedBy: FieldRef<"CorporateRegistration", 'String'>
-    readonly createdAt: FieldRef<"CorporateRegistration", 'DateTime'>
-    readonly updatedAt: FieldRef<"CorporateRegistration", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * CorporateRegistration findUnique
-   */
-  export type CorporateRegistrationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CorporateRegistration
-     */
-    select?: CorporateRegistrationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CorporateRegistration
-     */
-    omit?: CorporateRegistrationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CorporateRegistrationInclude<ExtArgs> | null
-    /**
-     * Filter, which CorporateRegistration to fetch.
-     */
-    where: CorporateRegistrationWhereUniqueInput
-  }
-
-  /**
-   * CorporateRegistration findUniqueOrThrow
-   */
-  export type CorporateRegistrationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CorporateRegistration
-     */
-    select?: CorporateRegistrationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CorporateRegistration
-     */
-    omit?: CorporateRegistrationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CorporateRegistrationInclude<ExtArgs> | null
-    /**
-     * Filter, which CorporateRegistration to fetch.
-     */
-    where: CorporateRegistrationWhereUniqueInput
-  }
-
-  /**
-   * CorporateRegistration findFirst
-   */
-  export type CorporateRegistrationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CorporateRegistration
-     */
-    select?: CorporateRegistrationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CorporateRegistration
-     */
-    omit?: CorporateRegistrationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CorporateRegistrationInclude<ExtArgs> | null
-    /**
-     * Filter, which CorporateRegistration to fetch.
-     */
-    where?: CorporateRegistrationWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CorporateRegistrations to fetch.
-     */
-    orderBy?: CorporateRegistrationOrderByWithRelationInput | CorporateRegistrationOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for CorporateRegistrations.
-     */
-    cursor?: CorporateRegistrationWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CorporateRegistrations from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CorporateRegistrations.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of CorporateRegistrations.
-     */
-    distinct?: CorporateRegistrationScalarFieldEnum | CorporateRegistrationScalarFieldEnum[]
-  }
-
-  /**
-   * CorporateRegistration findFirstOrThrow
-   */
-  export type CorporateRegistrationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CorporateRegistration
-     */
-    select?: CorporateRegistrationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CorporateRegistration
-     */
-    omit?: CorporateRegistrationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CorporateRegistrationInclude<ExtArgs> | null
-    /**
-     * Filter, which CorporateRegistration to fetch.
-     */
-    where?: CorporateRegistrationWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CorporateRegistrations to fetch.
-     */
-    orderBy?: CorporateRegistrationOrderByWithRelationInput | CorporateRegistrationOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for CorporateRegistrations.
-     */
-    cursor?: CorporateRegistrationWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CorporateRegistrations from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CorporateRegistrations.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of CorporateRegistrations.
-     */
-    distinct?: CorporateRegistrationScalarFieldEnum | CorporateRegistrationScalarFieldEnum[]
-  }
-
-  /**
-   * CorporateRegistration findMany
-   */
-  export type CorporateRegistrationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CorporateRegistration
-     */
-    select?: CorporateRegistrationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CorporateRegistration
-     */
-    omit?: CorporateRegistrationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CorporateRegistrationInclude<ExtArgs> | null
-    /**
-     * Filter, which CorporateRegistrations to fetch.
-     */
-    where?: CorporateRegistrationWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of CorporateRegistrations to fetch.
-     */
-    orderBy?: CorporateRegistrationOrderByWithRelationInput | CorporateRegistrationOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing CorporateRegistrations.
-     */
-    cursor?: CorporateRegistrationWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` CorporateRegistrations from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` CorporateRegistrations.
-     */
-    skip?: number
-    distinct?: CorporateRegistrationScalarFieldEnum | CorporateRegistrationScalarFieldEnum[]
-  }
-
-  /**
-   * CorporateRegistration create
-   */
-  export type CorporateRegistrationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CorporateRegistration
-     */
-    select?: CorporateRegistrationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CorporateRegistration
-     */
-    omit?: CorporateRegistrationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CorporateRegistrationInclude<ExtArgs> | null
-    /**
-     * The data needed to create a CorporateRegistration.
-     */
-    data: XOR<CorporateRegistrationCreateInput, CorporateRegistrationUncheckedCreateInput>
-  }
-
-  /**
-   * CorporateRegistration createMany
-   */
-  export type CorporateRegistrationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many CorporateRegistrations.
-     */
-    data: CorporateRegistrationCreateManyInput | CorporateRegistrationCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * CorporateRegistration createManyAndReturn
-   */
-  export type CorporateRegistrationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CorporateRegistration
-     */
-    select?: CorporateRegistrationSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the CorporateRegistration
-     */
-    omit?: CorporateRegistrationOmit<ExtArgs> | null
-    /**
-     * The data used to create many CorporateRegistrations.
-     */
-    data: CorporateRegistrationCreateManyInput | CorporateRegistrationCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CorporateRegistrationIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * CorporateRegistration update
-   */
-  export type CorporateRegistrationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CorporateRegistration
-     */
-    select?: CorporateRegistrationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CorporateRegistration
-     */
-    omit?: CorporateRegistrationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CorporateRegistrationInclude<ExtArgs> | null
-    /**
-     * The data needed to update a CorporateRegistration.
-     */
-    data: XOR<CorporateRegistrationUpdateInput, CorporateRegistrationUncheckedUpdateInput>
-    /**
-     * Choose, which CorporateRegistration to update.
-     */
-    where: CorporateRegistrationWhereUniqueInput
-  }
-
-  /**
-   * CorporateRegistration updateMany
-   */
-  export type CorporateRegistrationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update CorporateRegistrations.
-     */
-    data: XOR<CorporateRegistrationUpdateManyMutationInput, CorporateRegistrationUncheckedUpdateManyInput>
-    /**
-     * Filter which CorporateRegistrations to update
-     */
-    where?: CorporateRegistrationWhereInput
-    /**
-     * Limit how many CorporateRegistrations to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * CorporateRegistration updateManyAndReturn
-   */
-  export type CorporateRegistrationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CorporateRegistration
-     */
-    select?: CorporateRegistrationSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the CorporateRegistration
-     */
-    omit?: CorporateRegistrationOmit<ExtArgs> | null
-    /**
-     * The data used to update CorporateRegistrations.
-     */
-    data: XOR<CorporateRegistrationUpdateManyMutationInput, CorporateRegistrationUncheckedUpdateManyInput>
-    /**
-     * Filter which CorporateRegistrations to update
-     */
-    where?: CorporateRegistrationWhereInput
-    /**
-     * Limit how many CorporateRegistrations to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CorporateRegistrationIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * CorporateRegistration upsert
-   */
-  export type CorporateRegistrationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CorporateRegistration
-     */
-    select?: CorporateRegistrationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CorporateRegistration
-     */
-    omit?: CorporateRegistrationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CorporateRegistrationInclude<ExtArgs> | null
-    /**
-     * The filter to search for the CorporateRegistration to update in case it exists.
-     */
-    where: CorporateRegistrationWhereUniqueInput
-    /**
-     * In case the CorporateRegistration found by the `where` argument doesn't exist, create a new CorporateRegistration with this data.
-     */
-    create: XOR<CorporateRegistrationCreateInput, CorporateRegistrationUncheckedCreateInput>
-    /**
-     * In case the CorporateRegistration was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<CorporateRegistrationUpdateInput, CorporateRegistrationUncheckedUpdateInput>
-  }
-
-  /**
-   * CorporateRegistration delete
-   */
-  export type CorporateRegistrationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CorporateRegistration
-     */
-    select?: CorporateRegistrationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CorporateRegistration
-     */
-    omit?: CorporateRegistrationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CorporateRegistrationInclude<ExtArgs> | null
-    /**
-     * Filter which CorporateRegistration to delete.
-     */
-    where: CorporateRegistrationWhereUniqueInput
-  }
-
-  /**
-   * CorporateRegistration deleteMany
-   */
-  export type CorporateRegistrationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which CorporateRegistrations to delete
-     */
-    where?: CorporateRegistrationWhereInput
-    /**
-     * Limit how many CorporateRegistrations to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * CorporateRegistration.verifier
-   */
-  export type CorporateRegistration$verifierArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the User
-     */
-    select?: UserSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the User
-     */
-    omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    where?: UserWhereInput
-  }
-
-  /**
-   * CorporateRegistration without action
-   */
-  export type CorporateRegistrationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CorporateRegistration
-     */
-    select?: CorporateRegistrationSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CorporateRegistration
-     */
-    omit?: CorporateRegistrationOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CorporateRegistrationInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model VerificationToken
-   */
-
-  export type AggregateVerificationToken = {
-    _count: VerificationTokenCountAggregateOutputType | null
-    _min: VerificationTokenMinAggregateOutputType | null
-    _max: VerificationTokenMaxAggregateOutputType | null
-  }
-
-  export type VerificationTokenMinAggregateOutputType = {
-    id: string | null
-    userId: string | null
-    token: string | null
-    type: string | null
-    expiresAt: Date | null
-    usedAt: Date | null
-    createdAt: Date | null
-  }
-
-  export type VerificationTokenMaxAggregateOutputType = {
-    id: string | null
-    userId: string | null
-    token: string | null
-    type: string | null
-    expiresAt: Date | null
-    usedAt: Date | null
-    createdAt: Date | null
-  }
-
-  export type VerificationTokenCountAggregateOutputType = {
-    id: number
-    userId: number
-    token: number
-    type: number
-    expiresAt: number
-    usedAt: number
-    createdAt: number
-    _all: number
-  }
-
-
-  export type VerificationTokenMinAggregateInputType = {
-    id?: true
-    userId?: true
-    token?: true
-    type?: true
-    expiresAt?: true
-    usedAt?: true
-    createdAt?: true
-  }
-
-  export type VerificationTokenMaxAggregateInputType = {
-    id?: true
-    userId?: true
-    token?: true
-    type?: true
-    expiresAt?: true
-    usedAt?: true
-    createdAt?: true
-  }
-
-  export type VerificationTokenCountAggregateInputType = {
-    id?: true
-    userId?: true
-    token?: true
-    type?: true
-    expiresAt?: true
-    usedAt?: true
-    createdAt?: true
-    _all?: true
-  }
-
-  export type VerificationTokenAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which VerificationToken to aggregate.
-     */
-    where?: VerificationTokenWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of VerificationTokens to fetch.
-     */
-    orderBy?: VerificationTokenOrderByWithRelationInput | VerificationTokenOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: VerificationTokenWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` VerificationTokens from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` VerificationTokens.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned VerificationTokens
-    **/
-    _count?: true | VerificationTokenCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: VerificationTokenMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: VerificationTokenMaxAggregateInputType
-  }
-
-  export type GetVerificationTokenAggregateType<T extends VerificationTokenAggregateArgs> = {
-        [P in keyof T & keyof AggregateVerificationToken]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateVerificationToken[P]>
-      : GetScalarType<T[P], AggregateVerificationToken[P]>
-  }
-
-
-
-
-  export type VerificationTokenGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: VerificationTokenWhereInput
-    orderBy?: VerificationTokenOrderByWithAggregationInput | VerificationTokenOrderByWithAggregationInput[]
-    by: VerificationTokenScalarFieldEnum[] | VerificationTokenScalarFieldEnum
-    having?: VerificationTokenScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: VerificationTokenCountAggregateInputType | true
-    _min?: VerificationTokenMinAggregateInputType
-    _max?: VerificationTokenMaxAggregateInputType
-  }
-
-  export type VerificationTokenGroupByOutputType = {
-    id: string
-    userId: string
-    token: string
-    type: string
-    expiresAt: Date
-    usedAt: Date | null
-    createdAt: Date
-    _count: VerificationTokenCountAggregateOutputType | null
-    _min: VerificationTokenMinAggregateOutputType | null
-    _max: VerificationTokenMaxAggregateOutputType | null
-  }
-
-  type GetVerificationTokenGroupByPayload<T extends VerificationTokenGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<VerificationTokenGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof VerificationTokenGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], VerificationTokenGroupByOutputType[P]>
-            : GetScalarType<T[P], VerificationTokenGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type VerificationTokenSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    token?: boolean
-    type?: boolean
-    expiresAt?: boolean
-    usedAt?: boolean
-    createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["verificationToken"]>
-
-  export type VerificationTokenSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    token?: boolean
-    type?: boolean
-    expiresAt?: boolean
-    usedAt?: boolean
-    createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["verificationToken"]>
-
-  export type VerificationTokenSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    token?: boolean
-    type?: boolean
-    expiresAt?: boolean
-    usedAt?: boolean
-    createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["verificationToken"]>
-
-  export type VerificationTokenSelectScalar = {
-    id?: boolean
-    userId?: boolean
-    token?: boolean
-    type?: boolean
-    expiresAt?: boolean
-    usedAt?: boolean
-    createdAt?: boolean
-  }
-
-  export type VerificationTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "token" | "type" | "expiresAt" | "usedAt" | "createdAt", ExtArgs["result"]["verificationToken"]>
-  export type VerificationTokenInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type VerificationTokenIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type VerificationTokenIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-
-  export type $VerificationTokenPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "VerificationToken"
-    objects: {
-      user: Prisma.$UserPayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      userId: string
-      token: string
-      type: string
-      expiresAt: Date
-      usedAt: Date | null
-      createdAt: Date
-    }, ExtArgs["result"]["verificationToken"]>
-    composites: {}
-  }
-
-  type VerificationTokenGetPayload<S extends boolean | null | undefined | VerificationTokenDefaultArgs> = $Result.GetResult<Prisma.$VerificationTokenPayload, S>
-
-  type VerificationTokenCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<VerificationTokenFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: VerificationTokenCountAggregateInputType | true
-    }
-
-  export interface VerificationTokenDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['VerificationToken'], meta: { name: 'VerificationToken' } }
-    /**
-     * Find zero or one VerificationToken that matches the filter.
-     * @param {VerificationTokenFindUniqueArgs} args - Arguments to find a VerificationToken
-     * @example
-     * // Get one VerificationToken
-     * const verificationToken = await prisma.verificationToken.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends VerificationTokenFindUniqueArgs>(args: SelectSubset<T, VerificationTokenFindUniqueArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one VerificationToken that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {VerificationTokenFindUniqueOrThrowArgs} args - Arguments to find a VerificationToken
-     * @example
-     * // Get one VerificationToken
-     * const verificationToken = await prisma.verificationToken.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends VerificationTokenFindUniqueOrThrowArgs>(args: SelectSubset<T, VerificationTokenFindUniqueOrThrowArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first VerificationToken that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {VerificationTokenFindFirstArgs} args - Arguments to find a VerificationToken
-     * @example
-     * // Get one VerificationToken
-     * const verificationToken = await prisma.verificationToken.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends VerificationTokenFindFirstArgs>(args?: SelectSubset<T, VerificationTokenFindFirstArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first VerificationToken that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {VerificationTokenFindFirstOrThrowArgs} args - Arguments to find a VerificationToken
-     * @example
-     * // Get one VerificationToken
-     * const verificationToken = await prisma.verificationToken.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends VerificationTokenFindFirstOrThrowArgs>(args?: SelectSubset<T, VerificationTokenFindFirstOrThrowArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more VerificationTokens that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {VerificationTokenFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all VerificationTokens
-     * const verificationTokens = await prisma.verificationToken.findMany()
-     * 
-     * // Get first 10 VerificationTokens
-     * const verificationTokens = await prisma.verificationToken.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const verificationTokenWithIdOnly = await prisma.verificationToken.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends VerificationTokenFindManyArgs>(args?: SelectSubset<T, VerificationTokenFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a VerificationToken.
-     * @param {VerificationTokenCreateArgs} args - Arguments to create a VerificationToken.
-     * @example
-     * // Create one VerificationToken
-     * const VerificationToken = await prisma.verificationToken.create({
-     *   data: {
-     *     // ... data to create a VerificationToken
-     *   }
-     * })
-     * 
-     */
-    create<T extends VerificationTokenCreateArgs>(args: SelectSubset<T, VerificationTokenCreateArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many VerificationTokens.
-     * @param {VerificationTokenCreateManyArgs} args - Arguments to create many VerificationTokens.
-     * @example
-     * // Create many VerificationTokens
-     * const verificationToken = await prisma.verificationToken.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends VerificationTokenCreateManyArgs>(args?: SelectSubset<T, VerificationTokenCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many VerificationTokens and returns the data saved in the database.
-     * @param {VerificationTokenCreateManyAndReturnArgs} args - Arguments to create many VerificationTokens.
-     * @example
-     * // Create many VerificationTokens
-     * const verificationToken = await prisma.verificationToken.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many VerificationTokens and only return the `id`
-     * const verificationTokenWithIdOnly = await prisma.verificationToken.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends VerificationTokenCreateManyAndReturnArgs>(args?: SelectSubset<T, VerificationTokenCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a VerificationToken.
-     * @param {VerificationTokenDeleteArgs} args - Arguments to delete one VerificationToken.
-     * @example
-     * // Delete one VerificationToken
-     * const VerificationToken = await prisma.verificationToken.delete({
-     *   where: {
-     *     // ... filter to delete one VerificationToken
-     *   }
-     * })
-     * 
-     */
-    delete<T extends VerificationTokenDeleteArgs>(args: SelectSubset<T, VerificationTokenDeleteArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one VerificationToken.
-     * @param {VerificationTokenUpdateArgs} args - Arguments to update one VerificationToken.
-     * @example
-     * // Update one VerificationToken
-     * const verificationToken = await prisma.verificationToken.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends VerificationTokenUpdateArgs>(args: SelectSubset<T, VerificationTokenUpdateArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more VerificationTokens.
-     * @param {VerificationTokenDeleteManyArgs} args - Arguments to filter VerificationTokens to delete.
-     * @example
-     * // Delete a few VerificationTokens
-     * const { count } = await prisma.verificationToken.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends VerificationTokenDeleteManyArgs>(args?: SelectSubset<T, VerificationTokenDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more VerificationTokens.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {VerificationTokenUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many VerificationTokens
-     * const verificationToken = await prisma.verificationToken.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends VerificationTokenUpdateManyArgs>(args: SelectSubset<T, VerificationTokenUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more VerificationTokens and returns the data updated in the database.
-     * @param {VerificationTokenUpdateManyAndReturnArgs} args - Arguments to update many VerificationTokens.
-     * @example
-     * // Update many VerificationTokens
-     * const verificationToken = await prisma.verificationToken.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more VerificationTokens and only return the `id`
-     * const verificationTokenWithIdOnly = await prisma.verificationToken.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends VerificationTokenUpdateManyAndReturnArgs>(args: SelectSubset<T, VerificationTokenUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one VerificationToken.
-     * @param {VerificationTokenUpsertArgs} args - Arguments to update or create a VerificationToken.
-     * @example
-     * // Update or create a VerificationToken
-     * const verificationToken = await prisma.verificationToken.upsert({
-     *   create: {
-     *     // ... data to create a VerificationToken
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the VerificationToken we want to update
-     *   }
-     * })
-     */
-    upsert<T extends VerificationTokenUpsertArgs>(args: SelectSubset<T, VerificationTokenUpsertArgs<ExtArgs>>): Prisma__VerificationTokenClient<$Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of VerificationTokens.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {VerificationTokenCountArgs} args - Arguments to filter VerificationTokens to count.
-     * @example
-     * // Count the number of VerificationTokens
-     * const count = await prisma.verificationToken.count({
-     *   where: {
-     *     // ... the filter for the VerificationTokens we want to count
-     *   }
-     * })
-    **/
-    count<T extends VerificationTokenCountArgs>(
-      args?: Subset<T, VerificationTokenCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], VerificationTokenCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a VerificationToken.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {VerificationTokenAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends VerificationTokenAggregateArgs>(args: Subset<T, VerificationTokenAggregateArgs>): Prisma.PrismaPromise<GetVerificationTokenAggregateType<T>>
-
-    /**
-     * Group by VerificationToken.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {VerificationTokenGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends VerificationTokenGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: VerificationTokenGroupByArgs['orderBy'] }
-        : { orderBy?: VerificationTokenGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, VerificationTokenGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetVerificationTokenGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the VerificationToken model
-   */
-  readonly fields: VerificationTokenFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for VerificationToken.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__VerificationTokenClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the VerificationToken model
-   */
-  interface VerificationTokenFieldRefs {
-    readonly id: FieldRef<"VerificationToken", 'String'>
-    readonly userId: FieldRef<"VerificationToken", 'String'>
-    readonly token: FieldRef<"VerificationToken", 'String'>
-    readonly type: FieldRef<"VerificationToken", 'String'>
-    readonly expiresAt: FieldRef<"VerificationToken", 'DateTime'>
-    readonly usedAt: FieldRef<"VerificationToken", 'DateTime'>
-    readonly createdAt: FieldRef<"VerificationToken", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * VerificationToken findUnique
-   */
-  export type VerificationTokenFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the VerificationToken
-     */
-    select?: VerificationTokenSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the VerificationToken
-     */
-    omit?: VerificationTokenOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationTokenInclude<ExtArgs> | null
-    /**
-     * Filter, which VerificationToken to fetch.
-     */
-    where: VerificationTokenWhereUniqueInput
-  }
-
-  /**
-   * VerificationToken findUniqueOrThrow
-   */
-  export type VerificationTokenFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the VerificationToken
-     */
-    select?: VerificationTokenSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the VerificationToken
-     */
-    omit?: VerificationTokenOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationTokenInclude<ExtArgs> | null
-    /**
-     * Filter, which VerificationToken to fetch.
-     */
-    where: VerificationTokenWhereUniqueInput
-  }
-
-  /**
-   * VerificationToken findFirst
-   */
-  export type VerificationTokenFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the VerificationToken
-     */
-    select?: VerificationTokenSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the VerificationToken
-     */
-    omit?: VerificationTokenOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationTokenInclude<ExtArgs> | null
-    /**
-     * Filter, which VerificationToken to fetch.
-     */
-    where?: VerificationTokenWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of VerificationTokens to fetch.
-     */
-    orderBy?: VerificationTokenOrderByWithRelationInput | VerificationTokenOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for VerificationTokens.
-     */
-    cursor?: VerificationTokenWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` VerificationTokens from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` VerificationTokens.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of VerificationTokens.
-     */
-    distinct?: VerificationTokenScalarFieldEnum | VerificationTokenScalarFieldEnum[]
-  }
-
-  /**
-   * VerificationToken findFirstOrThrow
-   */
-  export type VerificationTokenFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the VerificationToken
-     */
-    select?: VerificationTokenSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the VerificationToken
-     */
-    omit?: VerificationTokenOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationTokenInclude<ExtArgs> | null
-    /**
-     * Filter, which VerificationToken to fetch.
-     */
-    where?: VerificationTokenWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of VerificationTokens to fetch.
-     */
-    orderBy?: VerificationTokenOrderByWithRelationInput | VerificationTokenOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for VerificationTokens.
-     */
-    cursor?: VerificationTokenWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` VerificationTokens from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` VerificationTokens.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of VerificationTokens.
-     */
-    distinct?: VerificationTokenScalarFieldEnum | VerificationTokenScalarFieldEnum[]
-  }
-
-  /**
-   * VerificationToken findMany
-   */
-  export type VerificationTokenFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the VerificationToken
-     */
-    select?: VerificationTokenSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the VerificationToken
-     */
-    omit?: VerificationTokenOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationTokenInclude<ExtArgs> | null
-    /**
-     * Filter, which VerificationTokens to fetch.
-     */
-    where?: VerificationTokenWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of VerificationTokens to fetch.
-     */
-    orderBy?: VerificationTokenOrderByWithRelationInput | VerificationTokenOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing VerificationTokens.
-     */
-    cursor?: VerificationTokenWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` VerificationTokens from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` VerificationTokens.
-     */
-    skip?: number
-    distinct?: VerificationTokenScalarFieldEnum | VerificationTokenScalarFieldEnum[]
-  }
-
-  /**
-   * VerificationToken create
-   */
-  export type VerificationTokenCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the VerificationToken
-     */
-    select?: VerificationTokenSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the VerificationToken
-     */
-    omit?: VerificationTokenOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationTokenInclude<ExtArgs> | null
-    /**
-     * The data needed to create a VerificationToken.
-     */
-    data: XOR<VerificationTokenCreateInput, VerificationTokenUncheckedCreateInput>
-  }
-
-  /**
-   * VerificationToken createMany
-   */
-  export type VerificationTokenCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many VerificationTokens.
-     */
-    data: VerificationTokenCreateManyInput | VerificationTokenCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * VerificationToken createManyAndReturn
-   */
-  export type VerificationTokenCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the VerificationToken
-     */
-    select?: VerificationTokenSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the VerificationToken
-     */
-    omit?: VerificationTokenOmit<ExtArgs> | null
-    /**
-     * The data used to create many VerificationTokens.
-     */
-    data: VerificationTokenCreateManyInput | VerificationTokenCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationTokenIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * VerificationToken update
-   */
-  export type VerificationTokenUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the VerificationToken
-     */
-    select?: VerificationTokenSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the VerificationToken
-     */
-    omit?: VerificationTokenOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationTokenInclude<ExtArgs> | null
-    /**
-     * The data needed to update a VerificationToken.
-     */
-    data: XOR<VerificationTokenUpdateInput, VerificationTokenUncheckedUpdateInput>
-    /**
-     * Choose, which VerificationToken to update.
-     */
-    where: VerificationTokenWhereUniqueInput
-  }
-
-  /**
-   * VerificationToken updateMany
-   */
-  export type VerificationTokenUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update VerificationTokens.
-     */
-    data: XOR<VerificationTokenUpdateManyMutationInput, VerificationTokenUncheckedUpdateManyInput>
-    /**
-     * Filter which VerificationTokens to update
-     */
-    where?: VerificationTokenWhereInput
-    /**
-     * Limit how many VerificationTokens to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * VerificationToken updateManyAndReturn
-   */
-  export type VerificationTokenUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the VerificationToken
-     */
-    select?: VerificationTokenSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the VerificationToken
-     */
-    omit?: VerificationTokenOmit<ExtArgs> | null
-    /**
-     * The data used to update VerificationTokens.
-     */
-    data: XOR<VerificationTokenUpdateManyMutationInput, VerificationTokenUncheckedUpdateManyInput>
-    /**
-     * Filter which VerificationTokens to update
-     */
-    where?: VerificationTokenWhereInput
-    /**
-     * Limit how many VerificationTokens to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationTokenIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * VerificationToken upsert
-   */
-  export type VerificationTokenUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the VerificationToken
-     */
-    select?: VerificationTokenSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the VerificationToken
-     */
-    omit?: VerificationTokenOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationTokenInclude<ExtArgs> | null
-    /**
-     * The filter to search for the VerificationToken to update in case it exists.
-     */
-    where: VerificationTokenWhereUniqueInput
-    /**
-     * In case the VerificationToken found by the `where` argument doesn't exist, create a new VerificationToken with this data.
-     */
-    create: XOR<VerificationTokenCreateInput, VerificationTokenUncheckedCreateInput>
-    /**
-     * In case the VerificationToken was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<VerificationTokenUpdateInput, VerificationTokenUncheckedUpdateInput>
-  }
-
-  /**
-   * VerificationToken delete
-   */
-  export type VerificationTokenDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the VerificationToken
-     */
-    select?: VerificationTokenSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the VerificationToken
-     */
-    omit?: VerificationTokenOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationTokenInclude<ExtArgs> | null
-    /**
-     * Filter which VerificationToken to delete.
-     */
-    where: VerificationTokenWhereUniqueInput
-  }
-
-  /**
-   * VerificationToken deleteMany
-   */
-  export type VerificationTokenDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which VerificationTokens to delete
-     */
-    where?: VerificationTokenWhereInput
-    /**
-     * Limit how many VerificationTokens to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * VerificationToken without action
-   */
-  export type VerificationTokenDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the VerificationToken
-     */
-    select?: VerificationTokenSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the VerificationToken
-     */
-    omit?: VerificationTokenOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VerificationTokenInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Sanction
-   */
-
-  export type AggregateSanction = {
-    _count: SanctionCountAggregateOutputType | null
-    _min: SanctionMinAggregateOutputType | null
-    _max: SanctionMaxAggregateOutputType | null
-  }
-
-  export type SanctionMinAggregateOutputType = {
-    id: string | null
-    userId: string | null
-    sanctionType: $Enums.SanctionType | null
-    reason: string | null
-    startDate: Date | null
-    endDate: Date | null
-    createdAt: Date | null
-  }
-
-  export type SanctionMaxAggregateOutputType = {
-    id: string | null
-    userId: string | null
-    sanctionType: $Enums.SanctionType | null
-    reason: string | null
-    startDate: Date | null
-    endDate: Date | null
-    createdAt: Date | null
-  }
-
-  export type SanctionCountAggregateOutputType = {
-    id: number
-    userId: number
-    sanctionType: number
-    reason: number
-    startDate: number
-    endDate: number
-    createdAt: number
-    _all: number
-  }
-
-
-  export type SanctionMinAggregateInputType = {
-    id?: true
-    userId?: true
-    sanctionType?: true
-    reason?: true
-    startDate?: true
-    endDate?: true
-    createdAt?: true
-  }
-
-  export type SanctionMaxAggregateInputType = {
-    id?: true
-    userId?: true
-    sanctionType?: true
-    reason?: true
-    startDate?: true
-    endDate?: true
-    createdAt?: true
-  }
-
-  export type SanctionCountAggregateInputType = {
-    id?: true
-    userId?: true
-    sanctionType?: true
-    reason?: true
-    startDate?: true
-    endDate?: true
-    createdAt?: true
-    _all?: true
-  }
-
-  export type SanctionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Sanction to aggregate.
-     */
-    where?: SanctionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Sanctions to fetch.
-     */
-    orderBy?: SanctionOrderByWithRelationInput | SanctionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: SanctionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Sanctions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Sanctions.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Sanctions
-    **/
-    _count?: true | SanctionCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: SanctionMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: SanctionMaxAggregateInputType
-  }
-
-  export type GetSanctionAggregateType<T extends SanctionAggregateArgs> = {
-        [P in keyof T & keyof AggregateSanction]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateSanction[P]>
-      : GetScalarType<T[P], AggregateSanction[P]>
-  }
-
-
-
-
-  export type SanctionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SanctionWhereInput
-    orderBy?: SanctionOrderByWithAggregationInput | SanctionOrderByWithAggregationInput[]
-    by: SanctionScalarFieldEnum[] | SanctionScalarFieldEnum
-    having?: SanctionScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: SanctionCountAggregateInputType | true
-    _min?: SanctionMinAggregateInputType
-    _max?: SanctionMaxAggregateInputType
-  }
-
-  export type SanctionGroupByOutputType = {
-    id: string
-    userId: string
-    sanctionType: $Enums.SanctionType
-    reason: string | null
-    startDate: Date | null
-    endDate: Date | null
-    createdAt: Date
-    _count: SanctionCountAggregateOutputType | null
-    _min: SanctionMinAggregateOutputType | null
-    _max: SanctionMaxAggregateOutputType | null
-  }
-
-  type GetSanctionGroupByPayload<T extends SanctionGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<SanctionGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof SanctionGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], SanctionGroupByOutputType[P]>
-            : GetScalarType<T[P], SanctionGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type SanctionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    sanctionType?: boolean
-    reason?: boolean
-    startDate?: boolean
-    endDate?: boolean
-    createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["sanction"]>
-
-  export type SanctionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    sanctionType?: boolean
-    reason?: boolean
-    startDate?: boolean
-    endDate?: boolean
-    createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["sanction"]>
-
-  export type SanctionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    userId?: boolean
-    sanctionType?: boolean
-    reason?: boolean
-    startDate?: boolean
-    endDate?: boolean
-    createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["sanction"]>
-
-  export type SanctionSelectScalar = {
-    id?: boolean
-    userId?: boolean
-    sanctionType?: boolean
-    reason?: boolean
-    startDate?: boolean
-    endDate?: boolean
-    createdAt?: boolean
-  }
-
-  export type SanctionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "sanctionType" | "reason" | "startDate" | "endDate" | "createdAt", ExtArgs["result"]["sanction"]>
-  export type SanctionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type SanctionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type SanctionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-
-  export type $SanctionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Sanction"
-    objects: {
-      user: Prisma.$UserPayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      userId: string
-      sanctionType: $Enums.SanctionType
-      reason: string | null
-      startDate: Date | null
-      endDate: Date | null
-      createdAt: Date
-    }, ExtArgs["result"]["sanction"]>
-    composites: {}
-  }
-
-  type SanctionGetPayload<S extends boolean | null | undefined | SanctionDefaultArgs> = $Result.GetResult<Prisma.$SanctionPayload, S>
-
-  type SanctionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<SanctionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: SanctionCountAggregateInputType | true
-    }
-
-  export interface SanctionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Sanction'], meta: { name: 'Sanction' } }
-    /**
-     * Find zero or one Sanction that matches the filter.
-     * @param {SanctionFindUniqueArgs} args - Arguments to find a Sanction
-     * @example
-     * // Get one Sanction
-     * const sanction = await prisma.sanction.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends SanctionFindUniqueArgs>(args: SelectSubset<T, SanctionFindUniqueArgs<ExtArgs>>): Prisma__SanctionClient<$Result.GetResult<Prisma.$SanctionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Sanction that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {SanctionFindUniqueOrThrowArgs} args - Arguments to find a Sanction
-     * @example
-     * // Get one Sanction
-     * const sanction = await prisma.sanction.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends SanctionFindUniqueOrThrowArgs>(args: SelectSubset<T, SanctionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SanctionClient<$Result.GetResult<Prisma.$SanctionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Sanction that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {SanctionFindFirstArgs} args - Arguments to find a Sanction
-     * @example
-     * // Get one Sanction
-     * const sanction = await prisma.sanction.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends SanctionFindFirstArgs>(args?: SelectSubset<T, SanctionFindFirstArgs<ExtArgs>>): Prisma__SanctionClient<$Result.GetResult<Prisma.$SanctionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Sanction that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {SanctionFindFirstOrThrowArgs} args - Arguments to find a Sanction
-     * @example
-     * // Get one Sanction
-     * const sanction = await prisma.sanction.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends SanctionFindFirstOrThrowArgs>(args?: SelectSubset<T, SanctionFindFirstOrThrowArgs<ExtArgs>>): Prisma__SanctionClient<$Result.GetResult<Prisma.$SanctionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Sanctions that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {SanctionFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Sanctions
-     * const sanctions = await prisma.sanction.findMany()
-     * 
-     * // Get first 10 Sanctions
-     * const sanctions = await prisma.sanction.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const sanctionWithIdOnly = await prisma.sanction.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends SanctionFindManyArgs>(args?: SelectSubset<T, SanctionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SanctionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Sanction.
-     * @param {SanctionCreateArgs} args - Arguments to create a Sanction.
-     * @example
-     * // Create one Sanction
-     * const Sanction = await prisma.sanction.create({
-     *   data: {
-     *     // ... data to create a Sanction
-     *   }
-     * })
-     * 
-     */
-    create<T extends SanctionCreateArgs>(args: SelectSubset<T, SanctionCreateArgs<ExtArgs>>): Prisma__SanctionClient<$Result.GetResult<Prisma.$SanctionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Sanctions.
-     * @param {SanctionCreateManyArgs} args - Arguments to create many Sanctions.
-     * @example
-     * // Create many Sanctions
-     * const sanction = await prisma.sanction.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends SanctionCreateManyArgs>(args?: SelectSubset<T, SanctionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Sanctions and returns the data saved in the database.
-     * @param {SanctionCreateManyAndReturnArgs} args - Arguments to create many Sanctions.
-     * @example
-     * // Create many Sanctions
-     * const sanction = await prisma.sanction.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Sanctions and only return the `id`
-     * const sanctionWithIdOnly = await prisma.sanction.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends SanctionCreateManyAndReturnArgs>(args?: SelectSubset<T, SanctionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SanctionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Sanction.
-     * @param {SanctionDeleteArgs} args - Arguments to delete one Sanction.
-     * @example
-     * // Delete one Sanction
-     * const Sanction = await prisma.sanction.delete({
-     *   where: {
-     *     // ... filter to delete one Sanction
-     *   }
-     * })
-     * 
-     */
-    delete<T extends SanctionDeleteArgs>(args: SelectSubset<T, SanctionDeleteArgs<ExtArgs>>): Prisma__SanctionClient<$Result.GetResult<Prisma.$SanctionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Sanction.
-     * @param {SanctionUpdateArgs} args - Arguments to update one Sanction.
-     * @example
-     * // Update one Sanction
-     * const sanction = await prisma.sanction.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends SanctionUpdateArgs>(args: SelectSubset<T, SanctionUpdateArgs<ExtArgs>>): Prisma__SanctionClient<$Result.GetResult<Prisma.$SanctionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Sanctions.
-     * @param {SanctionDeleteManyArgs} args - Arguments to filter Sanctions to delete.
-     * @example
-     * // Delete a few Sanctions
-     * const { count } = await prisma.sanction.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends SanctionDeleteManyArgs>(args?: SelectSubset<T, SanctionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Sanctions.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {SanctionUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Sanctions
-     * const sanction = await prisma.sanction.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends SanctionUpdateManyArgs>(args: SelectSubset<T, SanctionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Sanctions and returns the data updated in the database.
-     * @param {SanctionUpdateManyAndReturnArgs} args - Arguments to update many Sanctions.
-     * @example
-     * // Update many Sanctions
-     * const sanction = await prisma.sanction.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Sanctions and only return the `id`
-     * const sanctionWithIdOnly = await prisma.sanction.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends SanctionUpdateManyAndReturnArgs>(args: SelectSubset<T, SanctionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SanctionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Sanction.
-     * @param {SanctionUpsertArgs} args - Arguments to update or create a Sanction.
-     * @example
-     * // Update or create a Sanction
-     * const sanction = await prisma.sanction.upsert({
-     *   create: {
-     *     // ... data to create a Sanction
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Sanction we want to update
-     *   }
-     * })
-     */
-    upsert<T extends SanctionUpsertArgs>(args: SelectSubset<T, SanctionUpsertArgs<ExtArgs>>): Prisma__SanctionClient<$Result.GetResult<Prisma.$SanctionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Sanctions.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {SanctionCountArgs} args - Arguments to filter Sanctions to count.
-     * @example
-     * // Count the number of Sanctions
-     * const count = await prisma.sanction.count({
-     *   where: {
-     *     // ... the filter for the Sanctions we want to count
-     *   }
-     * })
-    **/
-    count<T extends SanctionCountArgs>(
-      args?: Subset<T, SanctionCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], SanctionCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Sanction.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {SanctionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends SanctionAggregateArgs>(args: Subset<T, SanctionAggregateArgs>): Prisma.PrismaPromise<GetSanctionAggregateType<T>>
-
-    /**
-     * Group by Sanction.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {SanctionGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends SanctionGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: SanctionGroupByArgs['orderBy'] }
-        : { orderBy?: SanctionGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, SanctionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSanctionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Sanction model
-   */
-  readonly fields: SanctionFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Sanction.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__SanctionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Sanction model
-   */
-  interface SanctionFieldRefs {
-    readonly id: FieldRef<"Sanction", 'String'>
-    readonly userId: FieldRef<"Sanction", 'String'>
-    readonly sanctionType: FieldRef<"Sanction", 'SanctionType'>
-    readonly reason: FieldRef<"Sanction", 'String'>
-    readonly startDate: FieldRef<"Sanction", 'DateTime'>
-    readonly endDate: FieldRef<"Sanction", 'DateTime'>
-    readonly createdAt: FieldRef<"Sanction", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Sanction findUnique
-   */
-  export type SanctionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Sanction
-     */
-    select?: SanctionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Sanction
-     */
-    omit?: SanctionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SanctionInclude<ExtArgs> | null
-    /**
-     * Filter, which Sanction to fetch.
-     */
-    where: SanctionWhereUniqueInput
-  }
-
-  /**
-   * Sanction findUniqueOrThrow
-   */
-  export type SanctionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Sanction
-     */
-    select?: SanctionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Sanction
-     */
-    omit?: SanctionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SanctionInclude<ExtArgs> | null
-    /**
-     * Filter, which Sanction to fetch.
-     */
-    where: SanctionWhereUniqueInput
-  }
-
-  /**
-   * Sanction findFirst
-   */
-  export type SanctionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Sanction
-     */
-    select?: SanctionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Sanction
-     */
-    omit?: SanctionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SanctionInclude<ExtArgs> | null
-    /**
-     * Filter, which Sanction to fetch.
-     */
-    where?: SanctionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Sanctions to fetch.
-     */
-    orderBy?: SanctionOrderByWithRelationInput | SanctionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Sanctions.
-     */
-    cursor?: SanctionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Sanctions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Sanctions.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Sanctions.
-     */
-    distinct?: SanctionScalarFieldEnum | SanctionScalarFieldEnum[]
-  }
-
-  /**
-   * Sanction findFirstOrThrow
-   */
-  export type SanctionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Sanction
-     */
-    select?: SanctionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Sanction
-     */
-    omit?: SanctionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SanctionInclude<ExtArgs> | null
-    /**
-     * Filter, which Sanction to fetch.
-     */
-    where?: SanctionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Sanctions to fetch.
-     */
-    orderBy?: SanctionOrderByWithRelationInput | SanctionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Sanctions.
-     */
-    cursor?: SanctionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Sanctions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Sanctions.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Sanctions.
-     */
-    distinct?: SanctionScalarFieldEnum | SanctionScalarFieldEnum[]
-  }
-
-  /**
-   * Sanction findMany
-   */
-  export type SanctionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Sanction
-     */
-    select?: SanctionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Sanction
-     */
-    omit?: SanctionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SanctionInclude<ExtArgs> | null
-    /**
-     * Filter, which Sanctions to fetch.
-     */
-    where?: SanctionWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Sanctions to fetch.
-     */
-    orderBy?: SanctionOrderByWithRelationInput | SanctionOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Sanctions.
-     */
-    cursor?: SanctionWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Sanctions from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Sanctions.
-     */
-    skip?: number
-    distinct?: SanctionScalarFieldEnum | SanctionScalarFieldEnum[]
-  }
-
-  /**
-   * Sanction create
-   */
-  export type SanctionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Sanction
-     */
-    select?: SanctionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Sanction
-     */
-    omit?: SanctionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SanctionInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Sanction.
-     */
-    data: XOR<SanctionCreateInput, SanctionUncheckedCreateInput>
-  }
-
-  /**
-   * Sanction createMany
-   */
-  export type SanctionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Sanctions.
-     */
-    data: SanctionCreateManyInput | SanctionCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Sanction createManyAndReturn
-   */
-  export type SanctionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Sanction
-     */
-    select?: SanctionSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Sanction
-     */
-    omit?: SanctionOmit<ExtArgs> | null
-    /**
-     * The data used to create many Sanctions.
-     */
-    data: SanctionCreateManyInput | SanctionCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SanctionIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Sanction update
-   */
-  export type SanctionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Sanction
-     */
-    select?: SanctionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Sanction
-     */
-    omit?: SanctionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SanctionInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Sanction.
-     */
-    data: XOR<SanctionUpdateInput, SanctionUncheckedUpdateInput>
-    /**
-     * Choose, which Sanction to update.
-     */
-    where: SanctionWhereUniqueInput
-  }
-
-  /**
-   * Sanction updateMany
-   */
-  export type SanctionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Sanctions.
-     */
-    data: XOR<SanctionUpdateManyMutationInput, SanctionUncheckedUpdateManyInput>
-    /**
-     * Filter which Sanctions to update
-     */
-    where?: SanctionWhereInput
-    /**
-     * Limit how many Sanctions to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Sanction updateManyAndReturn
-   */
-  export type SanctionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Sanction
-     */
-    select?: SanctionSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Sanction
-     */
-    omit?: SanctionOmit<ExtArgs> | null
-    /**
-     * The data used to update Sanctions.
-     */
-    data: XOR<SanctionUpdateManyMutationInput, SanctionUncheckedUpdateManyInput>
-    /**
-     * Filter which Sanctions to update
-     */
-    where?: SanctionWhereInput
-    /**
-     * Limit how many Sanctions to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SanctionIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Sanction upsert
-   */
-  export type SanctionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Sanction
-     */
-    select?: SanctionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Sanction
-     */
-    omit?: SanctionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SanctionInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Sanction to update in case it exists.
-     */
-    where: SanctionWhereUniqueInput
-    /**
-     * In case the Sanction found by the `where` argument doesn't exist, create a new Sanction with this data.
-     */
-    create: XOR<SanctionCreateInput, SanctionUncheckedCreateInput>
-    /**
-     * In case the Sanction was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<SanctionUpdateInput, SanctionUncheckedUpdateInput>
-  }
-
-  /**
-   * Sanction delete
-   */
-  export type SanctionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Sanction
-     */
-    select?: SanctionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Sanction
-     */
-    omit?: SanctionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SanctionInclude<ExtArgs> | null
-    /**
-     * Filter which Sanction to delete.
-     */
-    where: SanctionWhereUniqueInput
-  }
-
-  /**
-   * Sanction deleteMany
-   */
-  export type SanctionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Sanctions to delete
-     */
-    where?: SanctionWhereInput
-    /**
-     * Limit how many Sanctions to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Sanction without action
-   */
-  export type SanctionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Sanction
-     */
-    select?: SanctionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Sanction
-     */
-    omit?: SanctionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SanctionInclude<ExtArgs> | null
-  }
-
-
-  /**
    * Enums
    */
 
@@ -9510,16 +6902,9 @@ export namespace Prisma {
 
   export const UserScalarFieldEnum: {
     id: 'id',
-    role: 'role',
     email: 'email',
     password: 'password',
-    phone: 'phone',
-    fullName: 'fullName',
-    status: 'status',
-    isEmailedVerified: 'isEmailedVerified',
-    isPhoneVerified: 'isPhoneVerified',
-    walletId: 'walletId',
-    userInfoId: 'userInfoId',
+    userType: 'userType',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -9527,21 +6912,37 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-  export const UserInformationScalarFieldEnum: {
-    id: 'id',
+  export const CorporateProfileScalarFieldEnum: {
+    companyId: 'companyId',
     userId: 'userId',
-    profileImage: 'profileImage',
-    gender: 'gender',
-    address: 'address',
-    country: 'country',
-    city: 'city',
-    cvForm: 'cvForm',
-    additionalInformation: 'additionalInformation',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    companyName: 'companyName',
+    industryCode: 'industryCode',
+    businessRegNo: 'businessRegNo'
   };
 
-  export type UserInformationScalarFieldEnum = (typeof UserInformationScalarFieldEnum)[keyof typeof UserInformationScalarFieldEnum]
+  export type CorporateProfileScalarFieldEnum = (typeof CorporateProfileScalarFieldEnum)[keyof typeof CorporateProfileScalarFieldEnum]
+
+
+  export const IndividualProfileScalarFieldEnum: {
+    individualId: 'individualId',
+    userId: 'userId',
+    fullName: 'fullName',
+    visaStatus: 'visaStatus',
+    isVisaVerified: 'isVisaVerified',
+    koreanLevel: 'koreanLevel'
+  };
+
+  export type IndividualProfileScalarFieldEnum = (typeof IndividualProfileScalarFieldEnum)[keyof typeof IndividualProfileScalarFieldEnum]
+
+
+  export const TalentAccessLogScalarFieldEnum: {
+    accessId: 'accessId',
+    corporateId: 'corporateId',
+    individualId: 'individualId',
+    accessedAt: 'accessedAt'
+  };
+
+  export type TalentAccessLogScalarFieldEnum = (typeof TalentAccessLogScalarFieldEnum)[keyof typeof TalentAccessLogScalarFieldEnum]
 
 
   export const SocialAuthScalarFieldEnum: {
@@ -9552,60 +6953,6 @@ export namespace Prisma {
   };
 
   export type SocialAuthScalarFieldEnum = (typeof SocialAuthScalarFieldEnum)[keyof typeof SocialAuthScalarFieldEnum]
-
-
-  export const MemberIdentityVerificationScalarFieldEnum: {
-    id: 'id',
-    userId: 'userId',
-    passportPhoto: 'passportPhoto',
-    selfiePhoto: 'selfiePhoto',
-    verificationStatus: 'verificationStatus',
-    isVerifiedBy: 'isVerifiedBy',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-  };
-
-  export type MemberIdentityVerificationScalarFieldEnum = (typeof MemberIdentityVerificationScalarFieldEnum)[keyof typeof MemberIdentityVerificationScalarFieldEnum]
-
-
-  export const CorporateRegistrationScalarFieldEnum: {
-    id: 'id',
-    userId: 'userId',
-    companyName: 'companyName',
-    businessLicenseFile: 'businessLicenseFile',
-    verificationStatus: 'verificationStatus',
-    isVerifiedBy: 'isVerifiedBy',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-  };
-
-  export type CorporateRegistrationScalarFieldEnum = (typeof CorporateRegistrationScalarFieldEnum)[keyof typeof CorporateRegistrationScalarFieldEnum]
-
-
-  export const VerificationTokenScalarFieldEnum: {
-    id: 'id',
-    userId: 'userId',
-    token: 'token',
-    type: 'type',
-    expiresAt: 'expiresAt',
-    usedAt: 'usedAt',
-    createdAt: 'createdAt'
-  };
-
-  export type VerificationTokenScalarFieldEnum = (typeof VerificationTokenScalarFieldEnum)[keyof typeof VerificationTokenScalarFieldEnum]
-
-
-  export const SanctionScalarFieldEnum: {
-    id: 'id',
-    userId: 'userId',
-    sanctionType: 'sanctionType',
-    reason: 'reason',
-    startDate: 'startDate',
-    endDate: 'endDate',
-    createdAt: 'createdAt'
-  };
-
-  export type SanctionScalarFieldEnum = (typeof SanctionScalarFieldEnum)[keyof typeof SanctionScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -9652,37 +6999,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'UserRole'
+   * Reference to a field of type 'UserType'
    */
-  export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
+  export type EnumUserTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserType'>
     
 
 
   /**
-   * Reference to a field of type 'UserRole[]'
+   * Reference to a field of type 'UserType[]'
    */
-  export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'UserStatus'
-   */
-  export type EnumUserStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserStatus'>
-    
-
-
-  /**
-   * Reference to a field of type 'UserStatus[]'
-   */
-  export type ListEnumUserStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserStatus[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+  export type ListEnumUserTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserType[]'>
     
 
 
@@ -9701,44 +7027,23 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'SocialProvider'
+   * Reference to a field of type 'BigInt'
    */
-  export type EnumSocialProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocialProvider'>
+  export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
     
 
 
   /**
-   * Reference to a field of type 'SocialProvider[]'
+   * Reference to a field of type 'BigInt[]'
    */
-  export type ListEnumSocialProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocialProvider[]'>
+  export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
     
 
 
   /**
-   * Reference to a field of type 'VerificationStatus'
+   * Reference to a field of type 'Boolean'
    */
-  export type EnumVerificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationStatus'>
-    
-
-
-  /**
-   * Reference to a field of type 'VerificationStatus[]'
-   */
-  export type ListEnumVerificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationStatus[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'SanctionType'
-   */
-  export type EnumSanctionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SanctionType'>
-    
-
-
-  /**
-   * Reference to a field of type 'SanctionType[]'
-   */
-  export type ListEnumSanctionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SanctionType[]'>
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -9754,6 +7059,34 @@ export namespace Prisma {
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
+
+
+  /**
+   * Reference to a field of type 'SocialProvider'
+   */
+  export type EnumSocialProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocialProvider'>
+    
+
+
+  /**
+   * Reference to a field of type 'SocialProvider[]'
+   */
+  export type ListEnumSocialProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocialProvider[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
   /**
    * Deep Input Types
    */
@@ -9764,91 +7097,48 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     id?: StringFilter<"User"> | string
-    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
     email?: StringNullableFilter<"User"> | string | null
     password?: StringNullableFilter<"User"> | string | null
-    phone?: StringNullableFilter<"User"> | string | null
-    fullName?: StringNullableFilter<"User"> | string | null
-    status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
-    isEmailedVerified?: BoolFilter<"User"> | boolean
-    isPhoneVerified?: BoolFilter<"User"> | boolean
-    walletId?: StringNullableFilter<"User"> | string | null
-    userInfoId?: StringNullableFilter<"User"> | string | null
+    userType?: EnumUserTypeFilter<"User"> | $Enums.UserType
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    memberIdentityVerification?: XOR<MemberIdentityVerificationNullableScalarRelationFilter, MemberIdentityVerificationWhereInput> | null
-    corporateRegistration?: XOR<CorporateRegistrationNullableScalarRelationFilter, CorporateRegistrationWhereInput> | null
-    verifiedMemberIdentities?: MemberIdentityVerificationListRelationFilter
-    verifiedCorporateRegistrations?: CorporateRegistrationListRelationFilter
-    sanctions?: SanctionListRelationFilter
-    userInformation?: XOR<UserInformationNullableScalarRelationFilter, UserInformationWhereInput> | null
-    socialAuths?: XOR<SocialAuthNullableScalarRelationFilter, SocialAuthWhereInput> | null
-    verificationTokens?: VerificationTokenListRelationFilter
+    corporate?: XOR<CorporateProfileNullableScalarRelationFilter, CorporateProfileWhereInput> | null
+    individual?: XOR<IndividualProfileNullableScalarRelationFilter, IndividualProfileWhereInput> | null
+    socialAuths?: SocialAuthListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
-    role?: SortOrder
     email?: SortOrderInput | SortOrder
     password?: SortOrderInput | SortOrder
-    phone?: SortOrderInput | SortOrder
-    fullName?: SortOrderInput | SortOrder
-    status?: SortOrder
-    isEmailedVerified?: SortOrder
-    isPhoneVerified?: SortOrder
-    walletId?: SortOrderInput | SortOrder
-    userInfoId?: SortOrderInput | SortOrder
+    userType?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    memberIdentityVerification?: MemberIdentityVerificationOrderByWithRelationInput
-    corporateRegistration?: CorporateRegistrationOrderByWithRelationInput
-    verifiedMemberIdentities?: MemberIdentityVerificationOrderByRelationAggregateInput
-    verifiedCorporateRegistrations?: CorporateRegistrationOrderByRelationAggregateInput
-    sanctions?: SanctionOrderByRelationAggregateInput
-    userInformation?: UserInformationOrderByWithRelationInput
-    socialAuths?: SocialAuthOrderByWithRelationInput
-    verificationTokens?: VerificationTokenOrderByRelationAggregateInput
+    corporate?: CorporateProfileOrderByWithRelationInput
+    individual?: IndividualProfileOrderByWithRelationInput
+    socialAuths?: SocialAuthOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    walletId?: string
-    userInfoId?: string
+    email?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
-    role?: EnumUserRoleFilter<"User"> | $Enums.UserRole
-    email?: StringNullableFilter<"User"> | string | null
     password?: StringNullableFilter<"User"> | string | null
-    phone?: StringNullableFilter<"User"> | string | null
-    fullName?: StringNullableFilter<"User"> | string | null
-    status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
-    isEmailedVerified?: BoolFilter<"User"> | boolean
-    isPhoneVerified?: BoolFilter<"User"> | boolean
+    userType?: EnumUserTypeFilter<"User"> | $Enums.UserType
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    memberIdentityVerification?: XOR<MemberIdentityVerificationNullableScalarRelationFilter, MemberIdentityVerificationWhereInput> | null
-    corporateRegistration?: XOR<CorporateRegistrationNullableScalarRelationFilter, CorporateRegistrationWhereInput> | null
-    verifiedMemberIdentities?: MemberIdentityVerificationListRelationFilter
-    verifiedCorporateRegistrations?: CorporateRegistrationListRelationFilter
-    sanctions?: SanctionListRelationFilter
-    userInformation?: XOR<UserInformationNullableScalarRelationFilter, UserInformationWhereInput> | null
-    socialAuths?: XOR<SocialAuthNullableScalarRelationFilter, SocialAuthWhereInput> | null
-    verificationTokens?: VerificationTokenListRelationFilter
-  }, "id" | "walletId" | "userInfoId">
+    corporate?: XOR<CorporateProfileNullableScalarRelationFilter, CorporateProfileWhereInput> | null
+    individual?: XOR<IndividualProfileNullableScalarRelationFilter, IndividualProfileWhereInput> | null
+    socialAuths?: SocialAuthListRelationFilter
+  }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
-    role?: SortOrder
     email?: SortOrderInput | SortOrder
     password?: SortOrderInput | SortOrder
-    phone?: SortOrderInput | SortOrder
-    fullName?: SortOrderInput | SortOrder
-    status?: SortOrder
-    isEmailedVerified?: SortOrder
-    isPhoneVerified?: SortOrder
-    walletId?: SortOrderInput | SortOrder
-    userInfoId?: SortOrderInput | SortOrder
+    userType?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -9861,103 +7151,192 @@ export namespace Prisma {
     OR?: UserScalarWhereWithAggregatesInput[]
     NOT?: UserScalarWhereWithAggregatesInput | UserScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"User"> | string
-    role?: EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
     email?: StringNullableWithAggregatesFilter<"User"> | string | null
     password?: StringNullableWithAggregatesFilter<"User"> | string | null
-    phone?: StringNullableWithAggregatesFilter<"User"> | string | null
-    fullName?: StringNullableWithAggregatesFilter<"User"> | string | null
-    status?: EnumUserStatusWithAggregatesFilter<"User"> | $Enums.UserStatus
-    isEmailedVerified?: BoolWithAggregatesFilter<"User"> | boolean
-    isPhoneVerified?: BoolWithAggregatesFilter<"User"> | boolean
-    walletId?: StringNullableWithAggregatesFilter<"User"> | string | null
-    userInfoId?: StringNullableWithAggregatesFilter<"User"> | string | null
+    userType?: EnumUserTypeWithAggregatesFilter<"User"> | $Enums.UserType
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
 
-  export type UserInformationWhereInput = {
-    AND?: UserInformationWhereInput | UserInformationWhereInput[]
-    OR?: UserInformationWhereInput[]
-    NOT?: UserInformationWhereInput | UserInformationWhereInput[]
-    id?: StringFilter<"UserInformation"> | string
-    userId?: StringFilter<"UserInformation"> | string
-    profileImage?: StringNullableFilter<"UserInformation"> | string | null
-    gender?: StringNullableFilter<"UserInformation"> | string | null
-    address?: StringNullableFilter<"UserInformation"> | string | null
-    country?: StringNullableFilter<"UserInformation"> | string | null
-    city?: StringNullableFilter<"UserInformation"> | string | null
-    cvForm?: StringNullableFilter<"UserInformation"> | string | null
-    additionalInformation?: StringNullableFilter<"UserInformation"> | string | null
-    createdAt?: DateTimeFilter<"UserInformation"> | Date | string
-    updatedAt?: DateTimeFilter<"UserInformation"> | Date | string
+  export type CorporateProfileWhereInput = {
+    AND?: CorporateProfileWhereInput | CorporateProfileWhereInput[]
+    OR?: CorporateProfileWhereInput[]
+    NOT?: CorporateProfileWhereInput | CorporateProfileWhereInput[]
+    companyId?: BigIntFilter<"CorporateProfile"> | bigint | number
+    userId?: StringFilter<"CorporateProfile"> | string
+    companyName?: StringFilter<"CorporateProfile"> | string
+    industryCode?: StringFilter<"CorporateProfile"> | string
+    businessRegNo?: StringFilter<"CorporateProfile"> | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    accessLogs?: TalentAccessLogListRelationFilter
   }
 
-  export type UserInformationOrderByWithRelationInput = {
-    id?: SortOrder
+  export type CorporateProfileOrderByWithRelationInput = {
+    companyId?: SortOrder
     userId?: SortOrder
-    profileImage?: SortOrderInput | SortOrder
-    gender?: SortOrderInput | SortOrder
-    address?: SortOrderInput | SortOrder
-    country?: SortOrderInput | SortOrder
-    city?: SortOrderInput | SortOrder
-    cvForm?: SortOrderInput | SortOrder
-    additionalInformation?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    companyName?: SortOrder
+    industryCode?: SortOrder
+    businessRegNo?: SortOrder
     user?: UserOrderByWithRelationInput
+    accessLogs?: TalentAccessLogOrderByRelationAggregateInput
   }
 
-  export type UserInformationWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
+  export type CorporateProfileWhereUniqueInput = Prisma.AtLeast<{
+    companyId?: bigint | number
     userId?: string
-    AND?: UserInformationWhereInput | UserInformationWhereInput[]
-    OR?: UserInformationWhereInput[]
-    NOT?: UserInformationWhereInput | UserInformationWhereInput[]
-    profileImage?: StringNullableFilter<"UserInformation"> | string | null
-    gender?: StringNullableFilter<"UserInformation"> | string | null
-    address?: StringNullableFilter<"UserInformation"> | string | null
-    country?: StringNullableFilter<"UserInformation"> | string | null
-    city?: StringNullableFilter<"UserInformation"> | string | null
-    cvForm?: StringNullableFilter<"UserInformation"> | string | null
-    additionalInformation?: StringNullableFilter<"UserInformation"> | string | null
-    createdAt?: DateTimeFilter<"UserInformation"> | Date | string
-    updatedAt?: DateTimeFilter<"UserInformation"> | Date | string
+    AND?: CorporateProfileWhereInput | CorporateProfileWhereInput[]
+    OR?: CorporateProfileWhereInput[]
+    NOT?: CorporateProfileWhereInput | CorporateProfileWhereInput[]
+    companyName?: StringFilter<"CorporateProfile"> | string
+    industryCode?: StringFilter<"CorporateProfile"> | string
+    businessRegNo?: StringFilter<"CorporateProfile"> | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id" | "userId">
+    accessLogs?: TalentAccessLogListRelationFilter
+  }, "companyId" | "userId">
 
-  export type UserInformationOrderByWithAggregationInput = {
-    id?: SortOrder
+  export type CorporateProfileOrderByWithAggregationInput = {
+    companyId?: SortOrder
     userId?: SortOrder
-    profileImage?: SortOrderInput | SortOrder
-    gender?: SortOrderInput | SortOrder
-    address?: SortOrderInput | SortOrder
-    country?: SortOrderInput | SortOrder
-    city?: SortOrderInput | SortOrder
-    cvForm?: SortOrderInput | SortOrder
-    additionalInformation?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: UserInformationCountOrderByAggregateInput
-    _max?: UserInformationMaxOrderByAggregateInput
-    _min?: UserInformationMinOrderByAggregateInput
+    companyName?: SortOrder
+    industryCode?: SortOrder
+    businessRegNo?: SortOrder
+    _count?: CorporateProfileCountOrderByAggregateInput
+    _avg?: CorporateProfileAvgOrderByAggregateInput
+    _max?: CorporateProfileMaxOrderByAggregateInput
+    _min?: CorporateProfileMinOrderByAggregateInput
+    _sum?: CorporateProfileSumOrderByAggregateInput
   }
 
-  export type UserInformationScalarWhereWithAggregatesInput = {
-    AND?: UserInformationScalarWhereWithAggregatesInput | UserInformationScalarWhereWithAggregatesInput[]
-    OR?: UserInformationScalarWhereWithAggregatesInput[]
-    NOT?: UserInformationScalarWhereWithAggregatesInput | UserInformationScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"UserInformation"> | string
-    userId?: StringWithAggregatesFilter<"UserInformation"> | string
-    profileImage?: StringNullableWithAggregatesFilter<"UserInformation"> | string | null
-    gender?: StringNullableWithAggregatesFilter<"UserInformation"> | string | null
-    address?: StringNullableWithAggregatesFilter<"UserInformation"> | string | null
-    country?: StringNullableWithAggregatesFilter<"UserInformation"> | string | null
-    city?: StringNullableWithAggregatesFilter<"UserInformation"> | string | null
-    cvForm?: StringNullableWithAggregatesFilter<"UserInformation"> | string | null
-    additionalInformation?: StringNullableWithAggregatesFilter<"UserInformation"> | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"UserInformation"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"UserInformation"> | Date | string
+  export type CorporateProfileScalarWhereWithAggregatesInput = {
+    AND?: CorporateProfileScalarWhereWithAggregatesInput | CorporateProfileScalarWhereWithAggregatesInput[]
+    OR?: CorporateProfileScalarWhereWithAggregatesInput[]
+    NOT?: CorporateProfileScalarWhereWithAggregatesInput | CorporateProfileScalarWhereWithAggregatesInput[]
+    companyId?: BigIntWithAggregatesFilter<"CorporateProfile"> | bigint | number
+    userId?: StringWithAggregatesFilter<"CorporateProfile"> | string
+    companyName?: StringWithAggregatesFilter<"CorporateProfile"> | string
+    industryCode?: StringWithAggregatesFilter<"CorporateProfile"> | string
+    businessRegNo?: StringWithAggregatesFilter<"CorporateProfile"> | string
+  }
+
+  export type IndividualProfileWhereInput = {
+    AND?: IndividualProfileWhereInput | IndividualProfileWhereInput[]
+    OR?: IndividualProfileWhereInput[]
+    NOT?: IndividualProfileWhereInput | IndividualProfileWhereInput[]
+    individualId?: BigIntFilter<"IndividualProfile"> | bigint | number
+    userId?: StringFilter<"IndividualProfile"> | string
+    fullName?: StringFilter<"IndividualProfile"> | string
+    visaStatus?: StringFilter<"IndividualProfile"> | string
+    isVisaVerified?: BoolFilter<"IndividualProfile"> | boolean
+    koreanLevel?: IntFilter<"IndividualProfile"> | number
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    accessLogs?: TalentAccessLogListRelationFilter
+  }
+
+  export type IndividualProfileOrderByWithRelationInput = {
+    individualId?: SortOrder
+    userId?: SortOrder
+    fullName?: SortOrder
+    visaStatus?: SortOrder
+    isVisaVerified?: SortOrder
+    koreanLevel?: SortOrder
+    user?: UserOrderByWithRelationInput
+    accessLogs?: TalentAccessLogOrderByRelationAggregateInput
+  }
+
+  export type IndividualProfileWhereUniqueInput = Prisma.AtLeast<{
+    individualId?: bigint | number
+    userId?: string
+    AND?: IndividualProfileWhereInput | IndividualProfileWhereInput[]
+    OR?: IndividualProfileWhereInput[]
+    NOT?: IndividualProfileWhereInput | IndividualProfileWhereInput[]
+    fullName?: StringFilter<"IndividualProfile"> | string
+    visaStatus?: StringFilter<"IndividualProfile"> | string
+    isVisaVerified?: BoolFilter<"IndividualProfile"> | boolean
+    koreanLevel?: IntFilter<"IndividualProfile"> | number
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    accessLogs?: TalentAccessLogListRelationFilter
+  }, "individualId" | "userId">
+
+  export type IndividualProfileOrderByWithAggregationInput = {
+    individualId?: SortOrder
+    userId?: SortOrder
+    fullName?: SortOrder
+    visaStatus?: SortOrder
+    isVisaVerified?: SortOrder
+    koreanLevel?: SortOrder
+    _count?: IndividualProfileCountOrderByAggregateInput
+    _avg?: IndividualProfileAvgOrderByAggregateInput
+    _max?: IndividualProfileMaxOrderByAggregateInput
+    _min?: IndividualProfileMinOrderByAggregateInput
+    _sum?: IndividualProfileSumOrderByAggregateInput
+  }
+
+  export type IndividualProfileScalarWhereWithAggregatesInput = {
+    AND?: IndividualProfileScalarWhereWithAggregatesInput | IndividualProfileScalarWhereWithAggregatesInput[]
+    OR?: IndividualProfileScalarWhereWithAggregatesInput[]
+    NOT?: IndividualProfileScalarWhereWithAggregatesInput | IndividualProfileScalarWhereWithAggregatesInput[]
+    individualId?: BigIntWithAggregatesFilter<"IndividualProfile"> | bigint | number
+    userId?: StringWithAggregatesFilter<"IndividualProfile"> | string
+    fullName?: StringWithAggregatesFilter<"IndividualProfile"> | string
+    visaStatus?: StringWithAggregatesFilter<"IndividualProfile"> | string
+    isVisaVerified?: BoolWithAggregatesFilter<"IndividualProfile"> | boolean
+    koreanLevel?: IntWithAggregatesFilter<"IndividualProfile"> | number
+  }
+
+  export type TalentAccessLogWhereInput = {
+    AND?: TalentAccessLogWhereInput | TalentAccessLogWhereInput[]
+    OR?: TalentAccessLogWhereInput[]
+    NOT?: TalentAccessLogWhereInput | TalentAccessLogWhereInput[]
+    accessId?: BigIntFilter<"TalentAccessLog"> | bigint | number
+    corporateId?: BigIntFilter<"TalentAccessLog"> | bigint | number
+    individualId?: BigIntFilter<"TalentAccessLog"> | bigint | number
+    accessedAt?: DateTimeFilter<"TalentAccessLog"> | Date | string
+    corporate?: XOR<CorporateProfileScalarRelationFilter, CorporateProfileWhereInput>
+    individual?: XOR<IndividualProfileScalarRelationFilter, IndividualProfileWhereInput>
+  }
+
+  export type TalentAccessLogOrderByWithRelationInput = {
+    accessId?: SortOrder
+    corporateId?: SortOrder
+    individualId?: SortOrder
+    accessedAt?: SortOrder
+    corporate?: CorporateProfileOrderByWithRelationInput
+    individual?: IndividualProfileOrderByWithRelationInput
+  }
+
+  export type TalentAccessLogWhereUniqueInput = Prisma.AtLeast<{
+    accessId?: bigint | number
+    corporateId_individualId?: TalentAccessLogCorporateIdIndividualIdCompoundUniqueInput
+    AND?: TalentAccessLogWhereInput | TalentAccessLogWhereInput[]
+    OR?: TalentAccessLogWhereInput[]
+    NOT?: TalentAccessLogWhereInput | TalentAccessLogWhereInput[]
+    corporateId?: BigIntFilter<"TalentAccessLog"> | bigint | number
+    individualId?: BigIntFilter<"TalentAccessLog"> | bigint | number
+    accessedAt?: DateTimeFilter<"TalentAccessLog"> | Date | string
+    corporate?: XOR<CorporateProfileScalarRelationFilter, CorporateProfileWhereInput>
+    individual?: XOR<IndividualProfileScalarRelationFilter, IndividualProfileWhereInput>
+  }, "accessId" | "corporateId_individualId">
+
+  export type TalentAccessLogOrderByWithAggregationInput = {
+    accessId?: SortOrder
+    corporateId?: SortOrder
+    individualId?: SortOrder
+    accessedAt?: SortOrder
+    _count?: TalentAccessLogCountOrderByAggregateInput
+    _avg?: TalentAccessLogAvgOrderByAggregateInput
+    _max?: TalentAccessLogMaxOrderByAggregateInput
+    _min?: TalentAccessLogMinOrderByAggregateInput
+    _sum?: TalentAccessLogSumOrderByAggregateInput
+  }
+
+  export type TalentAccessLogScalarWhereWithAggregatesInput = {
+    AND?: TalentAccessLogScalarWhereWithAggregatesInput | TalentAccessLogScalarWhereWithAggregatesInput[]
+    OR?: TalentAccessLogScalarWhereWithAggregatesInput[]
+    NOT?: TalentAccessLogScalarWhereWithAggregatesInput | TalentAccessLogScalarWhereWithAggregatesInput[]
+    accessId?: BigIntWithAggregatesFilter<"TalentAccessLog"> | bigint | number
+    corporateId?: BigIntWithAggregatesFilter<"TalentAccessLog"> | bigint | number
+    individualId?: BigIntWithAggregatesFilter<"TalentAccessLog"> | bigint | number
+    accessedAt?: DateTimeWithAggregatesFilter<"TalentAccessLog"> | Date | string
   }
 
   export type SocialAuthWhereInput = {
@@ -9980,15 +7359,16 @@ export namespace Prisma {
   }
 
   export type SocialAuthWhereUniqueInput = Prisma.AtLeast<{
-    userId?: string
+    id?: string
+    provider_providerId?: SocialAuthProviderProviderIdCompoundUniqueInput
     AND?: SocialAuthWhereInput | SocialAuthWhereInput[]
     OR?: SocialAuthWhereInput[]
     NOT?: SocialAuthWhereInput | SocialAuthWhereInput[]
-    id?: StringFilter<"SocialAuth"> | string
+    userId?: StringFilter<"SocialAuth"> | string
     provider?: EnumSocialProviderFilter<"SocialAuth"> | $Enums.SocialProvider
     providerId?: StringFilter<"SocialAuth"> | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "userId">
+  }, "id" | "provider_providerId">
 
   export type SocialAuthOrderByWithAggregationInput = {
     id?: SortOrder
@@ -10010,521 +7390,251 @@ export namespace Prisma {
     providerId?: StringWithAggregatesFilter<"SocialAuth"> | string
   }
 
-  export type MemberIdentityVerificationWhereInput = {
-    AND?: MemberIdentityVerificationWhereInput | MemberIdentityVerificationWhereInput[]
-    OR?: MemberIdentityVerificationWhereInput[]
-    NOT?: MemberIdentityVerificationWhereInput | MemberIdentityVerificationWhereInput[]
-    id?: StringFilter<"MemberIdentityVerification"> | string
-    userId?: StringFilter<"MemberIdentityVerification"> | string
-    passportPhoto?: StringNullableFilter<"MemberIdentityVerification"> | string | null
-    selfiePhoto?: StringNullableFilter<"MemberIdentityVerification"> | string | null
-    verificationStatus?: EnumVerificationStatusFilter<"MemberIdentityVerification"> | $Enums.VerificationStatus
-    isVerifiedBy?: StringNullableFilter<"MemberIdentityVerification"> | string | null
-    createdAt?: DateTimeFilter<"MemberIdentityVerification"> | Date | string
-    updatedAt?: DateTimeFilter<"MemberIdentityVerification"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    verifier?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
-  }
-
-  export type MemberIdentityVerificationOrderByWithRelationInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    passportPhoto?: SortOrderInput | SortOrder
-    selfiePhoto?: SortOrderInput | SortOrder
-    verificationStatus?: SortOrder
-    isVerifiedBy?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    user?: UserOrderByWithRelationInput
-    verifier?: UserOrderByWithRelationInput
-  }
-
-  export type MemberIdentityVerificationWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    userId?: string
-    AND?: MemberIdentityVerificationWhereInput | MemberIdentityVerificationWhereInput[]
-    OR?: MemberIdentityVerificationWhereInput[]
-    NOT?: MemberIdentityVerificationWhereInput | MemberIdentityVerificationWhereInput[]
-    passportPhoto?: StringNullableFilter<"MemberIdentityVerification"> | string | null
-    selfiePhoto?: StringNullableFilter<"MemberIdentityVerification"> | string | null
-    verificationStatus?: EnumVerificationStatusFilter<"MemberIdentityVerification"> | $Enums.VerificationStatus
-    isVerifiedBy?: StringNullableFilter<"MemberIdentityVerification"> | string | null
-    createdAt?: DateTimeFilter<"MemberIdentityVerification"> | Date | string
-    updatedAt?: DateTimeFilter<"MemberIdentityVerification"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    verifier?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
-  }, "id" | "userId">
-
-  export type MemberIdentityVerificationOrderByWithAggregationInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    passportPhoto?: SortOrderInput | SortOrder
-    selfiePhoto?: SortOrderInput | SortOrder
-    verificationStatus?: SortOrder
-    isVerifiedBy?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: MemberIdentityVerificationCountOrderByAggregateInput
-    _max?: MemberIdentityVerificationMaxOrderByAggregateInput
-    _min?: MemberIdentityVerificationMinOrderByAggregateInput
-  }
-
-  export type MemberIdentityVerificationScalarWhereWithAggregatesInput = {
-    AND?: MemberIdentityVerificationScalarWhereWithAggregatesInput | MemberIdentityVerificationScalarWhereWithAggregatesInput[]
-    OR?: MemberIdentityVerificationScalarWhereWithAggregatesInput[]
-    NOT?: MemberIdentityVerificationScalarWhereWithAggregatesInput | MemberIdentityVerificationScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"MemberIdentityVerification"> | string
-    userId?: StringWithAggregatesFilter<"MemberIdentityVerification"> | string
-    passportPhoto?: StringNullableWithAggregatesFilter<"MemberIdentityVerification"> | string | null
-    selfiePhoto?: StringNullableWithAggregatesFilter<"MemberIdentityVerification"> | string | null
-    verificationStatus?: EnumVerificationStatusWithAggregatesFilter<"MemberIdentityVerification"> | $Enums.VerificationStatus
-    isVerifiedBy?: StringNullableWithAggregatesFilter<"MemberIdentityVerification"> | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"MemberIdentityVerification"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"MemberIdentityVerification"> | Date | string
-  }
-
-  export type CorporateRegistrationWhereInput = {
-    AND?: CorporateRegistrationWhereInput | CorporateRegistrationWhereInput[]
-    OR?: CorporateRegistrationWhereInput[]
-    NOT?: CorporateRegistrationWhereInput | CorporateRegistrationWhereInput[]
-    id?: StringFilter<"CorporateRegistration"> | string
-    userId?: StringFilter<"CorporateRegistration"> | string
-    companyName?: StringNullableFilter<"CorporateRegistration"> | string | null
-    businessLicenseFile?: StringNullableFilter<"CorporateRegistration"> | string | null
-    verificationStatus?: EnumVerificationStatusFilter<"CorporateRegistration"> | $Enums.VerificationStatus
-    isVerifiedBy?: StringNullableFilter<"CorporateRegistration"> | string | null
-    createdAt?: DateTimeFilter<"CorporateRegistration"> | Date | string
-    updatedAt?: DateTimeFilter<"CorporateRegistration"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    verifier?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
-  }
-
-  export type CorporateRegistrationOrderByWithRelationInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    companyName?: SortOrderInput | SortOrder
-    businessLicenseFile?: SortOrderInput | SortOrder
-    verificationStatus?: SortOrder
-    isVerifiedBy?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    user?: UserOrderByWithRelationInput
-    verifier?: UserOrderByWithRelationInput
-  }
-
-  export type CorporateRegistrationWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    userId?: string
-    AND?: CorporateRegistrationWhereInput | CorporateRegistrationWhereInput[]
-    OR?: CorporateRegistrationWhereInput[]
-    NOT?: CorporateRegistrationWhereInput | CorporateRegistrationWhereInput[]
-    companyName?: StringNullableFilter<"CorporateRegistration"> | string | null
-    businessLicenseFile?: StringNullableFilter<"CorporateRegistration"> | string | null
-    verificationStatus?: EnumVerificationStatusFilter<"CorporateRegistration"> | $Enums.VerificationStatus
-    isVerifiedBy?: StringNullableFilter<"CorporateRegistration"> | string | null
-    createdAt?: DateTimeFilter<"CorporateRegistration"> | Date | string
-    updatedAt?: DateTimeFilter<"CorporateRegistration"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    verifier?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
-  }, "id" | "userId">
-
-  export type CorporateRegistrationOrderByWithAggregationInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    companyName?: SortOrderInput | SortOrder
-    businessLicenseFile?: SortOrderInput | SortOrder
-    verificationStatus?: SortOrder
-    isVerifiedBy?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: CorporateRegistrationCountOrderByAggregateInput
-    _max?: CorporateRegistrationMaxOrderByAggregateInput
-    _min?: CorporateRegistrationMinOrderByAggregateInput
-  }
-
-  export type CorporateRegistrationScalarWhereWithAggregatesInput = {
-    AND?: CorporateRegistrationScalarWhereWithAggregatesInput | CorporateRegistrationScalarWhereWithAggregatesInput[]
-    OR?: CorporateRegistrationScalarWhereWithAggregatesInput[]
-    NOT?: CorporateRegistrationScalarWhereWithAggregatesInput | CorporateRegistrationScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"CorporateRegistration"> | string
-    userId?: StringWithAggregatesFilter<"CorporateRegistration"> | string
-    companyName?: StringNullableWithAggregatesFilter<"CorporateRegistration"> | string | null
-    businessLicenseFile?: StringNullableWithAggregatesFilter<"CorporateRegistration"> | string | null
-    verificationStatus?: EnumVerificationStatusWithAggregatesFilter<"CorporateRegistration"> | $Enums.VerificationStatus
-    isVerifiedBy?: StringNullableWithAggregatesFilter<"CorporateRegistration"> | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"CorporateRegistration"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"CorporateRegistration"> | Date | string
-  }
-
-  export type VerificationTokenWhereInput = {
-    AND?: VerificationTokenWhereInput | VerificationTokenWhereInput[]
-    OR?: VerificationTokenWhereInput[]
-    NOT?: VerificationTokenWhereInput | VerificationTokenWhereInput[]
-    id?: StringFilter<"VerificationToken"> | string
-    userId?: StringFilter<"VerificationToken"> | string
-    token?: StringFilter<"VerificationToken"> | string
-    type?: StringFilter<"VerificationToken"> | string
-    expiresAt?: DateTimeFilter<"VerificationToken"> | Date | string
-    usedAt?: DateTimeNullableFilter<"VerificationToken"> | Date | string | null
-    createdAt?: DateTimeFilter<"VerificationToken"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }
-
-  export type VerificationTokenOrderByWithRelationInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    token?: SortOrder
-    type?: SortOrder
-    expiresAt?: SortOrder
-    usedAt?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    user?: UserOrderByWithRelationInput
-  }
-
-  export type VerificationTokenWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    token?: string
-    AND?: VerificationTokenWhereInput | VerificationTokenWhereInput[]
-    OR?: VerificationTokenWhereInput[]
-    NOT?: VerificationTokenWhereInput | VerificationTokenWhereInput[]
-    userId?: StringFilter<"VerificationToken"> | string
-    type?: StringFilter<"VerificationToken"> | string
-    expiresAt?: DateTimeFilter<"VerificationToken"> | Date | string
-    usedAt?: DateTimeNullableFilter<"VerificationToken"> | Date | string | null
-    createdAt?: DateTimeFilter<"VerificationToken"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id" | "token">
-
-  export type VerificationTokenOrderByWithAggregationInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    token?: SortOrder
-    type?: SortOrder
-    expiresAt?: SortOrder
-    usedAt?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    _count?: VerificationTokenCountOrderByAggregateInput
-    _max?: VerificationTokenMaxOrderByAggregateInput
-    _min?: VerificationTokenMinOrderByAggregateInput
-  }
-
-  export type VerificationTokenScalarWhereWithAggregatesInput = {
-    AND?: VerificationTokenScalarWhereWithAggregatesInput | VerificationTokenScalarWhereWithAggregatesInput[]
-    OR?: VerificationTokenScalarWhereWithAggregatesInput[]
-    NOT?: VerificationTokenScalarWhereWithAggregatesInput | VerificationTokenScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"VerificationToken"> | string
-    userId?: StringWithAggregatesFilter<"VerificationToken"> | string
-    token?: StringWithAggregatesFilter<"VerificationToken"> | string
-    type?: StringWithAggregatesFilter<"VerificationToken"> | string
-    expiresAt?: DateTimeWithAggregatesFilter<"VerificationToken"> | Date | string
-    usedAt?: DateTimeNullableWithAggregatesFilter<"VerificationToken"> | Date | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"VerificationToken"> | Date | string
-  }
-
-  export type SanctionWhereInput = {
-    AND?: SanctionWhereInput | SanctionWhereInput[]
-    OR?: SanctionWhereInput[]
-    NOT?: SanctionWhereInput | SanctionWhereInput[]
-    id?: StringFilter<"Sanction"> | string
-    userId?: StringFilter<"Sanction"> | string
-    sanctionType?: EnumSanctionTypeFilter<"Sanction"> | $Enums.SanctionType
-    reason?: StringNullableFilter<"Sanction"> | string | null
-    startDate?: DateTimeNullableFilter<"Sanction"> | Date | string | null
-    endDate?: DateTimeNullableFilter<"Sanction"> | Date | string | null
-    createdAt?: DateTimeFilter<"Sanction"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }
-
-  export type SanctionOrderByWithRelationInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    sanctionType?: SortOrder
-    reason?: SortOrderInput | SortOrder
-    startDate?: SortOrderInput | SortOrder
-    endDate?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    user?: UserOrderByWithRelationInput
-  }
-
-  export type SanctionWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: SanctionWhereInput | SanctionWhereInput[]
-    OR?: SanctionWhereInput[]
-    NOT?: SanctionWhereInput | SanctionWhereInput[]
-    userId?: StringFilter<"Sanction"> | string
-    sanctionType?: EnumSanctionTypeFilter<"Sanction"> | $Enums.SanctionType
-    reason?: StringNullableFilter<"Sanction"> | string | null
-    startDate?: DateTimeNullableFilter<"Sanction"> | Date | string | null
-    endDate?: DateTimeNullableFilter<"Sanction"> | Date | string | null
-    createdAt?: DateTimeFilter<"Sanction"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id">
-
-  export type SanctionOrderByWithAggregationInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    sanctionType?: SortOrder
-    reason?: SortOrderInput | SortOrder
-    startDate?: SortOrderInput | SortOrder
-    endDate?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    _count?: SanctionCountOrderByAggregateInput
-    _max?: SanctionMaxOrderByAggregateInput
-    _min?: SanctionMinOrderByAggregateInput
-  }
-
-  export type SanctionScalarWhereWithAggregatesInput = {
-    AND?: SanctionScalarWhereWithAggregatesInput | SanctionScalarWhereWithAggregatesInput[]
-    OR?: SanctionScalarWhereWithAggregatesInput[]
-    NOT?: SanctionScalarWhereWithAggregatesInput | SanctionScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Sanction"> | string
-    userId?: StringWithAggregatesFilter<"Sanction"> | string
-    sanctionType?: EnumSanctionTypeWithAggregatesFilter<"Sanction"> | $Enums.SanctionType
-    reason?: StringNullableWithAggregatesFilter<"Sanction"> | string | null
-    startDate?: DateTimeNullableWithAggregatesFilter<"Sanction"> | Date | string | null
-    endDate?: DateTimeNullableWithAggregatesFilter<"Sanction"> | Date | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"Sanction"> | Date | string
-  }
-
   export type UserCreateInput = {
     id?: string
-    role?: $Enums.UserRole
     email?: string | null
     password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
+    userType: $Enums.UserType
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
-    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
-    verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionCreateNestedManyWithoutUserInput
-    userInformation?: UserInformationCreateNestedOneWithoutUserInput
-    socialAuths?: SocialAuthCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenCreateNestedManyWithoutUserInput
+    corporate?: CorporateProfileCreateNestedOneWithoutUserInput
+    individual?: IndividualProfileCreateNestedOneWithoutUserInput
+    socialAuths?: SocialAuthCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
     id?: string
-    role?: $Enums.UserRole
     email?: string | null
     password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
+    userType: $Enums.UserType
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
-    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
-    userInformation?: UserInformationUncheckedCreateNestedOneWithoutUserInput
-    socialAuths?: SocialAuthUncheckedCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    corporate?: CorporateProfileUncheckedCreateNestedOneWithoutUserInput
+    individual?: IndividualProfileUncheckedCreateNestedOneWithoutUserInput
+    socialAuths?: SocialAuthUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
+    userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
-    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUpdateManyWithoutUserNestedInput
-    userInformation?: UserInformationUpdateOneWithoutUserNestedInput
-    socialAuths?: SocialAuthUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUpdateManyWithoutUserNestedInput
+    corporate?: CorporateProfileUpdateOneWithoutUserNestedInput
+    individual?: IndividualProfileUpdateOneWithoutUserNestedInput
+    socialAuths?: SocialAuthUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
+    userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
-    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
-    userInformation?: UserInformationUncheckedUpdateOneWithoutUserNestedInput
-    socialAuths?: SocialAuthUncheckedUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    corporate?: CorporateProfileUncheckedUpdateOneWithoutUserNestedInput
+    individual?: IndividualProfileUncheckedUpdateOneWithoutUserNestedInput
+    socialAuths?: SocialAuthUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
     id?: string
-    role?: $Enums.UserRole
     email?: string | null
     password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
+    userType: $Enums.UserType
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type UserUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
+    userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
+    userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type UserInformationCreateInput = {
-    id?: string
-    profileImage?: string | null
-    gender?: string | null
-    address?: string | null
-    country?: string | null
-    city?: string | null
-    cvForm?: string | null
-    additionalInformation?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutUserInformationInput
+  export type CorporateProfileCreateInput = {
+    companyId?: bigint | number
+    companyName: string
+    industryCode: string
+    businessRegNo: string
+    user: UserCreateNestedOneWithoutCorporateInput
+    accessLogs?: TalentAccessLogCreateNestedManyWithoutCorporateInput
   }
 
-  export type UserInformationUncheckedCreateInput = {
-    id?: string
+  export type CorporateProfileUncheckedCreateInput = {
+    companyId?: bigint | number
     userId: string
-    profileImage?: string | null
-    gender?: string | null
-    address?: string | null
-    country?: string | null
-    city?: string | null
-    cvForm?: string | null
-    additionalInformation?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    companyName: string
+    industryCode: string
+    businessRegNo: string
+    accessLogs?: TalentAccessLogUncheckedCreateNestedManyWithoutCorporateInput
   }
 
-  export type UserInformationUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    cvForm?: NullableStringFieldUpdateOperationsInput | string | null
-    additionalInformation?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutUserInformationNestedInput
+  export type CorporateProfileUpdateInput = {
+    companyId?: BigIntFieldUpdateOperationsInput | bigint | number
+    companyName?: StringFieldUpdateOperationsInput | string
+    industryCode?: StringFieldUpdateOperationsInput | string
+    businessRegNo?: StringFieldUpdateOperationsInput | string
+    user?: UserUpdateOneRequiredWithoutCorporateNestedInput
+    accessLogs?: TalentAccessLogUpdateManyWithoutCorporateNestedInput
   }
 
-  export type UserInformationUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
+  export type CorporateProfileUncheckedUpdateInput = {
+    companyId?: BigIntFieldUpdateOperationsInput | bigint | number
     userId?: StringFieldUpdateOperationsInput | string
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    cvForm?: NullableStringFieldUpdateOperationsInput | string | null
-    additionalInformation?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    industryCode?: StringFieldUpdateOperationsInput | string
+    businessRegNo?: StringFieldUpdateOperationsInput | string
+    accessLogs?: TalentAccessLogUncheckedUpdateManyWithoutCorporateNestedInput
   }
 
-  export type UserInformationCreateManyInput = {
-    id?: string
+  export type CorporateProfileCreateManyInput = {
+    companyId?: bigint | number
     userId: string
-    profileImage?: string | null
-    gender?: string | null
-    address?: string | null
-    country?: string | null
-    city?: string | null
-    cvForm?: string | null
-    additionalInformation?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
+    companyName: string
+    industryCode: string
+    businessRegNo: string
   }
 
-  export type UserInformationUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    cvForm?: NullableStringFieldUpdateOperationsInput | string | null
-    additionalInformation?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type CorporateProfileUpdateManyMutationInput = {
+    companyId?: BigIntFieldUpdateOperationsInput | bigint | number
+    companyName?: StringFieldUpdateOperationsInput | string
+    industryCode?: StringFieldUpdateOperationsInput | string
+    businessRegNo?: StringFieldUpdateOperationsInput | string
   }
 
-  export type UserInformationUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
+  export type CorporateProfileUncheckedUpdateManyInput = {
+    companyId?: BigIntFieldUpdateOperationsInput | bigint | number
     userId?: StringFieldUpdateOperationsInput | string
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    cvForm?: NullableStringFieldUpdateOperationsInput | string | null
-    additionalInformation?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    industryCode?: StringFieldUpdateOperationsInput | string
+    businessRegNo?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type IndividualProfileCreateInput = {
+    individualId?: bigint | number
+    fullName: string
+    visaStatus: string
+    isVisaVerified?: boolean
+    koreanLevel?: number
+    user: UserCreateNestedOneWithoutIndividualInput
+    accessLogs?: TalentAccessLogCreateNestedManyWithoutIndividualInput
+  }
+
+  export type IndividualProfileUncheckedCreateInput = {
+    individualId?: bigint | number
+    userId: string
+    fullName: string
+    visaStatus: string
+    isVisaVerified?: boolean
+    koreanLevel?: number
+    accessLogs?: TalentAccessLogUncheckedCreateNestedManyWithoutIndividualInput
+  }
+
+  export type IndividualProfileUpdateInput = {
+    individualId?: BigIntFieldUpdateOperationsInput | bigint | number
+    fullName?: StringFieldUpdateOperationsInput | string
+    visaStatus?: StringFieldUpdateOperationsInput | string
+    isVisaVerified?: BoolFieldUpdateOperationsInput | boolean
+    koreanLevel?: IntFieldUpdateOperationsInput | number
+    user?: UserUpdateOneRequiredWithoutIndividualNestedInput
+    accessLogs?: TalentAccessLogUpdateManyWithoutIndividualNestedInput
+  }
+
+  export type IndividualProfileUncheckedUpdateInput = {
+    individualId?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    visaStatus?: StringFieldUpdateOperationsInput | string
+    isVisaVerified?: BoolFieldUpdateOperationsInput | boolean
+    koreanLevel?: IntFieldUpdateOperationsInput | number
+    accessLogs?: TalentAccessLogUncheckedUpdateManyWithoutIndividualNestedInput
+  }
+
+  export type IndividualProfileCreateManyInput = {
+    individualId?: bigint | number
+    userId: string
+    fullName: string
+    visaStatus: string
+    isVisaVerified?: boolean
+    koreanLevel?: number
+  }
+
+  export type IndividualProfileUpdateManyMutationInput = {
+    individualId?: BigIntFieldUpdateOperationsInput | bigint | number
+    fullName?: StringFieldUpdateOperationsInput | string
+    visaStatus?: StringFieldUpdateOperationsInput | string
+    isVisaVerified?: BoolFieldUpdateOperationsInput | boolean
+    koreanLevel?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type IndividualProfileUncheckedUpdateManyInput = {
+    individualId?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    visaStatus?: StringFieldUpdateOperationsInput | string
+    isVisaVerified?: BoolFieldUpdateOperationsInput | boolean
+    koreanLevel?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type TalentAccessLogCreateInput = {
+    accessId?: bigint | number
+    accessedAt?: Date | string
+    corporate: CorporateProfileCreateNestedOneWithoutAccessLogsInput
+    individual: IndividualProfileCreateNestedOneWithoutAccessLogsInput
+  }
+
+  export type TalentAccessLogUncheckedCreateInput = {
+    accessId?: bigint | number
+    corporateId: bigint | number
+    individualId: bigint | number
+    accessedAt?: Date | string
+  }
+
+  export type TalentAccessLogUpdateInput = {
+    accessId?: BigIntFieldUpdateOperationsInput | bigint | number
+    accessedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    corporate?: CorporateProfileUpdateOneRequiredWithoutAccessLogsNestedInput
+    individual?: IndividualProfileUpdateOneRequiredWithoutAccessLogsNestedInput
+  }
+
+  export type TalentAccessLogUncheckedUpdateInput = {
+    accessId?: BigIntFieldUpdateOperationsInput | bigint | number
+    corporateId?: BigIntFieldUpdateOperationsInput | bigint | number
+    individualId?: BigIntFieldUpdateOperationsInput | bigint | number
+    accessedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TalentAccessLogCreateManyInput = {
+    accessId?: bigint | number
+    corporateId: bigint | number
+    individualId: bigint | number
+    accessedAt?: Date | string
+  }
+
+  export type TalentAccessLogUpdateManyMutationInput = {
+    accessId?: BigIntFieldUpdateOperationsInput | bigint | number
+    accessedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TalentAccessLogUncheckedUpdateManyInput = {
+    accessId?: BigIntFieldUpdateOperationsInput | bigint | number
+    corporateId?: BigIntFieldUpdateOperationsInput | bigint | number
+    individualId?: BigIntFieldUpdateOperationsInput | bigint | number
+    accessedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SocialAuthCreateInput = {
@@ -10575,294 +7685,6 @@ export namespace Prisma {
     providerId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type MemberIdentityVerificationCreateInput = {
-    id?: string
-    passportPhoto?: string | null
-    selfiePhoto?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutMemberIdentityVerificationInput
-    verifier?: UserCreateNestedOneWithoutVerifiedMemberIdentitiesInput
-  }
-
-  export type MemberIdentityVerificationUncheckedCreateInput = {
-    id?: string
-    userId: string
-    passportPhoto?: string | null
-    selfiePhoto?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    isVerifiedBy?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type MemberIdentityVerificationUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    passportPhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    selfiePhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutMemberIdentityVerificationNestedInput
-    verifier?: UserUpdateOneWithoutVerifiedMemberIdentitiesNestedInput
-  }
-
-  export type MemberIdentityVerificationUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    passportPhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    selfiePhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    isVerifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MemberIdentityVerificationCreateManyInput = {
-    id?: string
-    userId: string
-    passportPhoto?: string | null
-    selfiePhoto?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    isVerifiedBy?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type MemberIdentityVerificationUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    passportPhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    selfiePhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MemberIdentityVerificationUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    passportPhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    selfiePhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    isVerifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CorporateRegistrationCreateInput = {
-    id?: string
-    companyName?: string | null
-    businessLicenseFile?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutCorporateRegistrationInput
-    verifier?: UserCreateNestedOneWithoutVerifiedCorporateRegistrationsInput
-  }
-
-  export type CorporateRegistrationUncheckedCreateInput = {
-    id?: string
-    userId: string
-    companyName?: string | null
-    businessLicenseFile?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    isVerifiedBy?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type CorporateRegistrationUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    companyName?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLicenseFile?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutCorporateRegistrationNestedInput
-    verifier?: UserUpdateOneWithoutVerifiedCorporateRegistrationsNestedInput
-  }
-
-  export type CorporateRegistrationUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    companyName?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLicenseFile?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    isVerifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CorporateRegistrationCreateManyInput = {
-    id?: string
-    userId: string
-    companyName?: string | null
-    businessLicenseFile?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    isVerifiedBy?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type CorporateRegistrationUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    companyName?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLicenseFile?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CorporateRegistrationUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    companyName?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLicenseFile?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    isVerifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type VerificationTokenCreateInput = {
-    id?: string
-    token: string
-    type: string
-    expiresAt: Date | string
-    usedAt?: Date | string | null
-    createdAt?: Date | string
-    user: UserCreateNestedOneWithoutVerificationTokensInput
-  }
-
-  export type VerificationTokenUncheckedCreateInput = {
-    id?: string
-    userId: string
-    token: string
-    type: string
-    expiresAt: Date | string
-    usedAt?: Date | string | null
-    createdAt?: Date | string
-  }
-
-  export type VerificationTokenUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutVerificationTokensNestedInput
-  }
-
-  export type VerificationTokenUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type VerificationTokenCreateManyInput = {
-    id?: string
-    userId: string
-    token: string
-    type: string
-    expiresAt: Date | string
-    usedAt?: Date | string | null
-    createdAt?: Date | string
-  }
-
-  export type VerificationTokenUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type VerificationTokenUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SanctionCreateInput = {
-    id?: string
-    sanctionType: $Enums.SanctionType
-    reason?: string | null
-    startDate?: Date | string | null
-    endDate?: Date | string | null
-    createdAt?: Date | string
-    user: UserCreateNestedOneWithoutSanctionsInput
-  }
-
-  export type SanctionUncheckedCreateInput = {
-    id?: string
-    userId: string
-    sanctionType: $Enums.SanctionType
-    reason?: string | null
-    startDate?: Date | string | null
-    endDate?: Date | string | null
-    createdAt?: Date | string
-  }
-
-  export type SanctionUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sanctionType?: EnumSanctionTypeFieldUpdateOperationsInput | $Enums.SanctionType
-    reason?: NullableStringFieldUpdateOperationsInput | string | null
-    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutSanctionsNestedInput
-  }
-
-  export type SanctionUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    sanctionType?: EnumSanctionTypeFieldUpdateOperationsInput | $Enums.SanctionType
-    reason?: NullableStringFieldUpdateOperationsInput | string | null
-    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SanctionCreateManyInput = {
-    id?: string
-    userId: string
-    sanctionType: $Enums.SanctionType
-    reason?: string | null
-    startDate?: Date | string | null
-    endDate?: Date | string | null
-    createdAt?: Date | string
-  }
-
-  export type SanctionUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sanctionType?: EnumSanctionTypeFieldUpdateOperationsInput | $Enums.SanctionType
-    reason?: NullableStringFieldUpdateOperationsInput | string | null
-    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SanctionUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    sanctionType?: EnumSanctionTypeFieldUpdateOperationsInput | $Enums.SanctionType
-    reason?: NullableStringFieldUpdateOperationsInput | string | null
-    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -10876,13 +7698,6 @@ export namespace Prisma {
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
     not?: NestedStringFilter<$PrismaModel> | string
-  }
-
-  export type EnumUserRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
   }
 
   export type StringNullableFilter<$PrismaModel = never> = {
@@ -10900,16 +7715,11 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type EnumUserStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserStatus | EnumUserStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserStatusFilter<$PrismaModel> | $Enums.UserStatus
-  }
-
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
+  export type EnumUserTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserType | EnumUserTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.UserType[] | ListEnumUserTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserType[] | ListEnumUserTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserTypeFilter<$PrismaModel> | $Enums.UserType
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -10923,48 +7733,20 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type MemberIdentityVerificationNullableScalarRelationFilter = {
-    is?: MemberIdentityVerificationWhereInput | null
-    isNot?: MemberIdentityVerificationWhereInput | null
+  export type CorporateProfileNullableScalarRelationFilter = {
+    is?: CorporateProfileWhereInput | null
+    isNot?: CorporateProfileWhereInput | null
   }
 
-  export type CorporateRegistrationNullableScalarRelationFilter = {
-    is?: CorporateRegistrationWhereInput | null
-    isNot?: CorporateRegistrationWhereInput | null
+  export type IndividualProfileNullableScalarRelationFilter = {
+    is?: IndividualProfileWhereInput | null
+    isNot?: IndividualProfileWhereInput | null
   }
 
-  export type MemberIdentityVerificationListRelationFilter = {
-    every?: MemberIdentityVerificationWhereInput
-    some?: MemberIdentityVerificationWhereInput
-    none?: MemberIdentityVerificationWhereInput
-  }
-
-  export type CorporateRegistrationListRelationFilter = {
-    every?: CorporateRegistrationWhereInput
-    some?: CorporateRegistrationWhereInput
-    none?: CorporateRegistrationWhereInput
-  }
-
-  export type SanctionListRelationFilter = {
-    every?: SanctionWhereInput
-    some?: SanctionWhereInput
-    none?: SanctionWhereInput
-  }
-
-  export type UserInformationNullableScalarRelationFilter = {
-    is?: UserInformationWhereInput | null
-    isNot?: UserInformationWhereInput | null
-  }
-
-  export type SocialAuthNullableScalarRelationFilter = {
-    is?: SocialAuthWhereInput | null
-    isNot?: SocialAuthWhereInput | null
-  }
-
-  export type VerificationTokenListRelationFilter = {
-    every?: VerificationTokenWhereInput
-    some?: VerificationTokenWhereInput
-    none?: VerificationTokenWhereInput
+  export type SocialAuthListRelationFilter = {
+    every?: SocialAuthWhereInput
+    some?: SocialAuthWhereInput
+    none?: SocialAuthWhereInput
   }
 
   export type SortOrderInput = {
@@ -10972,66 +7754,33 @@ export namespace Prisma {
     nulls?: NullsOrder
   }
 
-  export type MemberIdentityVerificationOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type CorporateRegistrationOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type SanctionOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type VerificationTokenOrderByRelationAggregateInput = {
+  export type SocialAuthOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
-    role?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    phone?: SortOrder
-    fullName?: SortOrder
-    status?: SortOrder
-    isEmailedVerified?: SortOrder
-    isPhoneVerified?: SortOrder
-    walletId?: SortOrder
-    userInfoId?: SortOrder
+    userType?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
-    role?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    phone?: SortOrder
-    fullName?: SortOrder
-    status?: SortOrder
-    isEmailedVerified?: SortOrder
-    isPhoneVerified?: SortOrder
-    walletId?: SortOrder
-    userInfoId?: SortOrder
+    userType?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
-    role?: SortOrder
     email?: SortOrder
     password?: SortOrder
-    phone?: SortOrder
-    fullName?: SortOrder
-    status?: SortOrder
-    isEmailedVerified?: SortOrder
-    isPhoneVerified?: SortOrder
-    walletId?: SortOrder
-    userInfoId?: SortOrder
+    userType?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -11054,16 +7803,6 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type EnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumUserRoleFilter<$PrismaModel>
-    _max?: NestedEnumUserRoleFilter<$PrismaModel>
-  }
-
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -11082,22 +7821,14 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type EnumUserStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserStatus | EnumUserStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserStatusWithAggregatesFilter<$PrismaModel> | $Enums.UserStatus
+  export type EnumUserTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserType | EnumUserTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.UserType[] | ListEnumUserTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserType[] | ListEnumUserTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserTypeWithAggregatesFilter<$PrismaModel> | $Enums.UserType
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumUserStatusFilter<$PrismaModel>
-    _max?: NestedEnumUserStatusFilter<$PrismaModel>
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
+    _min?: NestedEnumUserTypeFilter<$PrismaModel>
+    _max?: NestedEnumUserTypeFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -11114,51 +7845,203 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type BigIntFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
+  }
+
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
   }
 
-  export type UserInformationCountOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    profileImage?: SortOrder
-    gender?: SortOrder
-    address?: SortOrder
-    country?: SortOrder
-    city?: SortOrder
-    cvForm?: SortOrder
-    additionalInformation?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+  export type TalentAccessLogListRelationFilter = {
+    every?: TalentAccessLogWhereInput
+    some?: TalentAccessLogWhereInput
+    none?: TalentAccessLogWhereInput
   }
 
-  export type UserInformationMaxOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    profileImage?: SortOrder
-    gender?: SortOrder
-    address?: SortOrder
-    country?: SortOrder
-    city?: SortOrder
-    cvForm?: SortOrder
-    additionalInformation?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+  export type TalentAccessLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
-  export type UserInformationMinOrderByAggregateInput = {
-    id?: SortOrder
+  export type CorporateProfileCountOrderByAggregateInput = {
+    companyId?: SortOrder
     userId?: SortOrder
-    profileImage?: SortOrder
-    gender?: SortOrder
-    address?: SortOrder
-    country?: SortOrder
-    city?: SortOrder
-    cvForm?: SortOrder
-    additionalInformation?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    companyName?: SortOrder
+    industryCode?: SortOrder
+    businessRegNo?: SortOrder
+  }
+
+  export type CorporateProfileAvgOrderByAggregateInput = {
+    companyId?: SortOrder
+  }
+
+  export type CorporateProfileMaxOrderByAggregateInput = {
+    companyId?: SortOrder
+    userId?: SortOrder
+    companyName?: SortOrder
+    industryCode?: SortOrder
+    businessRegNo?: SortOrder
+  }
+
+  export type CorporateProfileMinOrderByAggregateInput = {
+    companyId?: SortOrder
+    userId?: SortOrder
+    companyName?: SortOrder
+    industryCode?: SortOrder
+    businessRegNo?: SortOrder
+  }
+
+  export type CorporateProfileSumOrderByAggregateInput = {
+    companyId?: SortOrder
+  }
+
+  export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedBigIntFilter<$PrismaModel>
+    _min?: NestedBigIntFilter<$PrismaModel>
+    _max?: NestedBigIntFilter<$PrismaModel>
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type IndividualProfileCountOrderByAggregateInput = {
+    individualId?: SortOrder
+    userId?: SortOrder
+    fullName?: SortOrder
+    visaStatus?: SortOrder
+    isVisaVerified?: SortOrder
+    koreanLevel?: SortOrder
+  }
+
+  export type IndividualProfileAvgOrderByAggregateInput = {
+    individualId?: SortOrder
+    koreanLevel?: SortOrder
+  }
+
+  export type IndividualProfileMaxOrderByAggregateInput = {
+    individualId?: SortOrder
+    userId?: SortOrder
+    fullName?: SortOrder
+    visaStatus?: SortOrder
+    isVisaVerified?: SortOrder
+    koreanLevel?: SortOrder
+  }
+
+  export type IndividualProfileMinOrderByAggregateInput = {
+    individualId?: SortOrder
+    userId?: SortOrder
+    fullName?: SortOrder
+    visaStatus?: SortOrder
+    isVisaVerified?: SortOrder
+    koreanLevel?: SortOrder
+  }
+
+  export type IndividualProfileSumOrderByAggregateInput = {
+    individualId?: SortOrder
+    koreanLevel?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type CorporateProfileScalarRelationFilter = {
+    is?: CorporateProfileWhereInput
+    isNot?: CorporateProfileWhereInput
+  }
+
+  export type IndividualProfileScalarRelationFilter = {
+    is?: IndividualProfileWhereInput
+    isNot?: IndividualProfileWhereInput
+  }
+
+  export type TalentAccessLogCorporateIdIndividualIdCompoundUniqueInput = {
+    corporateId: bigint | number
+    individualId: bigint | number
+  }
+
+  export type TalentAccessLogCountOrderByAggregateInput = {
+    accessId?: SortOrder
+    corporateId?: SortOrder
+    individualId?: SortOrder
+    accessedAt?: SortOrder
+  }
+
+  export type TalentAccessLogAvgOrderByAggregateInput = {
+    accessId?: SortOrder
+    corporateId?: SortOrder
+    individualId?: SortOrder
+  }
+
+  export type TalentAccessLogMaxOrderByAggregateInput = {
+    accessId?: SortOrder
+    corporateId?: SortOrder
+    individualId?: SortOrder
+    accessedAt?: SortOrder
+  }
+
+  export type TalentAccessLogMinOrderByAggregateInput = {
+    accessId?: SortOrder
+    corporateId?: SortOrder
+    individualId?: SortOrder
+    accessedAt?: SortOrder
+  }
+
+  export type TalentAccessLogSumOrderByAggregateInput = {
+    accessId?: SortOrder
+    corporateId?: SortOrder
+    individualId?: SortOrder
   }
 
   export type EnumSocialProviderFilter<$PrismaModel = never> = {
@@ -11166,6 +8049,11 @@ export namespace Prisma {
     in?: $Enums.SocialProvider[] | ListEnumSocialProviderFieldRefInput<$PrismaModel>
     notIn?: $Enums.SocialProvider[] | ListEnumSocialProviderFieldRefInput<$PrismaModel>
     not?: NestedEnumSocialProviderFilter<$PrismaModel> | $Enums.SocialProvider
+  }
+
+  export type SocialAuthProviderProviderIdCompoundUniqueInput = {
+    provider: $Enums.SocialProvider
+    providerId: string
   }
 
   export type SocialAuthCountOrderByAggregateInput = {
@@ -11199,528 +8087,286 @@ export namespace Prisma {
     _max?: NestedEnumSocialProviderFilter<$PrismaModel>
   }
 
-  export type EnumVerificationStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.VerificationStatus | EnumVerificationStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.VerificationStatus[] | ListEnumVerificationStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.VerificationStatus[] | ListEnumVerificationStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumVerificationStatusFilter<$PrismaModel> | $Enums.VerificationStatus
+  export type CorporateProfileCreateNestedOneWithoutUserInput = {
+    create?: XOR<CorporateProfileCreateWithoutUserInput, CorporateProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CorporateProfileCreateOrConnectWithoutUserInput
+    connect?: CorporateProfileWhereUniqueInput
   }
 
-  export type UserNullableScalarRelationFilter = {
-    is?: UserWhereInput | null
-    isNot?: UserWhereInput | null
+  export type IndividualProfileCreateNestedOneWithoutUserInput = {
+    create?: XOR<IndividualProfileCreateWithoutUserInput, IndividualProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: IndividualProfileCreateOrConnectWithoutUserInput
+    connect?: IndividualProfileWhereUniqueInput
   }
 
-  export type MemberIdentityVerificationCountOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    passportPhoto?: SortOrder
-    selfiePhoto?: SortOrder
-    verificationStatus?: SortOrder
-    isVerifiedBy?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+  export type SocialAuthCreateNestedManyWithoutUserInput = {
+    create?: XOR<SocialAuthCreateWithoutUserInput, SocialAuthUncheckedCreateWithoutUserInput> | SocialAuthCreateWithoutUserInput[] | SocialAuthUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SocialAuthCreateOrConnectWithoutUserInput | SocialAuthCreateOrConnectWithoutUserInput[]
+    createMany?: SocialAuthCreateManyUserInputEnvelope
+    connect?: SocialAuthWhereUniqueInput | SocialAuthWhereUniqueInput[]
   }
 
-  export type MemberIdentityVerificationMaxOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    passportPhoto?: SortOrder
-    selfiePhoto?: SortOrder
-    verificationStatus?: SortOrder
-    isVerifiedBy?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+  export type CorporateProfileUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<CorporateProfileCreateWithoutUserInput, CorporateProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CorporateProfileCreateOrConnectWithoutUserInput
+    connect?: CorporateProfileWhereUniqueInput
   }
 
-  export type MemberIdentityVerificationMinOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    passportPhoto?: SortOrder
-    selfiePhoto?: SortOrder
-    verificationStatus?: SortOrder
-    isVerifiedBy?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+  export type IndividualProfileUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<IndividualProfileCreateWithoutUserInput, IndividualProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: IndividualProfileCreateOrConnectWithoutUserInput
+    connect?: IndividualProfileWhereUniqueInput
   }
 
-  export type EnumVerificationStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.VerificationStatus | EnumVerificationStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.VerificationStatus[] | ListEnumVerificationStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.VerificationStatus[] | ListEnumVerificationStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumVerificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.VerificationStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumVerificationStatusFilter<$PrismaModel>
-    _max?: NestedEnumVerificationStatusFilter<$PrismaModel>
-  }
-
-  export type CorporateRegistrationCountOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    companyName?: SortOrder
-    businessLicenseFile?: SortOrder
-    verificationStatus?: SortOrder
-    isVerifiedBy?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type CorporateRegistrationMaxOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    companyName?: SortOrder
-    businessLicenseFile?: SortOrder
-    verificationStatus?: SortOrder
-    isVerifiedBy?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type CorporateRegistrationMinOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    companyName?: SortOrder
-    businessLicenseFile?: SortOrder
-    verificationStatus?: SortOrder
-    isVerifiedBy?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-  }
-
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type VerificationTokenCountOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    token?: SortOrder
-    type?: SortOrder
-    expiresAt?: SortOrder
-    usedAt?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type VerificationTokenMaxOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    token?: SortOrder
-    type?: SortOrder
-    expiresAt?: SortOrder
-    usedAt?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type VerificationTokenMinOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    token?: SortOrder
-    type?: SortOrder
-    expiresAt?: SortOrder
-    usedAt?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type EnumSanctionTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.SanctionType | EnumSanctionTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.SanctionType[] | ListEnumSanctionTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SanctionType[] | ListEnumSanctionTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumSanctionTypeFilter<$PrismaModel> | $Enums.SanctionType
-  }
-
-  export type SanctionCountOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    sanctionType?: SortOrder
-    reason?: SortOrder
-    startDate?: SortOrder
-    endDate?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type SanctionMaxOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    sanctionType?: SortOrder
-    reason?: SortOrder
-    startDate?: SortOrder
-    endDate?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type SanctionMinOrderByAggregateInput = {
-    id?: SortOrder
-    userId?: SortOrder
-    sanctionType?: SortOrder
-    reason?: SortOrder
-    startDate?: SortOrder
-    endDate?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type EnumSanctionTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.SanctionType | EnumSanctionTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.SanctionType[] | ListEnumSanctionTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SanctionType[] | ListEnumSanctionTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumSanctionTypeWithAggregatesFilter<$PrismaModel> | $Enums.SanctionType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumSanctionTypeFilter<$PrismaModel>
-    _max?: NestedEnumSanctionTypeFilter<$PrismaModel>
-  }
-
-  export type MemberIdentityVerificationCreateNestedOneWithoutUserInput = {
-    create?: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput>
-    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutUserInput
-    connect?: MemberIdentityVerificationWhereUniqueInput
-  }
-
-  export type CorporateRegistrationCreateNestedOneWithoutUserInput = {
-    create?: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput>
-    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutUserInput
-    connect?: CorporateRegistrationWhereUniqueInput
-  }
-
-  export type MemberIdentityVerificationCreateNestedManyWithoutVerifierInput = {
-    create?: XOR<MemberIdentityVerificationCreateWithoutVerifierInput, MemberIdentityVerificationUncheckedCreateWithoutVerifierInput> | MemberIdentityVerificationCreateWithoutVerifierInput[] | MemberIdentityVerificationUncheckedCreateWithoutVerifierInput[]
-    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutVerifierInput | MemberIdentityVerificationCreateOrConnectWithoutVerifierInput[]
-    createMany?: MemberIdentityVerificationCreateManyVerifierInputEnvelope
-    connect?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-  }
-
-  export type CorporateRegistrationCreateNestedManyWithoutVerifierInput = {
-    create?: XOR<CorporateRegistrationCreateWithoutVerifierInput, CorporateRegistrationUncheckedCreateWithoutVerifierInput> | CorporateRegistrationCreateWithoutVerifierInput[] | CorporateRegistrationUncheckedCreateWithoutVerifierInput[]
-    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutVerifierInput | CorporateRegistrationCreateOrConnectWithoutVerifierInput[]
-    createMany?: CorporateRegistrationCreateManyVerifierInputEnvelope
-    connect?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-  }
-
-  export type SanctionCreateNestedManyWithoutUserInput = {
-    create?: XOR<SanctionCreateWithoutUserInput, SanctionUncheckedCreateWithoutUserInput> | SanctionCreateWithoutUserInput[] | SanctionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SanctionCreateOrConnectWithoutUserInput | SanctionCreateOrConnectWithoutUserInput[]
-    createMany?: SanctionCreateManyUserInputEnvelope
-    connect?: SanctionWhereUniqueInput | SanctionWhereUniqueInput[]
-  }
-
-  export type UserInformationCreateNestedOneWithoutUserInput = {
-    create?: XOR<UserInformationCreateWithoutUserInput, UserInformationUncheckedCreateWithoutUserInput>
-    connectOrCreate?: UserInformationCreateOrConnectWithoutUserInput
-    connect?: UserInformationWhereUniqueInput
-  }
-
-  export type SocialAuthCreateNestedOneWithoutUserInput = {
-    create?: XOR<SocialAuthCreateWithoutUserInput, SocialAuthUncheckedCreateWithoutUserInput>
-    connectOrCreate?: SocialAuthCreateOrConnectWithoutUserInput
-    connect?: SocialAuthWhereUniqueInput
-  }
-
-  export type VerificationTokenCreateNestedManyWithoutUserInput = {
-    create?: XOR<VerificationTokenCreateWithoutUserInput, VerificationTokenUncheckedCreateWithoutUserInput> | VerificationTokenCreateWithoutUserInput[] | VerificationTokenUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: VerificationTokenCreateOrConnectWithoutUserInput | VerificationTokenCreateOrConnectWithoutUserInput[]
-    createMany?: VerificationTokenCreateManyUserInputEnvelope
-    connect?: VerificationTokenWhereUniqueInput | VerificationTokenWhereUniqueInput[]
-  }
-
-  export type MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput = {
-    create?: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput>
-    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutUserInput
-    connect?: MemberIdentityVerificationWhereUniqueInput
-  }
-
-  export type CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput = {
-    create?: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput>
-    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutUserInput
-    connect?: CorporateRegistrationWhereUniqueInput
-  }
-
-  export type MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput = {
-    create?: XOR<MemberIdentityVerificationCreateWithoutVerifierInput, MemberIdentityVerificationUncheckedCreateWithoutVerifierInput> | MemberIdentityVerificationCreateWithoutVerifierInput[] | MemberIdentityVerificationUncheckedCreateWithoutVerifierInput[]
-    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutVerifierInput | MemberIdentityVerificationCreateOrConnectWithoutVerifierInput[]
-    createMany?: MemberIdentityVerificationCreateManyVerifierInputEnvelope
-    connect?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-  }
-
-  export type CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput = {
-    create?: XOR<CorporateRegistrationCreateWithoutVerifierInput, CorporateRegistrationUncheckedCreateWithoutVerifierInput> | CorporateRegistrationCreateWithoutVerifierInput[] | CorporateRegistrationUncheckedCreateWithoutVerifierInput[]
-    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutVerifierInput | CorporateRegistrationCreateOrConnectWithoutVerifierInput[]
-    createMany?: CorporateRegistrationCreateManyVerifierInputEnvelope
-    connect?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-  }
-
-  export type SanctionUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<SanctionCreateWithoutUserInput, SanctionUncheckedCreateWithoutUserInput> | SanctionCreateWithoutUserInput[] | SanctionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SanctionCreateOrConnectWithoutUserInput | SanctionCreateOrConnectWithoutUserInput[]
-    createMany?: SanctionCreateManyUserInputEnvelope
-    connect?: SanctionWhereUniqueInput | SanctionWhereUniqueInput[]
-  }
-
-  export type UserInformationUncheckedCreateNestedOneWithoutUserInput = {
-    create?: XOR<UserInformationCreateWithoutUserInput, UserInformationUncheckedCreateWithoutUserInput>
-    connectOrCreate?: UserInformationCreateOrConnectWithoutUserInput
-    connect?: UserInformationWhereUniqueInput
-  }
-
-  export type SocialAuthUncheckedCreateNestedOneWithoutUserInput = {
-    create?: XOR<SocialAuthCreateWithoutUserInput, SocialAuthUncheckedCreateWithoutUserInput>
-    connectOrCreate?: SocialAuthCreateOrConnectWithoutUserInput
-    connect?: SocialAuthWhereUniqueInput
-  }
-
-  export type VerificationTokenUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<VerificationTokenCreateWithoutUserInput, VerificationTokenUncheckedCreateWithoutUserInput> | VerificationTokenCreateWithoutUserInput[] | VerificationTokenUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: VerificationTokenCreateOrConnectWithoutUserInput | VerificationTokenCreateOrConnectWithoutUserInput[]
-    createMany?: VerificationTokenCreateManyUserInputEnvelope
-    connect?: VerificationTokenWhereUniqueInput | VerificationTokenWhereUniqueInput[]
+  export type SocialAuthUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SocialAuthCreateWithoutUserInput, SocialAuthUncheckedCreateWithoutUserInput> | SocialAuthCreateWithoutUserInput[] | SocialAuthUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SocialAuthCreateOrConnectWithoutUserInput | SocialAuthCreateOrConnectWithoutUserInput[]
+    createMany?: SocialAuthCreateManyUserInputEnvelope
+    connect?: SocialAuthWhereUniqueInput | SocialAuthWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
 
-  export type EnumUserRoleFieldUpdateOperationsInput = {
-    set?: $Enums.UserRole
-  }
-
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
   }
 
-  export type EnumUserStatusFieldUpdateOperationsInput = {
-    set?: $Enums.UserStatus
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
+  export type EnumUserTypeFieldUpdateOperationsInput = {
+    set?: $Enums.UserType
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
 
-  export type MemberIdentityVerificationUpdateOneWithoutUserNestedInput = {
-    create?: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput>
-    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutUserInput
-    upsert?: MemberIdentityVerificationUpsertWithoutUserInput
-    disconnect?: MemberIdentityVerificationWhereInput | boolean
-    delete?: MemberIdentityVerificationWhereInput | boolean
-    connect?: MemberIdentityVerificationWhereUniqueInput
-    update?: XOR<XOR<MemberIdentityVerificationUpdateToOneWithWhereWithoutUserInput, MemberIdentityVerificationUpdateWithoutUserInput>, MemberIdentityVerificationUncheckedUpdateWithoutUserInput>
+  export type CorporateProfileUpdateOneWithoutUserNestedInput = {
+    create?: XOR<CorporateProfileCreateWithoutUserInput, CorporateProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CorporateProfileCreateOrConnectWithoutUserInput
+    upsert?: CorporateProfileUpsertWithoutUserInput
+    disconnect?: CorporateProfileWhereInput | boolean
+    delete?: CorporateProfileWhereInput | boolean
+    connect?: CorporateProfileWhereUniqueInput
+    update?: XOR<XOR<CorporateProfileUpdateToOneWithWhereWithoutUserInput, CorporateProfileUpdateWithoutUserInput>, CorporateProfileUncheckedUpdateWithoutUserInput>
   }
 
-  export type CorporateRegistrationUpdateOneWithoutUserNestedInput = {
-    create?: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput>
-    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutUserInput
-    upsert?: CorporateRegistrationUpsertWithoutUserInput
-    disconnect?: CorporateRegistrationWhereInput | boolean
-    delete?: CorporateRegistrationWhereInput | boolean
-    connect?: CorporateRegistrationWhereUniqueInput
-    update?: XOR<XOR<CorporateRegistrationUpdateToOneWithWhereWithoutUserInput, CorporateRegistrationUpdateWithoutUserInput>, CorporateRegistrationUncheckedUpdateWithoutUserInput>
+  export type IndividualProfileUpdateOneWithoutUserNestedInput = {
+    create?: XOR<IndividualProfileCreateWithoutUserInput, IndividualProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: IndividualProfileCreateOrConnectWithoutUserInput
+    upsert?: IndividualProfileUpsertWithoutUserInput
+    disconnect?: IndividualProfileWhereInput | boolean
+    delete?: IndividualProfileWhereInput | boolean
+    connect?: IndividualProfileWhereUniqueInput
+    update?: XOR<XOR<IndividualProfileUpdateToOneWithWhereWithoutUserInput, IndividualProfileUpdateWithoutUserInput>, IndividualProfileUncheckedUpdateWithoutUserInput>
   }
 
-  export type MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput = {
-    create?: XOR<MemberIdentityVerificationCreateWithoutVerifierInput, MemberIdentityVerificationUncheckedCreateWithoutVerifierInput> | MemberIdentityVerificationCreateWithoutVerifierInput[] | MemberIdentityVerificationUncheckedCreateWithoutVerifierInput[]
-    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutVerifierInput | MemberIdentityVerificationCreateOrConnectWithoutVerifierInput[]
-    upsert?: MemberIdentityVerificationUpsertWithWhereUniqueWithoutVerifierInput | MemberIdentityVerificationUpsertWithWhereUniqueWithoutVerifierInput[]
-    createMany?: MemberIdentityVerificationCreateManyVerifierInputEnvelope
-    set?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    disconnect?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    delete?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    connect?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    update?: MemberIdentityVerificationUpdateWithWhereUniqueWithoutVerifierInput | MemberIdentityVerificationUpdateWithWhereUniqueWithoutVerifierInput[]
-    updateMany?: MemberIdentityVerificationUpdateManyWithWhereWithoutVerifierInput | MemberIdentityVerificationUpdateManyWithWhereWithoutVerifierInput[]
-    deleteMany?: MemberIdentityVerificationScalarWhereInput | MemberIdentityVerificationScalarWhereInput[]
+  export type SocialAuthUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SocialAuthCreateWithoutUserInput, SocialAuthUncheckedCreateWithoutUserInput> | SocialAuthCreateWithoutUserInput[] | SocialAuthUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SocialAuthCreateOrConnectWithoutUserInput | SocialAuthCreateOrConnectWithoutUserInput[]
+    upsert?: SocialAuthUpsertWithWhereUniqueWithoutUserInput | SocialAuthUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SocialAuthCreateManyUserInputEnvelope
+    set?: SocialAuthWhereUniqueInput | SocialAuthWhereUniqueInput[]
+    disconnect?: SocialAuthWhereUniqueInput | SocialAuthWhereUniqueInput[]
+    delete?: SocialAuthWhereUniqueInput | SocialAuthWhereUniqueInput[]
+    connect?: SocialAuthWhereUniqueInput | SocialAuthWhereUniqueInput[]
+    update?: SocialAuthUpdateWithWhereUniqueWithoutUserInput | SocialAuthUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SocialAuthUpdateManyWithWhereWithoutUserInput | SocialAuthUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SocialAuthScalarWhereInput | SocialAuthScalarWhereInput[]
   }
 
-  export type CorporateRegistrationUpdateManyWithoutVerifierNestedInput = {
-    create?: XOR<CorporateRegistrationCreateWithoutVerifierInput, CorporateRegistrationUncheckedCreateWithoutVerifierInput> | CorporateRegistrationCreateWithoutVerifierInput[] | CorporateRegistrationUncheckedCreateWithoutVerifierInput[]
-    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutVerifierInput | CorporateRegistrationCreateOrConnectWithoutVerifierInput[]
-    upsert?: CorporateRegistrationUpsertWithWhereUniqueWithoutVerifierInput | CorporateRegistrationUpsertWithWhereUniqueWithoutVerifierInput[]
-    createMany?: CorporateRegistrationCreateManyVerifierInputEnvelope
-    set?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    disconnect?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    delete?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    connect?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    update?: CorporateRegistrationUpdateWithWhereUniqueWithoutVerifierInput | CorporateRegistrationUpdateWithWhereUniqueWithoutVerifierInput[]
-    updateMany?: CorporateRegistrationUpdateManyWithWhereWithoutVerifierInput | CorporateRegistrationUpdateManyWithWhereWithoutVerifierInput[]
-    deleteMany?: CorporateRegistrationScalarWhereInput | CorporateRegistrationScalarWhereInput[]
+  export type CorporateProfileUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<CorporateProfileCreateWithoutUserInput, CorporateProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CorporateProfileCreateOrConnectWithoutUserInput
+    upsert?: CorporateProfileUpsertWithoutUserInput
+    disconnect?: CorporateProfileWhereInput | boolean
+    delete?: CorporateProfileWhereInput | boolean
+    connect?: CorporateProfileWhereUniqueInput
+    update?: XOR<XOR<CorporateProfileUpdateToOneWithWhereWithoutUserInput, CorporateProfileUpdateWithoutUserInput>, CorporateProfileUncheckedUpdateWithoutUserInput>
   }
 
-  export type SanctionUpdateManyWithoutUserNestedInput = {
-    create?: XOR<SanctionCreateWithoutUserInput, SanctionUncheckedCreateWithoutUserInput> | SanctionCreateWithoutUserInput[] | SanctionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SanctionCreateOrConnectWithoutUserInput | SanctionCreateOrConnectWithoutUserInput[]
-    upsert?: SanctionUpsertWithWhereUniqueWithoutUserInput | SanctionUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: SanctionCreateManyUserInputEnvelope
-    set?: SanctionWhereUniqueInput | SanctionWhereUniqueInput[]
-    disconnect?: SanctionWhereUniqueInput | SanctionWhereUniqueInput[]
-    delete?: SanctionWhereUniqueInput | SanctionWhereUniqueInput[]
-    connect?: SanctionWhereUniqueInput | SanctionWhereUniqueInput[]
-    update?: SanctionUpdateWithWhereUniqueWithoutUserInput | SanctionUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: SanctionUpdateManyWithWhereWithoutUserInput | SanctionUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: SanctionScalarWhereInput | SanctionScalarWhereInput[]
+  export type IndividualProfileUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<IndividualProfileCreateWithoutUserInput, IndividualProfileUncheckedCreateWithoutUserInput>
+    connectOrCreate?: IndividualProfileCreateOrConnectWithoutUserInput
+    upsert?: IndividualProfileUpsertWithoutUserInput
+    disconnect?: IndividualProfileWhereInput | boolean
+    delete?: IndividualProfileWhereInput | boolean
+    connect?: IndividualProfileWhereUniqueInput
+    update?: XOR<XOR<IndividualProfileUpdateToOneWithWhereWithoutUserInput, IndividualProfileUpdateWithoutUserInput>, IndividualProfileUncheckedUpdateWithoutUserInput>
   }
 
-  export type UserInformationUpdateOneWithoutUserNestedInput = {
-    create?: XOR<UserInformationCreateWithoutUserInput, UserInformationUncheckedCreateWithoutUserInput>
-    connectOrCreate?: UserInformationCreateOrConnectWithoutUserInput
-    upsert?: UserInformationUpsertWithoutUserInput
-    disconnect?: UserInformationWhereInput | boolean
-    delete?: UserInformationWhereInput | boolean
-    connect?: UserInformationWhereUniqueInput
-    update?: XOR<XOR<UserInformationUpdateToOneWithWhereWithoutUserInput, UserInformationUpdateWithoutUserInput>, UserInformationUncheckedUpdateWithoutUserInput>
+  export type SocialAuthUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SocialAuthCreateWithoutUserInput, SocialAuthUncheckedCreateWithoutUserInput> | SocialAuthCreateWithoutUserInput[] | SocialAuthUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SocialAuthCreateOrConnectWithoutUserInput | SocialAuthCreateOrConnectWithoutUserInput[]
+    upsert?: SocialAuthUpsertWithWhereUniqueWithoutUserInput | SocialAuthUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SocialAuthCreateManyUserInputEnvelope
+    set?: SocialAuthWhereUniqueInput | SocialAuthWhereUniqueInput[]
+    disconnect?: SocialAuthWhereUniqueInput | SocialAuthWhereUniqueInput[]
+    delete?: SocialAuthWhereUniqueInput | SocialAuthWhereUniqueInput[]
+    connect?: SocialAuthWhereUniqueInput | SocialAuthWhereUniqueInput[]
+    update?: SocialAuthUpdateWithWhereUniqueWithoutUserInput | SocialAuthUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SocialAuthUpdateManyWithWhereWithoutUserInput | SocialAuthUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SocialAuthScalarWhereInput | SocialAuthScalarWhereInput[]
   }
 
-  export type SocialAuthUpdateOneWithoutUserNestedInput = {
-    create?: XOR<SocialAuthCreateWithoutUserInput, SocialAuthUncheckedCreateWithoutUserInput>
-    connectOrCreate?: SocialAuthCreateOrConnectWithoutUserInput
-    upsert?: SocialAuthUpsertWithoutUserInput
-    disconnect?: SocialAuthWhereInput | boolean
-    delete?: SocialAuthWhereInput | boolean
-    connect?: SocialAuthWhereUniqueInput
-    update?: XOR<XOR<SocialAuthUpdateToOneWithWhereWithoutUserInput, SocialAuthUpdateWithoutUserInput>, SocialAuthUncheckedUpdateWithoutUserInput>
-  }
-
-  export type VerificationTokenUpdateManyWithoutUserNestedInput = {
-    create?: XOR<VerificationTokenCreateWithoutUserInput, VerificationTokenUncheckedCreateWithoutUserInput> | VerificationTokenCreateWithoutUserInput[] | VerificationTokenUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: VerificationTokenCreateOrConnectWithoutUserInput | VerificationTokenCreateOrConnectWithoutUserInput[]
-    upsert?: VerificationTokenUpsertWithWhereUniqueWithoutUserInput | VerificationTokenUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: VerificationTokenCreateManyUserInputEnvelope
-    set?: VerificationTokenWhereUniqueInput | VerificationTokenWhereUniqueInput[]
-    disconnect?: VerificationTokenWhereUniqueInput | VerificationTokenWhereUniqueInput[]
-    delete?: VerificationTokenWhereUniqueInput | VerificationTokenWhereUniqueInput[]
-    connect?: VerificationTokenWhereUniqueInput | VerificationTokenWhereUniqueInput[]
-    update?: VerificationTokenUpdateWithWhereUniqueWithoutUserInput | VerificationTokenUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: VerificationTokenUpdateManyWithWhereWithoutUserInput | VerificationTokenUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: VerificationTokenScalarWhereInput | VerificationTokenScalarWhereInput[]
-  }
-
-  export type MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput = {
-    create?: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput>
-    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutUserInput
-    upsert?: MemberIdentityVerificationUpsertWithoutUserInput
-    disconnect?: MemberIdentityVerificationWhereInput | boolean
-    delete?: MemberIdentityVerificationWhereInput | boolean
-    connect?: MemberIdentityVerificationWhereUniqueInput
-    update?: XOR<XOR<MemberIdentityVerificationUpdateToOneWithWhereWithoutUserInput, MemberIdentityVerificationUpdateWithoutUserInput>, MemberIdentityVerificationUncheckedUpdateWithoutUserInput>
-  }
-
-  export type CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput = {
-    create?: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput>
-    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutUserInput
-    upsert?: CorporateRegistrationUpsertWithoutUserInput
-    disconnect?: CorporateRegistrationWhereInput | boolean
-    delete?: CorporateRegistrationWhereInput | boolean
-    connect?: CorporateRegistrationWhereUniqueInput
-    update?: XOR<XOR<CorporateRegistrationUpdateToOneWithWhereWithoutUserInput, CorporateRegistrationUpdateWithoutUserInput>, CorporateRegistrationUncheckedUpdateWithoutUserInput>
-  }
-
-  export type MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput = {
-    create?: XOR<MemberIdentityVerificationCreateWithoutVerifierInput, MemberIdentityVerificationUncheckedCreateWithoutVerifierInput> | MemberIdentityVerificationCreateWithoutVerifierInput[] | MemberIdentityVerificationUncheckedCreateWithoutVerifierInput[]
-    connectOrCreate?: MemberIdentityVerificationCreateOrConnectWithoutVerifierInput | MemberIdentityVerificationCreateOrConnectWithoutVerifierInput[]
-    upsert?: MemberIdentityVerificationUpsertWithWhereUniqueWithoutVerifierInput | MemberIdentityVerificationUpsertWithWhereUniqueWithoutVerifierInput[]
-    createMany?: MemberIdentityVerificationCreateManyVerifierInputEnvelope
-    set?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    disconnect?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    delete?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    connect?: MemberIdentityVerificationWhereUniqueInput | MemberIdentityVerificationWhereUniqueInput[]
-    update?: MemberIdentityVerificationUpdateWithWhereUniqueWithoutVerifierInput | MemberIdentityVerificationUpdateWithWhereUniqueWithoutVerifierInput[]
-    updateMany?: MemberIdentityVerificationUpdateManyWithWhereWithoutVerifierInput | MemberIdentityVerificationUpdateManyWithWhereWithoutVerifierInput[]
-    deleteMany?: MemberIdentityVerificationScalarWhereInput | MemberIdentityVerificationScalarWhereInput[]
-  }
-
-  export type CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput = {
-    create?: XOR<CorporateRegistrationCreateWithoutVerifierInput, CorporateRegistrationUncheckedCreateWithoutVerifierInput> | CorporateRegistrationCreateWithoutVerifierInput[] | CorporateRegistrationUncheckedCreateWithoutVerifierInput[]
-    connectOrCreate?: CorporateRegistrationCreateOrConnectWithoutVerifierInput | CorporateRegistrationCreateOrConnectWithoutVerifierInput[]
-    upsert?: CorporateRegistrationUpsertWithWhereUniqueWithoutVerifierInput | CorporateRegistrationUpsertWithWhereUniqueWithoutVerifierInput[]
-    createMany?: CorporateRegistrationCreateManyVerifierInputEnvelope
-    set?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    disconnect?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    delete?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    connect?: CorporateRegistrationWhereUniqueInput | CorporateRegistrationWhereUniqueInput[]
-    update?: CorporateRegistrationUpdateWithWhereUniqueWithoutVerifierInput | CorporateRegistrationUpdateWithWhereUniqueWithoutVerifierInput[]
-    updateMany?: CorporateRegistrationUpdateManyWithWhereWithoutVerifierInput | CorporateRegistrationUpdateManyWithWhereWithoutVerifierInput[]
-    deleteMany?: CorporateRegistrationScalarWhereInput | CorporateRegistrationScalarWhereInput[]
-  }
-
-  export type SanctionUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<SanctionCreateWithoutUserInput, SanctionUncheckedCreateWithoutUserInput> | SanctionCreateWithoutUserInput[] | SanctionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: SanctionCreateOrConnectWithoutUserInput | SanctionCreateOrConnectWithoutUserInput[]
-    upsert?: SanctionUpsertWithWhereUniqueWithoutUserInput | SanctionUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: SanctionCreateManyUserInputEnvelope
-    set?: SanctionWhereUniqueInput | SanctionWhereUniqueInput[]
-    disconnect?: SanctionWhereUniqueInput | SanctionWhereUniqueInput[]
-    delete?: SanctionWhereUniqueInput | SanctionWhereUniqueInput[]
-    connect?: SanctionWhereUniqueInput | SanctionWhereUniqueInput[]
-    update?: SanctionUpdateWithWhereUniqueWithoutUserInput | SanctionUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: SanctionUpdateManyWithWhereWithoutUserInput | SanctionUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: SanctionScalarWhereInput | SanctionScalarWhereInput[]
-  }
-
-  export type UserInformationUncheckedUpdateOneWithoutUserNestedInput = {
-    create?: XOR<UserInformationCreateWithoutUserInput, UserInformationUncheckedCreateWithoutUserInput>
-    connectOrCreate?: UserInformationCreateOrConnectWithoutUserInput
-    upsert?: UserInformationUpsertWithoutUserInput
-    disconnect?: UserInformationWhereInput | boolean
-    delete?: UserInformationWhereInput | boolean
-    connect?: UserInformationWhereUniqueInput
-    update?: XOR<XOR<UserInformationUpdateToOneWithWhereWithoutUserInput, UserInformationUpdateWithoutUserInput>, UserInformationUncheckedUpdateWithoutUserInput>
-  }
-
-  export type SocialAuthUncheckedUpdateOneWithoutUserNestedInput = {
-    create?: XOR<SocialAuthCreateWithoutUserInput, SocialAuthUncheckedCreateWithoutUserInput>
-    connectOrCreate?: SocialAuthCreateOrConnectWithoutUserInput
-    upsert?: SocialAuthUpsertWithoutUserInput
-    disconnect?: SocialAuthWhereInput | boolean
-    delete?: SocialAuthWhereInput | boolean
-    connect?: SocialAuthWhereUniqueInput
-    update?: XOR<XOR<SocialAuthUpdateToOneWithWhereWithoutUserInput, SocialAuthUpdateWithoutUserInput>, SocialAuthUncheckedUpdateWithoutUserInput>
-  }
-
-  export type VerificationTokenUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<VerificationTokenCreateWithoutUserInput, VerificationTokenUncheckedCreateWithoutUserInput> | VerificationTokenCreateWithoutUserInput[] | VerificationTokenUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: VerificationTokenCreateOrConnectWithoutUserInput | VerificationTokenCreateOrConnectWithoutUserInput[]
-    upsert?: VerificationTokenUpsertWithWhereUniqueWithoutUserInput | VerificationTokenUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: VerificationTokenCreateManyUserInputEnvelope
-    set?: VerificationTokenWhereUniqueInput | VerificationTokenWhereUniqueInput[]
-    disconnect?: VerificationTokenWhereUniqueInput | VerificationTokenWhereUniqueInput[]
-    delete?: VerificationTokenWhereUniqueInput | VerificationTokenWhereUniqueInput[]
-    connect?: VerificationTokenWhereUniqueInput | VerificationTokenWhereUniqueInput[]
-    update?: VerificationTokenUpdateWithWhereUniqueWithoutUserInput | VerificationTokenUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: VerificationTokenUpdateManyWithWhereWithoutUserInput | VerificationTokenUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: VerificationTokenScalarWhereInput | VerificationTokenScalarWhereInput[]
-  }
-
-  export type UserCreateNestedOneWithoutUserInformationInput = {
-    create?: XOR<UserCreateWithoutUserInformationInput, UserUncheckedCreateWithoutUserInformationInput>
-    connectOrCreate?: UserCreateOrConnectWithoutUserInformationInput
+  export type UserCreateNestedOneWithoutCorporateInput = {
+    create?: XOR<UserCreateWithoutCorporateInput, UserUncheckedCreateWithoutCorporateInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCorporateInput
     connect?: UserWhereUniqueInput
   }
 
-  export type UserUpdateOneRequiredWithoutUserInformationNestedInput = {
-    create?: XOR<UserCreateWithoutUserInformationInput, UserUncheckedCreateWithoutUserInformationInput>
-    connectOrCreate?: UserCreateOrConnectWithoutUserInformationInput
-    upsert?: UserUpsertWithoutUserInformationInput
+  export type TalentAccessLogCreateNestedManyWithoutCorporateInput = {
+    create?: XOR<TalentAccessLogCreateWithoutCorporateInput, TalentAccessLogUncheckedCreateWithoutCorporateInput> | TalentAccessLogCreateWithoutCorporateInput[] | TalentAccessLogUncheckedCreateWithoutCorporateInput[]
+    connectOrCreate?: TalentAccessLogCreateOrConnectWithoutCorporateInput | TalentAccessLogCreateOrConnectWithoutCorporateInput[]
+    createMany?: TalentAccessLogCreateManyCorporateInputEnvelope
+    connect?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+  }
+
+  export type TalentAccessLogUncheckedCreateNestedManyWithoutCorporateInput = {
+    create?: XOR<TalentAccessLogCreateWithoutCorporateInput, TalentAccessLogUncheckedCreateWithoutCorporateInput> | TalentAccessLogCreateWithoutCorporateInput[] | TalentAccessLogUncheckedCreateWithoutCorporateInput[]
+    connectOrCreate?: TalentAccessLogCreateOrConnectWithoutCorporateInput | TalentAccessLogCreateOrConnectWithoutCorporateInput[]
+    createMany?: TalentAccessLogCreateManyCorporateInputEnvelope
+    connect?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+  }
+
+  export type BigIntFieldUpdateOperationsInput = {
+    set?: bigint | number
+    increment?: bigint | number
+    decrement?: bigint | number
+    multiply?: bigint | number
+    divide?: bigint | number
+  }
+
+  export type UserUpdateOneRequiredWithoutCorporateNestedInput = {
+    create?: XOR<UserCreateWithoutCorporateInput, UserUncheckedCreateWithoutCorporateInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCorporateInput
+    upsert?: UserUpsertWithoutCorporateInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUserInformationInput, UserUpdateWithoutUserInformationInput>, UserUncheckedUpdateWithoutUserInformationInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCorporateInput, UserUpdateWithoutCorporateInput>, UserUncheckedUpdateWithoutCorporateInput>
+  }
+
+  export type TalentAccessLogUpdateManyWithoutCorporateNestedInput = {
+    create?: XOR<TalentAccessLogCreateWithoutCorporateInput, TalentAccessLogUncheckedCreateWithoutCorporateInput> | TalentAccessLogCreateWithoutCorporateInput[] | TalentAccessLogUncheckedCreateWithoutCorporateInput[]
+    connectOrCreate?: TalentAccessLogCreateOrConnectWithoutCorporateInput | TalentAccessLogCreateOrConnectWithoutCorporateInput[]
+    upsert?: TalentAccessLogUpsertWithWhereUniqueWithoutCorporateInput | TalentAccessLogUpsertWithWhereUniqueWithoutCorporateInput[]
+    createMany?: TalentAccessLogCreateManyCorporateInputEnvelope
+    set?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    disconnect?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    delete?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    connect?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    update?: TalentAccessLogUpdateWithWhereUniqueWithoutCorporateInput | TalentAccessLogUpdateWithWhereUniqueWithoutCorporateInput[]
+    updateMany?: TalentAccessLogUpdateManyWithWhereWithoutCorporateInput | TalentAccessLogUpdateManyWithWhereWithoutCorporateInput[]
+    deleteMany?: TalentAccessLogScalarWhereInput | TalentAccessLogScalarWhereInput[]
+  }
+
+  export type TalentAccessLogUncheckedUpdateManyWithoutCorporateNestedInput = {
+    create?: XOR<TalentAccessLogCreateWithoutCorporateInput, TalentAccessLogUncheckedCreateWithoutCorporateInput> | TalentAccessLogCreateWithoutCorporateInput[] | TalentAccessLogUncheckedCreateWithoutCorporateInput[]
+    connectOrCreate?: TalentAccessLogCreateOrConnectWithoutCorporateInput | TalentAccessLogCreateOrConnectWithoutCorporateInput[]
+    upsert?: TalentAccessLogUpsertWithWhereUniqueWithoutCorporateInput | TalentAccessLogUpsertWithWhereUniqueWithoutCorporateInput[]
+    createMany?: TalentAccessLogCreateManyCorporateInputEnvelope
+    set?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    disconnect?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    delete?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    connect?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    update?: TalentAccessLogUpdateWithWhereUniqueWithoutCorporateInput | TalentAccessLogUpdateWithWhereUniqueWithoutCorporateInput[]
+    updateMany?: TalentAccessLogUpdateManyWithWhereWithoutCorporateInput | TalentAccessLogUpdateManyWithWhereWithoutCorporateInput[]
+    deleteMany?: TalentAccessLogScalarWhereInput | TalentAccessLogScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutIndividualInput = {
+    create?: XOR<UserCreateWithoutIndividualInput, UserUncheckedCreateWithoutIndividualInput>
+    connectOrCreate?: UserCreateOrConnectWithoutIndividualInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type TalentAccessLogCreateNestedManyWithoutIndividualInput = {
+    create?: XOR<TalentAccessLogCreateWithoutIndividualInput, TalentAccessLogUncheckedCreateWithoutIndividualInput> | TalentAccessLogCreateWithoutIndividualInput[] | TalentAccessLogUncheckedCreateWithoutIndividualInput[]
+    connectOrCreate?: TalentAccessLogCreateOrConnectWithoutIndividualInput | TalentAccessLogCreateOrConnectWithoutIndividualInput[]
+    createMany?: TalentAccessLogCreateManyIndividualInputEnvelope
+    connect?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+  }
+
+  export type TalentAccessLogUncheckedCreateNestedManyWithoutIndividualInput = {
+    create?: XOR<TalentAccessLogCreateWithoutIndividualInput, TalentAccessLogUncheckedCreateWithoutIndividualInput> | TalentAccessLogCreateWithoutIndividualInput[] | TalentAccessLogUncheckedCreateWithoutIndividualInput[]
+    connectOrCreate?: TalentAccessLogCreateOrConnectWithoutIndividualInput | TalentAccessLogCreateOrConnectWithoutIndividualInput[]
+    createMany?: TalentAccessLogCreateManyIndividualInputEnvelope
+    connect?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type UserUpdateOneRequiredWithoutIndividualNestedInput = {
+    create?: XOR<UserCreateWithoutIndividualInput, UserUncheckedCreateWithoutIndividualInput>
+    connectOrCreate?: UserCreateOrConnectWithoutIndividualInput
+    upsert?: UserUpsertWithoutIndividualInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutIndividualInput, UserUpdateWithoutIndividualInput>, UserUncheckedUpdateWithoutIndividualInput>
+  }
+
+  export type TalentAccessLogUpdateManyWithoutIndividualNestedInput = {
+    create?: XOR<TalentAccessLogCreateWithoutIndividualInput, TalentAccessLogUncheckedCreateWithoutIndividualInput> | TalentAccessLogCreateWithoutIndividualInput[] | TalentAccessLogUncheckedCreateWithoutIndividualInput[]
+    connectOrCreate?: TalentAccessLogCreateOrConnectWithoutIndividualInput | TalentAccessLogCreateOrConnectWithoutIndividualInput[]
+    upsert?: TalentAccessLogUpsertWithWhereUniqueWithoutIndividualInput | TalentAccessLogUpsertWithWhereUniqueWithoutIndividualInput[]
+    createMany?: TalentAccessLogCreateManyIndividualInputEnvelope
+    set?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    disconnect?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    delete?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    connect?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    update?: TalentAccessLogUpdateWithWhereUniqueWithoutIndividualInput | TalentAccessLogUpdateWithWhereUniqueWithoutIndividualInput[]
+    updateMany?: TalentAccessLogUpdateManyWithWhereWithoutIndividualInput | TalentAccessLogUpdateManyWithWhereWithoutIndividualInput[]
+    deleteMany?: TalentAccessLogScalarWhereInput | TalentAccessLogScalarWhereInput[]
+  }
+
+  export type TalentAccessLogUncheckedUpdateManyWithoutIndividualNestedInput = {
+    create?: XOR<TalentAccessLogCreateWithoutIndividualInput, TalentAccessLogUncheckedCreateWithoutIndividualInput> | TalentAccessLogCreateWithoutIndividualInput[] | TalentAccessLogUncheckedCreateWithoutIndividualInput[]
+    connectOrCreate?: TalentAccessLogCreateOrConnectWithoutIndividualInput | TalentAccessLogCreateOrConnectWithoutIndividualInput[]
+    upsert?: TalentAccessLogUpsertWithWhereUniqueWithoutIndividualInput | TalentAccessLogUpsertWithWhereUniqueWithoutIndividualInput[]
+    createMany?: TalentAccessLogCreateManyIndividualInputEnvelope
+    set?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    disconnect?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    delete?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    connect?: TalentAccessLogWhereUniqueInput | TalentAccessLogWhereUniqueInput[]
+    update?: TalentAccessLogUpdateWithWhereUniqueWithoutIndividualInput | TalentAccessLogUpdateWithWhereUniqueWithoutIndividualInput[]
+    updateMany?: TalentAccessLogUpdateManyWithWhereWithoutIndividualInput | TalentAccessLogUpdateManyWithWhereWithoutIndividualInput[]
+    deleteMany?: TalentAccessLogScalarWhereInput | TalentAccessLogScalarWhereInput[]
+  }
+
+  export type CorporateProfileCreateNestedOneWithoutAccessLogsInput = {
+    create?: XOR<CorporateProfileCreateWithoutAccessLogsInput, CorporateProfileUncheckedCreateWithoutAccessLogsInput>
+    connectOrCreate?: CorporateProfileCreateOrConnectWithoutAccessLogsInput
+    connect?: CorporateProfileWhereUniqueInput
+  }
+
+  export type IndividualProfileCreateNestedOneWithoutAccessLogsInput = {
+    create?: XOR<IndividualProfileCreateWithoutAccessLogsInput, IndividualProfileUncheckedCreateWithoutAccessLogsInput>
+    connectOrCreate?: IndividualProfileCreateOrConnectWithoutAccessLogsInput
+    connect?: IndividualProfileWhereUniqueInput
+  }
+
+  export type CorporateProfileUpdateOneRequiredWithoutAccessLogsNestedInput = {
+    create?: XOR<CorporateProfileCreateWithoutAccessLogsInput, CorporateProfileUncheckedCreateWithoutAccessLogsInput>
+    connectOrCreate?: CorporateProfileCreateOrConnectWithoutAccessLogsInput
+    upsert?: CorporateProfileUpsertWithoutAccessLogsInput
+    connect?: CorporateProfileWhereUniqueInput
+    update?: XOR<XOR<CorporateProfileUpdateToOneWithWhereWithoutAccessLogsInput, CorporateProfileUpdateWithoutAccessLogsInput>, CorporateProfileUncheckedUpdateWithoutAccessLogsInput>
+  }
+
+  export type IndividualProfileUpdateOneRequiredWithoutAccessLogsNestedInput = {
+    create?: XOR<IndividualProfileCreateWithoutAccessLogsInput, IndividualProfileUncheckedCreateWithoutAccessLogsInput>
+    connectOrCreate?: IndividualProfileCreateOrConnectWithoutAccessLogsInput
+    upsert?: IndividualProfileUpsertWithoutAccessLogsInput
+    connect?: IndividualProfileWhereUniqueInput
+    update?: XOR<XOR<IndividualProfileUpdateToOneWithWhereWithoutAccessLogsInput, IndividualProfileUpdateWithoutAccessLogsInput>, IndividualProfileUncheckedUpdateWithoutAccessLogsInput>
   }
 
   export type UserCreateNestedOneWithoutSocialAuthsInput = {
@@ -11741,106 +8387,6 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSocialAuthsInput, UserUpdateWithoutSocialAuthsInput>, UserUncheckedUpdateWithoutSocialAuthsInput>
   }
 
-  export type UserCreateNestedOneWithoutMemberIdentityVerificationInput = {
-    create?: XOR<UserCreateWithoutMemberIdentityVerificationInput, UserUncheckedCreateWithoutMemberIdentityVerificationInput>
-    connectOrCreate?: UserCreateOrConnectWithoutMemberIdentityVerificationInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type UserCreateNestedOneWithoutVerifiedMemberIdentitiesInput = {
-    create?: XOR<UserCreateWithoutVerifiedMemberIdentitiesInput, UserUncheckedCreateWithoutVerifiedMemberIdentitiesInput>
-    connectOrCreate?: UserCreateOrConnectWithoutVerifiedMemberIdentitiesInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type EnumVerificationStatusFieldUpdateOperationsInput = {
-    set?: $Enums.VerificationStatus
-  }
-
-  export type UserUpdateOneRequiredWithoutMemberIdentityVerificationNestedInput = {
-    create?: XOR<UserCreateWithoutMemberIdentityVerificationInput, UserUncheckedCreateWithoutMemberIdentityVerificationInput>
-    connectOrCreate?: UserCreateOrConnectWithoutMemberIdentityVerificationInput
-    upsert?: UserUpsertWithoutMemberIdentityVerificationInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMemberIdentityVerificationInput, UserUpdateWithoutMemberIdentityVerificationInput>, UserUncheckedUpdateWithoutMemberIdentityVerificationInput>
-  }
-
-  export type UserUpdateOneWithoutVerifiedMemberIdentitiesNestedInput = {
-    create?: XOR<UserCreateWithoutVerifiedMemberIdentitiesInput, UserUncheckedCreateWithoutVerifiedMemberIdentitiesInput>
-    connectOrCreate?: UserCreateOrConnectWithoutVerifiedMemberIdentitiesInput
-    upsert?: UserUpsertWithoutVerifiedMemberIdentitiesInput
-    disconnect?: UserWhereInput | boolean
-    delete?: UserWhereInput | boolean
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutVerifiedMemberIdentitiesInput, UserUpdateWithoutVerifiedMemberIdentitiesInput>, UserUncheckedUpdateWithoutVerifiedMemberIdentitiesInput>
-  }
-
-  export type UserCreateNestedOneWithoutCorporateRegistrationInput = {
-    create?: XOR<UserCreateWithoutCorporateRegistrationInput, UserUncheckedCreateWithoutCorporateRegistrationInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCorporateRegistrationInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type UserCreateNestedOneWithoutVerifiedCorporateRegistrationsInput = {
-    create?: XOR<UserCreateWithoutVerifiedCorporateRegistrationsInput, UserUncheckedCreateWithoutVerifiedCorporateRegistrationsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutVerifiedCorporateRegistrationsInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type UserUpdateOneRequiredWithoutCorporateRegistrationNestedInput = {
-    create?: XOR<UserCreateWithoutCorporateRegistrationInput, UserUncheckedCreateWithoutCorporateRegistrationInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCorporateRegistrationInput
-    upsert?: UserUpsertWithoutCorporateRegistrationInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCorporateRegistrationInput, UserUpdateWithoutCorporateRegistrationInput>, UserUncheckedUpdateWithoutCorporateRegistrationInput>
-  }
-
-  export type UserUpdateOneWithoutVerifiedCorporateRegistrationsNestedInput = {
-    create?: XOR<UserCreateWithoutVerifiedCorporateRegistrationsInput, UserUncheckedCreateWithoutVerifiedCorporateRegistrationsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutVerifiedCorporateRegistrationsInput
-    upsert?: UserUpsertWithoutVerifiedCorporateRegistrationsInput
-    disconnect?: UserWhereInput | boolean
-    delete?: UserWhereInput | boolean
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutVerifiedCorporateRegistrationsInput, UserUpdateWithoutVerifiedCorporateRegistrationsInput>, UserUncheckedUpdateWithoutVerifiedCorporateRegistrationsInput>
-  }
-
-  export type UserCreateNestedOneWithoutVerificationTokensInput = {
-    create?: XOR<UserCreateWithoutVerificationTokensInput, UserUncheckedCreateWithoutVerificationTokensInput>
-    connectOrCreate?: UserCreateOrConnectWithoutVerificationTokensInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
-  export type UserUpdateOneRequiredWithoutVerificationTokensNestedInput = {
-    create?: XOR<UserCreateWithoutVerificationTokensInput, UserUncheckedCreateWithoutVerificationTokensInput>
-    connectOrCreate?: UserCreateOrConnectWithoutVerificationTokensInput
-    upsert?: UserUpsertWithoutVerificationTokensInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutVerificationTokensInput, UserUpdateWithoutVerificationTokensInput>, UserUncheckedUpdateWithoutVerificationTokensInput>
-  }
-
-  export type UserCreateNestedOneWithoutSanctionsInput = {
-    create?: XOR<UserCreateWithoutSanctionsInput, UserUncheckedCreateWithoutSanctionsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutSanctionsInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type EnumSanctionTypeFieldUpdateOperationsInput = {
-    set?: $Enums.SanctionType
-  }
-
-  export type UserUpdateOneRequiredWithoutSanctionsNestedInput = {
-    create?: XOR<UserCreateWithoutSanctionsInput, UserUncheckedCreateWithoutSanctionsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutSanctionsInput
-    upsert?: UserUpsertWithoutSanctionsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSanctionsInput, UserUpdateWithoutSanctionsInput>, UserUncheckedUpdateWithoutSanctionsInput>
-  }
-
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -11853,13 +8399,6 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringFilter<$PrismaModel> | string
-  }
-
-  export type NestedEnumUserRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
   }
 
   export type NestedStringNullableFilter<$PrismaModel = never> = {
@@ -11876,16 +8415,11 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type NestedEnumUserStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserStatus | EnumUserStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserStatusFilter<$PrismaModel> | $Enums.UserStatus
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
+  export type NestedEnumUserTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserType | EnumUserTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.UserType[] | ListEnumUserTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserType[] | ListEnumUserTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserTypeFilter<$PrismaModel> | $Enums.UserType
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -11927,16 +8461,6 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
-  export type NestedEnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumUserRoleFilter<$PrismaModel>
-    _max?: NestedEnumUserRoleFilter<$PrismaModel>
-  }
-
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -11965,22 +8489,14 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedEnumUserStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserStatus | EnumUserStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserStatusWithAggregatesFilter<$PrismaModel> | $Enums.UserStatus
+  export type NestedEnumUserTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserType | EnumUserTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.UserType[] | ListEnumUserTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserType[] | ListEnumUserTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserTypeWithAggregatesFilter<$PrismaModel> | $Enums.UserType
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumUserStatusFilter<$PrismaModel>
-    _max?: NestedEnumUserStatusFilter<$PrismaModel>
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
+    _min?: NestedEnumUserTypeFilter<$PrismaModel>
+    _max?: NestedEnumUserTypeFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -11995,6 +8511,73 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedBigIntFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
+  }
+
+  export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedBigIntFilter<$PrismaModel>
+    _min?: NestedBigIntFilter<$PrismaModel>
+    _max?: NestedBigIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type NestedEnumSocialProviderFilter<$PrismaModel = never> = {
@@ -12014,232 +8597,48 @@ export namespace Prisma {
     _max?: NestedEnumSocialProviderFilter<$PrismaModel>
   }
 
-  export type NestedEnumVerificationStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.VerificationStatus | EnumVerificationStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.VerificationStatus[] | ListEnumVerificationStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.VerificationStatus[] | ListEnumVerificationStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumVerificationStatusFilter<$PrismaModel> | $Enums.VerificationStatus
+  export type CorporateProfileCreateWithoutUserInput = {
+    companyId?: bigint | number
+    companyName: string
+    industryCode: string
+    businessRegNo: string
+    accessLogs?: TalentAccessLogCreateNestedManyWithoutCorporateInput
   }
 
-  export type NestedEnumVerificationStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.VerificationStatus | EnumVerificationStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.VerificationStatus[] | ListEnumVerificationStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.VerificationStatus[] | ListEnumVerificationStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumVerificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.VerificationStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumVerificationStatusFilter<$PrismaModel>
-    _max?: NestedEnumVerificationStatusFilter<$PrismaModel>
+  export type CorporateProfileUncheckedCreateWithoutUserInput = {
+    companyId?: bigint | number
+    companyName: string
+    industryCode: string
+    businessRegNo: string
+    accessLogs?: TalentAccessLogUncheckedCreateNestedManyWithoutCorporateInput
   }
 
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  export type CorporateProfileCreateOrConnectWithoutUserInput = {
+    where: CorporateProfileWhereUniqueInput
+    create: XOR<CorporateProfileCreateWithoutUserInput, CorporateProfileUncheckedCreateWithoutUserInput>
   }
 
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  export type IndividualProfileCreateWithoutUserInput = {
+    individualId?: bigint | number
+    fullName: string
+    visaStatus: string
+    isVisaVerified?: boolean
+    koreanLevel?: number
+    accessLogs?: TalentAccessLogCreateNestedManyWithoutIndividualInput
   }
 
-  export type NestedEnumSanctionTypeFilter<$PrismaModel = never> = {
-    equals?: $Enums.SanctionType | EnumSanctionTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.SanctionType[] | ListEnumSanctionTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SanctionType[] | ListEnumSanctionTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumSanctionTypeFilter<$PrismaModel> | $Enums.SanctionType
+  export type IndividualProfileUncheckedCreateWithoutUserInput = {
+    individualId?: bigint | number
+    fullName: string
+    visaStatus: string
+    isVisaVerified?: boolean
+    koreanLevel?: number
+    accessLogs?: TalentAccessLogUncheckedCreateNestedManyWithoutIndividualInput
   }
 
-  export type NestedEnumSanctionTypeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.SanctionType | EnumSanctionTypeFieldRefInput<$PrismaModel>
-    in?: $Enums.SanctionType[] | ListEnumSanctionTypeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SanctionType[] | ListEnumSanctionTypeFieldRefInput<$PrismaModel>
-    not?: NestedEnumSanctionTypeWithAggregatesFilter<$PrismaModel> | $Enums.SanctionType
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumSanctionTypeFilter<$PrismaModel>
-    _max?: NestedEnumSanctionTypeFilter<$PrismaModel>
-  }
-
-  export type MemberIdentityVerificationCreateWithoutUserInput = {
-    id?: string
-    passportPhoto?: string | null
-    selfiePhoto?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    verifier?: UserCreateNestedOneWithoutVerifiedMemberIdentitiesInput
-  }
-
-  export type MemberIdentityVerificationUncheckedCreateWithoutUserInput = {
-    id?: string
-    passportPhoto?: string | null
-    selfiePhoto?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    isVerifiedBy?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type MemberIdentityVerificationCreateOrConnectWithoutUserInput = {
-    where: MemberIdentityVerificationWhereUniqueInput
-    create: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput>
-  }
-
-  export type CorporateRegistrationCreateWithoutUserInput = {
-    id?: string
-    companyName?: string | null
-    businessLicenseFile?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    verifier?: UserCreateNestedOneWithoutVerifiedCorporateRegistrationsInput
-  }
-
-  export type CorporateRegistrationUncheckedCreateWithoutUserInput = {
-    id?: string
-    companyName?: string | null
-    businessLicenseFile?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    isVerifiedBy?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type CorporateRegistrationCreateOrConnectWithoutUserInput = {
-    where: CorporateRegistrationWhereUniqueInput
-    create: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput>
-  }
-
-  export type MemberIdentityVerificationCreateWithoutVerifierInput = {
-    id?: string
-    passportPhoto?: string | null
-    selfiePhoto?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutMemberIdentityVerificationInput
-  }
-
-  export type MemberIdentityVerificationUncheckedCreateWithoutVerifierInput = {
-    id?: string
-    userId: string
-    passportPhoto?: string | null
-    selfiePhoto?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type MemberIdentityVerificationCreateOrConnectWithoutVerifierInput = {
-    where: MemberIdentityVerificationWhereUniqueInput
-    create: XOR<MemberIdentityVerificationCreateWithoutVerifierInput, MemberIdentityVerificationUncheckedCreateWithoutVerifierInput>
-  }
-
-  export type MemberIdentityVerificationCreateManyVerifierInputEnvelope = {
-    data: MemberIdentityVerificationCreateManyVerifierInput | MemberIdentityVerificationCreateManyVerifierInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type CorporateRegistrationCreateWithoutVerifierInput = {
-    id?: string
-    companyName?: string | null
-    businessLicenseFile?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutCorporateRegistrationInput
-  }
-
-  export type CorporateRegistrationUncheckedCreateWithoutVerifierInput = {
-    id?: string
-    userId: string
-    companyName?: string | null
-    businessLicenseFile?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type CorporateRegistrationCreateOrConnectWithoutVerifierInput = {
-    where: CorporateRegistrationWhereUniqueInput
-    create: XOR<CorporateRegistrationCreateWithoutVerifierInput, CorporateRegistrationUncheckedCreateWithoutVerifierInput>
-  }
-
-  export type CorporateRegistrationCreateManyVerifierInputEnvelope = {
-    data: CorporateRegistrationCreateManyVerifierInput | CorporateRegistrationCreateManyVerifierInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type SanctionCreateWithoutUserInput = {
-    id?: string
-    sanctionType: $Enums.SanctionType
-    reason?: string | null
-    startDate?: Date | string | null
-    endDate?: Date | string | null
-    createdAt?: Date | string
-  }
-
-  export type SanctionUncheckedCreateWithoutUserInput = {
-    id?: string
-    sanctionType: $Enums.SanctionType
-    reason?: string | null
-    startDate?: Date | string | null
-    endDate?: Date | string | null
-    createdAt?: Date | string
-  }
-
-  export type SanctionCreateOrConnectWithoutUserInput = {
-    where: SanctionWhereUniqueInput
-    create: XOR<SanctionCreateWithoutUserInput, SanctionUncheckedCreateWithoutUserInput>
-  }
-
-  export type SanctionCreateManyUserInputEnvelope = {
-    data: SanctionCreateManyUserInput | SanctionCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type UserInformationCreateWithoutUserInput = {
-    id?: string
-    profileImage?: string | null
-    gender?: string | null
-    address?: string | null
-    country?: string | null
-    city?: string | null
-    cvForm?: string | null
-    additionalInformation?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type UserInformationUncheckedCreateWithoutUserInput = {
-    id?: string
-    profileImage?: string | null
-    gender?: string | null
-    address?: string | null
-    country?: string | null
-    city?: string | null
-    cvForm?: string | null
-    additionalInformation?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type UserInformationCreateOrConnectWithoutUserInput = {
-    where: UserInformationWhereUniqueInput
-    create: XOR<UserInformationCreateWithoutUserInput, UserInformationUncheckedCreateWithoutUserInput>
+  export type IndividualProfileCreateOrConnectWithoutUserInput = {
+    where: IndividualProfileWhereUniqueInput
+    create: XOR<IndividualProfileCreateWithoutUserInput, IndividualProfileUncheckedCreateWithoutUserInput>
   }
 
   export type SocialAuthCreateWithoutUserInput = {
@@ -12259,426 +8658,419 @@ export namespace Prisma {
     create: XOR<SocialAuthCreateWithoutUserInput, SocialAuthUncheckedCreateWithoutUserInput>
   }
 
-  export type VerificationTokenCreateWithoutUserInput = {
-    id?: string
-    token: string
-    type: string
-    expiresAt: Date | string
-    usedAt?: Date | string | null
-    createdAt?: Date | string
-  }
-
-  export type VerificationTokenUncheckedCreateWithoutUserInput = {
-    id?: string
-    token: string
-    type: string
-    expiresAt: Date | string
-    usedAt?: Date | string | null
-    createdAt?: Date | string
-  }
-
-  export type VerificationTokenCreateOrConnectWithoutUserInput = {
-    where: VerificationTokenWhereUniqueInput
-    create: XOR<VerificationTokenCreateWithoutUserInput, VerificationTokenUncheckedCreateWithoutUserInput>
-  }
-
-  export type VerificationTokenCreateManyUserInputEnvelope = {
-    data: VerificationTokenCreateManyUserInput | VerificationTokenCreateManyUserInput[]
+  export type SocialAuthCreateManyUserInputEnvelope = {
+    data: SocialAuthCreateManyUserInput | SocialAuthCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
-  export type MemberIdentityVerificationUpsertWithoutUserInput = {
-    update: XOR<MemberIdentityVerificationUpdateWithoutUserInput, MemberIdentityVerificationUncheckedUpdateWithoutUserInput>
-    create: XOR<MemberIdentityVerificationCreateWithoutUserInput, MemberIdentityVerificationUncheckedCreateWithoutUserInput>
-    where?: MemberIdentityVerificationWhereInput
+  export type CorporateProfileUpsertWithoutUserInput = {
+    update: XOR<CorporateProfileUpdateWithoutUserInput, CorporateProfileUncheckedUpdateWithoutUserInput>
+    create: XOR<CorporateProfileCreateWithoutUserInput, CorporateProfileUncheckedCreateWithoutUserInput>
+    where?: CorporateProfileWhereInput
   }
 
-  export type MemberIdentityVerificationUpdateToOneWithWhereWithoutUserInput = {
-    where?: MemberIdentityVerificationWhereInput
-    data: XOR<MemberIdentityVerificationUpdateWithoutUserInput, MemberIdentityVerificationUncheckedUpdateWithoutUserInput>
+  export type CorporateProfileUpdateToOneWithWhereWithoutUserInput = {
+    where?: CorporateProfileWhereInput
+    data: XOR<CorporateProfileUpdateWithoutUserInput, CorporateProfileUncheckedUpdateWithoutUserInput>
   }
 
-  export type MemberIdentityVerificationUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    passportPhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    selfiePhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    verifier?: UserUpdateOneWithoutVerifiedMemberIdentitiesNestedInput
+  export type CorporateProfileUpdateWithoutUserInput = {
+    companyId?: BigIntFieldUpdateOperationsInput | bigint | number
+    companyName?: StringFieldUpdateOperationsInput | string
+    industryCode?: StringFieldUpdateOperationsInput | string
+    businessRegNo?: StringFieldUpdateOperationsInput | string
+    accessLogs?: TalentAccessLogUpdateManyWithoutCorporateNestedInput
   }
 
-  export type MemberIdentityVerificationUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    passportPhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    selfiePhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    isVerifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type CorporateProfileUncheckedUpdateWithoutUserInput = {
+    companyId?: BigIntFieldUpdateOperationsInput | bigint | number
+    companyName?: StringFieldUpdateOperationsInput | string
+    industryCode?: StringFieldUpdateOperationsInput | string
+    businessRegNo?: StringFieldUpdateOperationsInput | string
+    accessLogs?: TalentAccessLogUncheckedUpdateManyWithoutCorporateNestedInput
   }
 
-  export type CorporateRegistrationUpsertWithoutUserInput = {
-    update: XOR<CorporateRegistrationUpdateWithoutUserInput, CorporateRegistrationUncheckedUpdateWithoutUserInput>
-    create: XOR<CorporateRegistrationCreateWithoutUserInput, CorporateRegistrationUncheckedCreateWithoutUserInput>
-    where?: CorporateRegistrationWhereInput
+  export type IndividualProfileUpsertWithoutUserInput = {
+    update: XOR<IndividualProfileUpdateWithoutUserInput, IndividualProfileUncheckedUpdateWithoutUserInput>
+    create: XOR<IndividualProfileCreateWithoutUserInput, IndividualProfileUncheckedCreateWithoutUserInput>
+    where?: IndividualProfileWhereInput
   }
 
-  export type CorporateRegistrationUpdateToOneWithWhereWithoutUserInput = {
-    where?: CorporateRegistrationWhereInput
-    data: XOR<CorporateRegistrationUpdateWithoutUserInput, CorporateRegistrationUncheckedUpdateWithoutUserInput>
+  export type IndividualProfileUpdateToOneWithWhereWithoutUserInput = {
+    where?: IndividualProfileWhereInput
+    data: XOR<IndividualProfileUpdateWithoutUserInput, IndividualProfileUncheckedUpdateWithoutUserInput>
   }
 
-  export type CorporateRegistrationUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    companyName?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLicenseFile?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    verifier?: UserUpdateOneWithoutVerifiedCorporateRegistrationsNestedInput
+  export type IndividualProfileUpdateWithoutUserInput = {
+    individualId?: BigIntFieldUpdateOperationsInput | bigint | number
+    fullName?: StringFieldUpdateOperationsInput | string
+    visaStatus?: StringFieldUpdateOperationsInput | string
+    isVisaVerified?: BoolFieldUpdateOperationsInput | boolean
+    koreanLevel?: IntFieldUpdateOperationsInput | number
+    accessLogs?: TalentAccessLogUpdateManyWithoutIndividualNestedInput
   }
 
-  export type CorporateRegistrationUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    companyName?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLicenseFile?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    isVerifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type IndividualProfileUncheckedUpdateWithoutUserInput = {
+    individualId?: BigIntFieldUpdateOperationsInput | bigint | number
+    fullName?: StringFieldUpdateOperationsInput | string
+    visaStatus?: StringFieldUpdateOperationsInput | string
+    isVisaVerified?: BoolFieldUpdateOperationsInput | boolean
+    koreanLevel?: IntFieldUpdateOperationsInput | number
+    accessLogs?: TalentAccessLogUncheckedUpdateManyWithoutIndividualNestedInput
   }
 
-  export type MemberIdentityVerificationUpsertWithWhereUniqueWithoutVerifierInput = {
-    where: MemberIdentityVerificationWhereUniqueInput
-    update: XOR<MemberIdentityVerificationUpdateWithoutVerifierInput, MemberIdentityVerificationUncheckedUpdateWithoutVerifierInput>
-    create: XOR<MemberIdentityVerificationCreateWithoutVerifierInput, MemberIdentityVerificationUncheckedCreateWithoutVerifierInput>
-  }
-
-  export type MemberIdentityVerificationUpdateWithWhereUniqueWithoutVerifierInput = {
-    where: MemberIdentityVerificationWhereUniqueInput
-    data: XOR<MemberIdentityVerificationUpdateWithoutVerifierInput, MemberIdentityVerificationUncheckedUpdateWithoutVerifierInput>
-  }
-
-  export type MemberIdentityVerificationUpdateManyWithWhereWithoutVerifierInput = {
-    where: MemberIdentityVerificationScalarWhereInput
-    data: XOR<MemberIdentityVerificationUpdateManyMutationInput, MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierInput>
-  }
-
-  export type MemberIdentityVerificationScalarWhereInput = {
-    AND?: MemberIdentityVerificationScalarWhereInput | MemberIdentityVerificationScalarWhereInput[]
-    OR?: MemberIdentityVerificationScalarWhereInput[]
-    NOT?: MemberIdentityVerificationScalarWhereInput | MemberIdentityVerificationScalarWhereInput[]
-    id?: StringFilter<"MemberIdentityVerification"> | string
-    userId?: StringFilter<"MemberIdentityVerification"> | string
-    passportPhoto?: StringNullableFilter<"MemberIdentityVerification"> | string | null
-    selfiePhoto?: StringNullableFilter<"MemberIdentityVerification"> | string | null
-    verificationStatus?: EnumVerificationStatusFilter<"MemberIdentityVerification"> | $Enums.VerificationStatus
-    isVerifiedBy?: StringNullableFilter<"MemberIdentityVerification"> | string | null
-    createdAt?: DateTimeFilter<"MemberIdentityVerification"> | Date | string
-    updatedAt?: DateTimeFilter<"MemberIdentityVerification"> | Date | string
-  }
-
-  export type CorporateRegistrationUpsertWithWhereUniqueWithoutVerifierInput = {
-    where: CorporateRegistrationWhereUniqueInput
-    update: XOR<CorporateRegistrationUpdateWithoutVerifierInput, CorporateRegistrationUncheckedUpdateWithoutVerifierInput>
-    create: XOR<CorporateRegistrationCreateWithoutVerifierInput, CorporateRegistrationUncheckedCreateWithoutVerifierInput>
-  }
-
-  export type CorporateRegistrationUpdateWithWhereUniqueWithoutVerifierInput = {
-    where: CorporateRegistrationWhereUniqueInput
-    data: XOR<CorporateRegistrationUpdateWithoutVerifierInput, CorporateRegistrationUncheckedUpdateWithoutVerifierInput>
-  }
-
-  export type CorporateRegistrationUpdateManyWithWhereWithoutVerifierInput = {
-    where: CorporateRegistrationScalarWhereInput
-    data: XOR<CorporateRegistrationUpdateManyMutationInput, CorporateRegistrationUncheckedUpdateManyWithoutVerifierInput>
-  }
-
-  export type CorporateRegistrationScalarWhereInput = {
-    AND?: CorporateRegistrationScalarWhereInput | CorporateRegistrationScalarWhereInput[]
-    OR?: CorporateRegistrationScalarWhereInput[]
-    NOT?: CorporateRegistrationScalarWhereInput | CorporateRegistrationScalarWhereInput[]
-    id?: StringFilter<"CorporateRegistration"> | string
-    userId?: StringFilter<"CorporateRegistration"> | string
-    companyName?: StringNullableFilter<"CorporateRegistration"> | string | null
-    businessLicenseFile?: StringNullableFilter<"CorporateRegistration"> | string | null
-    verificationStatus?: EnumVerificationStatusFilter<"CorporateRegistration"> | $Enums.VerificationStatus
-    isVerifiedBy?: StringNullableFilter<"CorporateRegistration"> | string | null
-    createdAt?: DateTimeFilter<"CorporateRegistration"> | Date | string
-    updatedAt?: DateTimeFilter<"CorporateRegistration"> | Date | string
-  }
-
-  export type SanctionUpsertWithWhereUniqueWithoutUserInput = {
-    where: SanctionWhereUniqueInput
-    update: XOR<SanctionUpdateWithoutUserInput, SanctionUncheckedUpdateWithoutUserInput>
-    create: XOR<SanctionCreateWithoutUserInput, SanctionUncheckedCreateWithoutUserInput>
-  }
-
-  export type SanctionUpdateWithWhereUniqueWithoutUserInput = {
-    where: SanctionWhereUniqueInput
-    data: XOR<SanctionUpdateWithoutUserInput, SanctionUncheckedUpdateWithoutUserInput>
-  }
-
-  export type SanctionUpdateManyWithWhereWithoutUserInput = {
-    where: SanctionScalarWhereInput
-    data: XOR<SanctionUpdateManyMutationInput, SanctionUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type SanctionScalarWhereInput = {
-    AND?: SanctionScalarWhereInput | SanctionScalarWhereInput[]
-    OR?: SanctionScalarWhereInput[]
-    NOT?: SanctionScalarWhereInput | SanctionScalarWhereInput[]
-    id?: StringFilter<"Sanction"> | string
-    userId?: StringFilter<"Sanction"> | string
-    sanctionType?: EnumSanctionTypeFilter<"Sanction"> | $Enums.SanctionType
-    reason?: StringNullableFilter<"Sanction"> | string | null
-    startDate?: DateTimeNullableFilter<"Sanction"> | Date | string | null
-    endDate?: DateTimeNullableFilter<"Sanction"> | Date | string | null
-    createdAt?: DateTimeFilter<"Sanction"> | Date | string
-  }
-
-  export type UserInformationUpsertWithoutUserInput = {
-    update: XOR<UserInformationUpdateWithoutUserInput, UserInformationUncheckedUpdateWithoutUserInput>
-    create: XOR<UserInformationCreateWithoutUserInput, UserInformationUncheckedCreateWithoutUserInput>
-    where?: UserInformationWhereInput
-  }
-
-  export type UserInformationUpdateToOneWithWhereWithoutUserInput = {
-    where?: UserInformationWhereInput
-    data: XOR<UserInformationUpdateWithoutUserInput, UserInformationUncheckedUpdateWithoutUserInput>
-  }
-
-  export type UserInformationUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    cvForm?: NullableStringFieldUpdateOperationsInput | string | null
-    additionalInformation?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type UserInformationUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    profileImage?: NullableStringFieldUpdateOperationsInput | string | null
-    gender?: NullableStringFieldUpdateOperationsInput | string | null
-    address?: NullableStringFieldUpdateOperationsInput | string | null
-    country?: NullableStringFieldUpdateOperationsInput | string | null
-    city?: NullableStringFieldUpdateOperationsInput | string | null
-    cvForm?: NullableStringFieldUpdateOperationsInput | string | null
-    additionalInformation?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SocialAuthUpsertWithoutUserInput = {
+  export type SocialAuthUpsertWithWhereUniqueWithoutUserInput = {
+    where: SocialAuthWhereUniqueInput
     update: XOR<SocialAuthUpdateWithoutUserInput, SocialAuthUncheckedUpdateWithoutUserInput>
     create: XOR<SocialAuthCreateWithoutUserInput, SocialAuthUncheckedCreateWithoutUserInput>
-    where?: SocialAuthWhereInput
   }
 
-  export type SocialAuthUpdateToOneWithWhereWithoutUserInput = {
-    where?: SocialAuthWhereInput
+  export type SocialAuthUpdateWithWhereUniqueWithoutUserInput = {
+    where: SocialAuthWhereUniqueInput
     data: XOR<SocialAuthUpdateWithoutUserInput, SocialAuthUncheckedUpdateWithoutUserInput>
   }
 
-  export type SocialAuthUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    provider?: EnumSocialProviderFieldUpdateOperationsInput | $Enums.SocialProvider
-    providerId?: StringFieldUpdateOperationsInput | string
+  export type SocialAuthUpdateManyWithWhereWithoutUserInput = {
+    where: SocialAuthScalarWhereInput
+    data: XOR<SocialAuthUpdateManyMutationInput, SocialAuthUncheckedUpdateManyWithoutUserInput>
   }
 
-  export type SocialAuthUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    provider?: EnumSocialProviderFieldUpdateOperationsInput | $Enums.SocialProvider
-    providerId?: StringFieldUpdateOperationsInput | string
+  export type SocialAuthScalarWhereInput = {
+    AND?: SocialAuthScalarWhereInput | SocialAuthScalarWhereInput[]
+    OR?: SocialAuthScalarWhereInput[]
+    NOT?: SocialAuthScalarWhereInput | SocialAuthScalarWhereInput[]
+    id?: StringFilter<"SocialAuth"> | string
+    userId?: StringFilter<"SocialAuth"> | string
+    provider?: EnumSocialProviderFilter<"SocialAuth"> | $Enums.SocialProvider
+    providerId?: StringFilter<"SocialAuth"> | string
   }
 
-  export type VerificationTokenUpsertWithWhereUniqueWithoutUserInput = {
-    where: VerificationTokenWhereUniqueInput
-    update: XOR<VerificationTokenUpdateWithoutUserInput, VerificationTokenUncheckedUpdateWithoutUserInput>
-    create: XOR<VerificationTokenCreateWithoutUserInput, VerificationTokenUncheckedCreateWithoutUserInput>
-  }
-
-  export type VerificationTokenUpdateWithWhereUniqueWithoutUserInput = {
-    where: VerificationTokenWhereUniqueInput
-    data: XOR<VerificationTokenUpdateWithoutUserInput, VerificationTokenUncheckedUpdateWithoutUserInput>
-  }
-
-  export type VerificationTokenUpdateManyWithWhereWithoutUserInput = {
-    where: VerificationTokenScalarWhereInput
-    data: XOR<VerificationTokenUpdateManyMutationInput, VerificationTokenUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type VerificationTokenScalarWhereInput = {
-    AND?: VerificationTokenScalarWhereInput | VerificationTokenScalarWhereInput[]
-    OR?: VerificationTokenScalarWhereInput[]
-    NOT?: VerificationTokenScalarWhereInput | VerificationTokenScalarWhereInput[]
-    id?: StringFilter<"VerificationToken"> | string
-    userId?: StringFilter<"VerificationToken"> | string
-    token?: StringFilter<"VerificationToken"> | string
-    type?: StringFilter<"VerificationToken"> | string
-    expiresAt?: DateTimeFilter<"VerificationToken"> | Date | string
-    usedAt?: DateTimeNullableFilter<"VerificationToken"> | Date | string | null
-    createdAt?: DateTimeFilter<"VerificationToken"> | Date | string
-  }
-
-  export type UserCreateWithoutUserInformationInput = {
+  export type UserCreateWithoutCorporateInput = {
     id?: string
-    role?: $Enums.UserRole
     email?: string | null
     password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
+    userType: $Enums.UserType
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
-    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
-    verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionCreateNestedManyWithoutUserInput
-    socialAuths?: SocialAuthCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenCreateNestedManyWithoutUserInput
+    individual?: IndividualProfileCreateNestedOneWithoutUserInput
+    socialAuths?: SocialAuthCreateNestedManyWithoutUserInput
   }
 
-  export type UserUncheckedCreateWithoutUserInformationInput = {
+  export type UserUncheckedCreateWithoutCorporateInput = {
     id?: string
-    role?: $Enums.UserRole
     email?: string | null
     password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
+    userType: $Enums.UserType
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
-    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
-    socialAuths?: SocialAuthUncheckedCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    individual?: IndividualProfileUncheckedCreateNestedOneWithoutUserInput
+    socialAuths?: SocialAuthUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type UserCreateOrConnectWithoutUserInformationInput = {
+  export type UserCreateOrConnectWithoutCorporateInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutUserInformationInput, UserUncheckedCreateWithoutUserInformationInput>
+    create: XOR<UserCreateWithoutCorporateInput, UserUncheckedCreateWithoutCorporateInput>
   }
 
-  export type UserUpsertWithoutUserInformationInput = {
-    update: XOR<UserUpdateWithoutUserInformationInput, UserUncheckedUpdateWithoutUserInformationInput>
-    create: XOR<UserCreateWithoutUserInformationInput, UserUncheckedCreateWithoutUserInformationInput>
+  export type TalentAccessLogCreateWithoutCorporateInput = {
+    accessId?: bigint | number
+    accessedAt?: Date | string
+    individual: IndividualProfileCreateNestedOneWithoutAccessLogsInput
+  }
+
+  export type TalentAccessLogUncheckedCreateWithoutCorporateInput = {
+    accessId?: bigint | number
+    individualId: bigint | number
+    accessedAt?: Date | string
+  }
+
+  export type TalentAccessLogCreateOrConnectWithoutCorporateInput = {
+    where: TalentAccessLogWhereUniqueInput
+    create: XOR<TalentAccessLogCreateWithoutCorporateInput, TalentAccessLogUncheckedCreateWithoutCorporateInput>
+  }
+
+  export type TalentAccessLogCreateManyCorporateInputEnvelope = {
+    data: TalentAccessLogCreateManyCorporateInput | TalentAccessLogCreateManyCorporateInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutCorporateInput = {
+    update: XOR<UserUpdateWithoutCorporateInput, UserUncheckedUpdateWithoutCorporateInput>
+    create: XOR<UserCreateWithoutCorporateInput, UserUncheckedCreateWithoutCorporateInput>
     where?: UserWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutUserInformationInput = {
+  export type UserUpdateToOneWithWhereWithoutCorporateInput = {
     where?: UserWhereInput
-    data: XOR<UserUpdateWithoutUserInformationInput, UserUncheckedUpdateWithoutUserInformationInput>
+    data: XOR<UserUpdateWithoutCorporateInput, UserUncheckedUpdateWithoutCorporateInput>
   }
 
-  export type UserUpdateWithoutUserInformationInput = {
+  export type UserUpdateWithoutCorporateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
+    userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
-    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUpdateManyWithoutUserNestedInput
-    socialAuths?: SocialAuthUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUpdateManyWithoutUserNestedInput
+    individual?: IndividualProfileUpdateOneWithoutUserNestedInput
+    socialAuths?: SocialAuthUpdateManyWithoutUserNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutUserInformationInput = {
+  export type UserUncheckedUpdateWithoutCorporateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
+    userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
-    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
-    socialAuths?: SocialAuthUncheckedUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    individual?: IndividualProfileUncheckedUpdateOneWithoutUserNestedInput
+    socialAuths?: SocialAuthUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type TalentAccessLogUpsertWithWhereUniqueWithoutCorporateInput = {
+    where: TalentAccessLogWhereUniqueInput
+    update: XOR<TalentAccessLogUpdateWithoutCorporateInput, TalentAccessLogUncheckedUpdateWithoutCorporateInput>
+    create: XOR<TalentAccessLogCreateWithoutCorporateInput, TalentAccessLogUncheckedCreateWithoutCorporateInput>
+  }
+
+  export type TalentAccessLogUpdateWithWhereUniqueWithoutCorporateInput = {
+    where: TalentAccessLogWhereUniqueInput
+    data: XOR<TalentAccessLogUpdateWithoutCorporateInput, TalentAccessLogUncheckedUpdateWithoutCorporateInput>
+  }
+
+  export type TalentAccessLogUpdateManyWithWhereWithoutCorporateInput = {
+    where: TalentAccessLogScalarWhereInput
+    data: XOR<TalentAccessLogUpdateManyMutationInput, TalentAccessLogUncheckedUpdateManyWithoutCorporateInput>
+  }
+
+  export type TalentAccessLogScalarWhereInput = {
+    AND?: TalentAccessLogScalarWhereInput | TalentAccessLogScalarWhereInput[]
+    OR?: TalentAccessLogScalarWhereInput[]
+    NOT?: TalentAccessLogScalarWhereInput | TalentAccessLogScalarWhereInput[]
+    accessId?: BigIntFilter<"TalentAccessLog"> | bigint | number
+    corporateId?: BigIntFilter<"TalentAccessLog"> | bigint | number
+    individualId?: BigIntFilter<"TalentAccessLog"> | bigint | number
+    accessedAt?: DateTimeFilter<"TalentAccessLog"> | Date | string
+  }
+
+  export type UserCreateWithoutIndividualInput = {
+    id?: string
+    email?: string | null
+    password?: string | null
+    userType: $Enums.UserType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    corporate?: CorporateProfileCreateNestedOneWithoutUserInput
+    socialAuths?: SocialAuthCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutIndividualInput = {
+    id?: string
+    email?: string | null
+    password?: string | null
+    userType: $Enums.UserType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    corporate?: CorporateProfileUncheckedCreateNestedOneWithoutUserInput
+    socialAuths?: SocialAuthUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutIndividualInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutIndividualInput, UserUncheckedCreateWithoutIndividualInput>
+  }
+
+  export type TalentAccessLogCreateWithoutIndividualInput = {
+    accessId?: bigint | number
+    accessedAt?: Date | string
+    corporate: CorporateProfileCreateNestedOneWithoutAccessLogsInput
+  }
+
+  export type TalentAccessLogUncheckedCreateWithoutIndividualInput = {
+    accessId?: bigint | number
+    corporateId: bigint | number
+    accessedAt?: Date | string
+  }
+
+  export type TalentAccessLogCreateOrConnectWithoutIndividualInput = {
+    where: TalentAccessLogWhereUniqueInput
+    create: XOR<TalentAccessLogCreateWithoutIndividualInput, TalentAccessLogUncheckedCreateWithoutIndividualInput>
+  }
+
+  export type TalentAccessLogCreateManyIndividualInputEnvelope = {
+    data: TalentAccessLogCreateManyIndividualInput | TalentAccessLogCreateManyIndividualInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutIndividualInput = {
+    update: XOR<UserUpdateWithoutIndividualInput, UserUncheckedUpdateWithoutIndividualInput>
+    create: XOR<UserCreateWithoutIndividualInput, UserUncheckedCreateWithoutIndividualInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutIndividualInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutIndividualInput, UserUncheckedUpdateWithoutIndividualInput>
+  }
+
+  export type UserUpdateWithoutIndividualInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    corporate?: CorporateProfileUpdateOneWithoutUserNestedInput
+    socialAuths?: SocialAuthUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutIndividualInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    corporate?: CorporateProfileUncheckedUpdateOneWithoutUserNestedInput
+    socialAuths?: SocialAuthUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type TalentAccessLogUpsertWithWhereUniqueWithoutIndividualInput = {
+    where: TalentAccessLogWhereUniqueInput
+    update: XOR<TalentAccessLogUpdateWithoutIndividualInput, TalentAccessLogUncheckedUpdateWithoutIndividualInput>
+    create: XOR<TalentAccessLogCreateWithoutIndividualInput, TalentAccessLogUncheckedCreateWithoutIndividualInput>
+  }
+
+  export type TalentAccessLogUpdateWithWhereUniqueWithoutIndividualInput = {
+    where: TalentAccessLogWhereUniqueInput
+    data: XOR<TalentAccessLogUpdateWithoutIndividualInput, TalentAccessLogUncheckedUpdateWithoutIndividualInput>
+  }
+
+  export type TalentAccessLogUpdateManyWithWhereWithoutIndividualInput = {
+    where: TalentAccessLogScalarWhereInput
+    data: XOR<TalentAccessLogUpdateManyMutationInput, TalentAccessLogUncheckedUpdateManyWithoutIndividualInput>
+  }
+
+  export type CorporateProfileCreateWithoutAccessLogsInput = {
+    companyId?: bigint | number
+    companyName: string
+    industryCode: string
+    businessRegNo: string
+    user: UserCreateNestedOneWithoutCorporateInput
+  }
+
+  export type CorporateProfileUncheckedCreateWithoutAccessLogsInput = {
+    companyId?: bigint | number
+    userId: string
+    companyName: string
+    industryCode: string
+    businessRegNo: string
+  }
+
+  export type CorporateProfileCreateOrConnectWithoutAccessLogsInput = {
+    where: CorporateProfileWhereUniqueInput
+    create: XOR<CorporateProfileCreateWithoutAccessLogsInput, CorporateProfileUncheckedCreateWithoutAccessLogsInput>
+  }
+
+  export type IndividualProfileCreateWithoutAccessLogsInput = {
+    individualId?: bigint | number
+    fullName: string
+    visaStatus: string
+    isVisaVerified?: boolean
+    koreanLevel?: number
+    user: UserCreateNestedOneWithoutIndividualInput
+  }
+
+  export type IndividualProfileUncheckedCreateWithoutAccessLogsInput = {
+    individualId?: bigint | number
+    userId: string
+    fullName: string
+    visaStatus: string
+    isVisaVerified?: boolean
+    koreanLevel?: number
+  }
+
+  export type IndividualProfileCreateOrConnectWithoutAccessLogsInput = {
+    where: IndividualProfileWhereUniqueInput
+    create: XOR<IndividualProfileCreateWithoutAccessLogsInput, IndividualProfileUncheckedCreateWithoutAccessLogsInput>
+  }
+
+  export type CorporateProfileUpsertWithoutAccessLogsInput = {
+    update: XOR<CorporateProfileUpdateWithoutAccessLogsInput, CorporateProfileUncheckedUpdateWithoutAccessLogsInput>
+    create: XOR<CorporateProfileCreateWithoutAccessLogsInput, CorporateProfileUncheckedCreateWithoutAccessLogsInput>
+    where?: CorporateProfileWhereInput
+  }
+
+  export type CorporateProfileUpdateToOneWithWhereWithoutAccessLogsInput = {
+    where?: CorporateProfileWhereInput
+    data: XOR<CorporateProfileUpdateWithoutAccessLogsInput, CorporateProfileUncheckedUpdateWithoutAccessLogsInput>
+  }
+
+  export type CorporateProfileUpdateWithoutAccessLogsInput = {
+    companyId?: BigIntFieldUpdateOperationsInput | bigint | number
+    companyName?: StringFieldUpdateOperationsInput | string
+    industryCode?: StringFieldUpdateOperationsInput | string
+    businessRegNo?: StringFieldUpdateOperationsInput | string
+    user?: UserUpdateOneRequiredWithoutCorporateNestedInput
+  }
+
+  export type CorporateProfileUncheckedUpdateWithoutAccessLogsInput = {
+    companyId?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    industryCode?: StringFieldUpdateOperationsInput | string
+    businessRegNo?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type IndividualProfileUpsertWithoutAccessLogsInput = {
+    update: XOR<IndividualProfileUpdateWithoutAccessLogsInput, IndividualProfileUncheckedUpdateWithoutAccessLogsInput>
+    create: XOR<IndividualProfileCreateWithoutAccessLogsInput, IndividualProfileUncheckedCreateWithoutAccessLogsInput>
+    where?: IndividualProfileWhereInput
+  }
+
+  export type IndividualProfileUpdateToOneWithWhereWithoutAccessLogsInput = {
+    where?: IndividualProfileWhereInput
+    data: XOR<IndividualProfileUpdateWithoutAccessLogsInput, IndividualProfileUncheckedUpdateWithoutAccessLogsInput>
+  }
+
+  export type IndividualProfileUpdateWithoutAccessLogsInput = {
+    individualId?: BigIntFieldUpdateOperationsInput | bigint | number
+    fullName?: StringFieldUpdateOperationsInput | string
+    visaStatus?: StringFieldUpdateOperationsInput | string
+    isVisaVerified?: BoolFieldUpdateOperationsInput | boolean
+    koreanLevel?: IntFieldUpdateOperationsInput | number
+    user?: UserUpdateOneRequiredWithoutIndividualNestedInput
+  }
+
+  export type IndividualProfileUncheckedUpdateWithoutAccessLogsInput = {
+    individualId?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    fullName?: StringFieldUpdateOperationsInput | string
+    visaStatus?: StringFieldUpdateOperationsInput | string
+    isVisaVerified?: BoolFieldUpdateOperationsInput | boolean
+    koreanLevel?: IntFieldUpdateOperationsInput | number
   }
 
   export type UserCreateWithoutSocialAuthsInput = {
     id?: string
-    role?: $Enums.UserRole
     email?: string | null
     password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
+    userType: $Enums.UserType
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
-    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
-    verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionCreateNestedManyWithoutUserInput
-    userInformation?: UserInformationCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenCreateNestedManyWithoutUserInput
+    corporate?: CorporateProfileCreateNestedOneWithoutUserInput
+    individual?: IndividualProfileCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSocialAuthsInput = {
     id?: string
-    role?: $Enums.UserRole
     email?: string | null
     password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
+    userType: $Enums.UserType
     createdAt?: Date | string
     updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
-    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
-    userInformation?: UserInformationUncheckedCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenUncheckedCreateNestedManyWithoutUserInput
+    corporate?: CorporateProfileUncheckedCreateNestedOneWithoutUserInput
+    individual?: IndividualProfileUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSocialAuthsInput = {
@@ -12699,848 +9091,96 @@ export namespace Prisma {
 
   export type UserUpdateWithoutSocialAuthsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
+    userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
-    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUpdateManyWithoutUserNestedInput
-    userInformation?: UserInformationUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUpdateManyWithoutUserNestedInput
+    corporate?: CorporateProfileUpdateOneWithoutUserNestedInput
+    individual?: IndividualProfileUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSocialAuthsInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
     email?: NullableStringFieldUpdateOperationsInput | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
+    userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
-    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
-    userInformation?: UserInformationUncheckedUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    corporate?: CorporateProfileUncheckedUpdateOneWithoutUserNestedInput
+    individual?: IndividualProfileUncheckedUpdateOneWithoutUserNestedInput
   }
 
-  export type UserCreateWithoutMemberIdentityVerificationInput = {
+  export type SocialAuthCreateManyUserInput = {
     id?: string
-    role?: $Enums.UserRole
-    email?: string | null
-    password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
-    verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionCreateNestedManyWithoutUserInput
-    userInformation?: UserInformationCreateNestedOneWithoutUserInput
-    socialAuths?: SocialAuthCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenCreateNestedManyWithoutUserInput
+    provider: $Enums.SocialProvider
+    providerId: string
   }
 
-  export type UserUncheckedCreateWithoutMemberIdentityVerificationInput = {
-    id?: string
-    role?: $Enums.UserRole
-    email?: string | null
-    password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
-    userInformation?: UserInformationUncheckedCreateNestedOneWithoutUserInput
-    socialAuths?: SocialAuthUncheckedCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutMemberIdentityVerificationInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutMemberIdentityVerificationInput, UserUncheckedCreateWithoutMemberIdentityVerificationInput>
-  }
-
-  export type UserCreateWithoutVerifiedMemberIdentitiesInput = {
-    id?: string
-    role?: $Enums.UserRole
-    email?: string | null
-    password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
-    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
-    verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionCreateNestedManyWithoutUserInput
-    userInformation?: UserInformationCreateNestedOneWithoutUserInput
-    socialAuths?: SocialAuthCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutVerifiedMemberIdentitiesInput = {
-    id?: string
-    role?: $Enums.UserRole
-    email?: string | null
-    password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
-    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
-    userInformation?: UserInformationUncheckedCreateNestedOneWithoutUserInput
-    socialAuths?: SocialAuthUncheckedCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutVerifiedMemberIdentitiesInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutVerifiedMemberIdentitiesInput, UserUncheckedCreateWithoutVerifiedMemberIdentitiesInput>
-  }
-
-  export type UserUpsertWithoutMemberIdentityVerificationInput = {
-    update: XOR<UserUpdateWithoutMemberIdentityVerificationInput, UserUncheckedUpdateWithoutMemberIdentityVerificationInput>
-    create: XOR<UserCreateWithoutMemberIdentityVerificationInput, UserUncheckedCreateWithoutMemberIdentityVerificationInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutMemberIdentityVerificationInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutMemberIdentityVerificationInput, UserUncheckedUpdateWithoutMemberIdentityVerificationInput>
-  }
-
-  export type UserUpdateWithoutMemberIdentityVerificationInput = {
+  export type SocialAuthUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUpdateManyWithoutUserNestedInput
-    userInformation?: UserInformationUpdateOneWithoutUserNestedInput
-    socialAuths?: SocialAuthUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUpdateManyWithoutUserNestedInput
+    provider?: EnumSocialProviderFieldUpdateOperationsInput | $Enums.SocialProvider
+    providerId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type UserUncheckedUpdateWithoutMemberIdentityVerificationInput = {
+  export type SocialAuthUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
-    userInformation?: UserInformationUncheckedUpdateOneWithoutUserNestedInput
-    socialAuths?: SocialAuthUncheckedUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+    provider?: EnumSocialProviderFieldUpdateOperationsInput | $Enums.SocialProvider
+    providerId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type UserUpsertWithoutVerifiedMemberIdentitiesInput = {
-    update: XOR<UserUpdateWithoutVerifiedMemberIdentitiesInput, UserUncheckedUpdateWithoutVerifiedMemberIdentitiesInput>
-    create: XOR<UserCreateWithoutVerifiedMemberIdentitiesInput, UserUncheckedCreateWithoutVerifiedMemberIdentitiesInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutVerifiedMemberIdentitiesInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutVerifiedMemberIdentitiesInput, UserUncheckedUpdateWithoutVerifiedMemberIdentitiesInput>
-  }
-
-  export type UserUpdateWithoutVerifiedMemberIdentitiesInput = {
+  export type SocialAuthUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
-    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUpdateManyWithoutUserNestedInput
-    userInformation?: UserInformationUpdateOneWithoutUserNestedInput
-    socialAuths?: SocialAuthUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUpdateManyWithoutUserNestedInput
+    provider?: EnumSocialProviderFieldUpdateOperationsInput | $Enums.SocialProvider
+    providerId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type UserUncheckedUpdateWithoutVerifiedMemberIdentitiesInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
-    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
-    userInformation?: UserInformationUncheckedUpdateOneWithoutUserNestedInput
-    socialAuths?: SocialAuthUncheckedUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+  export type TalentAccessLogCreateManyCorporateInput = {
+    accessId?: bigint | number
+    individualId: bigint | number
+    accessedAt?: Date | string
   }
 
-  export type UserCreateWithoutCorporateRegistrationInput = {
-    id?: string
-    role?: $Enums.UserRole
-    email?: string | null
-    password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
-    verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionCreateNestedManyWithoutUserInput
-    userInformation?: UserInformationCreateNestedOneWithoutUserInput
-    socialAuths?: SocialAuthCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenCreateNestedManyWithoutUserInput
+  export type TalentAccessLogUpdateWithoutCorporateInput = {
+    accessId?: BigIntFieldUpdateOperationsInput | bigint | number
+    accessedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    individual?: IndividualProfileUpdateOneRequiredWithoutAccessLogsNestedInput
   }
 
-  export type UserUncheckedCreateWithoutCorporateRegistrationInput = {
-    id?: string
-    role?: $Enums.UserRole
-    email?: string | null
-    password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
-    userInformation?: UserInformationUncheckedCreateNestedOneWithoutUserInput
-    socialAuths?: SocialAuthUncheckedCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  export type TalentAccessLogUncheckedUpdateWithoutCorporateInput = {
+    accessId?: BigIntFieldUpdateOperationsInput | bigint | number
+    individualId?: BigIntFieldUpdateOperationsInput | bigint | number
+    accessedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type UserCreateOrConnectWithoutCorporateRegistrationInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutCorporateRegistrationInput, UserUncheckedCreateWithoutCorporateRegistrationInput>
+  export type TalentAccessLogUncheckedUpdateManyWithoutCorporateInput = {
+    accessId?: BigIntFieldUpdateOperationsInput | bigint | number
+    individualId?: BigIntFieldUpdateOperationsInput | bigint | number
+    accessedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type UserCreateWithoutVerifiedCorporateRegistrationsInput = {
-    id?: string
-    role?: $Enums.UserRole
-    email?: string | null
-    password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
-    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionCreateNestedManyWithoutUserInput
-    userInformation?: UserInformationCreateNestedOneWithoutUserInput
-    socialAuths?: SocialAuthCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenCreateNestedManyWithoutUserInput
+  export type TalentAccessLogCreateManyIndividualInput = {
+    accessId?: bigint | number
+    corporateId: bigint | number
+    accessedAt?: Date | string
   }
 
-  export type UserUncheckedCreateWithoutVerifiedCorporateRegistrationsInput = {
-    id?: string
-    role?: $Enums.UserRole
-    email?: string | null
-    password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
-    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
-    userInformation?: UserInformationUncheckedCreateNestedOneWithoutUserInput
-    socialAuths?: SocialAuthUncheckedCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  export type TalentAccessLogUpdateWithoutIndividualInput = {
+    accessId?: BigIntFieldUpdateOperationsInput | bigint | number
+    accessedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    corporate?: CorporateProfileUpdateOneRequiredWithoutAccessLogsNestedInput
   }
 
-  export type UserCreateOrConnectWithoutVerifiedCorporateRegistrationsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutVerifiedCorporateRegistrationsInput, UserUncheckedCreateWithoutVerifiedCorporateRegistrationsInput>
+  export type TalentAccessLogUncheckedUpdateWithoutIndividualInput = {
+    accessId?: BigIntFieldUpdateOperationsInput | bigint | number
+    corporateId?: BigIntFieldUpdateOperationsInput | bigint | number
+    accessedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type UserUpsertWithoutCorporateRegistrationInput = {
-    update: XOR<UserUpdateWithoutCorporateRegistrationInput, UserUncheckedUpdateWithoutCorporateRegistrationInput>
-    create: XOR<UserCreateWithoutCorporateRegistrationInput, UserUncheckedCreateWithoutCorporateRegistrationInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutCorporateRegistrationInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutCorporateRegistrationInput, UserUncheckedUpdateWithoutCorporateRegistrationInput>
-  }
-
-  export type UserUpdateWithoutCorporateRegistrationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUpdateManyWithoutUserNestedInput
-    userInformation?: UserInformationUpdateOneWithoutUserNestedInput
-    socialAuths?: SocialAuthUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutCorporateRegistrationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
-    userInformation?: UserInformationUncheckedUpdateOneWithoutUserNestedInput
-    socialAuths?: SocialAuthUncheckedUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUpsertWithoutVerifiedCorporateRegistrationsInput = {
-    update: XOR<UserUpdateWithoutVerifiedCorporateRegistrationsInput, UserUncheckedUpdateWithoutVerifiedCorporateRegistrationsInput>
-    create: XOR<UserCreateWithoutVerifiedCorporateRegistrationsInput, UserUncheckedCreateWithoutVerifiedCorporateRegistrationsInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutVerifiedCorporateRegistrationsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutVerifiedCorporateRegistrationsInput, UserUncheckedUpdateWithoutVerifiedCorporateRegistrationsInput>
-  }
-
-  export type UserUpdateWithoutVerifiedCorporateRegistrationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
-    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUpdateManyWithoutUserNestedInput
-    userInformation?: UserInformationUpdateOneWithoutUserNestedInput
-    socialAuths?: SocialAuthUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutVerifiedCorporateRegistrationsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
-    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
-    userInformation?: UserInformationUncheckedUpdateOneWithoutUserNestedInput
-    socialAuths?: SocialAuthUncheckedUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserCreateWithoutVerificationTokensInput = {
-    id?: string
-    role?: $Enums.UserRole
-    email?: string | null
-    password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
-    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
-    verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionCreateNestedManyWithoutUserInput
-    userInformation?: UserInformationCreateNestedOneWithoutUserInput
-    socialAuths?: SocialAuthCreateNestedOneWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutVerificationTokensInput = {
-    id?: string
-    role?: $Enums.UserRole
-    email?: string | null
-    password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
-    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
-    sanctions?: SanctionUncheckedCreateNestedManyWithoutUserInput
-    userInformation?: UserInformationUncheckedCreateNestedOneWithoutUserInput
-    socialAuths?: SocialAuthUncheckedCreateNestedOneWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutVerificationTokensInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutVerificationTokensInput, UserUncheckedCreateWithoutVerificationTokensInput>
-  }
-
-  export type UserUpsertWithoutVerificationTokensInput = {
-    update: XOR<UserUpdateWithoutVerificationTokensInput, UserUncheckedUpdateWithoutVerificationTokensInput>
-    create: XOR<UserCreateWithoutVerificationTokensInput, UserUncheckedCreateWithoutVerificationTokensInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutVerificationTokensInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutVerificationTokensInput, UserUncheckedUpdateWithoutVerificationTokensInput>
-  }
-
-  export type UserUpdateWithoutVerificationTokensInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
-    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUpdateManyWithoutUserNestedInput
-    userInformation?: UserInformationUpdateOneWithoutUserNestedInput
-    socialAuths?: SocialAuthUpdateOneWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutVerificationTokensInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
-    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
-    sanctions?: SanctionUncheckedUpdateManyWithoutUserNestedInput
-    userInformation?: UserInformationUncheckedUpdateOneWithoutUserNestedInput
-    socialAuths?: SocialAuthUncheckedUpdateOneWithoutUserNestedInput
-  }
-
-  export type UserCreateWithoutSanctionsInput = {
-    id?: string
-    role?: $Enums.UserRole
-    email?: string | null
-    password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationCreateNestedOneWithoutUserInput
-    corporateRegistration?: CorporateRegistrationCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationCreateNestedManyWithoutVerifierInput
-    verifiedCorporateRegistrations?: CorporateRegistrationCreateNestedManyWithoutVerifierInput
-    userInformation?: UserInformationCreateNestedOneWithoutUserInput
-    socialAuths?: SocialAuthCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutSanctionsInput = {
-    id?: string
-    role?: $Enums.UserRole
-    email?: string | null
-    password?: string | null
-    phone?: string | null
-    fullName?: string | null
-    status?: $Enums.UserStatus
-    isEmailedVerified?: boolean
-    isPhoneVerified?: boolean
-    walletId?: string | null
-    userInfoId?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedCreateNestedOneWithoutUserInput
-    corporateRegistration?: CorporateRegistrationUncheckedCreateNestedOneWithoutUserInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedCreateNestedManyWithoutVerifierInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedCreateNestedManyWithoutVerifierInput
-    userInformation?: UserInformationUncheckedCreateNestedOneWithoutUserInput
-    socialAuths?: SocialAuthUncheckedCreateNestedOneWithoutUserInput
-    verificationTokens?: VerificationTokenUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutSanctionsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutSanctionsInput, UserUncheckedCreateWithoutSanctionsInput>
-  }
-
-  export type UserUpsertWithoutSanctionsInput = {
-    update: XOR<UserUpdateWithoutSanctionsInput, UserUncheckedUpdateWithoutSanctionsInput>
-    create: XOR<UserCreateWithoutSanctionsInput, UserUncheckedCreateWithoutSanctionsInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutSanctionsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutSanctionsInput, UserUncheckedUpdateWithoutSanctionsInput>
-  }
-
-  export type UserUpdateWithoutSanctionsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUpdateOneWithoutUserNestedInput
-    corporateRegistration?: CorporateRegistrationUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUpdateManyWithoutVerifierNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUpdateManyWithoutVerifierNestedInput
-    userInformation?: UserInformationUpdateOneWithoutUserNestedInput
-    socialAuths?: SocialAuthUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutSanctionsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    password?: NullableStringFieldUpdateOperationsInput | string | null
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    fullName?: NullableStringFieldUpdateOperationsInput | string | null
-    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
-    isEmailedVerified?: BoolFieldUpdateOperationsInput | boolean
-    isPhoneVerified?: BoolFieldUpdateOperationsInput | boolean
-    walletId?: NullableStringFieldUpdateOperationsInput | string | null
-    userInfoId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    memberIdentityVerification?: MemberIdentityVerificationUncheckedUpdateOneWithoutUserNestedInput
-    corporateRegistration?: CorporateRegistrationUncheckedUpdateOneWithoutUserNestedInput
-    verifiedMemberIdentities?: MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierNestedInput
-    verifiedCorporateRegistrations?: CorporateRegistrationUncheckedUpdateManyWithoutVerifierNestedInput
-    userInformation?: UserInformationUncheckedUpdateOneWithoutUserNestedInput
-    socialAuths?: SocialAuthUncheckedUpdateOneWithoutUserNestedInput
-    verificationTokens?: VerificationTokenUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type MemberIdentityVerificationCreateManyVerifierInput = {
-    id?: string
-    userId: string
-    passportPhoto?: string | null
-    selfiePhoto?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type CorporateRegistrationCreateManyVerifierInput = {
-    id?: string
-    userId: string
-    companyName?: string | null
-    businessLicenseFile?: string | null
-    verificationStatus?: $Enums.VerificationStatus
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type SanctionCreateManyUserInput = {
-    id?: string
-    sanctionType: $Enums.SanctionType
-    reason?: string | null
-    startDate?: Date | string | null
-    endDate?: Date | string | null
-    createdAt?: Date | string
-  }
-
-  export type VerificationTokenCreateManyUserInput = {
-    id?: string
-    token: string
-    type: string
-    expiresAt: Date | string
-    usedAt?: Date | string | null
-    createdAt?: Date | string
-  }
-
-  export type MemberIdentityVerificationUpdateWithoutVerifierInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    passportPhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    selfiePhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutMemberIdentityVerificationNestedInput
-  }
-
-  export type MemberIdentityVerificationUncheckedUpdateWithoutVerifierInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    passportPhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    selfiePhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MemberIdentityVerificationUncheckedUpdateManyWithoutVerifierInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    passportPhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    selfiePhoto?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CorporateRegistrationUpdateWithoutVerifierInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    companyName?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLicenseFile?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutCorporateRegistrationNestedInput
-  }
-
-  export type CorporateRegistrationUncheckedUpdateWithoutVerifierInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    companyName?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLicenseFile?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CorporateRegistrationUncheckedUpdateManyWithoutVerifierInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
-    companyName?: NullableStringFieldUpdateOperationsInput | string | null
-    businessLicenseFile?: NullableStringFieldUpdateOperationsInput | string | null
-    verificationStatus?: EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SanctionUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sanctionType?: EnumSanctionTypeFieldUpdateOperationsInput | $Enums.SanctionType
-    reason?: NullableStringFieldUpdateOperationsInput | string | null
-    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SanctionUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sanctionType?: EnumSanctionTypeFieldUpdateOperationsInput | $Enums.SanctionType
-    reason?: NullableStringFieldUpdateOperationsInput | string | null
-    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type SanctionUncheckedUpdateManyWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sanctionType?: EnumSanctionTypeFieldUpdateOperationsInput | $Enums.SanctionType
-    reason?: NullableStringFieldUpdateOperationsInput | string | null
-    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type VerificationTokenUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type VerificationTokenUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type VerificationTokenUncheckedUpdateManyWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
-    type?: StringFieldUpdateOperationsInput | string
-    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type TalentAccessLogUncheckedUpdateManyWithoutIndividualInput = {
+    accessId?: BigIntFieldUpdateOperationsInput | bigint | number
+    corporateId?: BigIntFieldUpdateOperationsInput | bigint | number
+    accessedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

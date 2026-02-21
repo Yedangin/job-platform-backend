@@ -1,6 +1,6 @@
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("USER_DATABASE_URL")
 }
 
 generator client {
@@ -22,7 +22,10 @@ model User {
   @@map("users")
 }
 
-enum UserType { CORPORATE; INDIVIDUAL }
+enum UserType { 
+  CORPORATE 
+  INDIVIDUAL 
+  }
 
 model CorporateProfile {
   companyId     BigInt    @id @default(autoincrement()) @map("company_id")

@@ -122,32 +122,35 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
-  role: 'role',
   email: 'email',
   password: 'password',
-  phone: 'phone',
-  fullName: 'fullName',
-  status: 'status',
-  isEmailedVerified: 'isEmailedVerified',
-  isPhoneVerified: 'isPhoneVerified',
-  walletId: 'walletId',
-  userInfoId: 'userInfoId',
+  userType: 'userType',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.UserInformationScalarFieldEnum = {
-  id: 'id',
+exports.Prisma.CorporateProfileScalarFieldEnum = {
+  companyId: 'companyId',
   userId: 'userId',
-  profileImage: 'profileImage',
-  gender: 'gender',
-  address: 'address',
-  country: 'country',
-  city: 'city',
-  cvForm: 'cvForm',
-  additionalInformation: 'additionalInformation',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  companyName: 'companyName',
+  industryCode: 'industryCode',
+  businessRegNo: 'businessRegNo'
+};
+
+exports.Prisma.IndividualProfileScalarFieldEnum = {
+  individualId: 'individualId',
+  userId: 'userId',
+  fullName: 'fullName',
+  visaStatus: 'visaStatus',
+  isVisaVerified: 'isVisaVerified',
+  koreanLevel: 'koreanLevel'
+};
+
+exports.Prisma.TalentAccessLogScalarFieldEnum = {
+  accessId: 'accessId',
+  corporateId: 'corporateId',
+  individualId: 'individualId',
+  accessedAt: 'accessedAt'
 };
 
 exports.Prisma.SocialAuthScalarFieldEnum = {
@@ -155,48 +158,6 @@ exports.Prisma.SocialAuthScalarFieldEnum = {
   userId: 'userId',
   provider: 'provider',
   providerId: 'providerId'
-};
-
-exports.Prisma.MemberIdentityVerificationScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  passportPhoto: 'passportPhoto',
-  selfiePhoto: 'selfiePhoto',
-  verificationStatus: 'verificationStatus',
-  isVerifiedBy: 'isVerifiedBy',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.CorporateRegistrationScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  companyName: 'companyName',
-  businessLicenseFile: 'businessLicenseFile',
-  verificationStatus: 'verificationStatus',
-  isVerifiedBy: 'isVerifiedBy',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.VerificationTokenScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  token: 'token',
-  type: 'type',
-  expiresAt: 'expiresAt',
-  usedAt: 'usedAt',
-  createdAt: 'createdAt'
-};
-
-exports.Prisma.SanctionScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  sanctionType: 'sanctionType',
-  reason: 'reason',
-  startDate: 'startDate',
-  endDate: 'endDate',
-  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -213,20 +174,9 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.UserRole = exports.$Enums.UserRole = {
-  GUEST: 'GUEST',
-  MEMBER: 'MEMBER',
+exports.UserType = exports.$Enums.UserType = {
   CORPORATE: 'CORPORATE',
-  ADMIN: 'ADMIN',
-  SUPERADMIN: 'SUPERADMIN'
-};
-
-exports.UserStatus = exports.$Enums.UserStatus = {
-  PENDING: 'PENDING',
-  ACTIVE: 'ACTIVE',
-  SUSPENDED: 'SUSPENDED',
-  REJECTED: 'REJECTED',
-  INACTIVE: 'INACTIVE'
+  INDIVIDUAL: 'INDIVIDUAL'
 };
 
 exports.SocialProvider = exports.$Enums.SocialProvider = {
@@ -236,26 +186,12 @@ exports.SocialProvider = exports.$Enums.SocialProvider = {
   APPLE: 'APPLE'
 };
 
-exports.VerificationStatus = exports.$Enums.VerificationStatus = {
-  PENDING: 'PENDING',
-  APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED'
-};
-
-exports.SanctionType = exports.$Enums.SanctionType = {
-  SUSPENSION: 'SUSPENSION',
-  WARNING: 'WARNING',
-  BANNED: 'BANNED'
-};
-
 exports.Prisma.ModelName = {
   User: 'User',
-  UserInformation: 'UserInformation',
-  SocialAuth: 'SocialAuth',
-  MemberIdentityVerification: 'MemberIdentityVerification',
-  CorporateRegistration: 'CorporateRegistration',
-  VerificationToken: 'VerificationToken',
-  Sanction: 'Sanction'
+  CorporateProfile: 'CorporateProfile',
+  IndividualProfile: 'IndividualProfile',
+  TalentAccessLog: 'TalentAccessLog',
+  SocialAuth: 'SocialAuth'
 };
 
 /**

@@ -93,72 +93,75 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.CategoryScalarFieldEnum = {
+exports.Prisma.IndustryVisaRuleScalarFieldEnum = {
   id: 'id',
-  name: 'name',
+  industryCode: 'industryCode',
+  allowedVisa: 'allowedVisa'
+};
+
+exports.Prisma.JobPostingScalarFieldEnum = {
+  jobId: 'jobId',
+  corporateId: 'corporateId',
+  boardType: 'boardType',
+  title: 'title',
   description: 'description',
-  parentCategoryId: 'parentCategoryId',
+  workContentImg: 'workContentImg',
+  status: 'status',
+  isPremium: 'isPremium',
+  premiumStartAt: 'premiumStartAt',
+  premiumEndAt: 'premiumEndAt',
+  closingDate: 'closingDate',
+  isRecruitmentEnd: 'isRecruitmentEnd',
+  displayAddress: 'displayAddress',
+  actualAddress: 'actualAddress',
+  workIntensity: 'workIntensity',
+  benefits: 'benefits',
+  allowedVisas: 'allowedVisas',
+  minKoreanLevel: 'minKoreanLevel',
+  contactName: 'contactName',
+  contactPhone: 'contactPhone',
+  interviewMethod: 'interviewMethod',
+  interviewPlace: 'interviewPlace',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.JobPostScalarFieldEnum = {
-  id: 'id',
-  corporateId: 'corporateId',
-  title: 'title',
-  description: 'description',
-  location: 'location',
-  salaryRange: 'salaryRange',
-  categoryId: 'categoryId',
-  feeType: 'feeType',
-  status: 'status',
-  approvedBy: 'approvedBy',
-  appliesCount: 'appliesCount',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  expiredAt: 'expiredAt'
+exports.Prisma.JobAttributesAlbaScalarFieldEnum = {
+  jobId: 'jobId',
+  hourlyWage: 'hourlyWage',
+  workPeriod: 'workPeriod',
+  workDaysMask: 'workDaysMask',
+  workTimeStart: 'workTimeStart',
+  workTimeEnd: 'workTimeEnd'
 };
 
-exports.Prisma.ApplyScalarFieldEnum = {
-  id: 'id',
-  jobPostId: 'jobPostId',
-  userId: 'userId',
-  userInfoId: 'userInfoId',
-  isReviewed: 'isReviewed',
-  status: 'status',
-  appliedAt: 'appliedAt'
+exports.Prisma.JobAttributesFulltimeScalarFieldEnum = {
+  jobId: 'jobId',
+  salaryMin: 'salaryMin',
+  salaryMax: 'salaryMax',
+  experienceLevel: 'experienceLevel',
+  educationLevel: 'educationLevel'
 };
 
-exports.Prisma.InterviewScalarFieldEnum = {
-  id: 'id',
-  jobPostId: 'jobPostId',
-  memberId: 'memberId',
-  corporateId: 'corporateId',
-  roomId: 'roomId',
-  interviewDate: 'interviewDate',
+exports.Prisma.InterviewSlotScalarFieldEnum = {
+  slotId: 'slotId',
+  jobId: 'jobId',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  isBooked: 'isBooked'
+};
+
+exports.Prisma.JobApplicationScalarFieldEnum = {
+  appId: 'appId',
+  jobId: 'jobId',
+  applicantId: 'applicantId',
   status: 'status',
-  failureReason: 'failureReason',
+  selectedSlotId: 'selectedSlotId',
+  proposedBy: 'proposedBy',
+  proposedTime: 'proposedTime',
+  rejectionReason: 'rejectionReason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
-};
-
-exports.Prisma.ReviewScalarFieldEnum = {
-  id: 'id',
-  interviewId: 'interviewId',
-  reviewerId: 'reviewerId',
-  rating: 'rating',
-  comment: 'comment',
-  createdAt: 'createdAt'
-};
-
-exports.Prisma.ReportScalarFieldEnum = {
-  id: 'id',
-  title: 'title',
-  reporterId: 'reporterId',
-  reportedUserId: 'reportedUserId',
-  reason: 'reason',
-  status: 'status',
-  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -166,57 +169,81 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.JobPostStatus = exports.$Enums.JobPostStatus = {
-  PENDING: 'PENDING',
-  APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED'
+exports.BoardType = exports.$Enums.BoardType = {
+  PART_TIME: 'PART_TIME',
+  FULL_TIME: 'FULL_TIME'
 };
 
-exports.AppliedStatus = exports.$Enums.AppliedStatus = {
+exports.PostStatus = exports.$Enums.PostStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED'
+};
+
+exports.Intensity = exports.$Enums.Intensity = {
+  UPPER: 'UPPER',
+  MIDDLE: 'MIDDLE',
+  LOWER: 'LOWER'
+};
+
+exports.InterviewType = exports.$Enums.InterviewType = {
+  OFFLINE: 'OFFLINE',
+  ONLINE: 'ONLINE'
+};
+
+exports.ApplicationStatus = exports.$Enums.ApplicationStatus = {
   PENDING: 'PENDING',
+  INTERVIEW_REQUESTED: 'INTERVIEW_REQUESTED',
+  COORDINATION_NEEDED: 'COORDINATION_NEEDED',
   CONFIRMED: 'CONFIRMED',
-  INTERVIEW: 'INTERVIEW',
-  SUCCESS: 'SUCCESS',
-  REJECTED: 'REJECTED'
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED'
 };
 
-exports.InterviewStatus = exports.$Enums.InterviewStatus = {
-  PENDING: 'PENDING',
-  STARTING: 'STARTING',
-  SUCCESS: 'SUCCESS',
-  REJECTED: 'REJECTED',
-  PENALTY: 'PENALTY'
+exports.ActorType = exports.$Enums.ActorType = {
+  EMPLOYER: 'EMPLOYER',
+  APPLICANT: 'APPLICANT'
 };
 
 exports.Prisma.ModelName = {
-  Category: 'Category',
-  JobPost: 'JobPost',
-  Apply: 'Apply',
-  Interview: 'Interview',
-  Review: 'Review',
-  Report: 'Report'
+  IndustryVisaRule: 'IndustryVisaRule',
+  JobPosting: 'JobPosting',
+  JobAttributesAlba: 'JobAttributesAlba',
+  JobAttributesFulltime: 'JobAttributesFulltime',
+  InterviewSlot: 'InterviewSlot',
+  JobApplication: 'JobApplication'
 };
 /**
  * Create the Client
  */
 const config = {
   "generator": {
-    "name": "jobClient",
+    "name": "client",
     "provider": {
       "fromEnvVar": null,
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/abed/Work/JobPlatform/job-platform-backend/generated/prisma-job",
+      "value": "/home/acer/Desktop/job-platform-backend/generated/prisma-job",
       "fromEnvVar": null
     },
     "config": {
@@ -225,12 +252,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "darwin-arm64",
+        "value": "debian-openssl-3.0.x",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/abed/Work/JobPlatform/job-platform-backend/prisma/job/job.schema.prisma",
+    "sourceFilePath": "/home/acer/Desktop/job-platform-backend/prisma/job/job.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -241,19 +268,19 @@ const config = {
   "clientVersion": "6.10.0",
   "engineVersion": "aee10d5a411e4360c6d3445ce4810ca65adbf3e8",
   "datasourceNames": [
-    "jobDB"
+    "db"
   ],
   "activeProvider": "postgresql",
   "inlineDatasources": {
-    "jobDB": {
+    "db": {
       "url": {
         "fromEnvVar": "JOB_DATABASE_URL",
         "value": null
       }
     }
   },
-  "inlineSchema": "// Job Domain Schema - PostgreSQL\n// Includes: job_posts, categories, applies, reviews, reports, interviews\n\ndatasource jobDB {\n  provider = \"postgresql\"\n  url      = env(\"JOB_DATABASE_URL\")\n}\n\ngenerator jobClient {\n  provider = \"prisma-client-js\"\n  output   = \"../../generated/prisma-job\"\n}\n\nenum JobPostStatus {\n  PENDING\n  APPROVED\n  REJECTED\n}\n\nenum AppliedStatus {\n  PENDING\n  CONFIRMED\n  INTERVIEW\n  SUCCESS\n  REJECTED\n}\n\nenum InterviewStatus {\n  PENDING\n  STARTING\n  SUCCESS\n  REJECTED\n  PENALTY\n}\n\nmodel Category {\n  id               String     @id @default(cuid()) @map(\"id\")\n  name             String?    @jobDB.VarChar(50)\n  description      String?    @jobDB.VarChar(255)\n  parentCategoryId String?    @map(\"parent_category_id\")\n  parent           Category?  @relation(\"CategoryHierarchy\", fields: [parentCategoryId], references: [id])\n  children         Category[] @relation(\"CategoryHierarchy\")\n  createdAt        DateTime   @default(now()) @map(\"created_at\")\n  updatedAt        DateTime   @updatedAt @map(\"updated_at\")\n\n  jobPosts JobPost[]\n\n  @@index([name])\n  @@map(\"categories\")\n}\n\nmodel JobPost {\n  id           String        @id @default(cuid()) @map(\"id\")\n  corporateId  String        @map(\"corporate_id\")\n  title        String?       @jobDB.VarChar(255)\n  description  String?       @jobDB.Text\n  location     String?       @jobDB.VarChar(255)\n  salaryRange  String?       @map(\"salary_range\") @jobDB.VarChar(255)\n  categoryId   String?       @map(\"category_id\")\n  feeType      String?       @map(\"fee_type\") @jobDB.VarChar(50)\n  status       JobPostStatus @default(PENDING)\n  approvedBy   String?       @map(\"approved_by\")\n  appliesCount Int?          @default(0) @map(\"applies_count\")\n  createdAt    DateTime      @default(now()) @map(\"created_at\")\n  updatedAt    DateTime      @updatedAt @map(\"updated_at\")\n  expiredAt    DateTime?     @map(\"expired_at\")\n\n  category   Category?   @relation(fields: [categoryId], references: [id])\n  applies    Apply[]\n  interviews Interview[]\n\n  @@index([categoryId])\n  @@index([title, description], name: \"Job Search\")\n  @@index([corporateId])\n  @@index([feeType])\n  @@map(\"job_posts\")\n}\n\nmodel Apply {\n  id         String        @id @default(cuid()) @map(\"id\")\n  jobPostId  String        @map(\"job_post_id\")\n  userId     String        @map(\"user_id\")\n  userInfoId String?       @map(\"user_info_id\")\n  isReviewed Boolean       @default(false) @map(\"is_reviewed\")\n  status     AppliedStatus @default(PENDING)\n  appliedAt  DateTime      @default(now()) @map(\"applied_at\")\n\n  jobPost JobPost @relation(fields: [jobPostId], references: [id])\n\n  @@index([status])\n  @@index([jobPostId])\n  @@map(\"applies\")\n}\n\nmodel Interview {\n  id            String          @id @default(cuid()) @map(\"id\")\n  jobPostId     String          @map(\"job_post_id\")\n  memberId      String          @map(\"member_id\")\n  corporateId   String          @map(\"corporate_id\")\n  roomId        String?         @map(\"room_id\")\n  interviewDate DateTime?       @map(\"interview_date\")\n  status        InterviewStatus @default(PENDING)\n  failureReason String?         @map(\"failure_reason\") @jobDB.VarChar(255)\n  createdAt     DateTime        @default(now()) @map(\"created_at\")\n  updatedAt     DateTime        @updatedAt @map(\"updated_at\")\n\n  jobPost JobPost  @relation(fields: [jobPostId], references: [id])\n  reviews Review[]\n\n  @@index([interviewDate])\n  @@index([status])\n  @@index([failureReason])\n  @@index([memberId])\n  @@index([jobPostId])\n  @@index([corporateId])\n  @@index([createdAt])\n  @@map(\"interviews\")\n}\n\nmodel Review {\n  id          String   @id @default(cuid()) @map(\"id\")\n  interviewId String   @map(\"interview_id\")\n  reviewerId  String   @map(\"reviewer_id\")\n  rating      Int?\n  comment     String?  @jobDB.Text\n  createdAt   DateTime @default(now()) @map(\"created_at\")\n\n  interview Interview @relation(fields: [interviewId], references: [id])\n\n  @@index([rating])\n  @@index([interviewId])\n  @@index([reviewerId])\n  @@index([createdAt])\n  @@map(\"reviews\")\n}\n\nmodel Report {\n  id             String   @id @default(cuid()) @map(\"id\")\n  title          String?  @jobDB.VarChar(255)\n  reporterId     String   @map(\"reporter_id\")\n  reportedUserId String   @map(\"reported_user_id\")\n  reason         String?  @jobDB.Text\n  status         String?  @jobDB.VarChar(50)\n  createdAt      DateTime @default(now()) @map(\"created_at\")\n\n  @@index([status])\n  @@index([reason])\n  @@index([createdAt])\n  @@map(\"reports\")\n}\n",
-  "inlineSchemaHash": "ec5c2c03ea3a794d53d9b3d1b084d7b903cb524a6d0f253f6fb6bf17327ad9ee",
+  "inlineSchema": "datasource db {\n  provider = \"postgresql\"\n  url      = env(\"JOB_DATABASE_URL\")\n}\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../../generated/prisma-job\"\n}\n\nmodel IndustryVisaRule {\n  id           Int    @id @default(autoincrement())\n  industryCode String @map(\"industry_code\")\n  allowedVisa  String @map(\"allowed_visa\")\n\n  @@unique([industryCode, allowedVisa])\n  @@map(\"industry_visa_rules\")\n}\n\nmodel JobPosting {\n  jobId       BigInt @id @default(autoincrement()) @map(\"job_id\")\n  corporateId BigInt @map(\"corporate_id\")\n\n  boardType      BoardType @map(\"board_type\")\n  title          String\n  description    String    @db.Text\n  workContentImg String?   @map(\"work_content_img\")\n\n  status           PostStatus @default(OPEN)\n  isPremium        Boolean    @default(false) @map(\"is_premium\")\n  premiumStartAt   DateTime?  @map(\"premium_start_at\")\n  premiumEndAt     DateTime?  @map(\"premium_end_at\")\n  closingDate      DateTime?  @map(\"closing_date\")\n  isRecruitmentEnd Boolean    @default(false) @map(\"is_recruitment_end\")\n\n  displayAddress String    @map(\"display_address\")\n  actualAddress  String    @map(\"actual_address\")\n  workIntensity  Intensity @default(MIDDLE) @map(\"work_intensity\")\n  benefits       Json?     @map(\"benefits_json\")\n\n  allowedVisas   String @map(\"allowed_visas\")\n  minKoreanLevel Int    @default(0) @map(\"min_korean_level\")\n\n  contactName     String        @map(\"contact_name\")\n  contactPhone    String        @map(\"contact_phone\")\n  interviewMethod InterviewType @default(OFFLINE) @map(\"interview_method\")\n  interviewPlace  String?       @map(\"interview_place\")\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  albaAttributes     JobAttributesAlba?\n  fulltimeAttributes JobAttributesFulltime?\n  interviewSlots     InterviewSlot[]\n  applications       JobApplication[]\n\n  @@map(\"job_postings\")\n}\n\nmodel JobAttributesAlba {\n  jobId         BigInt     @id @map(\"job_id\")\n  job           JobPosting @relation(fields: [jobId], references: [jobId], onDelete: Cascade)\n  hourlyWage    Int        @map(\"hourly_wage\")\n  workPeriod    String?    @map(\"work_period\")\n  workDaysMask  String     @map(\"work_days_mask\")\n  workTimeStart DateTime?  @map(\"work_time_start\") @db.Time\n  workTimeEnd   DateTime?  @map(\"work_time_end\") @db.Time\n\n  @@map(\"job_attributes_alba\")\n}\n\nmodel JobAttributesFulltime {\n  jobId           BigInt     @id @map(\"job_id\")\n  job             JobPosting @relation(fields: [jobId], references: [jobId], onDelete: Cascade)\n  salaryMin       Int?       @map(\"salary_min\")\n  salaryMax       Int?       @map(\"salary_max\")\n  experienceLevel String     @map(\"experience_level\")\n  educationLevel  String     @map(\"education_level\")\n\n  @@map(\"job_attributes_fulltime\")\n}\n\nmodel InterviewSlot {\n  slotId    BigInt     @id @default(autoincrement()) @map(\"slot_id\")\n  jobId     BigInt     @map(\"job_id\")\n  job       JobPosting @relation(fields: [jobId], references: [jobId])\n  startTime DateTime   @map(\"start_time\")\n  endTime   DateTime   @map(\"end_time\")\n  isBooked  Boolean    @default(false) @map(\"is_booked\")\n\n  @@map(\"interview_slots\")\n}\n\nmodel JobApplication {\n  appId       BigInt     @id @default(autoincrement()) @map(\"app_id\")\n  jobId       BigInt     @map(\"job_id\")\n  job         JobPosting @relation(fields: [jobId], references: [jobId])\n  applicantId BigInt     @map(\"applicant_id\")\n\n  status ApplicationStatus @default(PENDING)\n\n  selectedSlotId BigInt?    @map(\"selected_slot_id\")\n  proposedBy     ActorType? @map(\"proposed_by\")\n  proposedTime   DateTime?  @map(\"proposed_time\")\n\n  rejectionReason String?  @map(\"rejection_reason\")\n  createdAt       DateTime @default(now()) @map(\"created_at\")\n  updatedAt       DateTime @updatedAt @map(\"updated_at\")\n\n  @@map(\"job_applications\")\n}\n\nenum BoardType {\n  PART_TIME\n  FULL_TIME\n}\n\nenum PostStatus {\n  OPEN\n  CLOSED\n}\n\nenum Intensity {\n  UPPER\n  MIDDLE\n  LOWER\n}\n\nenum InterviewType {\n  OFFLINE\n  ONLINE\n}\n\nenum ApplicationStatus {\n  PENDING\n  INTERVIEW_REQUESTED\n  COORDINATION_NEEDED\n  CONFIRMED\n  REJECTED\n  CANCELLED\n}\n\nenum ActorType {\n  EMPLOYER\n  APPLICANT\n}\n",
+  "inlineSchemaHash": "eef8c20fb036c6142b7b48a5a9274b72a896537995d7eb8f8889962198bfdec5",
   "copyEngine": true
 }
 
@@ -274,7 +301,7 @@ if (!fs.existsSync(path.join(__dirname, 'schema.prisma'))) {
   config.isBundled = true
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Category\":{\"dbName\":\"categories\",\"schema\":null,\"fields\":[{\"name\":\"id\",\"dbName\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"name\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"50\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"description\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"255\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"parentCategoryId\",\"dbName\":\"parent_category_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"parent\",\"kind\":\"object\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Category\",\"nativeType\":null,\"relationName\":\"CategoryHierarchy\",\"relationFromFields\":[\"parentCategoryId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"children\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Category\",\"nativeType\":null,\"relationName\":\"CategoryHierarchy\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"dbName\":\"created_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"dbName\":\"updated_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true},{\"name\":\"jobPosts\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"JobPost\",\"nativeType\":null,\"relationName\":\"CategoryToJobPost\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"JobPost\":{\"dbName\":\"job_posts\",\"schema\":null,\"fields\":[{\"name\":\"id\",\"dbName\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"corporateId\",\"dbName\":\"corporate_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"title\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"255\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"description\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"Text\",[]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"location\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"255\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"salaryRange\",\"dbName\":\"salary_range\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"255\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"categoryId\",\"dbName\":\"category_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"feeType\",\"dbName\":\"fee_type\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"50\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"status\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"JobPostStatus\",\"nativeType\":null,\"default\":\"PENDING\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"approvedBy\",\"dbName\":\"approved_by\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"appliesCount\",\"dbName\":\"applies_count\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Int\",\"nativeType\":null,\"default\":0,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"dbName\":\"created_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"dbName\":\"updated_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true},{\"name\":\"expiredAt\",\"dbName\":\"expired_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"category\",\"kind\":\"object\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Category\",\"nativeType\":null,\"relationName\":\"CategoryToJobPost\",\"relationFromFields\":[\"categoryId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"applies\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Apply\",\"nativeType\":null,\"relationName\":\"ApplyToJobPost\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"interviews\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Interview\",\"nativeType\":null,\"relationName\":\"InterviewToJobPost\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"Apply\":{\"dbName\":\"applies\",\"schema\":null,\"fields\":[{\"name\":\"id\",\"dbName\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"jobPostId\",\"dbName\":\"job_post_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"userId\",\"dbName\":\"user_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"userInfoId\",\"dbName\":\"user_info_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"isReviewed\",\"dbName\":\"is_reviewed\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Boolean\",\"nativeType\":null,\"default\":false,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"status\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"AppliedStatus\",\"nativeType\":null,\"default\":\"PENDING\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"appliedAt\",\"dbName\":\"applied_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"jobPost\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"JobPost\",\"nativeType\":null,\"relationName\":\"ApplyToJobPost\",\"relationFromFields\":[\"jobPostId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"Interview\":{\"dbName\":\"interviews\",\"schema\":null,\"fields\":[{\"name\":\"id\",\"dbName\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"jobPostId\",\"dbName\":\"job_post_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"memberId\",\"dbName\":\"member_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"corporateId\",\"dbName\":\"corporate_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"roomId\",\"dbName\":\"room_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"interviewDate\",\"dbName\":\"interview_date\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"status\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"InterviewStatus\",\"nativeType\":null,\"default\":\"PENDING\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"failureReason\",\"dbName\":\"failure_reason\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"255\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"dbName\":\"created_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"dbName\":\"updated_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true},{\"name\":\"jobPost\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"JobPost\",\"nativeType\":null,\"relationName\":\"InterviewToJobPost\",\"relationFromFields\":[\"jobPostId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"reviews\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Review\",\"nativeType\":null,\"relationName\":\"InterviewToReview\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"Review\":{\"dbName\":\"reviews\",\"schema\":null,\"fields\":[{\"name\":\"id\",\"dbName\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"interviewId\",\"dbName\":\"interview_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"reviewerId\",\"dbName\":\"reviewer_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"rating\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Int\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"comment\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"Text\",[]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"dbName\":\"created_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"interview\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Interview\",\"nativeType\":null,\"relationName\":\"InterviewToReview\",\"relationFromFields\":[\"interviewId\"],\"relationToFields\":[\"id\"],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"Report\":{\"dbName\":\"reports\",\"schema\":null,\"fields\":[{\"name\":\"id\",\"dbName\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"String\",\"nativeType\":null,\"default\":{\"name\":\"cuid\",\"args\":[1]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"title\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"255\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"reporterId\",\"dbName\":\"reporter_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"reportedUserId\",\"dbName\":\"reported_user_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"reason\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"Text\",[]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"status\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"VarChar\",[\"50\"]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"dbName\":\"created_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false}},\"enums\":{\"JobPostStatus\":{\"values\":[{\"name\":\"PENDING\",\"dbName\":null},{\"name\":\"APPROVED\",\"dbName\":null},{\"name\":\"REJECTED\",\"dbName\":null}],\"dbName\":null},\"AppliedStatus\":{\"values\":[{\"name\":\"PENDING\",\"dbName\":null},{\"name\":\"CONFIRMED\",\"dbName\":null},{\"name\":\"INTERVIEW\",\"dbName\":null},{\"name\":\"SUCCESS\",\"dbName\":null},{\"name\":\"REJECTED\",\"dbName\":null}],\"dbName\":null},\"InterviewStatus\":{\"values\":[{\"name\":\"PENDING\",\"dbName\":null},{\"name\":\"STARTING\",\"dbName\":null},{\"name\":\"SUCCESS\",\"dbName\":null},{\"name\":\"REJECTED\",\"dbName\":null},{\"name\":\"PENALTY\",\"dbName\":null}],\"dbName\":null}},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"IndustryVisaRule\":{\"dbName\":\"industry_visa_rules\",\"schema\":null,\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Int\",\"nativeType\":null,\"default\":{\"name\":\"autoincrement\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"industryCode\",\"dbName\":\"industry_code\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"allowedVisa\",\"dbName\":\"allowed_visa\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[[\"industryCode\",\"allowedVisa\"]],\"uniqueIndexes\":[{\"name\":null,\"fields\":[\"industryCode\",\"allowedVisa\"]}],\"isGenerated\":false},\"JobPosting\":{\"dbName\":\"job_postings\",\"schema\":null,\"fields\":[{\"name\":\"jobId\",\"dbName\":\"job_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"BigInt\",\"nativeType\":null,\"default\":{\"name\":\"autoincrement\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"corporateId\",\"dbName\":\"corporate_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"BigInt\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"boardType\",\"dbName\":\"board_type\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"BoardType\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"title\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"description\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":[\"Text\",[]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"workContentImg\",\"dbName\":\"work_content_img\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"status\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"PostStatus\",\"nativeType\":null,\"default\":\"OPEN\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"isPremium\",\"dbName\":\"is_premium\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Boolean\",\"nativeType\":null,\"default\":false,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"premiumStartAt\",\"dbName\":\"premium_start_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"premiumEndAt\",\"dbName\":\"premium_end_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"closingDate\",\"dbName\":\"closing_date\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"isRecruitmentEnd\",\"dbName\":\"is_recruitment_end\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Boolean\",\"nativeType\":null,\"default\":false,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"displayAddress\",\"dbName\":\"display_address\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"actualAddress\",\"dbName\":\"actual_address\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"workIntensity\",\"dbName\":\"work_intensity\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Intensity\",\"nativeType\":null,\"default\":\"MIDDLE\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"benefits\",\"dbName\":\"benefits_json\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Json\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"allowedVisas\",\"dbName\":\"allowed_visas\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"minKoreanLevel\",\"dbName\":\"min_korean_level\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Int\",\"nativeType\":null,\"default\":0,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"contactName\",\"dbName\":\"contact_name\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"contactPhone\",\"dbName\":\"contact_phone\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"interviewMethod\",\"dbName\":\"interview_method\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"InterviewType\",\"nativeType\":null,\"default\":\"OFFLINE\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"interviewPlace\",\"dbName\":\"interview_place\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true},{\"name\":\"albaAttributes\",\"kind\":\"object\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"JobAttributesAlba\",\"nativeType\":null,\"relationName\":\"JobAttributesAlbaToJobPosting\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"fulltimeAttributes\",\"kind\":\"object\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"JobAttributesFulltime\",\"nativeType\":null,\"relationName\":\"JobAttributesFulltimeToJobPosting\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"interviewSlots\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"InterviewSlot\",\"nativeType\":null,\"relationName\":\"InterviewSlotToJobPosting\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"applications\",\"kind\":\"object\",\"isList\":true,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"JobApplication\",\"nativeType\":null,\"relationName\":\"JobApplicationToJobPosting\",\"relationFromFields\":[],\"relationToFields\":[],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"JobAttributesAlba\":{\"dbName\":\"job_attributes_alba\",\"schema\":null,\"fields\":[{\"name\":\"jobId\",\"dbName\":\"job_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"BigInt\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"job\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"JobPosting\",\"nativeType\":null,\"relationName\":\"JobAttributesAlbaToJobPosting\",\"relationFromFields\":[\"jobId\"],\"relationToFields\":[\"jobId\"],\"relationOnDelete\":\"Cascade\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"hourlyWage\",\"dbName\":\"hourly_wage\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Int\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"workPeriod\",\"dbName\":\"work_period\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"workDaysMask\",\"dbName\":\"work_days_mask\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"workTimeStart\",\"dbName\":\"work_time_start\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":[\"Time\",[]],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"workTimeEnd\",\"dbName\":\"work_time_end\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":[\"Time\",[]],\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"JobAttributesFulltime\":{\"dbName\":\"job_attributes_fulltime\",\"schema\":null,\"fields\":[{\"name\":\"jobId\",\"dbName\":\"job_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"BigInt\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"job\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"JobPosting\",\"nativeType\":null,\"relationName\":\"JobAttributesFulltimeToJobPosting\",\"relationFromFields\":[\"jobId\"],\"relationToFields\":[\"jobId\"],\"relationOnDelete\":\"Cascade\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"salaryMin\",\"dbName\":\"salary_min\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Int\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"salaryMax\",\"dbName\":\"salary_max\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"Int\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"experienceLevel\",\"dbName\":\"experience_level\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"educationLevel\",\"dbName\":\"education_level\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"InterviewSlot\":{\"dbName\":\"interview_slots\",\"schema\":null,\"fields\":[{\"name\":\"slotId\",\"dbName\":\"slot_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"BigInt\",\"nativeType\":null,\"default\":{\"name\":\"autoincrement\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"jobId\",\"dbName\":\"job_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"BigInt\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"job\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"JobPosting\",\"nativeType\":null,\"relationName\":\"InterviewSlotToJobPosting\",\"relationFromFields\":[\"jobId\"],\"relationToFields\":[\"jobId\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"startTime\",\"dbName\":\"start_time\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"endTime\",\"dbName\":\"end_time\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"isBooked\",\"dbName\":\"is_booked\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"Boolean\",\"nativeType\":null,\"default\":false,\"isGenerated\":false,\"isUpdatedAt\":false}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false},\"JobApplication\":{\"dbName\":\"job_applications\",\"schema\":null,\"fields\":[{\"name\":\"appId\",\"dbName\":\"app_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":true,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"BigInt\",\"nativeType\":null,\"default\":{\"name\":\"autoincrement\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"jobId\",\"dbName\":\"job_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":true,\"hasDefaultValue\":false,\"type\":\"BigInt\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"job\",\"kind\":\"object\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"JobPosting\",\"nativeType\":null,\"relationName\":\"JobApplicationToJobPosting\",\"relationFromFields\":[\"jobId\"],\"relationToFields\":[\"jobId\"],\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"applicantId\",\"dbName\":\"applicant_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"BigInt\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"status\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"ApplicationStatus\",\"nativeType\":null,\"default\":\"PENDING\",\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"selectedSlotId\",\"dbName\":\"selected_slot_id\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"BigInt\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"proposedBy\",\"dbName\":\"proposed_by\",\"kind\":\"enum\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"ActorType\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"proposedTime\",\"dbName\":\"proposed_time\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"rejectionReason\",\"dbName\":\"rejection_reason\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":false,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"String\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"createdAt\",\"dbName\":\"created_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":true,\"type\":\"DateTime\",\"nativeType\":null,\"default\":{\"name\":\"now\",\"args\":[]},\"isGenerated\":false,\"isUpdatedAt\":false},{\"name\":\"updatedAt\",\"dbName\":\"updated_at\",\"kind\":\"scalar\",\"isList\":false,\"isRequired\":true,\"isUnique\":false,\"isId\":false,\"isReadOnly\":false,\"hasDefaultValue\":false,\"type\":\"DateTime\",\"nativeType\":null,\"isGenerated\":false,\"isUpdatedAt\":true}],\"primaryKey\":null,\"uniqueFields\":[],\"uniqueIndexes\":[],\"isGenerated\":false}},\"enums\":{\"BoardType\":{\"values\":[{\"name\":\"PART_TIME\",\"dbName\":null},{\"name\":\"FULL_TIME\",\"dbName\":null}],\"dbName\":null},\"PostStatus\":{\"values\":[{\"name\":\"OPEN\",\"dbName\":null},{\"name\":\"CLOSED\",\"dbName\":null}],\"dbName\":null},\"Intensity\":{\"values\":[{\"name\":\"UPPER\",\"dbName\":null},{\"name\":\"MIDDLE\",\"dbName\":null},{\"name\":\"LOWER\",\"dbName\":null}],\"dbName\":null},\"InterviewType\":{\"values\":[{\"name\":\"OFFLINE\",\"dbName\":null},{\"name\":\"ONLINE\",\"dbName\":null}],\"dbName\":null},\"ApplicationStatus\":{\"values\":[{\"name\":\"PENDING\",\"dbName\":null},{\"name\":\"INTERVIEW_REQUESTED\",\"dbName\":null},{\"name\":\"COORDINATION_NEEDED\",\"dbName\":null},{\"name\":\"CONFIRMED\",\"dbName\":null},{\"name\":\"REJECTED\",\"dbName\":null},{\"name\":\"CANCELLED\",\"dbName\":null}],\"dbName\":null},\"ActorType\":{\"values\":[{\"name\":\"EMPLOYER\",\"dbName\":null},{\"name\":\"APPLICANT\",\"dbName\":null}],\"dbName\":null}},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = undefined
 config.compilerWasm = undefined
@@ -292,8 +319,8 @@ exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
-path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node");
-path.join(process.cwd(), "generated/prisma-job/libquery_engine-darwin-arm64.dylib.node")
+path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node");
+path.join(process.cwd(), "generated/prisma-job/libquery_engine-debian-openssl-3.0.x.so.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "generated/prisma-job/schema.prisma")

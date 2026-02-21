@@ -6,6 +6,7 @@ import { ReportModule } from './report/report.module';
 import { JobPrismaModule } from 'libs/common/src';
 import { CategoryModule } from './category/category.module';
 import { ApplyModule } from './apply/apply.module';
+import { JobModule } from '../../job-platform-service/src/job/job.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ApplyModule } from './apply/apply.module';
     ReportModule,
     CategoryModule,
     ApplyModule,
+    JobModule,
   ],
   controllers: [],
   providers: [],
