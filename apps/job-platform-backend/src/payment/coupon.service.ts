@@ -153,7 +153,9 @@ export class CouponService {
       // 쿠폰 사용 기록 / Record coupon usage
       await this.recordUsage(coupon.id, userId);
 
-      this.logger.log(`[Coupon] 환영 쿠폰 발급: userId=${userId}, credits=${coupon.value}`);
+      this.logger.log(
+        `[Coupon] 환영 쿠폰 발급: userId=${userId}, credits=${coupon.value}`,
+      );
       return { credits: coupon.value, source: 'COUPON:WELCOME' };
     } catch (error) {
       this.logger.error(`[Coupon] 환영 쿠폰 발급 실패: ${error.message}`);
@@ -213,10 +215,18 @@ export class CouponService {
    * 쿠폰 검증 (REST 엔드포인트용) / Validate coupon (for REST endpoint)
    * 할인 금액 포함 반환
    */
-  async validateForProduct(couponCode: string, userId: string, productCategory?: string) {
+  async validateForProduct(
+    couponCode: string,
+    userId: string,
+    productCategory?: string,
+  ) {
     const coupon = await this.validate(couponCode, userId);
 
-    if (productCategory && coupon.targetProduct && coupon.targetProduct !== productCategory) {
+    if (
+      productCategory &&
+      coupon.targetProduct &&
+      coupon.targetProduct !== productCategory
+    ) {
       throw new BadRequestException(
         `이 쿠폰은 해당 상품 카테고리에 사용할 수 없습니다 / Coupon not applicable to this category`,
       );

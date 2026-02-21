@@ -43,7 +43,10 @@ export class VisaVerificationController {
   @ApiBody({ type: CreateVisaVerificationDto })
   @ApiResponse({ status: 201, description: '제출 성공 / Submitted' })
   @ApiResponse({ status: 400, description: '입력값 오류 / Invalid input' })
-  @ApiResponse({ status: 409, description: '이미 인증 완료 / Already verified' })
+  @ApiResponse({
+    status: 409,
+    description: '이미 인증 완료 / Already verified',
+  })
   async submitManual(
     @Session() sessionId: string,
     @Body() dto: CreateVisaVerificationDto,
@@ -73,7 +76,10 @@ export class VisaVerificationController {
     },
   })
   @ApiResponse({ status: 201, description: 'OCR 처리 완료 / OCR processed' })
-  @ApiResponse({ status: 400, description: '파일 없음/OCR 실패 / No file or OCR failed' })
+  @ApiResponse({
+    status: 400,
+    description: '파일 없음/OCR 실패 / No file or OCR failed',
+  })
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -87,10 +93,9 @@ export class VisaVerificationController {
           cb(null, uploadPath);
         },
         filename: (req, file, cb) => {
-          const decodedName = Buffer.from(
-            file.originalname,
-            'latin1',
-          ).toString('utf8');
+          const decodedName = Buffer.from(file.originalname, 'latin1').toString(
+            'utf8',
+          );
           const timestamp = Date.now();
           const ext = path.extname(decodedName);
           const safeName = decodedName

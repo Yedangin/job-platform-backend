@@ -81,7 +81,9 @@ export class D2Evaluator extends BaseVisaEvaluator {
     const hourRules = visaType.workHourRules ?? [];
     const matchedRule = this.findMatchingHourRule(hourRules, input);
     if (matchedRule) {
-      result.restrictions.push(`학기 중 주 ${matchedRule.weekdayHours}시간 이내`);
+      result.restrictions.push(
+        `학기 중 주 ${matchedRule.weekdayHours}시간 이내`,
+      );
       if (matchedRule.weekendHoliday === 'unlimited') {
         result.notes.push('주말/공휴일: 무제한');
       }
@@ -90,7 +92,9 @@ export class D2Evaluator extends BaseVisaEvaluator {
       }
     } else if (visaType.baseWeeklyHours) {
       // DB 규칙 없으면 VisaType 기본값 사용 / Fallback to VisaType base hours
-      result.restrictions.push(`학기 중 주 ${visaType.baseWeeklyHours}시간 이내`);
+      result.restrictions.push(
+        `학기 중 주 ${visaType.baseWeeklyHours}시간 이내`,
+      );
       result.notes.push('방학(여름/겨울) 중 확대 근무 가능 (별도 허가)');
     } else {
       result.restrictions.push('학기 중 주 20시간 이내');
@@ -113,10 +117,18 @@ export class D2Evaluator extends BaseVisaEvaluator {
 
     for (const rule of rules) {
       // TOPIK 충족/미충족 분기 / TOPIK met/unmet branch
-      if (rule.topikMet && rule.topikLevel !== null && topik < rule.topikLevel) {
+      if (
+        rule.topikMet &&
+        rule.topikLevel !== null &&
+        topik < rule.topikLevel
+      ) {
         continue; // TOPIK 미충족 → 이 충족 규칙 스킵 / TOPIK not met → skip this met-rule
       }
-      if (!rule.topikMet && rule.topikLevel !== null && topik >= rule.topikLevel) {
+      if (
+        !rule.topikMet &&
+        rule.topikLevel !== null &&
+        topik >= rule.topikLevel
+      ) {
         continue; // TOPIK 충족했는데 미충족 규칙이면 스킵 / TOPIK met but unmet-rule → skip
       }
       // 학위 매칭 / Degree level matching

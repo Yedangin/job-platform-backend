@@ -226,6 +226,23 @@ exports.Prisma.TalentAccessLogScalarFieldEnum = {
   accessedAt: 'accessedAt'
 };
 
+exports.Prisma.EducationalInstitutionScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  nameEn: 'nameEn',
+  type: 'type',
+  address: 'address',
+  addressDetail: 'addressDetail',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  isMetroArea: 'isMetroArea',
+  affiliatedUniversity: 'affiliatedUniversity',
+  searchKeywords: 'searchKeywords',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ProfileEducationScalarFieldEnum = {
   eduId: 'eduId',
   individualId: 'individualId',
@@ -235,7 +252,15 @@ exports.Prisma.ProfileEducationScalarFieldEnum = {
   startDate: 'startDate',
   graduationDate: 'graduationDate',
   graduationStatus: 'graduationStatus',
-  gpaScore: 'gpaScore'
+  gpaScore: 'gpaScore',
+  institutionId: 'institutionId',
+  schoolCountry: 'schoolCountry',
+  certificateFileUrl: 'certificateFileUrl',
+  certificateFileName: 'certificateFileName',
+  certificateUploadedAt: 'certificateUploadedAt',
+  isVerified: 'isVerified',
+  verifiedAt: 'verifiedAt',
+  verifiedBy: 'verifiedBy'
 };
 
 exports.Prisma.ProfileCareerScalarFieldEnum = {
@@ -863,6 +888,14 @@ exports.KoreanFluencyLevel = exports.$Enums.KoreanFluencyLevel = {
   NATIVE: 'NATIVE'
 };
 
+exports.InstitutionType = exports.$Enums.InstitutionType = {
+  UNIVERSITY: 'UNIVERSITY',
+  COLLEGE: 'COLLEGE',
+  GRADUATE_SCHOOL: 'GRADUATE_SCHOOL',
+  LANGUAGE_INSTITUTE: 'LANGUAGE_INSTITUTE',
+  VOCATIONAL_SCHOOL: 'VOCATIONAL_SCHOOL'
+};
+
 exports.GraduationStatus = exports.$Enums.GraduationStatus = {
   GRADUATED: 'GRADUATED',
   ATTENDING: 'ATTENDING',
@@ -1003,6 +1036,7 @@ exports.Prisma.ModelName = {
   CorporateProfile: 'CorporateProfile',
   IndividualProfile: 'IndividualProfile',
   TalentAccessLog: 'TalentAccessLog',
+  EducationalInstitution: 'EducationalInstitution',
   ProfileEducation: 'ProfileEducation',
   ProfileCareer: 'ProfileCareer',
   ProfileLanguage: 'ProfileLanguage',

@@ -13,7 +13,10 @@ const BASE = 'http://localhost:8000';
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 function authHeaders(sessionId: string): Record<string, string> {
-  return { 'Content-Type': 'application/json', Cookie: `sessionId=${sessionId}` };
+  return {
+    'Content-Type': 'application/json',
+    Cookie: `sessionId=${sessionId}`,
+  };
 }
 
 /** 429 rate-limit 자동 재시도 / Auto-retry on 429 with backoff */
@@ -222,13 +225,18 @@ describe('구직자 플로우 / Job seeker flow', () => {
     expect(res.ok).toBe(true);
     const data = await res.json();
     expect(data.visaCode).toBe('D-2');
-    expect(['SUBMITTED', 'PENDING', 'VERIFIED', 'REJECTED']).toContain(data.verificationStatus);
+    expect(['SUBMITTED', 'PENDING', 'VERIFIED', 'REJECTED']).toContain(
+      data.verificationStatus,
+    );
   }, 30000);
 
   test('비자 필터 목록 — visaFilter=true / Visa filtered listing', async () => {
-    const res = await fetchRetry(`${BASE}/jobs/listing?visaFilter=true&boardType=FULL_TIME`, {
-      headers: authHeaders(seekerSession),
-    });
+    const res = await fetchRetry(
+      `${BASE}/jobs/listing?visaFilter=true&boardType=FULL_TIME`,
+      {
+        headers: authHeaders(seekerSession),
+      },
+    );
     expect(res.ok).toBe(true);
     const data = await res.json();
     expect(data.items).toBeDefined();
@@ -329,8 +337,12 @@ describe('경계값 / Boundary values', () => {
 
   test('만료일 — 오늘/어제/내일 비자 / Expiry date edge cases', async () => {
     const today = new Date().toISOString().split('T')[0];
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+    const yesterday = new Date(Date.now() - 86400000)
+      .toISOString()
+      .split('T')[0];
+    const tomorrow = new Date(Date.now() + 86400000)
+      .toISOString()
+      .split('T')[0];
 
     expect(today).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(yesterday).toMatch(/^\d{4}-\d{2}-\d{2}$/);

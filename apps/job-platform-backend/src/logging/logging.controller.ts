@@ -1,9 +1,4 @@
-import {
-  Controller,
-  Get,
-  Query,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Controller, Get, Query, UnauthorizedException } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { RedisService } from 'libs/common/src';
 import { Session } from 'libs/common/src';
@@ -30,11 +25,9 @@ export class LoggingController {
    * 어드민 권한 확인 / Verify admin role
    */
   private async requireAdmin(sessionId: string): Promise<string> {
-    if (!sessionId)
-      throw new UnauthorizedException('No session provided');
+    if (!sessionId) throw new UnauthorizedException('No session provided');
     const sd = await this.redisService.get(`session:${sessionId}`);
-    if (!sd)
-      throw new UnauthorizedException('Invalid session');
+    if (!sd) throw new UnauthorizedException('Invalid session');
     const session = JSON.parse(sd);
     if (session.role !== 'ADMIN')
       throw new UnauthorizedException('Admin access required');

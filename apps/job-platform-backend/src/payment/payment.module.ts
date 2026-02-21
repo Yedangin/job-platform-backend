@@ -1,8 +1,5 @@
 import { Module } from '@nestjs/common';
-import {
-  PaymentPrismaModule,
-  AuthPrismaModule,
-} from 'libs/common/src';
+import { PaymentPrismaModule, AuthPrismaModule } from 'libs/common/src';
 import { PaymentController } from './payment.controller';
 import { PortoneWebhookController } from './portone-webhook.controller';
 import { AdminPaymentController } from './admin-payment.controller';
@@ -22,7 +19,11 @@ import { AdminPaymentService } from './admin-payment.service';
  */
 @Module({
   imports: [PaymentPrismaModule, AuthPrismaModule],
-  controllers: [PaymentController, PortoneWebhookController, AdminPaymentController],
+  controllers: [
+    PaymentController,
+    PortoneWebhookController,
+    AdminPaymentController,
+  ],
   providers: [
     PaymentService,
     PortoneService,

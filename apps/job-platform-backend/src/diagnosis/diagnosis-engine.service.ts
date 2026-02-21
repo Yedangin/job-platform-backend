@@ -10,19 +10,19 @@ import * as diagnosisMatrixData from '../data/diagnosis-matrix.json';
 /** 진단 요청 입력 / Diagnosis request input */
 export interface DiagnosisInput {
   // 필수 (무료 진단에서도 수집) / Required (collected even in free diagnosis)
-  nationality: string;        // ISO 3166-1 alpha-3 (VNM, USA, CHN)
-  age: number;                // 만 나이 / Age
-  educationLevel: string;     // none / middle / high_school / associate / bachelor / master / doctor
+  nationality: string; // ISO 3166-1 alpha-3 (VNM, USA, CHN)
+  age: number; // 만 나이 / Age
+  educationLevel: string; // none / middle / high_school / associate / bachelor / master / doctor
   availableAnnualFund: number; // 만원 단위 / Unit: 만원 (10,000 KRW)
-  finalGoal: string;          // employment / degree / permanent_residence / explore
+  finalGoal: string; // employment / degree / permanent_residence / explore
   priorityPreference: string; // speed / stability / cost / income
 
   // 선택 (정밀 진단) / Optional (precision diagnosis)
-  topikLevel?: number;        // 0-6
+  topikLevel?: number; // 0-6
   workExperienceYears?: number;
   major?: string;
   isEthnicKorean?: boolean;
-  currentVisa?: string;       // 이미 한국에 있는 경우 / If already in Korea
+  currentVisa?: string; // 이미 한국에 있는 경우 / If already in Korea
   koreaStayMonths?: number;
 }
 
@@ -42,7 +42,7 @@ export interface Milestone {
 
 /** 다음 액션 / Next step */
 export interface NextStep {
-  actionType: string;         // connect_school / find_alba / apply_visa / take_topik
+  actionType: string; // connect_school / find_alba / apply_visa / take_topik
   nameKo: string;
   description: string;
   url?: string;
@@ -216,7 +216,9 @@ export class DiagnosisEngineService {
         },
       });
     } catch (err) {
-      this.logger.warn(`진단 세션 저장 실패 / Failed to save diagnosis session: ${err}`);
+      this.logger.warn(
+        `진단 세션 저장 실패 / Failed to save diagnosis session: ${err}`,
+      );
     }
 
     return result;
@@ -233,22 +235,40 @@ export class DiagnosisEngineService {
   ): { pass: boolean; reason?: string } {
     // 1. 나이 범위 / Age range
     if (input.age < pw.ageMin || input.age > pw.ageMax) {
-      return { pass: false, reason: `나이 ${input.age}세 범위 밖 (${pw.ageMin}-${pw.ageMax})` };
+      return {
+        pass: false,
+        reason: `나이 ${input.age}세 범위 밖 (${pw.ageMin}-${pw.ageMax})`,
+      };
     }
 
     // 2. 최소 학력 / Minimum education
     if (!this.meetsMinEducation(input.educationLevel, pw.minEducation)) {
-      return { pass: false, reason: `학력 미달: ${input.educationLevel} < ${pw.minEducation}` };
+      return {
+        pass: false,
+        reason: `학력 미달: ${input.educationLevel} < ${pw.minEducation}`,
+      };
     }
 
     // 3. 국적 허용 타입 / Nationality type allowance
-    if (!this.isNationalityAllowed(pw.allowedNationalityType, natInfo, input.isEthnicKorean)) {
-      return { pass: false, reason: `국적 타입 불가: ${pw.allowedNationalityType}` };
+    if (
+      !this.isNationalityAllowed(
+        pw.allowedNationalityType,
+        natInfo,
+        input.isEthnicKorean,
+      )
+    ) {
+      return {
+        pass: false,
+        reason: `국적 타입 불가: ${pw.allowedNationalityType}`,
+      };
     }
 
     // 4. TOPIK 최소 등급 / Minimum TOPIK level
     if (pw.topikMin > 0 && (input.topikLevel ?? 0) < pw.topikMin) {
-      return { pass: false, reason: `TOPIK ${input.topikLevel ?? 0}급 < ${pw.topikMin}급` };
+      return {
+        pass: false,
+        reason: `TOPIK ${input.topikLevel ?? 0}급 < ${pw.topikMin}급`,
+      };
     }
 
     // 5. 동포 필수 여부 / Ethnic Korean requirement
@@ -267,17 +287,27 @@ export class DiagnosisEngineService {
     pw: PathwayDef,
     input: DiagnosisInput,
     natTier: string,
-  ): { finalScore: number; scoreBreakdown: RecommendedPathway['scoreBreakdown'] } {
+  ): {
+    finalScore: number;
+    scoreBreakdown: RecommendedPathway['scoreBreakdown'];
+  } {
     const base = pw.baseScore;
     const ageBracket = this.getAgeBracket(input.age);
     const ageRaw = this.matrix.ageMatrix?.[pw.pathwayId]?.[ageBracket] ?? 0;
     const ageMultiplier = ageRaw / 100; // 0~1 범위로 변환 / Convert to 0-1 range
 
-    const natMult = this.matrix.nationalityMultipliers?.[pw.pathwayId]?.[natTier] ?? 0;
+    const natMult =
+      this.matrix.nationalityMultipliers?.[pw.pathwayId]?.[natTier] ?? 0;
     const fundBracket = this.getFundBracket(input.availableAnnualFund);
-    const fundMult = this.matrix.fundMultipliers?.[pw.pathwayId]?.[fundBracket] ?? 0;
-    const eduMult = this.matrix.educationMultipliers?.[pw.pathwayId]?.[input.educationLevel] ?? 0;
-    const priWeight = this.matrix.priorityWeights?.[pw.pathwayId]?.[input.priorityPreference] ?? 0.5;
+    const fundMult =
+      this.matrix.fundMultipliers?.[pw.pathwayId]?.[fundBracket] ?? 0;
+    const eduMult =
+      this.matrix.educationMultipliers?.[pw.pathwayId]?.[
+        input.educationLevel
+      ] ?? 0;
+    const priWeight =
+      this.matrix.priorityWeights?.[pw.pathwayId]?.[input.priorityPreference] ??
+      0.5;
 
     const raw = base * ageMultiplier * natMult * fundMult * eduMult * priWeight;
     const finalScore = Math.min(100, Math.round(raw));
@@ -330,7 +360,15 @@ export class DiagnosisEngineService {
 
   /** 학력 충족 확인 / Check education meets minimum */
   private meetsMinEducation(actual: string, min: string): boolean {
-    const levels = ['none', 'middle', 'high_school', 'associate', 'bachelor', 'master', 'doctor'];
+    const levels = [
+      'none',
+      'middle',
+      'high_school',
+      'associate',
+      'bachelor',
+      'master',
+      'doctor',
+    ];
     return levels.indexOf(actual) >= levels.indexOf(min);
   }
 
@@ -452,7 +490,8 @@ export class DiagnosisEngineService {
 
     // 권한 확인 / Authorization check
     if (userId && session.userId !== userId) return null;
-    if (!userId && anonymousId && session.anonymousId !== anonymousId) return null;
+    if (!userId && anonymousId && session.anonymousId !== anonymousId)
+      return null;
 
     return session;
   }
@@ -523,7 +562,9 @@ export class DiagnosisEngineService {
 
     const matrixKey = matrixMap[dimension];
     if (!matrixKey || !this.matrix[matrixKey]?.[pathwayId]) {
-      throw new Error(`잘못된 차원 또는 경로 / Invalid dimension(${dimension}) or pathway(${pathwayId})`);
+      throw new Error(
+        `잘못된 차원 또는 경로 / Invalid dimension(${dimension}) or pathway(${pathwayId})`,
+      );
     }
 
     const oldScore = this.matrix[matrixKey][pathwayId][dimensionValue];
@@ -548,7 +589,9 @@ export class DiagnosisEngineService {
         },
       });
     } catch (err) {
-      this.logger.warn(`캘리브레이션 로그 저장 실패 / Failed to save calibration log: ${err}`);
+      this.logger.warn(
+        `캘리브레이션 로그 저장 실패 / Failed to save calibration log: ${err}`,
+      );
     }
 
     this.logger.log(
@@ -620,7 +663,10 @@ export class DiagnosisEngineService {
       .map(([key, val]) => ({
         key,
         count: val.count,
-        conversionRate: val.count > 0 ? Math.round((val.converted / val.count) * 100) / 100 : 0,
+        conversionRate:
+          val.count > 0
+            ? Math.round((val.converted / val.count) * 100) / 100
+            : 0,
       }))
       .sort((a, b) => b.count - a.count);
 

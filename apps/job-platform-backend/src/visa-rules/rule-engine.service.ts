@@ -589,8 +589,7 @@ export class RuleEngineService {
               break;
             case 'BLOCKED':
               result.eligible = false;
-              if (actions.reason)
-                result.blockedReasons.push(actions.reason);
+              if (actions.reason) result.blockedReasons.push(actions.reason);
               if (actions.suggestion)
                 result.suggestions.push(actions.suggestion);
               break;

@@ -36,9 +36,7 @@ export class F4Evaluator extends BaseVisaEvaluator {
     // 2. 유흥/사행업종 금지 (DB: IndustryCode 플래그) / Entertainment/gambling blocked (DB flags)
     const flags = input.inputIndustryFlags;
     if (flags?.isEntertainment || flags?.isGambling) {
-      result.blockedReasons.push(
-        '유흥업소/사행업종은 F-4 비자 취업 금지 업종',
-      );
+      result.blockedReasons.push('유흥업소/사행업종은 F-4 비자 취업 금지 업종');
       return result;
     }
 
@@ -53,9 +51,7 @@ export class F4Evaluator extends BaseVisaEvaluator {
       return result;
     }
     if (flags?.isSimpleLabor) {
-      result.blockedReasons.push(
-        'F-4 비자 소지자는 단순노무 업종 취업 제한',
-      );
+      result.blockedReasons.push('F-4 비자 소지자는 단순노무 업종 취업 제한');
       result.suggestions.push(
         'H-2(방문취업) 또는 E-9(비전문취업) 비자 소지자 채용 검토',
       );
@@ -64,7 +60,10 @@ export class F4Evaluator extends BaseVisaEvaluator {
 
     // 4. 금지 업종 확인 (DB: ProhibitedIndustry) / Prohibited industry check (from DB)
     const prohibited = visaType.prohibitedIndustries ?? [];
-    const isProhibited = this.checkProhibitedIndustry(input.ksicCode, prohibited);
+    const isProhibited = this.checkProhibitedIndustry(
+      input.ksicCode,
+      prohibited,
+    );
     if (isProhibited.blocked) {
       result.blockedReasons.push(
         `업종코드 ${input.ksicCode}은(는) F-4 취업 제한 업종: ${isProhibited.reason}`,
@@ -96,7 +95,7 @@ export class F4Evaluator extends BaseVisaEvaluator {
         if (p.hasExceptions && p.exceptionCodes) {
           try {
             const exceptions: string[] = JSON.parse(p.exceptionCodes);
-            if (exceptions.some(exc => ksicCode.startsWith(exc))) {
+            if (exceptions.some((exc) => ksicCode.startsWith(exc))) {
               return { blocked: false }; // 예외 허용 / Exception allowed
             }
           } catch {

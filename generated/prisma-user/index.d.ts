@@ -34,6 +34,11 @@ export type IndividualProfile = $Result.DefaultSelection<Prisma.$IndividualProfi
  */
 export type TalentAccessLog = $Result.DefaultSelection<Prisma.$TalentAccessLogPayload>
 /**
+ * Model EducationalInstitution
+ * 
+ */
+export type EducationalInstitution = $Result.DefaultSelection<Prisma.$EducationalInstitutionPayload>
+/**
  * Model ProfileEducation
  * 
  */
@@ -316,6 +321,17 @@ export const KoreanFluencyLevel: {
 export type KoreanFluencyLevel = (typeof KoreanFluencyLevel)[keyof typeof KoreanFluencyLevel]
 
 
+export const InstitutionType: {
+  UNIVERSITY: 'UNIVERSITY',
+  COLLEGE: 'COLLEGE',
+  GRADUATE_SCHOOL: 'GRADUATE_SCHOOL',
+  LANGUAGE_INSTITUTE: 'LANGUAGE_INSTITUTE',
+  VOCATIONAL_SCHOOL: 'VOCATIONAL_SCHOOL'
+};
+
+export type InstitutionType = (typeof InstitutionType)[keyof typeof InstitutionType]
+
+
 export const GraduationStatus: {
   GRADUATED: 'GRADUATED',
   ATTENDING: 'ATTENDING',
@@ -547,6 +563,10 @@ export const EducationLevel: typeof $Enums.EducationLevel
 export type KoreanFluencyLevel = $Enums.KoreanFluencyLevel
 
 export const KoreanFluencyLevel: typeof $Enums.KoreanFluencyLevel
+
+export type InstitutionType = $Enums.InstitutionType
+
+export const InstitutionType: typeof $Enums.InstitutionType
 
 export type GraduationStatus = $Enums.GraduationStatus
 
@@ -792,6 +812,16 @@ export class PrismaClient<
     * ```
     */
   get talentAccessLog(): Prisma.TalentAccessLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.educationalInstitution`: Exposes CRUD operations for the **EducationalInstitution** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EducationalInstitutions
+    * const educationalInstitutions = await prisma.educationalInstitution.findMany()
+    * ```
+    */
+  get educationalInstitution(): Prisma.EducationalInstitutionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.profileEducation`: Exposes CRUD operations for the **ProfileEducation** model.
@@ -1616,6 +1646,7 @@ export namespace Prisma {
     CorporateProfile: 'CorporateProfile',
     IndividualProfile: 'IndividualProfile',
     TalentAccessLog: 'TalentAccessLog',
+    EducationalInstitution: 'EducationalInstitution',
     ProfileEducation: 'ProfileEducation',
     ProfileCareer: 'ProfileCareer',
     ProfileLanguage: 'ProfileLanguage',
@@ -1672,7 +1703,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "corporateProfile" | "individualProfile" | "talentAccessLog" | "profileEducation" | "profileCareer" | "profileLanguage" | "supportTicket" | "activityLog" | "visaType" | "industryCode" | "visaRule" | "policyChange" | "scrapingState" | "visaEvaluationLog" | "occupationCode" | "visaOccupationMapping" | "visaIndustryMapping" | "visaCountryRestriction" | "pointSystemCategory" | "pointSystemCriteria" | "visaRequiredDocument" | "hireQuotaRule" | "prohibitedIndustry" | "workHourRule" | "visaTransition" | "scoringSystem" | "scoringCriteria" | "visaTransitionChain" | "jobProduct" | "jobOrder" | "jobPosting" | "jobAttributesAlba" | "jobAttributesFulltime" | "jobApplication" | "jobScrap" | "adminJobAction" | "resume" | "visaVerification" | "diagnosisSession" | "diagnosisPathwayClick" | "scoreCalibrationLog"
+      modelProps: "user" | "corporateProfile" | "individualProfile" | "talentAccessLog" | "educationalInstitution" | "profileEducation" | "profileCareer" | "profileLanguage" | "supportTicket" | "activityLog" | "visaType" | "industryCode" | "visaRule" | "policyChange" | "scrapingState" | "visaEvaluationLog" | "occupationCode" | "visaOccupationMapping" | "visaIndustryMapping" | "visaCountryRestriction" | "pointSystemCategory" | "pointSystemCriteria" | "visaRequiredDocument" | "hireQuotaRule" | "prohibitedIndustry" | "workHourRule" | "visaTransition" | "scoringSystem" | "scoringCriteria" | "visaTransitionChain" | "jobProduct" | "jobOrder" | "jobPosting" | "jobAttributesAlba" | "jobAttributesFulltime" | "jobApplication" | "jobScrap" | "adminJobAction" | "resume" | "visaVerification" | "diagnosisSession" | "diagnosisPathwayClick" | "scoreCalibrationLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1969,6 +2000,80 @@ export namespace Prisma {
           count: {
             args: Prisma.TalentAccessLogCountArgs<ExtArgs>
             result: $Utils.Optional<TalentAccessLogCountAggregateOutputType> | number
+          }
+        }
+      }
+      EducationalInstitution: {
+        payload: Prisma.$EducationalInstitutionPayload<ExtArgs>
+        fields: Prisma.EducationalInstitutionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EducationalInstitutionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EducationalInstitutionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EducationalInstitutionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EducationalInstitutionPayload>
+          }
+          findFirst: {
+            args: Prisma.EducationalInstitutionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EducationalInstitutionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EducationalInstitutionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EducationalInstitutionPayload>
+          }
+          findMany: {
+            args: Prisma.EducationalInstitutionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EducationalInstitutionPayload>[]
+          }
+          create: {
+            args: Prisma.EducationalInstitutionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EducationalInstitutionPayload>
+          }
+          createMany: {
+            args: Prisma.EducationalInstitutionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EducationalInstitutionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EducationalInstitutionPayload>[]
+          }
+          delete: {
+            args: Prisma.EducationalInstitutionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EducationalInstitutionPayload>
+          }
+          update: {
+            args: Prisma.EducationalInstitutionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EducationalInstitutionPayload>
+          }
+          deleteMany: {
+            args: Prisma.EducationalInstitutionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EducationalInstitutionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EducationalInstitutionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EducationalInstitutionPayload>[]
+          }
+          upsert: {
+            args: Prisma.EducationalInstitutionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EducationalInstitutionPayload>
+          }
+          aggregate: {
+            args: Prisma.EducationalInstitutionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEducationalInstitution>
+          }
+          groupBy: {
+            args: Prisma.EducationalInstitutionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EducationalInstitutionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EducationalInstitutionCountArgs<ExtArgs>
+            result: $Utils.Optional<EducationalInstitutionCountAggregateOutputType> | number
           }
         }
       }
@@ -4872,6 +4977,7 @@ export namespace Prisma {
     corporateProfile?: CorporateProfileOmit
     individualProfile?: IndividualProfileOmit
     talentAccessLog?: TalentAccessLogOmit
+    educationalInstitution?: EducationalInstitutionOmit
     profileEducation?: ProfileEducationOmit
     profileCareer?: ProfileCareerOmit
     profileLanguage?: ProfileLanguageOmit
@@ -5125,6 +5231,37 @@ export namespace Prisma {
    */
   export type IndividualProfileCountOutputTypeCountDiagnosisSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: DiagnosisSessionWhereInput
+  }
+
+
+  /**
+   * Count Type EducationalInstitutionCountOutputType
+   */
+
+  export type EducationalInstitutionCountOutputType = {
+    educations: number
+  }
+
+  export type EducationalInstitutionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    educations?: boolean | EducationalInstitutionCountOutputTypeCountEducationsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * EducationalInstitutionCountOutputType without action
+   */
+  export type EducationalInstitutionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EducationalInstitutionCountOutputType
+     */
+    select?: EducationalInstitutionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * EducationalInstitutionCountOutputType without action
+   */
+  export type EducationalInstitutionCountOutputTypeCountEducationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProfileEducationWhereInput
   }
 
 
@@ -11116,6 +11253,1231 @@ export namespace Prisma {
 
 
   /**
+   * Model EducationalInstitution
+   */
+
+  export type AggregateEducationalInstitution = {
+    _count: EducationalInstitutionCountAggregateOutputType | null
+    _avg: EducationalInstitutionAvgAggregateOutputType | null
+    _sum: EducationalInstitutionSumAggregateOutputType | null
+    _min: EducationalInstitutionMinAggregateOutputType | null
+    _max: EducationalInstitutionMaxAggregateOutputType | null
+  }
+
+  export type EducationalInstitutionAvgAggregateOutputType = {
+    id: number | null
+    latitude: Decimal | null
+    longitude: Decimal | null
+  }
+
+  export type EducationalInstitutionSumAggregateOutputType = {
+    id: bigint | null
+    latitude: Decimal | null
+    longitude: Decimal | null
+  }
+
+  export type EducationalInstitutionMinAggregateOutputType = {
+    id: bigint | null
+    name: string | null
+    nameEn: string | null
+    type: $Enums.InstitutionType | null
+    address: string | null
+    addressDetail: string | null
+    latitude: Decimal | null
+    longitude: Decimal | null
+    isMetroArea: boolean | null
+    affiliatedUniversity: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EducationalInstitutionMaxAggregateOutputType = {
+    id: bigint | null
+    name: string | null
+    nameEn: string | null
+    type: $Enums.InstitutionType | null
+    address: string | null
+    addressDetail: string | null
+    latitude: Decimal | null
+    longitude: Decimal | null
+    isMetroArea: boolean | null
+    affiliatedUniversity: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EducationalInstitutionCountAggregateOutputType = {
+    id: number
+    name: number
+    nameEn: number
+    type: number
+    address: number
+    addressDetail: number
+    latitude: number
+    longitude: number
+    isMetroArea: number
+    affiliatedUniversity: number
+    searchKeywords: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EducationalInstitutionAvgAggregateInputType = {
+    id?: true
+    latitude?: true
+    longitude?: true
+  }
+
+  export type EducationalInstitutionSumAggregateInputType = {
+    id?: true
+    latitude?: true
+    longitude?: true
+  }
+
+  export type EducationalInstitutionMinAggregateInputType = {
+    id?: true
+    name?: true
+    nameEn?: true
+    type?: true
+    address?: true
+    addressDetail?: true
+    latitude?: true
+    longitude?: true
+    isMetroArea?: true
+    affiliatedUniversity?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EducationalInstitutionMaxAggregateInputType = {
+    id?: true
+    name?: true
+    nameEn?: true
+    type?: true
+    address?: true
+    addressDetail?: true
+    latitude?: true
+    longitude?: true
+    isMetroArea?: true
+    affiliatedUniversity?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EducationalInstitutionCountAggregateInputType = {
+    id?: true
+    name?: true
+    nameEn?: true
+    type?: true
+    address?: true
+    addressDetail?: true
+    latitude?: true
+    longitude?: true
+    isMetroArea?: true
+    affiliatedUniversity?: true
+    searchKeywords?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EducationalInstitutionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EducationalInstitution to aggregate.
+     */
+    where?: EducationalInstitutionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EducationalInstitutions to fetch.
+     */
+    orderBy?: EducationalInstitutionOrderByWithRelationInput | EducationalInstitutionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EducationalInstitutionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EducationalInstitutions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EducationalInstitutions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned EducationalInstitutions
+    **/
+    _count?: true | EducationalInstitutionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: EducationalInstitutionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: EducationalInstitutionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EducationalInstitutionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EducationalInstitutionMaxAggregateInputType
+  }
+
+  export type GetEducationalInstitutionAggregateType<T extends EducationalInstitutionAggregateArgs> = {
+        [P in keyof T & keyof AggregateEducationalInstitution]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEducationalInstitution[P]>
+      : GetScalarType<T[P], AggregateEducationalInstitution[P]>
+  }
+
+
+
+
+  export type EducationalInstitutionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EducationalInstitutionWhereInput
+    orderBy?: EducationalInstitutionOrderByWithAggregationInput | EducationalInstitutionOrderByWithAggregationInput[]
+    by: EducationalInstitutionScalarFieldEnum[] | EducationalInstitutionScalarFieldEnum
+    having?: EducationalInstitutionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EducationalInstitutionCountAggregateInputType | true
+    _avg?: EducationalInstitutionAvgAggregateInputType
+    _sum?: EducationalInstitutionSumAggregateInputType
+    _min?: EducationalInstitutionMinAggregateInputType
+    _max?: EducationalInstitutionMaxAggregateInputType
+  }
+
+  export type EducationalInstitutionGroupByOutputType = {
+    id: bigint
+    name: string
+    nameEn: string | null
+    type: $Enums.InstitutionType
+    address: string
+    addressDetail: string | null
+    latitude: Decimal
+    longitude: Decimal
+    isMetroArea: boolean
+    affiliatedUniversity: string | null
+    searchKeywords: string[]
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: EducationalInstitutionCountAggregateOutputType | null
+    _avg: EducationalInstitutionAvgAggregateOutputType | null
+    _sum: EducationalInstitutionSumAggregateOutputType | null
+    _min: EducationalInstitutionMinAggregateOutputType | null
+    _max: EducationalInstitutionMaxAggregateOutputType | null
+  }
+
+  type GetEducationalInstitutionGroupByPayload<T extends EducationalInstitutionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EducationalInstitutionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EducationalInstitutionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EducationalInstitutionGroupByOutputType[P]>
+            : GetScalarType<T[P], EducationalInstitutionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EducationalInstitutionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    nameEn?: boolean
+    type?: boolean
+    address?: boolean
+    addressDetail?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    isMetroArea?: boolean
+    affiliatedUniversity?: boolean
+    searchKeywords?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    educations?: boolean | EducationalInstitution$educationsArgs<ExtArgs>
+    _count?: boolean | EducationalInstitutionCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["educationalInstitution"]>
+
+  export type EducationalInstitutionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    nameEn?: boolean
+    type?: boolean
+    address?: boolean
+    addressDetail?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    isMetroArea?: boolean
+    affiliatedUniversity?: boolean
+    searchKeywords?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["educationalInstitution"]>
+
+  export type EducationalInstitutionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    nameEn?: boolean
+    type?: boolean
+    address?: boolean
+    addressDetail?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    isMetroArea?: boolean
+    affiliatedUniversity?: boolean
+    searchKeywords?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["educationalInstitution"]>
+
+  export type EducationalInstitutionSelectScalar = {
+    id?: boolean
+    name?: boolean
+    nameEn?: boolean
+    type?: boolean
+    address?: boolean
+    addressDetail?: boolean
+    latitude?: boolean
+    longitude?: boolean
+    isMetroArea?: boolean
+    affiliatedUniversity?: boolean
+    searchKeywords?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EducationalInstitutionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "nameEn" | "type" | "address" | "addressDetail" | "latitude" | "longitude" | "isMetroArea" | "affiliatedUniversity" | "searchKeywords" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["educationalInstitution"]>
+  export type EducationalInstitutionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    educations?: boolean | EducationalInstitution$educationsArgs<ExtArgs>
+    _count?: boolean | EducationalInstitutionCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type EducationalInstitutionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type EducationalInstitutionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $EducationalInstitutionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "EducationalInstitution"
+    objects: {
+      educations: Prisma.$ProfileEducationPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      name: string
+      nameEn: string | null
+      type: $Enums.InstitutionType
+      address: string
+      addressDetail: string | null
+      latitude: Prisma.Decimal
+      longitude: Prisma.Decimal
+      isMetroArea: boolean
+      affiliatedUniversity: string | null
+      searchKeywords: string[]
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["educationalInstitution"]>
+    composites: {}
+  }
+
+  type EducationalInstitutionGetPayload<S extends boolean | null | undefined | EducationalInstitutionDefaultArgs> = $Result.GetResult<Prisma.$EducationalInstitutionPayload, S>
+
+  type EducationalInstitutionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EducationalInstitutionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EducationalInstitutionCountAggregateInputType | true
+    }
+
+  export interface EducationalInstitutionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['EducationalInstitution'], meta: { name: 'EducationalInstitution' } }
+    /**
+     * Find zero or one EducationalInstitution that matches the filter.
+     * @param {EducationalInstitutionFindUniqueArgs} args - Arguments to find a EducationalInstitution
+     * @example
+     * // Get one EducationalInstitution
+     * const educationalInstitution = await prisma.educationalInstitution.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EducationalInstitutionFindUniqueArgs>(args: SelectSubset<T, EducationalInstitutionFindUniqueArgs<ExtArgs>>): Prisma__EducationalInstitutionClient<$Result.GetResult<Prisma.$EducationalInstitutionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one EducationalInstitution that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EducationalInstitutionFindUniqueOrThrowArgs} args - Arguments to find a EducationalInstitution
+     * @example
+     * // Get one EducationalInstitution
+     * const educationalInstitution = await prisma.educationalInstitution.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EducationalInstitutionFindUniqueOrThrowArgs>(args: SelectSubset<T, EducationalInstitutionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EducationalInstitutionClient<$Result.GetResult<Prisma.$EducationalInstitutionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EducationalInstitution that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EducationalInstitutionFindFirstArgs} args - Arguments to find a EducationalInstitution
+     * @example
+     * // Get one EducationalInstitution
+     * const educationalInstitution = await prisma.educationalInstitution.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EducationalInstitutionFindFirstArgs>(args?: SelectSubset<T, EducationalInstitutionFindFirstArgs<ExtArgs>>): Prisma__EducationalInstitutionClient<$Result.GetResult<Prisma.$EducationalInstitutionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first EducationalInstitution that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EducationalInstitutionFindFirstOrThrowArgs} args - Arguments to find a EducationalInstitution
+     * @example
+     * // Get one EducationalInstitution
+     * const educationalInstitution = await prisma.educationalInstitution.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EducationalInstitutionFindFirstOrThrowArgs>(args?: SelectSubset<T, EducationalInstitutionFindFirstOrThrowArgs<ExtArgs>>): Prisma__EducationalInstitutionClient<$Result.GetResult<Prisma.$EducationalInstitutionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more EducationalInstitutions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EducationalInstitutionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all EducationalInstitutions
+     * const educationalInstitutions = await prisma.educationalInstitution.findMany()
+     * 
+     * // Get first 10 EducationalInstitutions
+     * const educationalInstitutions = await prisma.educationalInstitution.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const educationalInstitutionWithIdOnly = await prisma.educationalInstitution.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EducationalInstitutionFindManyArgs>(args?: SelectSubset<T, EducationalInstitutionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EducationalInstitutionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a EducationalInstitution.
+     * @param {EducationalInstitutionCreateArgs} args - Arguments to create a EducationalInstitution.
+     * @example
+     * // Create one EducationalInstitution
+     * const EducationalInstitution = await prisma.educationalInstitution.create({
+     *   data: {
+     *     // ... data to create a EducationalInstitution
+     *   }
+     * })
+     * 
+     */
+    create<T extends EducationalInstitutionCreateArgs>(args: SelectSubset<T, EducationalInstitutionCreateArgs<ExtArgs>>): Prisma__EducationalInstitutionClient<$Result.GetResult<Prisma.$EducationalInstitutionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many EducationalInstitutions.
+     * @param {EducationalInstitutionCreateManyArgs} args - Arguments to create many EducationalInstitutions.
+     * @example
+     * // Create many EducationalInstitutions
+     * const educationalInstitution = await prisma.educationalInstitution.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EducationalInstitutionCreateManyArgs>(args?: SelectSubset<T, EducationalInstitutionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many EducationalInstitutions and returns the data saved in the database.
+     * @param {EducationalInstitutionCreateManyAndReturnArgs} args - Arguments to create many EducationalInstitutions.
+     * @example
+     * // Create many EducationalInstitutions
+     * const educationalInstitution = await prisma.educationalInstitution.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many EducationalInstitutions and only return the `id`
+     * const educationalInstitutionWithIdOnly = await prisma.educationalInstitution.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EducationalInstitutionCreateManyAndReturnArgs>(args?: SelectSubset<T, EducationalInstitutionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EducationalInstitutionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a EducationalInstitution.
+     * @param {EducationalInstitutionDeleteArgs} args - Arguments to delete one EducationalInstitution.
+     * @example
+     * // Delete one EducationalInstitution
+     * const EducationalInstitution = await prisma.educationalInstitution.delete({
+     *   where: {
+     *     // ... filter to delete one EducationalInstitution
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EducationalInstitutionDeleteArgs>(args: SelectSubset<T, EducationalInstitutionDeleteArgs<ExtArgs>>): Prisma__EducationalInstitutionClient<$Result.GetResult<Prisma.$EducationalInstitutionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one EducationalInstitution.
+     * @param {EducationalInstitutionUpdateArgs} args - Arguments to update one EducationalInstitution.
+     * @example
+     * // Update one EducationalInstitution
+     * const educationalInstitution = await prisma.educationalInstitution.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EducationalInstitutionUpdateArgs>(args: SelectSubset<T, EducationalInstitutionUpdateArgs<ExtArgs>>): Prisma__EducationalInstitutionClient<$Result.GetResult<Prisma.$EducationalInstitutionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more EducationalInstitutions.
+     * @param {EducationalInstitutionDeleteManyArgs} args - Arguments to filter EducationalInstitutions to delete.
+     * @example
+     * // Delete a few EducationalInstitutions
+     * const { count } = await prisma.educationalInstitution.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EducationalInstitutionDeleteManyArgs>(args?: SelectSubset<T, EducationalInstitutionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EducationalInstitutions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EducationalInstitutionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many EducationalInstitutions
+     * const educationalInstitution = await prisma.educationalInstitution.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EducationalInstitutionUpdateManyArgs>(args: SelectSubset<T, EducationalInstitutionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more EducationalInstitutions and returns the data updated in the database.
+     * @param {EducationalInstitutionUpdateManyAndReturnArgs} args - Arguments to update many EducationalInstitutions.
+     * @example
+     * // Update many EducationalInstitutions
+     * const educationalInstitution = await prisma.educationalInstitution.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more EducationalInstitutions and only return the `id`
+     * const educationalInstitutionWithIdOnly = await prisma.educationalInstitution.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EducationalInstitutionUpdateManyAndReturnArgs>(args: SelectSubset<T, EducationalInstitutionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EducationalInstitutionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one EducationalInstitution.
+     * @param {EducationalInstitutionUpsertArgs} args - Arguments to update or create a EducationalInstitution.
+     * @example
+     * // Update or create a EducationalInstitution
+     * const educationalInstitution = await prisma.educationalInstitution.upsert({
+     *   create: {
+     *     // ... data to create a EducationalInstitution
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the EducationalInstitution we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EducationalInstitutionUpsertArgs>(args: SelectSubset<T, EducationalInstitutionUpsertArgs<ExtArgs>>): Prisma__EducationalInstitutionClient<$Result.GetResult<Prisma.$EducationalInstitutionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of EducationalInstitutions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EducationalInstitutionCountArgs} args - Arguments to filter EducationalInstitutions to count.
+     * @example
+     * // Count the number of EducationalInstitutions
+     * const count = await prisma.educationalInstitution.count({
+     *   where: {
+     *     // ... the filter for the EducationalInstitutions we want to count
+     *   }
+     * })
+    **/
+    count<T extends EducationalInstitutionCountArgs>(
+      args?: Subset<T, EducationalInstitutionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EducationalInstitutionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a EducationalInstitution.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EducationalInstitutionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EducationalInstitutionAggregateArgs>(args: Subset<T, EducationalInstitutionAggregateArgs>): Prisma.PrismaPromise<GetEducationalInstitutionAggregateType<T>>
+
+    /**
+     * Group by EducationalInstitution.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EducationalInstitutionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EducationalInstitutionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EducationalInstitutionGroupByArgs['orderBy'] }
+        : { orderBy?: EducationalInstitutionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EducationalInstitutionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEducationalInstitutionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the EducationalInstitution model
+   */
+  readonly fields: EducationalInstitutionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for EducationalInstitution.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EducationalInstitutionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    educations<T extends EducationalInstitution$educationsArgs<ExtArgs> = {}>(args?: Subset<T, EducationalInstitution$educationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProfileEducationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the EducationalInstitution model
+   */
+  interface EducationalInstitutionFieldRefs {
+    readonly id: FieldRef<"EducationalInstitution", 'BigInt'>
+    readonly name: FieldRef<"EducationalInstitution", 'String'>
+    readonly nameEn: FieldRef<"EducationalInstitution", 'String'>
+    readonly type: FieldRef<"EducationalInstitution", 'InstitutionType'>
+    readonly address: FieldRef<"EducationalInstitution", 'String'>
+    readonly addressDetail: FieldRef<"EducationalInstitution", 'String'>
+    readonly latitude: FieldRef<"EducationalInstitution", 'Decimal'>
+    readonly longitude: FieldRef<"EducationalInstitution", 'Decimal'>
+    readonly isMetroArea: FieldRef<"EducationalInstitution", 'Boolean'>
+    readonly affiliatedUniversity: FieldRef<"EducationalInstitution", 'String'>
+    readonly searchKeywords: FieldRef<"EducationalInstitution", 'String[]'>
+    readonly isActive: FieldRef<"EducationalInstitution", 'Boolean'>
+    readonly createdAt: FieldRef<"EducationalInstitution", 'DateTime'>
+    readonly updatedAt: FieldRef<"EducationalInstitution", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * EducationalInstitution findUnique
+   */
+  export type EducationalInstitutionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EducationalInstitution
+     */
+    select?: EducationalInstitutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EducationalInstitution
+     */
+    omit?: EducationalInstitutionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EducationalInstitutionInclude<ExtArgs> | null
+    /**
+     * Filter, which EducationalInstitution to fetch.
+     */
+    where: EducationalInstitutionWhereUniqueInput
+  }
+
+  /**
+   * EducationalInstitution findUniqueOrThrow
+   */
+  export type EducationalInstitutionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EducationalInstitution
+     */
+    select?: EducationalInstitutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EducationalInstitution
+     */
+    omit?: EducationalInstitutionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EducationalInstitutionInclude<ExtArgs> | null
+    /**
+     * Filter, which EducationalInstitution to fetch.
+     */
+    where: EducationalInstitutionWhereUniqueInput
+  }
+
+  /**
+   * EducationalInstitution findFirst
+   */
+  export type EducationalInstitutionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EducationalInstitution
+     */
+    select?: EducationalInstitutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EducationalInstitution
+     */
+    omit?: EducationalInstitutionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EducationalInstitutionInclude<ExtArgs> | null
+    /**
+     * Filter, which EducationalInstitution to fetch.
+     */
+    where?: EducationalInstitutionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EducationalInstitutions to fetch.
+     */
+    orderBy?: EducationalInstitutionOrderByWithRelationInput | EducationalInstitutionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EducationalInstitutions.
+     */
+    cursor?: EducationalInstitutionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EducationalInstitutions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EducationalInstitutions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EducationalInstitutions.
+     */
+    distinct?: EducationalInstitutionScalarFieldEnum | EducationalInstitutionScalarFieldEnum[]
+  }
+
+  /**
+   * EducationalInstitution findFirstOrThrow
+   */
+  export type EducationalInstitutionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EducationalInstitution
+     */
+    select?: EducationalInstitutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EducationalInstitution
+     */
+    omit?: EducationalInstitutionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EducationalInstitutionInclude<ExtArgs> | null
+    /**
+     * Filter, which EducationalInstitution to fetch.
+     */
+    where?: EducationalInstitutionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EducationalInstitutions to fetch.
+     */
+    orderBy?: EducationalInstitutionOrderByWithRelationInput | EducationalInstitutionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for EducationalInstitutions.
+     */
+    cursor?: EducationalInstitutionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EducationalInstitutions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EducationalInstitutions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of EducationalInstitutions.
+     */
+    distinct?: EducationalInstitutionScalarFieldEnum | EducationalInstitutionScalarFieldEnum[]
+  }
+
+  /**
+   * EducationalInstitution findMany
+   */
+  export type EducationalInstitutionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EducationalInstitution
+     */
+    select?: EducationalInstitutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EducationalInstitution
+     */
+    omit?: EducationalInstitutionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EducationalInstitutionInclude<ExtArgs> | null
+    /**
+     * Filter, which EducationalInstitutions to fetch.
+     */
+    where?: EducationalInstitutionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of EducationalInstitutions to fetch.
+     */
+    orderBy?: EducationalInstitutionOrderByWithRelationInput | EducationalInstitutionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing EducationalInstitutions.
+     */
+    cursor?: EducationalInstitutionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` EducationalInstitutions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` EducationalInstitutions.
+     */
+    skip?: number
+    distinct?: EducationalInstitutionScalarFieldEnum | EducationalInstitutionScalarFieldEnum[]
+  }
+
+  /**
+   * EducationalInstitution create
+   */
+  export type EducationalInstitutionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EducationalInstitution
+     */
+    select?: EducationalInstitutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EducationalInstitution
+     */
+    omit?: EducationalInstitutionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EducationalInstitutionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a EducationalInstitution.
+     */
+    data: XOR<EducationalInstitutionCreateInput, EducationalInstitutionUncheckedCreateInput>
+  }
+
+  /**
+   * EducationalInstitution createMany
+   */
+  export type EducationalInstitutionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many EducationalInstitutions.
+     */
+    data: EducationalInstitutionCreateManyInput | EducationalInstitutionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EducationalInstitution createManyAndReturn
+   */
+  export type EducationalInstitutionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EducationalInstitution
+     */
+    select?: EducationalInstitutionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EducationalInstitution
+     */
+    omit?: EducationalInstitutionOmit<ExtArgs> | null
+    /**
+     * The data used to create many EducationalInstitutions.
+     */
+    data: EducationalInstitutionCreateManyInput | EducationalInstitutionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * EducationalInstitution update
+   */
+  export type EducationalInstitutionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EducationalInstitution
+     */
+    select?: EducationalInstitutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EducationalInstitution
+     */
+    omit?: EducationalInstitutionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EducationalInstitutionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a EducationalInstitution.
+     */
+    data: XOR<EducationalInstitutionUpdateInput, EducationalInstitutionUncheckedUpdateInput>
+    /**
+     * Choose, which EducationalInstitution to update.
+     */
+    where: EducationalInstitutionWhereUniqueInput
+  }
+
+  /**
+   * EducationalInstitution updateMany
+   */
+  export type EducationalInstitutionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update EducationalInstitutions.
+     */
+    data: XOR<EducationalInstitutionUpdateManyMutationInput, EducationalInstitutionUncheckedUpdateManyInput>
+    /**
+     * Filter which EducationalInstitutions to update
+     */
+    where?: EducationalInstitutionWhereInput
+    /**
+     * Limit how many EducationalInstitutions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EducationalInstitution updateManyAndReturn
+   */
+  export type EducationalInstitutionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EducationalInstitution
+     */
+    select?: EducationalInstitutionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the EducationalInstitution
+     */
+    omit?: EducationalInstitutionOmit<ExtArgs> | null
+    /**
+     * The data used to update EducationalInstitutions.
+     */
+    data: XOR<EducationalInstitutionUpdateManyMutationInput, EducationalInstitutionUncheckedUpdateManyInput>
+    /**
+     * Filter which EducationalInstitutions to update
+     */
+    where?: EducationalInstitutionWhereInput
+    /**
+     * Limit how many EducationalInstitutions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * EducationalInstitution upsert
+   */
+  export type EducationalInstitutionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EducationalInstitution
+     */
+    select?: EducationalInstitutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EducationalInstitution
+     */
+    omit?: EducationalInstitutionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EducationalInstitutionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the EducationalInstitution to update in case it exists.
+     */
+    where: EducationalInstitutionWhereUniqueInput
+    /**
+     * In case the EducationalInstitution found by the `where` argument doesn't exist, create a new EducationalInstitution with this data.
+     */
+    create: XOR<EducationalInstitutionCreateInput, EducationalInstitutionUncheckedCreateInput>
+    /**
+     * In case the EducationalInstitution was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EducationalInstitutionUpdateInput, EducationalInstitutionUncheckedUpdateInput>
+  }
+
+  /**
+   * EducationalInstitution delete
+   */
+  export type EducationalInstitutionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EducationalInstitution
+     */
+    select?: EducationalInstitutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EducationalInstitution
+     */
+    omit?: EducationalInstitutionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EducationalInstitutionInclude<ExtArgs> | null
+    /**
+     * Filter which EducationalInstitution to delete.
+     */
+    where: EducationalInstitutionWhereUniqueInput
+  }
+
+  /**
+   * EducationalInstitution deleteMany
+   */
+  export type EducationalInstitutionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which EducationalInstitutions to delete
+     */
+    where?: EducationalInstitutionWhereInput
+    /**
+     * Limit how many EducationalInstitutions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * EducationalInstitution.educations
+   */
+  export type EducationalInstitution$educationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProfileEducation
+     */
+    select?: ProfileEducationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProfileEducation
+     */
+    omit?: ProfileEducationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfileEducationInclude<ExtArgs> | null
+    where?: ProfileEducationWhereInput
+    orderBy?: ProfileEducationOrderByWithRelationInput | ProfileEducationOrderByWithRelationInput[]
+    cursor?: ProfileEducationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProfileEducationScalarFieldEnum | ProfileEducationScalarFieldEnum[]
+  }
+
+  /**
+   * EducationalInstitution without action
+   */
+  export type EducationalInstitutionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EducationalInstitution
+     */
+    select?: EducationalInstitutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EducationalInstitution
+     */
+    omit?: EducationalInstitutionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EducationalInstitutionInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model ProfileEducation
    */
 
@@ -11131,12 +12493,14 @@ export namespace Prisma {
     eduId: number | null
     individualId: number | null
     gpaScore: Decimal | null
+    institutionId: number | null
   }
 
   export type ProfileEducationSumAggregateOutputType = {
     eduId: bigint | null
     individualId: bigint | null
     gpaScore: Decimal | null
+    institutionId: bigint | null
   }
 
   export type ProfileEducationMinAggregateOutputType = {
@@ -11149,6 +12513,14 @@ export namespace Prisma {
     graduationDate: Date | null
     graduationStatus: $Enums.GraduationStatus | null
     gpaScore: Decimal | null
+    institutionId: bigint | null
+    schoolCountry: string | null
+    certificateFileUrl: string | null
+    certificateFileName: string | null
+    certificateUploadedAt: Date | null
+    isVerified: boolean | null
+    verifiedAt: Date | null
+    verifiedBy: string | null
   }
 
   export type ProfileEducationMaxAggregateOutputType = {
@@ -11161,6 +12533,14 @@ export namespace Prisma {
     graduationDate: Date | null
     graduationStatus: $Enums.GraduationStatus | null
     gpaScore: Decimal | null
+    institutionId: bigint | null
+    schoolCountry: string | null
+    certificateFileUrl: string | null
+    certificateFileName: string | null
+    certificateUploadedAt: Date | null
+    isVerified: boolean | null
+    verifiedAt: Date | null
+    verifiedBy: string | null
   }
 
   export type ProfileEducationCountAggregateOutputType = {
@@ -11173,6 +12553,14 @@ export namespace Prisma {
     graduationDate: number
     graduationStatus: number
     gpaScore: number
+    institutionId: number
+    schoolCountry: number
+    certificateFileUrl: number
+    certificateFileName: number
+    certificateUploadedAt: number
+    isVerified: number
+    verifiedAt: number
+    verifiedBy: number
     _all: number
   }
 
@@ -11181,12 +12569,14 @@ export namespace Prisma {
     eduId?: true
     individualId?: true
     gpaScore?: true
+    institutionId?: true
   }
 
   export type ProfileEducationSumAggregateInputType = {
     eduId?: true
     individualId?: true
     gpaScore?: true
+    institutionId?: true
   }
 
   export type ProfileEducationMinAggregateInputType = {
@@ -11199,6 +12589,14 @@ export namespace Prisma {
     graduationDate?: true
     graduationStatus?: true
     gpaScore?: true
+    institutionId?: true
+    schoolCountry?: true
+    certificateFileUrl?: true
+    certificateFileName?: true
+    certificateUploadedAt?: true
+    isVerified?: true
+    verifiedAt?: true
+    verifiedBy?: true
   }
 
   export type ProfileEducationMaxAggregateInputType = {
@@ -11211,6 +12609,14 @@ export namespace Prisma {
     graduationDate?: true
     graduationStatus?: true
     gpaScore?: true
+    institutionId?: true
+    schoolCountry?: true
+    certificateFileUrl?: true
+    certificateFileName?: true
+    certificateUploadedAt?: true
+    isVerified?: true
+    verifiedAt?: true
+    verifiedBy?: true
   }
 
   export type ProfileEducationCountAggregateInputType = {
@@ -11223,6 +12629,14 @@ export namespace Prisma {
     graduationDate?: true
     graduationStatus?: true
     gpaScore?: true
+    institutionId?: true
+    schoolCountry?: true
+    certificateFileUrl?: true
+    certificateFileName?: true
+    certificateUploadedAt?: true
+    isVerified?: true
+    verifiedAt?: true
+    verifiedBy?: true
     _all?: true
   }
 
@@ -11322,6 +12736,14 @@ export namespace Prisma {
     graduationDate: Date | null
     graduationStatus: $Enums.GraduationStatus
     gpaScore: Decimal | null
+    institutionId: bigint | null
+    schoolCountry: string
+    certificateFileUrl: string | null
+    certificateFileName: string | null
+    certificateUploadedAt: Date | null
+    isVerified: boolean
+    verifiedAt: Date | null
+    verifiedBy: string | null
     _count: ProfileEducationCountAggregateOutputType | null
     _avg: ProfileEducationAvgAggregateOutputType | null
     _sum: ProfileEducationSumAggregateOutputType | null
@@ -11353,7 +12775,16 @@ export namespace Prisma {
     graduationDate?: boolean
     graduationStatus?: boolean
     gpaScore?: boolean
+    institutionId?: boolean
+    schoolCountry?: boolean
+    certificateFileUrl?: boolean
+    certificateFileName?: boolean
+    certificateUploadedAt?: boolean
+    isVerified?: boolean
+    verifiedAt?: boolean
+    verifiedBy?: boolean
     individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
+    institution?: boolean | ProfileEducation$institutionArgs<ExtArgs>
   }, ExtArgs["result"]["profileEducation"]>
 
   export type ProfileEducationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11366,7 +12797,16 @@ export namespace Prisma {
     graduationDate?: boolean
     graduationStatus?: boolean
     gpaScore?: boolean
+    institutionId?: boolean
+    schoolCountry?: boolean
+    certificateFileUrl?: boolean
+    certificateFileName?: boolean
+    certificateUploadedAt?: boolean
+    isVerified?: boolean
+    verifiedAt?: boolean
+    verifiedBy?: boolean
     individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
+    institution?: boolean | ProfileEducation$institutionArgs<ExtArgs>
   }, ExtArgs["result"]["profileEducation"]>
 
   export type ProfileEducationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11379,7 +12819,16 @@ export namespace Prisma {
     graduationDate?: boolean
     graduationStatus?: boolean
     gpaScore?: boolean
+    institutionId?: boolean
+    schoolCountry?: boolean
+    certificateFileUrl?: boolean
+    certificateFileName?: boolean
+    certificateUploadedAt?: boolean
+    isVerified?: boolean
+    verifiedAt?: boolean
+    verifiedBy?: boolean
     individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
+    institution?: boolean | ProfileEducation$institutionArgs<ExtArgs>
   }, ExtArgs["result"]["profileEducation"]>
 
   export type ProfileEducationSelectScalar = {
@@ -11392,23 +12841,35 @@ export namespace Prisma {
     graduationDate?: boolean
     graduationStatus?: boolean
     gpaScore?: boolean
+    institutionId?: boolean
+    schoolCountry?: boolean
+    certificateFileUrl?: boolean
+    certificateFileName?: boolean
+    certificateUploadedAt?: boolean
+    isVerified?: boolean
+    verifiedAt?: boolean
+    verifiedBy?: boolean
   }
 
-  export type ProfileEducationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"eduId" | "individualId" | "schoolName" | "majorName" | "degreeLevel" | "startDate" | "graduationDate" | "graduationStatus" | "gpaScore", ExtArgs["result"]["profileEducation"]>
+  export type ProfileEducationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"eduId" | "individualId" | "schoolName" | "majorName" | "degreeLevel" | "startDate" | "graduationDate" | "graduationStatus" | "gpaScore" | "institutionId" | "schoolCountry" | "certificateFileUrl" | "certificateFileName" | "certificateUploadedAt" | "isVerified" | "verifiedAt" | "verifiedBy", ExtArgs["result"]["profileEducation"]>
   export type ProfileEducationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
+    institution?: boolean | ProfileEducation$institutionArgs<ExtArgs>
   }
   export type ProfileEducationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
+    institution?: boolean | ProfileEducation$institutionArgs<ExtArgs>
   }
   export type ProfileEducationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
+    institution?: boolean | ProfileEducation$institutionArgs<ExtArgs>
   }
 
   export type $ProfileEducationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ProfileEducation"
     objects: {
       individual: Prisma.$IndividualProfilePayload<ExtArgs>
+      institution: Prisma.$EducationalInstitutionPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       eduId: bigint
@@ -11420,6 +12881,14 @@ export namespace Prisma {
       graduationDate: Date | null
       graduationStatus: $Enums.GraduationStatus
       gpaScore: Prisma.Decimal | null
+      institutionId: bigint | null
+      schoolCountry: string
+      certificateFileUrl: string | null
+      certificateFileName: string | null
+      certificateUploadedAt: Date | null
+      isVerified: boolean
+      verifiedAt: Date | null
+      verifiedBy: string | null
     }, ExtArgs["result"]["profileEducation"]>
     composites: {}
   }
@@ -11815,6 +13284,7 @@ export namespace Prisma {
   export interface Prisma__ProfileEducationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     individual<T extends IndividualProfileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, IndividualProfileDefaultArgs<ExtArgs>>): Prisma__IndividualProfileClient<$Result.GetResult<Prisma.$IndividualProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    institution<T extends ProfileEducation$institutionArgs<ExtArgs> = {}>(args?: Subset<T, ProfileEducation$institutionArgs<ExtArgs>>): Prisma__EducationalInstitutionClient<$Result.GetResult<Prisma.$EducationalInstitutionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11853,6 +13323,14 @@ export namespace Prisma {
     readonly graduationDate: FieldRef<"ProfileEducation", 'DateTime'>
     readonly graduationStatus: FieldRef<"ProfileEducation", 'GraduationStatus'>
     readonly gpaScore: FieldRef<"ProfileEducation", 'Decimal'>
+    readonly institutionId: FieldRef<"ProfileEducation", 'BigInt'>
+    readonly schoolCountry: FieldRef<"ProfileEducation", 'String'>
+    readonly certificateFileUrl: FieldRef<"ProfileEducation", 'String'>
+    readonly certificateFileName: FieldRef<"ProfileEducation", 'String'>
+    readonly certificateUploadedAt: FieldRef<"ProfileEducation", 'DateTime'>
+    readonly isVerified: FieldRef<"ProfileEducation", 'Boolean'>
+    readonly verifiedAt: FieldRef<"ProfileEducation", 'DateTime'>
+    readonly verifiedBy: FieldRef<"ProfileEducation", 'String'>
   }
     
 
@@ -12246,6 +13724,25 @@ export namespace Prisma {
      * Limit how many ProfileEducations to delete.
      */
     limit?: number
+  }
+
+  /**
+   * ProfileEducation.institution
+   */
+  export type ProfileEducation$institutionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the EducationalInstitution
+     */
+    select?: EducationalInstitutionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the EducationalInstitution
+     */
+    omit?: EducationalInstitutionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EducationalInstitutionInclude<ExtArgs> | null
+    where?: EducationalInstitutionWhereInput
   }
 
   /**
@@ -56345,6 +57842,26 @@ export namespace Prisma {
   export type TalentAccessLogScalarFieldEnum = (typeof TalentAccessLogScalarFieldEnum)[keyof typeof TalentAccessLogScalarFieldEnum]
 
 
+  export const EducationalInstitutionScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    nameEn: 'nameEn',
+    type: 'type',
+    address: 'address',
+    addressDetail: 'addressDetail',
+    latitude: 'latitude',
+    longitude: 'longitude',
+    isMetroArea: 'isMetroArea',
+    affiliatedUniversity: 'affiliatedUniversity',
+    searchKeywords: 'searchKeywords',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EducationalInstitutionScalarFieldEnum = (typeof EducationalInstitutionScalarFieldEnum)[keyof typeof EducationalInstitutionScalarFieldEnum]
+
+
   export const ProfileEducationScalarFieldEnum: {
     eduId: 'eduId',
     individualId: 'individualId',
@@ -56354,7 +57871,15 @@ export namespace Prisma {
     startDate: 'startDate',
     graduationDate: 'graduationDate',
     graduationStatus: 'graduationStatus',
-    gpaScore: 'gpaScore'
+    gpaScore: 'gpaScore',
+    institutionId: 'institutionId',
+    schoolCountry: 'schoolCountry',
+    certificateFileUrl: 'certificateFileUrl',
+    certificateFileName: 'certificateFileName',
+    certificateUploadedAt: 'certificateUploadedAt',
+    isVerified: 'isVerified',
+    verifiedAt: 'verifiedAt',
+    verifiedBy: 'verifiedBy'
   };
 
   export type ProfileEducationScalarFieldEnum = (typeof ProfileEducationScalarFieldEnum)[keyof typeof ProfileEducationScalarFieldEnum]
@@ -57249,16 +58774,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'GraduationStatus'
+   * Reference to a field of type 'InstitutionType'
    */
-  export type EnumGraduationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GraduationStatus'>
+  export type EnumInstitutionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InstitutionType'>
     
 
 
   /**
-   * Reference to a field of type 'GraduationStatus[]'
+   * Reference to a field of type 'InstitutionType[]'
    */
-  export type ListEnumGraduationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GraduationStatus[]'>
+  export type ListEnumInstitutionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InstitutionType[]'>
     
 
 
@@ -57273,6 +58798,20 @@ export namespace Prisma {
    * Reference to a field of type 'Decimal[]'
    */
   export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'GraduationStatus'
+   */
+  export type EnumGraduationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GraduationStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'GraduationStatus[]'
+   */
+  export type ListEnumGraduationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GraduationStatus[]'>
     
 
 
@@ -58204,6 +59743,108 @@ export namespace Prisma {
     accessedAt?: DateTimeWithAggregatesFilter<"TalentAccessLog"> | Date | string
   }
 
+  export type EducationalInstitutionWhereInput = {
+    AND?: EducationalInstitutionWhereInput | EducationalInstitutionWhereInput[]
+    OR?: EducationalInstitutionWhereInput[]
+    NOT?: EducationalInstitutionWhereInput | EducationalInstitutionWhereInput[]
+    id?: BigIntFilter<"EducationalInstitution"> | bigint | number
+    name?: StringFilter<"EducationalInstitution"> | string
+    nameEn?: StringNullableFilter<"EducationalInstitution"> | string | null
+    type?: EnumInstitutionTypeFilter<"EducationalInstitution"> | $Enums.InstitutionType
+    address?: StringFilter<"EducationalInstitution"> | string
+    addressDetail?: StringNullableFilter<"EducationalInstitution"> | string | null
+    latitude?: DecimalFilter<"EducationalInstitution"> | Decimal | DecimalJsLike | number | string
+    longitude?: DecimalFilter<"EducationalInstitution"> | Decimal | DecimalJsLike | number | string
+    isMetroArea?: BoolFilter<"EducationalInstitution"> | boolean
+    affiliatedUniversity?: StringNullableFilter<"EducationalInstitution"> | string | null
+    searchKeywords?: StringNullableListFilter<"EducationalInstitution">
+    isActive?: BoolFilter<"EducationalInstitution"> | boolean
+    createdAt?: DateTimeFilter<"EducationalInstitution"> | Date | string
+    updatedAt?: DateTimeFilter<"EducationalInstitution"> | Date | string
+    educations?: ProfileEducationListRelationFilter
+  }
+
+  export type EducationalInstitutionOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    nameEn?: SortOrderInput | SortOrder
+    type?: SortOrder
+    address?: SortOrder
+    addressDetail?: SortOrderInput | SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    isMetroArea?: SortOrder
+    affiliatedUniversity?: SortOrderInput | SortOrder
+    searchKeywords?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    educations?: ProfileEducationOrderByRelationAggregateInput
+  }
+
+  export type EducationalInstitutionWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    AND?: EducationalInstitutionWhereInput | EducationalInstitutionWhereInput[]
+    OR?: EducationalInstitutionWhereInput[]
+    NOT?: EducationalInstitutionWhereInput | EducationalInstitutionWhereInput[]
+    name?: StringFilter<"EducationalInstitution"> | string
+    nameEn?: StringNullableFilter<"EducationalInstitution"> | string | null
+    type?: EnumInstitutionTypeFilter<"EducationalInstitution"> | $Enums.InstitutionType
+    address?: StringFilter<"EducationalInstitution"> | string
+    addressDetail?: StringNullableFilter<"EducationalInstitution"> | string | null
+    latitude?: DecimalFilter<"EducationalInstitution"> | Decimal | DecimalJsLike | number | string
+    longitude?: DecimalFilter<"EducationalInstitution"> | Decimal | DecimalJsLike | number | string
+    isMetroArea?: BoolFilter<"EducationalInstitution"> | boolean
+    affiliatedUniversity?: StringNullableFilter<"EducationalInstitution"> | string | null
+    searchKeywords?: StringNullableListFilter<"EducationalInstitution">
+    isActive?: BoolFilter<"EducationalInstitution"> | boolean
+    createdAt?: DateTimeFilter<"EducationalInstitution"> | Date | string
+    updatedAt?: DateTimeFilter<"EducationalInstitution"> | Date | string
+    educations?: ProfileEducationListRelationFilter
+  }, "id">
+
+  export type EducationalInstitutionOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    nameEn?: SortOrderInput | SortOrder
+    type?: SortOrder
+    address?: SortOrder
+    addressDetail?: SortOrderInput | SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    isMetroArea?: SortOrder
+    affiliatedUniversity?: SortOrderInput | SortOrder
+    searchKeywords?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EducationalInstitutionCountOrderByAggregateInput
+    _avg?: EducationalInstitutionAvgOrderByAggregateInput
+    _max?: EducationalInstitutionMaxOrderByAggregateInput
+    _min?: EducationalInstitutionMinOrderByAggregateInput
+    _sum?: EducationalInstitutionSumOrderByAggregateInput
+  }
+
+  export type EducationalInstitutionScalarWhereWithAggregatesInput = {
+    AND?: EducationalInstitutionScalarWhereWithAggregatesInput | EducationalInstitutionScalarWhereWithAggregatesInput[]
+    OR?: EducationalInstitutionScalarWhereWithAggregatesInput[]
+    NOT?: EducationalInstitutionScalarWhereWithAggregatesInput | EducationalInstitutionScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"EducationalInstitution"> | bigint | number
+    name?: StringWithAggregatesFilter<"EducationalInstitution"> | string
+    nameEn?: StringNullableWithAggregatesFilter<"EducationalInstitution"> | string | null
+    type?: EnumInstitutionTypeWithAggregatesFilter<"EducationalInstitution"> | $Enums.InstitutionType
+    address?: StringWithAggregatesFilter<"EducationalInstitution"> | string
+    addressDetail?: StringNullableWithAggregatesFilter<"EducationalInstitution"> | string | null
+    latitude?: DecimalWithAggregatesFilter<"EducationalInstitution"> | Decimal | DecimalJsLike | number | string
+    longitude?: DecimalWithAggregatesFilter<"EducationalInstitution"> | Decimal | DecimalJsLike | number | string
+    isMetroArea?: BoolWithAggregatesFilter<"EducationalInstitution"> | boolean
+    affiliatedUniversity?: StringNullableWithAggregatesFilter<"EducationalInstitution"> | string | null
+    searchKeywords?: StringNullableListFilter<"EducationalInstitution">
+    isActive?: BoolWithAggregatesFilter<"EducationalInstitution"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"EducationalInstitution"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"EducationalInstitution"> | Date | string
+  }
+
   export type ProfileEducationWhereInput = {
     AND?: ProfileEducationWhereInput | ProfileEducationWhereInput[]
     OR?: ProfileEducationWhereInput[]
@@ -58217,7 +59858,16 @@ export namespace Prisma {
     graduationDate?: DateTimeNullableFilter<"ProfileEducation"> | Date | string | null
     graduationStatus?: EnumGraduationStatusFilter<"ProfileEducation"> | $Enums.GraduationStatus
     gpaScore?: DecimalNullableFilter<"ProfileEducation"> | Decimal | DecimalJsLike | number | string | null
+    institutionId?: BigIntNullableFilter<"ProfileEducation"> | bigint | number | null
+    schoolCountry?: StringFilter<"ProfileEducation"> | string
+    certificateFileUrl?: StringNullableFilter<"ProfileEducation"> | string | null
+    certificateFileName?: StringNullableFilter<"ProfileEducation"> | string | null
+    certificateUploadedAt?: DateTimeNullableFilter<"ProfileEducation"> | Date | string | null
+    isVerified?: BoolFilter<"ProfileEducation"> | boolean
+    verifiedAt?: DateTimeNullableFilter<"ProfileEducation"> | Date | string | null
+    verifiedBy?: StringNullableFilter<"ProfileEducation"> | string | null
     individual?: XOR<IndividualProfileScalarRelationFilter, IndividualProfileWhereInput>
+    institution?: XOR<EducationalInstitutionNullableScalarRelationFilter, EducationalInstitutionWhereInput> | null
   }
 
   export type ProfileEducationOrderByWithRelationInput = {
@@ -58230,7 +59880,16 @@ export namespace Prisma {
     graduationDate?: SortOrderInput | SortOrder
     graduationStatus?: SortOrder
     gpaScore?: SortOrderInput | SortOrder
+    institutionId?: SortOrderInput | SortOrder
+    schoolCountry?: SortOrder
+    certificateFileUrl?: SortOrderInput | SortOrder
+    certificateFileName?: SortOrderInput | SortOrder
+    certificateUploadedAt?: SortOrderInput | SortOrder
+    isVerified?: SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
+    verifiedBy?: SortOrderInput | SortOrder
     individual?: IndividualProfileOrderByWithRelationInput
+    institution?: EducationalInstitutionOrderByWithRelationInput
   }
 
   export type ProfileEducationWhereUniqueInput = Prisma.AtLeast<{
@@ -58246,7 +59905,16 @@ export namespace Prisma {
     graduationDate?: DateTimeNullableFilter<"ProfileEducation"> | Date | string | null
     graduationStatus?: EnumGraduationStatusFilter<"ProfileEducation"> | $Enums.GraduationStatus
     gpaScore?: DecimalNullableFilter<"ProfileEducation"> | Decimal | DecimalJsLike | number | string | null
+    institutionId?: BigIntNullableFilter<"ProfileEducation"> | bigint | number | null
+    schoolCountry?: StringFilter<"ProfileEducation"> | string
+    certificateFileUrl?: StringNullableFilter<"ProfileEducation"> | string | null
+    certificateFileName?: StringNullableFilter<"ProfileEducation"> | string | null
+    certificateUploadedAt?: DateTimeNullableFilter<"ProfileEducation"> | Date | string | null
+    isVerified?: BoolFilter<"ProfileEducation"> | boolean
+    verifiedAt?: DateTimeNullableFilter<"ProfileEducation"> | Date | string | null
+    verifiedBy?: StringNullableFilter<"ProfileEducation"> | string | null
     individual?: XOR<IndividualProfileScalarRelationFilter, IndividualProfileWhereInput>
+    institution?: XOR<EducationalInstitutionNullableScalarRelationFilter, EducationalInstitutionWhereInput> | null
   }, "eduId">
 
   export type ProfileEducationOrderByWithAggregationInput = {
@@ -58259,6 +59927,14 @@ export namespace Prisma {
     graduationDate?: SortOrderInput | SortOrder
     graduationStatus?: SortOrder
     gpaScore?: SortOrderInput | SortOrder
+    institutionId?: SortOrderInput | SortOrder
+    schoolCountry?: SortOrder
+    certificateFileUrl?: SortOrderInput | SortOrder
+    certificateFileName?: SortOrderInput | SortOrder
+    certificateUploadedAt?: SortOrderInput | SortOrder
+    isVerified?: SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
+    verifiedBy?: SortOrderInput | SortOrder
     _count?: ProfileEducationCountOrderByAggregateInput
     _avg?: ProfileEducationAvgOrderByAggregateInput
     _max?: ProfileEducationMaxOrderByAggregateInput
@@ -58279,6 +59955,14 @@ export namespace Prisma {
     graduationDate?: DateTimeNullableWithAggregatesFilter<"ProfileEducation"> | Date | string | null
     graduationStatus?: EnumGraduationStatusWithAggregatesFilter<"ProfileEducation"> | $Enums.GraduationStatus
     gpaScore?: DecimalNullableWithAggregatesFilter<"ProfileEducation"> | Decimal | DecimalJsLike | number | string | null
+    institutionId?: BigIntNullableWithAggregatesFilter<"ProfileEducation"> | bigint | number | null
+    schoolCountry?: StringWithAggregatesFilter<"ProfileEducation"> | string
+    certificateFileUrl?: StringNullableWithAggregatesFilter<"ProfileEducation"> | string | null
+    certificateFileName?: StringNullableWithAggregatesFilter<"ProfileEducation"> | string | null
+    certificateUploadedAt?: DateTimeNullableWithAggregatesFilter<"ProfileEducation"> | Date | string | null
+    isVerified?: BoolWithAggregatesFilter<"ProfileEducation"> | boolean
+    verifiedAt?: DateTimeNullableWithAggregatesFilter<"ProfileEducation"> | Date | string | null
+    verifiedBy?: StringNullableWithAggregatesFilter<"ProfileEducation"> | string | null
   }
 
   export type ProfileCareerWhereInput = {
@@ -62407,6 +64091,129 @@ export namespace Prisma {
     accessedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type EducationalInstitutionCreateInput = {
+    id?: bigint | number
+    name: string
+    nameEn?: string | null
+    type: $Enums.InstitutionType
+    address: string
+    addressDetail?: string | null
+    latitude: Decimal | DecimalJsLike | number | string
+    longitude: Decimal | DecimalJsLike | number | string
+    isMetroArea?: boolean
+    affiliatedUniversity?: string | null
+    searchKeywords?: EducationalInstitutionCreatesearchKeywordsInput | string[]
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    educations?: ProfileEducationCreateNestedManyWithoutInstitutionInput
+  }
+
+  export type EducationalInstitutionUncheckedCreateInput = {
+    id?: bigint | number
+    name: string
+    nameEn?: string | null
+    type: $Enums.InstitutionType
+    address: string
+    addressDetail?: string | null
+    latitude: Decimal | DecimalJsLike | number | string
+    longitude: Decimal | DecimalJsLike | number | string
+    isMetroArea?: boolean
+    affiliatedUniversity?: string | null
+    searchKeywords?: EducationalInstitutionCreatesearchKeywordsInput | string[]
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    educations?: ProfileEducationUncheckedCreateNestedManyWithoutInstitutionInput
+  }
+
+  export type EducationalInstitutionUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: StringFieldUpdateOperationsInput | string
+    nameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumInstitutionTypeFieldUpdateOperationsInput | $Enums.InstitutionType
+    address?: StringFieldUpdateOperationsInput | string
+    addressDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    longitude?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    isMetroArea?: BoolFieldUpdateOperationsInput | boolean
+    affiliatedUniversity?: NullableStringFieldUpdateOperationsInput | string | null
+    searchKeywords?: EducationalInstitutionUpdatesearchKeywordsInput | string[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    educations?: ProfileEducationUpdateManyWithoutInstitutionNestedInput
+  }
+
+  export type EducationalInstitutionUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: StringFieldUpdateOperationsInput | string
+    nameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumInstitutionTypeFieldUpdateOperationsInput | $Enums.InstitutionType
+    address?: StringFieldUpdateOperationsInput | string
+    addressDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    longitude?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    isMetroArea?: BoolFieldUpdateOperationsInput | boolean
+    affiliatedUniversity?: NullableStringFieldUpdateOperationsInput | string | null
+    searchKeywords?: EducationalInstitutionUpdatesearchKeywordsInput | string[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    educations?: ProfileEducationUncheckedUpdateManyWithoutInstitutionNestedInput
+  }
+
+  export type EducationalInstitutionCreateManyInput = {
+    id?: bigint | number
+    name: string
+    nameEn?: string | null
+    type: $Enums.InstitutionType
+    address: string
+    addressDetail?: string | null
+    latitude: Decimal | DecimalJsLike | number | string
+    longitude: Decimal | DecimalJsLike | number | string
+    isMetroArea?: boolean
+    affiliatedUniversity?: string | null
+    searchKeywords?: EducationalInstitutionCreatesearchKeywordsInput | string[]
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EducationalInstitutionUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: StringFieldUpdateOperationsInput | string
+    nameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumInstitutionTypeFieldUpdateOperationsInput | $Enums.InstitutionType
+    address?: StringFieldUpdateOperationsInput | string
+    addressDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    longitude?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    isMetroArea?: BoolFieldUpdateOperationsInput | boolean
+    affiliatedUniversity?: NullableStringFieldUpdateOperationsInput | string | null
+    searchKeywords?: EducationalInstitutionUpdatesearchKeywordsInput | string[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EducationalInstitutionUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: StringFieldUpdateOperationsInput | string
+    nameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumInstitutionTypeFieldUpdateOperationsInput | $Enums.InstitutionType
+    address?: StringFieldUpdateOperationsInput | string
+    addressDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    longitude?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    isMetroArea?: BoolFieldUpdateOperationsInput | boolean
+    affiliatedUniversity?: NullableStringFieldUpdateOperationsInput | string | null
+    searchKeywords?: EducationalInstitutionUpdatesearchKeywordsInput | string[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ProfileEducationCreateInput = {
     eduId?: bigint | number
     schoolName: string
@@ -62416,7 +64223,15 @@ export namespace Prisma {
     graduationDate?: Date | string | null
     graduationStatus: $Enums.GraduationStatus
     gpaScore?: Decimal | DecimalJsLike | number | string | null
+    schoolCountry?: string
+    certificateFileUrl?: string | null
+    certificateFileName?: string | null
+    certificateUploadedAt?: Date | string | null
+    isVerified?: boolean
+    verifiedAt?: Date | string | null
+    verifiedBy?: string | null
     individual: IndividualProfileCreateNestedOneWithoutEducationsInput
+    institution?: EducationalInstitutionCreateNestedOneWithoutEducationsInput
   }
 
   export type ProfileEducationUncheckedCreateInput = {
@@ -62429,6 +64244,14 @@ export namespace Prisma {
     graduationDate?: Date | string | null
     graduationStatus: $Enums.GraduationStatus
     gpaScore?: Decimal | DecimalJsLike | number | string | null
+    institutionId?: bigint | number | null
+    schoolCountry?: string
+    certificateFileUrl?: string | null
+    certificateFileName?: string | null
+    certificateUploadedAt?: Date | string | null
+    isVerified?: boolean
+    verifiedAt?: Date | string | null
+    verifiedBy?: string | null
   }
 
   export type ProfileEducationUpdateInput = {
@@ -62440,7 +64263,15 @@ export namespace Prisma {
     graduationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     graduationStatus?: EnumGraduationStatusFieldUpdateOperationsInput | $Enums.GraduationStatus
     gpaScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    schoolCountry?: StringFieldUpdateOperationsInput | string
+    certificateFileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
     individual?: IndividualProfileUpdateOneRequiredWithoutEducationsNestedInput
+    institution?: EducationalInstitutionUpdateOneWithoutEducationsNestedInput
   }
 
   export type ProfileEducationUncheckedUpdateInput = {
@@ -62453,6 +64284,14 @@ export namespace Prisma {
     graduationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     graduationStatus?: EnumGraduationStatusFieldUpdateOperationsInput | $Enums.GraduationStatus
     gpaScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    institutionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    schoolCountry?: StringFieldUpdateOperationsInput | string
+    certificateFileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProfileEducationCreateManyInput = {
@@ -62465,6 +64304,14 @@ export namespace Prisma {
     graduationDate?: Date | string | null
     graduationStatus: $Enums.GraduationStatus
     gpaScore?: Decimal | DecimalJsLike | number | string | null
+    institutionId?: bigint | number | null
+    schoolCountry?: string
+    certificateFileUrl?: string | null
+    certificateFileName?: string | null
+    certificateUploadedAt?: Date | string | null
+    isVerified?: boolean
+    verifiedAt?: Date | string | null
+    verifiedBy?: string | null
   }
 
   export type ProfileEducationUpdateManyMutationInput = {
@@ -62476,6 +64323,13 @@ export namespace Prisma {
     graduationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     graduationStatus?: EnumGraduationStatusFieldUpdateOperationsInput | $Enums.GraduationStatus
     gpaScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    schoolCountry?: StringFieldUpdateOperationsInput | string
+    certificateFileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProfileEducationUncheckedUpdateManyInput = {
@@ -62488,6 +64342,14 @@ export namespace Prisma {
     graduationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     graduationStatus?: EnumGraduationStatusFieldUpdateOperationsInput | $Enums.GraduationStatus
     gpaScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    institutionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    schoolCountry?: StringFieldUpdateOperationsInput | string
+    certificateFileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProfileCareerCreateInput = {
@@ -67135,6 +68997,119 @@ export namespace Prisma {
     individualId?: SortOrder
   }
 
+  export type EnumInstitutionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.InstitutionType | EnumInstitutionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.InstitutionType[] | ListEnumInstitutionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InstitutionType[] | ListEnumInstitutionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumInstitutionTypeFilter<$PrismaModel> | $Enums.InstitutionType
+  }
+
+  export type DecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type EducationalInstitutionCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    nameEn?: SortOrder
+    type?: SortOrder
+    address?: SortOrder
+    addressDetail?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    isMetroArea?: SortOrder
+    affiliatedUniversity?: SortOrder
+    searchKeywords?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EducationalInstitutionAvgOrderByAggregateInput = {
+    id?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+  }
+
+  export type EducationalInstitutionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    nameEn?: SortOrder
+    type?: SortOrder
+    address?: SortOrder
+    addressDetail?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    isMetroArea?: SortOrder
+    affiliatedUniversity?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EducationalInstitutionMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    nameEn?: SortOrder
+    type?: SortOrder
+    address?: SortOrder
+    addressDetail?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+    isMetroArea?: SortOrder
+    affiliatedUniversity?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EducationalInstitutionSumOrderByAggregateInput = {
+    id?: SortOrder
+    latitude?: SortOrder
+    longitude?: SortOrder
+  }
+
+  export type EnumInstitutionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InstitutionType | EnumInstitutionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.InstitutionType[] | ListEnumInstitutionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InstitutionType[] | ListEnumInstitutionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumInstitutionTypeWithAggregatesFilter<$PrismaModel> | $Enums.InstitutionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumInstitutionTypeFilter<$PrismaModel>
+    _max?: NestedEnumInstitutionTypeFilter<$PrismaModel>
+  }
+
+  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
   export type EnumEducationLevelFilter<$PrismaModel = never> = {
     equals?: $Enums.EducationLevel | EnumEducationLevelFieldRefInput<$PrismaModel>
     in?: $Enums.EducationLevel[] | ListEnumEducationLevelFieldRefInput<$PrismaModel>
@@ -67160,6 +69135,22 @@ export namespace Prisma {
     not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
   }
 
+  export type BigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
+  }
+
+  export type EducationalInstitutionNullableScalarRelationFilter = {
+    is?: EducationalInstitutionWhereInput | null
+    isNot?: EducationalInstitutionWhereInput | null
+  }
+
   export type ProfileEducationCountOrderByAggregateInput = {
     eduId?: SortOrder
     individualId?: SortOrder
@@ -67170,12 +69161,21 @@ export namespace Prisma {
     graduationDate?: SortOrder
     graduationStatus?: SortOrder
     gpaScore?: SortOrder
+    institutionId?: SortOrder
+    schoolCountry?: SortOrder
+    certificateFileUrl?: SortOrder
+    certificateFileName?: SortOrder
+    certificateUploadedAt?: SortOrder
+    isVerified?: SortOrder
+    verifiedAt?: SortOrder
+    verifiedBy?: SortOrder
   }
 
   export type ProfileEducationAvgOrderByAggregateInput = {
     eduId?: SortOrder
     individualId?: SortOrder
     gpaScore?: SortOrder
+    institutionId?: SortOrder
   }
 
   export type ProfileEducationMaxOrderByAggregateInput = {
@@ -67188,6 +69188,14 @@ export namespace Prisma {
     graduationDate?: SortOrder
     graduationStatus?: SortOrder
     gpaScore?: SortOrder
+    institutionId?: SortOrder
+    schoolCountry?: SortOrder
+    certificateFileUrl?: SortOrder
+    certificateFileName?: SortOrder
+    certificateUploadedAt?: SortOrder
+    isVerified?: SortOrder
+    verifiedAt?: SortOrder
+    verifiedBy?: SortOrder
   }
 
   export type ProfileEducationMinOrderByAggregateInput = {
@@ -67200,12 +69208,21 @@ export namespace Prisma {
     graduationDate?: SortOrder
     graduationStatus?: SortOrder
     gpaScore?: SortOrder
+    institutionId?: SortOrder
+    schoolCountry?: SortOrder
+    certificateFileUrl?: SortOrder
+    certificateFileName?: SortOrder
+    certificateUploadedAt?: SortOrder
+    isVerified?: SortOrder
+    verifiedAt?: SortOrder
+    verifiedBy?: SortOrder
   }
 
   export type ProfileEducationSumOrderByAggregateInput = {
     eduId?: SortOrder
     individualId?: SortOrder
     gpaScore?: SortOrder
+    institutionId?: SortOrder
   }
 
   export type EnumEducationLevelWithAggregatesFilter<$PrismaModel = never> = {
@@ -67242,6 +69259,22 @@ export namespace Prisma {
     _sum?: NestedDecimalNullableFilter<$PrismaModel>
     _min?: NestedDecimalNullableFilter<$PrismaModel>
     _max?: NestedDecimalNullableFilter<$PrismaModel>
+  }
+
+  export type BigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
   export type ProfileCareerCountOrderByAggregateInput = {
@@ -67725,17 +69758,6 @@ export namespace Prisma {
     not?: NestedEnumRuleTypeFilter<$PrismaModel> | $Enums.RuleType
   }
 
-  export type BigIntNullableFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
-  }
-
   export type EnumRuleStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.RuleStatus | EnumRuleStatusFieldRefInput<$PrismaModel>
     in?: $Enums.RuleStatus[] | ListEnumRuleStatusFieldRefInput<$PrismaModel>
@@ -67832,22 +69854,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRuleTypeFilter<$PrismaModel>
     _max?: NestedEnumRuleTypeFilter<$PrismaModel>
-  }
-
-  export type BigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedBigIntNullableFilter<$PrismaModel>
-    _min?: NestedBigIntNullableFilter<$PrismaModel>
-    _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
   export type EnumRuleStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -69669,14 +71675,6 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type StringNullableListFilter<$PrismaModel = never> = {
-    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    has?: string | StringFieldRefInput<$PrismaModel> | null
-    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
-    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
-  }
-
   export type ResumeCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -70006,17 +72004,6 @@ export namespace Prisma {
     rankPosition?: SortOrder
   }
 
-  export type DecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-  }
-
   export type ScoreCalibrationLogCountOrderByAggregateInput = {
     logId?: SortOrder
     pathwayId?: SortOrder
@@ -70064,22 +72051,6 @@ export namespace Prisma {
     logId?: SortOrder
     oldScore?: SortOrder
     newScore?: SortOrder
-  }
-
-  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type CorporateProfileCreateNestedOneWithoutUserInput = {
@@ -70640,10 +72611,79 @@ export namespace Prisma {
     update?: XOR<XOR<IndividualProfileUpdateToOneWithWhereWithoutAccessLogsInput, IndividualProfileUpdateWithoutAccessLogsInput>, IndividualProfileUncheckedUpdateWithoutAccessLogsInput>
   }
 
+  export type EducationalInstitutionCreatesearchKeywordsInput = {
+    set: string[]
+  }
+
+  export type ProfileEducationCreateNestedManyWithoutInstitutionInput = {
+    create?: XOR<ProfileEducationCreateWithoutInstitutionInput, ProfileEducationUncheckedCreateWithoutInstitutionInput> | ProfileEducationCreateWithoutInstitutionInput[] | ProfileEducationUncheckedCreateWithoutInstitutionInput[]
+    connectOrCreate?: ProfileEducationCreateOrConnectWithoutInstitutionInput | ProfileEducationCreateOrConnectWithoutInstitutionInput[]
+    createMany?: ProfileEducationCreateManyInstitutionInputEnvelope
+    connect?: ProfileEducationWhereUniqueInput | ProfileEducationWhereUniqueInput[]
+  }
+
+  export type ProfileEducationUncheckedCreateNestedManyWithoutInstitutionInput = {
+    create?: XOR<ProfileEducationCreateWithoutInstitutionInput, ProfileEducationUncheckedCreateWithoutInstitutionInput> | ProfileEducationCreateWithoutInstitutionInput[] | ProfileEducationUncheckedCreateWithoutInstitutionInput[]
+    connectOrCreate?: ProfileEducationCreateOrConnectWithoutInstitutionInput | ProfileEducationCreateOrConnectWithoutInstitutionInput[]
+    createMany?: ProfileEducationCreateManyInstitutionInputEnvelope
+    connect?: ProfileEducationWhereUniqueInput | ProfileEducationWhereUniqueInput[]
+  }
+
+  export type EnumInstitutionTypeFieldUpdateOperationsInput = {
+    set?: $Enums.InstitutionType
+  }
+
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
+  }
+
+  export type EducationalInstitutionUpdatesearchKeywordsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type ProfileEducationUpdateManyWithoutInstitutionNestedInput = {
+    create?: XOR<ProfileEducationCreateWithoutInstitutionInput, ProfileEducationUncheckedCreateWithoutInstitutionInput> | ProfileEducationCreateWithoutInstitutionInput[] | ProfileEducationUncheckedCreateWithoutInstitutionInput[]
+    connectOrCreate?: ProfileEducationCreateOrConnectWithoutInstitutionInput | ProfileEducationCreateOrConnectWithoutInstitutionInput[]
+    upsert?: ProfileEducationUpsertWithWhereUniqueWithoutInstitutionInput | ProfileEducationUpsertWithWhereUniqueWithoutInstitutionInput[]
+    createMany?: ProfileEducationCreateManyInstitutionInputEnvelope
+    set?: ProfileEducationWhereUniqueInput | ProfileEducationWhereUniqueInput[]
+    disconnect?: ProfileEducationWhereUniqueInput | ProfileEducationWhereUniqueInput[]
+    delete?: ProfileEducationWhereUniqueInput | ProfileEducationWhereUniqueInput[]
+    connect?: ProfileEducationWhereUniqueInput | ProfileEducationWhereUniqueInput[]
+    update?: ProfileEducationUpdateWithWhereUniqueWithoutInstitutionInput | ProfileEducationUpdateWithWhereUniqueWithoutInstitutionInput[]
+    updateMany?: ProfileEducationUpdateManyWithWhereWithoutInstitutionInput | ProfileEducationUpdateManyWithWhereWithoutInstitutionInput[]
+    deleteMany?: ProfileEducationScalarWhereInput | ProfileEducationScalarWhereInput[]
+  }
+
+  export type ProfileEducationUncheckedUpdateManyWithoutInstitutionNestedInput = {
+    create?: XOR<ProfileEducationCreateWithoutInstitutionInput, ProfileEducationUncheckedCreateWithoutInstitutionInput> | ProfileEducationCreateWithoutInstitutionInput[] | ProfileEducationUncheckedCreateWithoutInstitutionInput[]
+    connectOrCreate?: ProfileEducationCreateOrConnectWithoutInstitutionInput | ProfileEducationCreateOrConnectWithoutInstitutionInput[]
+    upsert?: ProfileEducationUpsertWithWhereUniqueWithoutInstitutionInput | ProfileEducationUpsertWithWhereUniqueWithoutInstitutionInput[]
+    createMany?: ProfileEducationCreateManyInstitutionInputEnvelope
+    set?: ProfileEducationWhereUniqueInput | ProfileEducationWhereUniqueInput[]
+    disconnect?: ProfileEducationWhereUniqueInput | ProfileEducationWhereUniqueInput[]
+    delete?: ProfileEducationWhereUniqueInput | ProfileEducationWhereUniqueInput[]
+    connect?: ProfileEducationWhereUniqueInput | ProfileEducationWhereUniqueInput[]
+    update?: ProfileEducationUpdateWithWhereUniqueWithoutInstitutionInput | ProfileEducationUpdateWithWhereUniqueWithoutInstitutionInput[]
+    updateMany?: ProfileEducationUpdateManyWithWhereWithoutInstitutionInput | ProfileEducationUpdateManyWithWhereWithoutInstitutionInput[]
+    deleteMany?: ProfileEducationScalarWhereInput | ProfileEducationScalarWhereInput[]
+  }
+
   export type IndividualProfileCreateNestedOneWithoutEducationsInput = {
     create?: XOR<IndividualProfileCreateWithoutEducationsInput, IndividualProfileUncheckedCreateWithoutEducationsInput>
     connectOrCreate?: IndividualProfileCreateOrConnectWithoutEducationsInput
     connect?: IndividualProfileWhereUniqueInput
+  }
+
+  export type EducationalInstitutionCreateNestedOneWithoutEducationsInput = {
+    create?: XOR<EducationalInstitutionCreateWithoutEducationsInput, EducationalInstitutionUncheckedCreateWithoutEducationsInput>
+    connectOrCreate?: EducationalInstitutionCreateOrConnectWithoutEducationsInput
+    connect?: EducationalInstitutionWhereUniqueInput
   }
 
   export type EnumEducationLevelFieldUpdateOperationsInput = {
@@ -70668,6 +72708,24 @@ export namespace Prisma {
     upsert?: IndividualProfileUpsertWithoutEducationsInput
     connect?: IndividualProfileWhereUniqueInput
     update?: XOR<XOR<IndividualProfileUpdateToOneWithWhereWithoutEducationsInput, IndividualProfileUpdateWithoutEducationsInput>, IndividualProfileUncheckedUpdateWithoutEducationsInput>
+  }
+
+  export type EducationalInstitutionUpdateOneWithoutEducationsNestedInput = {
+    create?: XOR<EducationalInstitutionCreateWithoutEducationsInput, EducationalInstitutionUncheckedCreateWithoutEducationsInput>
+    connectOrCreate?: EducationalInstitutionCreateOrConnectWithoutEducationsInput
+    upsert?: EducationalInstitutionUpsertWithoutEducationsInput
+    disconnect?: EducationalInstitutionWhereInput | boolean
+    delete?: EducationalInstitutionWhereInput | boolean
+    connect?: EducationalInstitutionWhereUniqueInput
+    update?: XOR<XOR<EducationalInstitutionUpdateToOneWithWhereWithoutEducationsInput, EducationalInstitutionUpdateWithoutEducationsInput>, EducationalInstitutionUncheckedUpdateWithoutEducationsInput>
+  }
+
+  export type NullableBigIntFieldUpdateOperationsInput = {
+    set?: bigint | number | null
+    increment?: bigint | number
+    decrement?: bigint | number
+    multiply?: bigint | number
+    divide?: bigint | number
   }
 
   export type IndividualProfileCreateNestedOneWithoutCareersInput = {
@@ -71190,14 +73248,6 @@ export namespace Prisma {
 
   export type EnumRuleTypeFieldUpdateOperationsInput = {
     set?: $Enums.RuleType
-  }
-
-  export type NullableBigIntFieldUpdateOperationsInput = {
-    set?: bigint | number | null
-    increment?: bigint | number
-    decrement?: bigint | number
-    multiply?: bigint | number
-    divide?: bigint | number
   }
 
   export type EnumRuleStatusFieldUpdateOperationsInput = {
@@ -72037,14 +74087,6 @@ export namespace Prisma {
     update?: XOR<XOR<DiagnosisSessionUpdateToOneWithWhereWithoutClicksInput, DiagnosisSessionUpdateWithoutClicksInput>, DiagnosisSessionUncheckedUpdateWithoutClicksInput>
   }
 
-  export type DecimalFieldUpdateOperationsInput = {
-    set?: Decimal | DecimalJsLike | number | string
-    increment?: Decimal | DecimalJsLike | number | string
-    decrement?: Decimal | DecimalJsLike | number | string
-    multiply?: Decimal | DecimalJsLike | number | string
-    divide?: Decimal | DecimalJsLike | number | string
-  }
-
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -72426,6 +74468,50 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedEnumInstitutionTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.InstitutionType | EnumInstitutionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.InstitutionType[] | ListEnumInstitutionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InstitutionType[] | ListEnumInstitutionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumInstitutionTypeFilter<$PrismaModel> | $Enums.InstitutionType
+  }
+
+  export type NestedDecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type NestedEnumInstitutionTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InstitutionType | EnumInstitutionTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.InstitutionType[] | ListEnumInstitutionTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InstitutionType[] | ListEnumInstitutionTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumInstitutionTypeWithAggregatesFilter<$PrismaModel> | $Enums.InstitutionType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumInstitutionTypeFilter<$PrismaModel>
+    _max?: NestedEnumInstitutionTypeFilter<$PrismaModel>
+  }
+
+  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
+  }
+
   export type NestedEnumEducationLevelFilter<$PrismaModel = never> = {
     equals?: $Enums.EducationLevel | EnumEducationLevelFieldRefInput<$PrismaModel>
     in?: $Enums.EducationLevel[] | ListEnumEducationLevelFieldRefInput<$PrismaModel>
@@ -72449,6 +74535,17 @@ export namespace Prisma {
     gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
+  export type NestedBigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
   }
 
   export type NestedEnumEducationLevelWithAggregatesFilter<$PrismaModel = never> = {
@@ -72485,6 +74582,22 @@ export namespace Prisma {
     _sum?: NestedDecimalNullableFilter<$PrismaModel>
     _min?: NestedDecimalNullableFilter<$PrismaModel>
     _max?: NestedDecimalNullableFilter<$PrismaModel>
+  }
+
+  export type NestedBigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumTicketStatusFilter<$PrismaModel = never> = {
@@ -72528,17 +74641,6 @@ export namespace Prisma {
     not?: NestedEnumRuleTypeFilter<$PrismaModel> | $Enums.RuleType
   }
 
-  export type NestedBigIntNullableFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
-  }
-
   export type NestedEnumRuleStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.RuleStatus | EnumRuleStatusFieldRefInput<$PrismaModel>
     in?: $Enums.RuleStatus[] | ListEnumRuleStatusFieldRefInput<$PrismaModel>
@@ -72554,22 +74656,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRuleTypeFilter<$PrismaModel>
     _max?: NestedEnumRuleTypeFilter<$PrismaModel>
-  }
-
-  export type NestedBigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedBigIntNullableFilter<$PrismaModel>
-    _min?: NestedBigIntNullableFilter<$PrismaModel>
-    _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumRuleStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -72910,33 +74996,6 @@ export namespace Prisma {
     gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
-
-  export type NestedDecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-  }
-
-  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type CorporateProfileCreateWithoutUserInput = {
@@ -73771,6 +75830,14 @@ export namespace Prisma {
     graduationDate?: Date | string | null
     graduationStatus: $Enums.GraduationStatus
     gpaScore?: Decimal | DecimalJsLike | number | string | null
+    schoolCountry?: string
+    certificateFileUrl?: string | null
+    certificateFileName?: string | null
+    certificateUploadedAt?: Date | string | null
+    isVerified?: boolean
+    verifiedAt?: Date | string | null
+    verifiedBy?: string | null
+    institution?: EducationalInstitutionCreateNestedOneWithoutEducationsInput
   }
 
   export type ProfileEducationUncheckedCreateWithoutIndividualInput = {
@@ -73782,6 +75849,14 @@ export namespace Prisma {
     graduationDate?: Date | string | null
     graduationStatus: $Enums.GraduationStatus
     gpaScore?: Decimal | DecimalJsLike | number | string | null
+    institutionId?: bigint | number | null
+    schoolCountry?: string
+    certificateFileUrl?: string | null
+    certificateFileName?: string | null
+    certificateUploadedAt?: Date | string | null
+    isVerified?: boolean
+    verifiedAt?: Date | string | null
+    verifiedBy?: string | null
   }
 
   export type ProfileEducationCreateOrConnectWithoutIndividualInput = {
@@ -73994,6 +76069,14 @@ export namespace Prisma {
     graduationDate?: DateTimeNullableFilter<"ProfileEducation"> | Date | string | null
     graduationStatus?: EnumGraduationStatusFilter<"ProfileEducation"> | $Enums.GraduationStatus
     gpaScore?: DecimalNullableFilter<"ProfileEducation"> | Decimal | DecimalJsLike | number | string | null
+    institutionId?: BigIntNullableFilter<"ProfileEducation"> | bigint | number | null
+    schoolCountry?: StringFilter<"ProfileEducation"> | string
+    certificateFileUrl?: StringNullableFilter<"ProfileEducation"> | string | null
+    certificateFileName?: StringNullableFilter<"ProfileEducation"> | string | null
+    certificateUploadedAt?: DateTimeNullableFilter<"ProfileEducation"> | Date | string | null
+    isVerified?: BoolFilter<"ProfileEducation"> | boolean
+    verifiedAt?: DateTimeNullableFilter<"ProfileEducation"> | Date | string | null
+    verifiedBy?: StringNullableFilter<"ProfileEducation"> | string | null
   }
 
   export type ProfileCareerUpsertWithWhereUniqueWithoutIndividualInput = {
@@ -74462,6 +76545,70 @@ export namespace Prisma {
     diagnosisSessions?: DiagnosisSessionUncheckedUpdateManyWithoutIndividualNestedInput
   }
 
+  export type ProfileEducationCreateWithoutInstitutionInput = {
+    eduId?: bigint | number
+    schoolName: string
+    majorName: string
+    degreeLevel: $Enums.EducationLevel
+    startDate: Date | string
+    graduationDate?: Date | string | null
+    graduationStatus: $Enums.GraduationStatus
+    gpaScore?: Decimal | DecimalJsLike | number | string | null
+    schoolCountry?: string
+    certificateFileUrl?: string | null
+    certificateFileName?: string | null
+    certificateUploadedAt?: Date | string | null
+    isVerified?: boolean
+    verifiedAt?: Date | string | null
+    verifiedBy?: string | null
+    individual: IndividualProfileCreateNestedOneWithoutEducationsInput
+  }
+
+  export type ProfileEducationUncheckedCreateWithoutInstitutionInput = {
+    eduId?: bigint | number
+    individualId: bigint | number
+    schoolName: string
+    majorName: string
+    degreeLevel: $Enums.EducationLevel
+    startDate: Date | string
+    graduationDate?: Date | string | null
+    graduationStatus: $Enums.GraduationStatus
+    gpaScore?: Decimal | DecimalJsLike | number | string | null
+    schoolCountry?: string
+    certificateFileUrl?: string | null
+    certificateFileName?: string | null
+    certificateUploadedAt?: Date | string | null
+    isVerified?: boolean
+    verifiedAt?: Date | string | null
+    verifiedBy?: string | null
+  }
+
+  export type ProfileEducationCreateOrConnectWithoutInstitutionInput = {
+    where: ProfileEducationWhereUniqueInput
+    create: XOR<ProfileEducationCreateWithoutInstitutionInput, ProfileEducationUncheckedCreateWithoutInstitutionInput>
+  }
+
+  export type ProfileEducationCreateManyInstitutionInputEnvelope = {
+    data: ProfileEducationCreateManyInstitutionInput | ProfileEducationCreateManyInstitutionInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ProfileEducationUpsertWithWhereUniqueWithoutInstitutionInput = {
+    where: ProfileEducationWhereUniqueInput
+    update: XOR<ProfileEducationUpdateWithoutInstitutionInput, ProfileEducationUncheckedUpdateWithoutInstitutionInput>
+    create: XOR<ProfileEducationCreateWithoutInstitutionInput, ProfileEducationUncheckedCreateWithoutInstitutionInput>
+  }
+
+  export type ProfileEducationUpdateWithWhereUniqueWithoutInstitutionInput = {
+    where: ProfileEducationWhereUniqueInput
+    data: XOR<ProfileEducationUpdateWithoutInstitutionInput, ProfileEducationUncheckedUpdateWithoutInstitutionInput>
+  }
+
+  export type ProfileEducationUpdateManyWithWhereWithoutInstitutionInput = {
+    where: ProfileEducationScalarWhereInput
+    data: XOR<ProfileEducationUpdateManyMutationInput, ProfileEducationUncheckedUpdateManyWithoutInstitutionInput>
+  }
+
   export type IndividualProfileCreateWithoutEducationsInput = {
     individualId?: bigint | number
     realName: string
@@ -74557,6 +76704,45 @@ export namespace Prisma {
   export type IndividualProfileCreateOrConnectWithoutEducationsInput = {
     where: IndividualProfileWhereUniqueInput
     create: XOR<IndividualProfileCreateWithoutEducationsInput, IndividualProfileUncheckedCreateWithoutEducationsInput>
+  }
+
+  export type EducationalInstitutionCreateWithoutEducationsInput = {
+    id?: bigint | number
+    name: string
+    nameEn?: string | null
+    type: $Enums.InstitutionType
+    address: string
+    addressDetail?: string | null
+    latitude: Decimal | DecimalJsLike | number | string
+    longitude: Decimal | DecimalJsLike | number | string
+    isMetroArea?: boolean
+    affiliatedUniversity?: string | null
+    searchKeywords?: EducationalInstitutionCreatesearchKeywordsInput | string[]
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EducationalInstitutionUncheckedCreateWithoutEducationsInput = {
+    id?: bigint | number
+    name: string
+    nameEn?: string | null
+    type: $Enums.InstitutionType
+    address: string
+    addressDetail?: string | null
+    latitude: Decimal | DecimalJsLike | number | string
+    longitude: Decimal | DecimalJsLike | number | string
+    isMetroArea?: boolean
+    affiliatedUniversity?: string | null
+    searchKeywords?: EducationalInstitutionCreatesearchKeywordsInput | string[]
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EducationalInstitutionCreateOrConnectWithoutEducationsInput = {
+    where: EducationalInstitutionWhereUniqueInput
+    create: XOR<EducationalInstitutionCreateWithoutEducationsInput, EducationalInstitutionUncheckedCreateWithoutEducationsInput>
   }
 
   export type IndividualProfileUpsertWithoutEducationsInput = {
@@ -74660,6 +76846,51 @@ export namespace Prisma {
     careers?: ProfileCareerUncheckedUpdateManyWithoutIndividualNestedInput
     languages?: ProfileLanguageUncheckedUpdateManyWithoutIndividualNestedInput
     diagnosisSessions?: DiagnosisSessionUncheckedUpdateManyWithoutIndividualNestedInput
+  }
+
+  export type EducationalInstitutionUpsertWithoutEducationsInput = {
+    update: XOR<EducationalInstitutionUpdateWithoutEducationsInput, EducationalInstitutionUncheckedUpdateWithoutEducationsInput>
+    create: XOR<EducationalInstitutionCreateWithoutEducationsInput, EducationalInstitutionUncheckedCreateWithoutEducationsInput>
+    where?: EducationalInstitutionWhereInput
+  }
+
+  export type EducationalInstitutionUpdateToOneWithWhereWithoutEducationsInput = {
+    where?: EducationalInstitutionWhereInput
+    data: XOR<EducationalInstitutionUpdateWithoutEducationsInput, EducationalInstitutionUncheckedUpdateWithoutEducationsInput>
+  }
+
+  export type EducationalInstitutionUpdateWithoutEducationsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: StringFieldUpdateOperationsInput | string
+    nameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumInstitutionTypeFieldUpdateOperationsInput | $Enums.InstitutionType
+    address?: StringFieldUpdateOperationsInput | string
+    addressDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    longitude?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    isMetroArea?: BoolFieldUpdateOperationsInput | boolean
+    affiliatedUniversity?: NullableStringFieldUpdateOperationsInput | string | null
+    searchKeywords?: EducationalInstitutionUpdatesearchKeywordsInput | string[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EducationalInstitutionUncheckedUpdateWithoutEducationsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: StringFieldUpdateOperationsInput | string
+    nameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    type?: EnumInstitutionTypeFieldUpdateOperationsInput | $Enums.InstitutionType
+    address?: StringFieldUpdateOperationsInput | string
+    addressDetail?: NullableStringFieldUpdateOperationsInput | string | null
+    latitude?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    longitude?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    isMetroArea?: BoolFieldUpdateOperationsInput | boolean
+    affiliatedUniversity?: NullableStringFieldUpdateOperationsInput | string | null
+    searchKeywords?: EducationalInstitutionUpdatesearchKeywordsInput | string[]
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IndividualProfileCreateWithoutCareersInput = {
@@ -79802,6 +82033,14 @@ export namespace Prisma {
     graduationDate?: Date | string | null
     graduationStatus: $Enums.GraduationStatus
     gpaScore?: Decimal | DecimalJsLike | number | string | null
+    institutionId?: bigint | number | null
+    schoolCountry?: string
+    certificateFileUrl?: string | null
+    certificateFileName?: string | null
+    certificateUploadedAt?: Date | string | null
+    isVerified?: boolean
+    verifiedAt?: Date | string | null
+    verifiedBy?: string | null
   }
 
   export type ProfileCareerCreateManyIndividualInput = {
@@ -79865,6 +82104,14 @@ export namespace Prisma {
     graduationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     graduationStatus?: EnumGraduationStatusFieldUpdateOperationsInput | $Enums.GraduationStatus
     gpaScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    schoolCountry?: StringFieldUpdateOperationsInput | string
+    certificateFileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    institution?: EducationalInstitutionUpdateOneWithoutEducationsNestedInput
   }
 
   export type ProfileEducationUncheckedUpdateWithoutIndividualInput = {
@@ -79876,6 +82123,14 @@ export namespace Prisma {
     graduationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     graduationStatus?: EnumGraduationStatusFieldUpdateOperationsInput | $Enums.GraduationStatus
     gpaScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    institutionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    schoolCountry?: StringFieldUpdateOperationsInput | string
+    certificateFileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProfileEducationUncheckedUpdateManyWithoutIndividualInput = {
@@ -79887,6 +82142,14 @@ export namespace Prisma {
     graduationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     graduationStatus?: EnumGraduationStatusFieldUpdateOperationsInput | $Enums.GraduationStatus
     gpaScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    institutionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    schoolCountry?: StringFieldUpdateOperationsInput | string
+    certificateFileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProfileCareerUpdateWithoutIndividualInput = {
@@ -79991,6 +82254,82 @@ export namespace Prisma {
     convertedToPaid?: BoolFieldUpdateOperationsInput | boolean
     userFeedbackScore?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProfileEducationCreateManyInstitutionInput = {
+    eduId?: bigint | number
+    individualId: bigint | number
+    schoolName: string
+    majorName: string
+    degreeLevel: $Enums.EducationLevel
+    startDate: Date | string
+    graduationDate?: Date | string | null
+    graduationStatus: $Enums.GraduationStatus
+    gpaScore?: Decimal | DecimalJsLike | number | string | null
+    schoolCountry?: string
+    certificateFileUrl?: string | null
+    certificateFileName?: string | null
+    certificateUploadedAt?: Date | string | null
+    isVerified?: boolean
+    verifiedAt?: Date | string | null
+    verifiedBy?: string | null
+  }
+
+  export type ProfileEducationUpdateWithoutInstitutionInput = {
+    eduId?: BigIntFieldUpdateOperationsInput | bigint | number
+    schoolName?: StringFieldUpdateOperationsInput | string
+    majorName?: StringFieldUpdateOperationsInput | string
+    degreeLevel?: EnumEducationLevelFieldUpdateOperationsInput | $Enums.EducationLevel
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    graduationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    graduationStatus?: EnumGraduationStatusFieldUpdateOperationsInput | $Enums.GraduationStatus
+    gpaScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    schoolCountry?: StringFieldUpdateOperationsInput | string
+    certificateFileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    individual?: IndividualProfileUpdateOneRequiredWithoutEducationsNestedInput
+  }
+
+  export type ProfileEducationUncheckedUpdateWithoutInstitutionInput = {
+    eduId?: BigIntFieldUpdateOperationsInput | bigint | number
+    individualId?: BigIntFieldUpdateOperationsInput | bigint | number
+    schoolName?: StringFieldUpdateOperationsInput | string
+    majorName?: StringFieldUpdateOperationsInput | string
+    degreeLevel?: EnumEducationLevelFieldUpdateOperationsInput | $Enums.EducationLevel
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    graduationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    graduationStatus?: EnumGraduationStatusFieldUpdateOperationsInput | $Enums.GraduationStatus
+    gpaScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    schoolCountry?: StringFieldUpdateOperationsInput | string
+    certificateFileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ProfileEducationUncheckedUpdateManyWithoutInstitutionInput = {
+    eduId?: BigIntFieldUpdateOperationsInput | bigint | number
+    individualId?: BigIntFieldUpdateOperationsInput | bigint | number
+    schoolName?: StringFieldUpdateOperationsInput | string
+    majorName?: StringFieldUpdateOperationsInput | string
+    degreeLevel?: EnumEducationLevelFieldUpdateOperationsInput | $Enums.EducationLevel
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    graduationDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    graduationStatus?: EnumGraduationStatusFieldUpdateOperationsInput | $Enums.GraduationStatus
+    gpaScore?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    schoolCountry?: StringFieldUpdateOperationsInput | string
+    certificateFileUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateFileName?: NullableStringFieldUpdateOperationsInput | string | null
+    certificateUploadedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type VisaRuleCreateManyVisaTypeInput = {

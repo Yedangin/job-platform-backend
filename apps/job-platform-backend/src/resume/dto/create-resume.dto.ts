@@ -31,8 +31,7 @@ export class CreateResumeDto {
   birthDate?: string;
 
   @ApiPropertyOptional({
-    description:
-      '학력 목록 (JSON) / Education history',
+    description: '학력 목록 (JSON) / Education history',
     example: [
       {
         school: '하노이 대학교',
@@ -47,8 +46,7 @@ export class CreateResumeDto {
   educations?: any;
 
   @ApiPropertyOptional({
-    description:
-      '경력 목록 (JSON) / Work experience',
+    description: '경력 목록 (JSON) / Work experience',
     example: [
       {
         company: 'ABC Corp',
@@ -83,16 +81,20 @@ export class CreateResumeDto {
   kiipLevel?: number;
 
   @ApiPropertyOptional({
-    description:
-      '자격증 목록 (JSON) / Certificates',
-    example: [{ name: '정보처리기사', issuer: '한국산업인력공단', obtainedDate: '2020-05' }],
+    description: '자격증 목록 (JSON) / Certificates',
+    example: [
+      {
+        name: '정보처리기사',
+        issuer: '한국산업인력공단',
+        obtainedDate: '2020-05',
+      },
+    ],
   })
   @IsOptional()
   certificates?: any;
 
   @ApiPropertyOptional({
-    description:
-      '희망 고용 형태 / Preferred job types',
+    description: '희망 고용 형태 / Preferred job types',
     example: ['FULL_TIME', 'PART_TIME'],
   })
   @IsOptional()
@@ -119,8 +121,7 @@ export class CreateResumeDto {
   preferredSalary?: number;
 
   @ApiPropertyOptional({
-    description:
-      '희망 계약 형태 / Preferred employment types',
+    description: '희망 계약 형태 / Preferred employment types',
     example: ['REGULAR', 'CONTRACT'],
   })
   @IsOptional()

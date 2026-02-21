@@ -4,7 +4,12 @@
  * 관리자 전용 주문/상품/쿠폰 관리 로직
  * Admin-only order/product/coupon management logic
  */
-import { Injectable, Logger, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PaymentPrismaService } from 'libs/common/src';
 import { PortoneService } from './portone.service';
 
@@ -66,7 +71,8 @@ export class AdminPaymentService {
       where: { id: orderId },
       include: { product: true, payment: true },
     });
-    if (!order) throw new NotFoundException('주문을 찾을 수 없습니다 / Order not found');
+    if (!order)
+      throw new NotFoundException('주문을 찾을 수 없습니다 / Order not found');
     return this.formatOrder(order);
   }
 
@@ -78,9 +84,12 @@ export class AdminPaymentService {
       where: { id: orderId },
       include: { payment: true },
     });
-    if (!order) throw new NotFoundException('주문을 찾을 수 없습니다 / Order not found');
+    if (!order)
+      throw new NotFoundException('주문을 찾을 수 없습니다 / Order not found');
     if (order.status === 'CANCELLED') {
-      throw new BadRequestException('이미 취소된 주문입니다 / Already cancelled');
+      throw new BadRequestException(
+        '이미 취소된 주문입니다 / Already cancelled',
+      );
     }
 
     // 포트원 환불 요청 / Request PortOne refund
@@ -91,7 +100,10 @@ export class AdminPaymentService {
           reason,
         );
       } catch (err) {
-        this.logger.error(`[AdminPayment] 포트원 환불 실패: orderId=${orderId}`, err);
+        this.logger.error(
+          `[AdminPayment] 포트원 환불 실패: orderId=${orderId}`,
+          err,
+        );
       }
     }
 
@@ -104,11 +116,17 @@ export class AdminPaymentService {
     if (order.payment) {
       await this.paymentPrisma.payment.update({
         where: { id: order.payment.id },
-        data: { status: 'CANCELLED', cancelledAt: new Date(), cancelReason: reason },
+        data: {
+          status: 'CANCELLED',
+          cancelledAt: new Date(),
+          cancelReason: reason,
+        },
       });
     }
 
-    this.logger.log(`[AdminPayment] 주문 환불: orderId=${orderId}, reason=${reason}`);
+    this.logger.log(
+      `[AdminPayment] 주문 환불: orderId=${orderId}, reason=${reason}`,
+    );
     return { success: true, orderId };
   }
 
@@ -119,17 +137,22 @@ export class AdminPaymentService {
    */
   async getStats() {
     const now = new Date();
-    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const todayStart = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
     const weekStart = new Date(todayStart);
     weekStart.setDate(weekStart.getDate() - 7);
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    const [todayOrders, weekOrders, monthOrders, totalOrders] = await Promise.all([
-      this.getOrderStats(todayStart, now),
-      this.getOrderStats(weekStart, now),
-      this.getOrderStats(monthStart, now),
-      this.getOrderStats(new Date('2020-01-01'), now),
-    ]);
+    const [todayOrders, weekOrders, monthOrders, totalOrders] =
+      await Promise.all([
+        this.getOrderStats(todayStart, now),
+        this.getOrderStats(weekStart, now),
+        this.getOrderStats(monthStart, now),
+        this.getOrderStats(new Date('2020-01-01'), now),
+      ]);
 
     // 상품별 매출 / Revenue by product
     const productRevenue = await this.paymentPrisma.order.groupBy({
@@ -165,18 +188,21 @@ export class AdminPaymentService {
 
   private async getOrderStats(from: Date, to: Date) {
     const where = { createdAt: { gte: from, lte: to } };
-    const [paidCount, paidSum, cancelledCount, cancelledSum] = await Promise.all([
-      this.paymentPrisma.order.count({ where: { ...where, status: 'PAID' } }),
-      this.paymentPrisma.order.aggregate({
-        where: { ...where, status: 'PAID' },
-        _sum: { totalAmount: true },
-      }),
-      this.paymentPrisma.order.count({ where: { ...where, status: 'CANCELLED' } }),
-      this.paymentPrisma.order.aggregate({
-        where: { ...where, status: 'CANCELLED' },
-        _sum: { totalAmount: true },
-      }),
-    ]);
+    const [paidCount, paidSum, cancelledCount, cancelledSum] =
+      await Promise.all([
+        this.paymentPrisma.order.count({ where: { ...where, status: 'PAID' } }),
+        this.paymentPrisma.order.aggregate({
+          where: { ...where, status: 'PAID' },
+          _sum: { totalAmount: true },
+        }),
+        this.paymentPrisma.order.count({
+          where: { ...where, status: 'CANCELLED' },
+        }),
+        this.paymentPrisma.order.aggregate({
+          where: { ...where, status: 'CANCELLED' },
+          _sum: { totalAmount: true },
+        }),
+      ]);
 
     return {
       revenue: paidSum._sum.totalAmount || 0,
@@ -203,9 +229,17 @@ export class AdminPaymentService {
     }));
   }
 
-  async updateProduct(productId: number, data: { name?: string; price?: number; isActive?: boolean; metadata?: any }) {
-    const product = await this.paymentPrisma.product.findUnique({ where: { id: productId } });
-    if (!product) throw new NotFoundException('상품을 찾을 수 없습니다 / Product not found');
+  async updateProduct(
+    productId: number,
+    data: { name?: string; price?: number; isActive?: boolean; metadata?: any },
+  ) {
+    const product = await this.paymentPrisma.product.findUnique({
+      where: { id: productId },
+    });
+    if (!product)
+      throw new NotFoundException(
+        '상품을 찾을 수 없습니다 / Product not found',
+      );
 
     const updateData: any = {};
     if (data.name !== undefined) updateData.name = data.name;
@@ -219,7 +253,13 @@ export class AdminPaymentService {
     });
 
     this.logger.log(`[AdminPayment] 상품 수정: productId=${productId}`);
-    return { id: updated.id, code: updated.code, name: updated.name, price: updated.price, isActive: updated.isActive };
+    return {
+      id: updated.id,
+      code: updated.code,
+      name: updated.name,
+      price: updated.price,
+      isActive: updated.isActive,
+    };
   }
 
   // ──── 쿠폰 관리 / Coupon management ────
@@ -265,7 +305,9 @@ export class AdminPaymentService {
         maxUses: data.maxUses || null,
         maxUsesPerUser: data.maxUsesPerUser || 1,
         startsAt: data.startsAt ? new Date(data.startsAt) : new Date(),
-        expiresAt: data.expiresAt ? new Date(data.expiresAt) : new Date('2099-12-31'),
+        expiresAt: data.expiresAt
+          ? new Date(data.expiresAt)
+          : new Date('2099-12-31'),
         isActive: true,
       },
     });
@@ -274,14 +316,21 @@ export class AdminPaymentService {
     return { id: coupon.id, code: coupon.code, name: coupon.name };
   }
 
-  async updateCoupon(couponId: number, data: { isActive?: boolean; maxUses?: number; expiresAt?: string }) {
-    const coupon = await this.paymentPrisma.coupon.findUnique({ where: { id: couponId } });
-    if (!coupon) throw new NotFoundException('쿠폰을 찾을 수 없습니다 / Coupon not found');
+  async updateCoupon(
+    couponId: number,
+    data: { isActive?: boolean; maxUses?: number; expiresAt?: string },
+  ) {
+    const coupon = await this.paymentPrisma.coupon.findUnique({
+      where: { id: couponId },
+    });
+    if (!coupon)
+      throw new NotFoundException('쿠폰을 찾을 수 없습니다 / Coupon not found');
 
     const updateData: any = {};
     if (data.isActive !== undefined) updateData.isActive = data.isActive;
     if (data.maxUses !== undefined) updateData.maxUses = data.maxUses;
-    if (data.expiresAt !== undefined) updateData.expiresAt = new Date(data.expiresAt);
+    if (data.expiresAt !== undefined)
+      updateData.expiresAt = new Date(data.expiresAt);
 
     const updated = await this.paymentPrisma.coupon.update({
       where: { id: couponId },

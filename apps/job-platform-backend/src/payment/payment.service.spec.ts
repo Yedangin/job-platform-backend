@@ -160,7 +160,9 @@ describe('PaymentService', () => {
       const result = await service.createOrder('user-1', 'JOB_PREMIUM', 1);
       expect(result.totalAmount).toBe(50000);
       expect(result.productName).toBe('프리미엄 공고');
-      expect(mockProductService.findActiveByCode).toHaveBeenCalledWith('JOB_PREMIUM');
+      expect(mockProductService.findActiveByCode).toHaveBeenCalledWith(
+        'JOB_PREMIUM',
+      );
     });
 
     it('비활성 상품 주문 거부 / should reject inactive product', async () => {
@@ -168,9 +170,9 @@ describe('PaymentService', () => {
         new NotFoundException('Product is not currently active: BUMP_UP'),
       );
 
-      await expect(
-        service.createOrder('user-1', 'BUMP_UP'),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.createOrder('user-1', 'BUMP_UP')).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('쿠폰 적용 주문 / should apply coupon discount', async () => {
@@ -252,7 +254,10 @@ describe('PaymentService', () => {
 
       const result = await service.confirmPayment(1, 'pay_123');
       expect(result.status).toBe('PAID');
-      expect(mockPortoneService.verifyPayment).toHaveBeenCalledWith('pay_123', 50000);
+      expect(mockPortoneService.verifyPayment).toHaveBeenCalledWith(
+        'pay_123',
+        50000,
+      );
     });
 
     it('이미 처리된 주문 거부 / should reject already processed order', async () => {
@@ -263,9 +268,9 @@ describe('PaymentService', () => {
         product: mockProduct,
       });
 
-      await expect(
-        service.confirmPayment(1, 'pay_123'),
-      ).rejects.toThrow(ConflictException);
+      await expect(service.confirmPayment(1, 'pay_123')).rejects.toThrow(
+        ConflictException,
+      );
     });
 
     it('금액 불일치 거부 / should reject mismatched amount', async () => {
@@ -280,9 +285,9 @@ describe('PaymentService', () => {
         new BadRequestException('Payment amount mismatch'),
       );
 
-      await expect(
-        service.confirmPayment(1, 'pay_123'),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.confirmPayment(1, 'pay_123')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -311,7 +316,10 @@ describe('PaymentService', () => {
 
       const result = await service.cancelPayment(1, 'user-1', '단순 변심');
       expect(result.status).toBe('CANCELLED');
-      expect(mockPortoneService.cancelPayment).toHaveBeenCalledWith('pay_123', '단순 변심');
+      expect(mockPortoneService.cancelPayment).toHaveBeenCalledWith(
+        'pay_123',
+        '단순 변심',
+      );
       expect(mockAuthPrisma.jobPosting.update).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: BigInt(1) },
@@ -356,9 +364,9 @@ describe('PaymentService', () => {
         payment: { id: 1, portonePaymentId: 'pay_123' },
       });
 
-      await expect(
-        service.cancelPayment(1, 'user-1', '환불'),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.cancelPayment(1, 'user-1', '환불')).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('미결제 주문 취소 거부 / should reject cancelling non-PAID order', async () => {
@@ -370,9 +378,9 @@ describe('PaymentService', () => {
         payment: null,
       });
 
-      await expect(
-        service.cancelPayment(1, 'user-1', '환불'),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.cancelPayment(1, 'user-1', '환불')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -439,9 +447,9 @@ describe('PaymentService', () => {
       await service.confirmPayment(2, 'pay_456');
       expect(mockViewingCreditService.grantCredits).toHaveBeenCalledWith(
         'user-1',
-        10,  // credits from metadata
+        10, // credits from metadata
         'VIEW_10',
-        60,  // validDays from metadata
+        60, // validDays from metadata
       );
     });
   });

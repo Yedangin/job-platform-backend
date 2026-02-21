@@ -164,7 +164,13 @@ describe('PortoneWebhookController', () => {
       };
       const res = createMockRes();
 
-      await controller.handleWebhook(req, res, webhookId, oldTimestamp, signature);
+      await controller.handleWebhook(
+        req,
+        res,
+        webhookId,
+        oldTimestamp,
+        signature,
+      );
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({ error: 'Timestamp expired' });
     });
@@ -315,7 +321,9 @@ describe('PortoneWebhookController', () => {
 
       await controller.handleWebhook(req, res, webhookId, timestamp, signature);
       expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Failed to verify payment' });
+      expect(res.json).toHaveBeenCalledWith({
+        error: 'Failed to verify payment',
+      });
     });
   });
 });

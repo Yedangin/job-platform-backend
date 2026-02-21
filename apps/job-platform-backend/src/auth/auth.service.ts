@@ -1900,9 +1900,7 @@ export class AuthService implements OnModuleInit {
     });
 
     if (!user) {
-      throw new NotFoundException(
-        '사용자를 찾을 수 없습니다 / User not found',
-      );
+      throw new NotFoundException('사용자를 찾을 수 없습니다 / User not found');
     }
 
     return {
@@ -2060,9 +2058,7 @@ export class AuthService implements OnModuleInit {
       null,
       null,
       null,
-      action === 'VERIFIED'
-        ? 'VISA_VERIFY_APPROVE'
-        : 'VISA_VERIFY_REJECT',
+      action === 'VERIFIED' ? 'VISA_VERIFY_APPROVE' : 'VISA_VERIFY_REJECT',
       `비자인증 ${action === 'VERIFIED' ? '승인' : '거절'}: ${verification.visaCode}`,
       rejectionReason,
     );

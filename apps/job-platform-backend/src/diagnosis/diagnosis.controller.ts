@@ -33,7 +33,9 @@ export class DiagnosisController {
   // ============================================================
 
   /** 세션에서 userId 추출 (선택적) / Extract userId from session (optional) */
-  private async getUserIdOptional(sessionId: string): Promise<string | undefined> {
+  private async getUserIdOptional(
+    sessionId: string,
+  ): Promise<string | undefined> {
     if (!sessionId) return undefined;
     try {
       const sd = await this.redisService.get(`session:${sessionId}`);
@@ -46,7 +48,8 @@ export class DiagnosisController {
 
   /** 세션에서 userId 추출 (필수) / Extract userId from session (required) */
   private async requireAuth(sessionId: string): Promise<string> {
-    if (!sessionId) throw new UnauthorizedException('세션 없음 / No session provided');
+    if (!sessionId)
+      throw new UnauthorizedException('세션 없음 / No session provided');
     const sd = await this.redisService.get(`session:${sessionId}`);
     if (!sd) throw new UnauthorizedException('잘못된 세션 / Invalid session');
     return JSON.parse(sd).userId;
@@ -59,7 +62,8 @@ export class DiagnosisController {
   @Post()
   @ApiOperation({
     summary: '비자 경로 진단 실행 / Run visa pathway diagnosis',
-    description: '비회원도 사용 가능. anonymousId 헤더로 비회원 식별. Guests use X-Anonymous-Id header.',
+    description:
+      '비회원도 사용 가능. anonymousId 헤더로 비회원 식별. Guests use X-Anonymous-Id header.',
   })
   async runDiagnosis(
     @Session() sessionId: string,
@@ -75,9 +79,22 @@ export class DiagnosisController {
   // ============================================================
 
   @Get('history')
-  @ApiOperation({ summary: '진단 이력 조회 (회원 전용) / Get diagnosis history (members only)' })
-  @ApiQuery({ name: 'page', required: false, type: Number, description: '페이지 번호 / Page number' })
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: '페이지 크기 / Page size' })
+  @ApiOperation({
+    summary:
+      '진단 이력 조회 (회원 전용) / Get diagnosis history (members only)',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: '페이지 번호 / Page number',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: '페이지 크기 / Page size',
+  })
   async getHistory(
     @Session() sessionId: string,
     @Query('page') page?: string,
@@ -85,7 +102,10 @@ export class DiagnosisController {
   ) {
     const userId = await this.requireAuth(sessionId);
     const pageNum = Math.max(1, parseInt(page ?? '1', 10) || 1);
-    const limitNum = Math.min(50, Math.max(1, parseInt(limit ?? '10', 10) || 10));
+    const limitNum = Math.min(
+      50,
+      Math.max(1, parseInt(limit ?? '10', 10) || 10),
+    );
     return await this.diagnosisEngine.getHistory(userId, pageNum, limitNum);
   }
 
@@ -94,8 +114,14 @@ export class DiagnosisController {
   // ============================================================
 
   @Get(':sessionId')
-  @ApiOperation({ summary: '이전 진단 결과 조회 / Get previous diagnosis result' })
-  @ApiParam({ name: 'sessionId', description: '진단 세션 ID / Diagnosis session ID', type: String })
+  @ApiOperation({
+    summary: '이전 진단 결과 조회 / Get previous diagnosis result',
+  })
+  @ApiParam({
+    name: 'sessionId',
+    description: '진단 세션 ID / Diagnosis session ID',
+    type: String,
+  })
   async getSession(
     @Session() sessionCookieId: string,
     @Headers('x-anonymous-id') anonymousId: string,
@@ -103,9 +129,15 @@ export class DiagnosisController {
   ) {
     const userId = await this.getUserIdOptional(sessionCookieId);
     const sessionIdBigint = BigInt(diagnosisSessionId);
-    const session = await this.diagnosisEngine.getSession(sessionIdBigint, userId, anonymousId);
+    const session = await this.diagnosisEngine.getSession(
+      sessionIdBigint,
+      userId,
+      anonymousId,
+    );
     if (!session) {
-      throw new NotFoundException('진단 세션을 찾을 수 없습니다 / Diagnosis session not found');
+      throw new NotFoundException(
+        '진단 세션을 찾을 수 없습니다 / Diagnosis session not found',
+      );
     }
     return session;
   }
@@ -116,7 +148,11 @@ export class DiagnosisController {
 
   @Post(':sessionId/click')
   @ApiOperation({ summary: '경로 클릭 추적 / Track pathway click' })
-  @ApiParam({ name: 'sessionId', description: '진단 세션 ID / Diagnosis session ID', type: String })
+  @ApiParam({
+    name: 'sessionId',
+    description: '진단 세션 ID / Diagnosis session ID',
+    type: String,
+  })
   async trackClick(
     @Param('sessionId') diagnosisSessionId: string,
     @Body() dto: TrackClickDto,

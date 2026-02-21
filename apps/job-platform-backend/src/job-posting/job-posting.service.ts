@@ -62,10 +62,10 @@ export class JobPostingService {
           fulltimeAttributes: true,
         },
         orderBy: [
-          { isFeatured: 'desc' },  // 추천 공고 우선 / Featured first
-          { tierType: 'asc' },     // PREMIUM first (P < S alphabetically)
-          { bumpedAt: 'desc' },    // 끌어올리기 최신순 / Bumped first
-          { createdAt: 'desc' },   // 최신 등록순 / Newest first
+          { isFeatured: 'desc' }, // 추천 공고 우선 / Featured first
+          { tierType: 'asc' }, // PREMIUM first (P < S alphabetically)
+          { bumpedAt: 'desc' }, // 끌어올리기 최신순 / Bumped first
+          { createdAt: 'desc' }, // 최신 등록순 / Newest first
         ],
         skip,
         take: limit,

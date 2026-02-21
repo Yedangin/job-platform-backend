@@ -13,7 +13,10 @@ import {
  * 진단 요청 DTO / Diagnosis request DTO
  */
 export class DiagnosisRequestDto {
-  @ApiProperty({ description: '국적 ISO 3166-1 alpha-3 / Nationality code', example: 'VNM' })
+  @ApiProperty({
+    description: '국적 ISO 3166-1 alpha-3 / Nationality code',
+    example: 'VNM',
+  })
   @IsString()
   nationality: string;
 
@@ -26,13 +29,32 @@ export class DiagnosisRequestDto {
   @ApiProperty({
     description: '최종 학력 / Education level',
     example: 'high_school',
-    enum: ['none', 'middle', 'high_school', 'associate', 'bachelor', 'master', 'doctor'],
+    enum: [
+      'none',
+      'middle',
+      'high_school',
+      'associate',
+      'bachelor',
+      'master',
+      'doctor',
+    ],
   })
   @IsString()
-  @IsIn(['none', 'middle', 'high_school', 'associate', 'bachelor', 'master', 'doctor'])
+  @IsIn([
+    'none',
+    'middle',
+    'high_school',
+    'associate',
+    'bachelor',
+    'master',
+    'doctor',
+  ])
   educationLevel: string;
 
-  @ApiProperty({ description: '연간 가용 자금 (만원) / Available annual fund (만원)', example: 500 })
+  @ApiProperty({
+    description: '연간 가용 자금 (만원) / Available annual fund (만원)',
+    example: 500,
+  })
   @IsNumber()
   @Min(0)
   availableAnnualFund: number;
@@ -55,14 +77,20 @@ export class DiagnosisRequestDto {
   @IsIn(['speed', 'stability', 'cost', 'income'])
   priorityPreference: string;
 
-  @ApiPropertyOptional({ description: 'TOPIK 등급 (0-6) / TOPIK level', example: 3 })
+  @ApiPropertyOptional({
+    description: 'TOPIK 등급 (0-6) / TOPIK level',
+    example: 3,
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)
   @Max(6)
   topikLevel?: number;
 
-  @ApiPropertyOptional({ description: '경력 연수 / Work experience years', example: 2 })
+  @ApiPropertyOptional({
+    description: '경력 연수 / Work experience years',
+    example: 2,
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)
@@ -73,17 +101,26 @@ export class DiagnosisRequestDto {
   @IsString()
   major?: string;
 
-  @ApiPropertyOptional({ description: '재외동포 여부 / Is ethnic Korean', example: false })
+  @ApiPropertyOptional({
+    description: '재외동포 여부 / Is ethnic Korean',
+    example: false,
+  })
   @IsOptional()
   @IsBoolean()
   isEthnicKorean?: boolean;
 
-  @ApiPropertyOptional({ description: '현재 비자 / Current visa', example: 'D-2' })
+  @ApiPropertyOptional({
+    description: '현재 비자 / Current visa',
+    example: 'D-2',
+  })
   @IsOptional()
   @IsString()
   currentVisa?: string;
 
-  @ApiPropertyOptional({ description: '한국 체류 개월 수 / Korea stay months', example: 12 })
+  @ApiPropertyOptional({
+    description: '한국 체류 개월 수 / Korea stay months',
+    example: 12,
+  })
   @IsOptional()
   @IsNumber()
   @Min(0)

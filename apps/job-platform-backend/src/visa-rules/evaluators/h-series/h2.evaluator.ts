@@ -51,15 +51,16 @@ export class H2Evaluator extends BaseVisaEvaluator {
     // 3. 유흥/사행업종 일괄 금지 (DB: IndustryCode 플래그) / Entertainment/gambling blocked
     const flags = input.inputIndustryFlags;
     if (flags?.isEntertainment || flags?.isGambling) {
-      result.blockedReasons.push(
-        '유흥업소/사행업종은 H-2 비자 취업 금지 업종',
-      );
+      result.blockedReasons.push('유흥업소/사행업종은 H-2 비자 취업 금지 업종');
       return result;
     }
 
     // 4. 네거티브 리스트 확인 (DB: ProhibitedIndustry) / Negative list check (from DB)
     const prohibited = visaType.prohibitedIndustries ?? [];
-    const isProhibited = this.checkProhibitedIndustry(input.ksicCode, prohibited);
+    const isProhibited = this.checkProhibitedIndustry(
+      input.ksicCode,
+      prohibited,
+    );
     if (isProhibited.blocked) {
       result.blockedReasons.push(
         `업종코드 ${input.ksicCode}은(는) H-2 허용제외 업종: ${isProhibited.reason}`,
@@ -104,7 +105,7 @@ export class H2Evaluator extends BaseVisaEvaluator {
         if (p.hasExceptions && p.exceptionCodes) {
           try {
             const exceptions: string[] = JSON.parse(p.exceptionCodes);
-            if (exceptions.some(exc => ksicCode.startsWith(exc))) {
+            if (exceptions.some((exc) => ksicCode.startsWith(exc))) {
               return { blocked: false }; // 예외 허용 / Exception allowed
             }
           } catch {

@@ -72,9 +72,7 @@ export class JobEligibilityService {
       );
     const session = JSON.parse(raw) as SessionData;
     if (!session.userId)
-      throw new NotFoundException(
-        '사용자 ID가 없습니다 / User ID not found',
-      );
+      throw new NotFoundException('사용자 ID가 없습니다 / User ID not found');
     return session.userId;
   }
 
@@ -195,9 +193,7 @@ export class JobEligibilityService {
     if (job.albaAttributes?.hourlyWage) {
       // 시급 (원) → 월급 (만원): 시급 × 160시간 ÷ 10000
       // Hourly wage (won) → monthly salary (만원): hourlyWage × 160hr / 10000
-      offeredSalary = Math.round(
-        (job.albaAttributes.hourlyWage * 160) / 10000,
-      );
+      offeredSalary = Math.round((job.albaAttributes.hourlyWage * 160) / 10000);
     } else if (job.fulltimeAttributes?.salaryMin) {
       offeredSalary = job.fulltimeAttributes.salaryMin;
     }
@@ -296,9 +292,7 @@ export class JobEligibilityService {
     const corporates = await this.prisma.corporateProfile.findMany({
       where: { companyId: { in: corporateIds } },
     });
-    const corpMap = new Map(
-      corporates.map((c) => [c.companyId.toString(), c]),
-    );
+    const corpMap = new Map(corporates.map((c) => [c.companyId.toString(), c]));
 
     // 4. 2차 필터: 개인 조건 기반 상세 평가
     // 4. Deep filter: individual-specific evaluation
@@ -369,9 +363,7 @@ export class JobEligibilityService {
       total: preFilteredTotal - ineligibleCount,
       page,
       limit,
-      totalPages: Math.ceil(
-        (preFilteredTotal - ineligibleCount) / limit,
-      ),
+      totalPages: Math.ceil((preFilteredTotal - ineligibleCount) / limit),
       visaFilter: {
         appliedVisaCode: visaCode,
         preFilteredCount: preFilteredTotal,

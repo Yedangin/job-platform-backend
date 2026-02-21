@@ -98,12 +98,32 @@ describe('ViewingCreditService', () => {
       mockPaymentPrisma.viewingLog.findFirst.mockResolvedValue(null);
       mockPaymentPrisma.viewingCredit.findMany
         .mockResolvedValueOnce([
-          { id: 1, totalCredits: 5, usedCredits: 2, expiresAt: new Date('2026-06-01') },
-          { id: 2, totalCredits: 10, usedCredits: 0, expiresAt: new Date('2026-12-01') },
+          {
+            id: 1,
+            totalCredits: 5,
+            usedCredits: 2,
+            expiresAt: new Date('2026-06-01'),
+          },
+          {
+            id: 2,
+            totalCredits: 10,
+            usedCredits: 0,
+            expiresAt: new Date('2026-12-01'),
+          },
         ])
         .mockResolvedValueOnce([
-          { id: 1, totalCredits: 5, usedCredits: 3, expiresAt: new Date('2026-06-01') },
-          { id: 2, totalCredits: 10, usedCredits: 0, expiresAt: new Date('2026-12-01') },
+          {
+            id: 1,
+            totalCredits: 5,
+            usedCredits: 3,
+            expiresAt: new Date('2026-06-01'),
+          },
+          {
+            id: 2,
+            totalCredits: 10,
+            usedCredits: 0,
+            expiresAt: new Date('2026-12-01'),
+          },
         ]);
 
       const result = await service.useCredit('user-1', 100);

@@ -6,7 +6,11 @@ jest.mock('libs/common/src', () => {
   return { AuthPrismaService: _AuthPrismaService };
 });
 
-import { DiagnosisEngineService, DiagnosisInput, DiagnosisResult } from './diagnosis-engine.service';
+import {
+  DiagnosisEngineService,
+  DiagnosisInput,
+  DiagnosisResult,
+} from './diagnosis-engine.service';
 import { AuthPrismaService } from 'libs/common/src';
 
 describe('DiagnosisEngineService', () => {
@@ -71,31 +75,33 @@ describe('DiagnosisEngineService', () => {
 
     it('PW-003 (어학당→전문대) 점수 18점 / PW-003 score should be 18', () => {
       // 55 * (85/100) * 0.6 * 0.8 * 1.0 * 0.8 = 17.952 → 18
-      const pw003 = result.pathways.find(p => p.pathwayId === 'PW-003');
+      const pw003 = result.pathways.find((p) => p.pathwayId === 'PW-003');
       expect(pw003).toBeDefined();
       expect(pw003!.finalScore).toBe(18);
     });
 
     it('EPS(PW-006)가 포함되어야 함 (VNM은 EPS 16개국) / PW-006 should be included for VNM', () => {
-      const pw006 = result.pathways.find(p => p.pathwayId === 'PW-006');
+      const pw006 = result.pathways.find((p) => p.pathwayId === 'PW-006');
       expect(pw006).toBeDefined();
     });
 
     it('워킹홀리데이(PW-008)는 제외 (VNM은 WH 미대상) / PW-008 should be excluded', () => {
-      const pw008 = result.pathways.find(p => p.pathwayId === 'PW-008');
+      const pw008 = result.pathways.find((p) => p.pathwayId === 'PW-008');
       expect(pw008).toBeUndefined();
     });
 
     it('동포 경로(PW-014, PW-015)는 제외 / ethnic Korean paths should be excluded', () => {
-      const pw014 = result.pathways.find(p => p.pathwayId === 'PW-014');
-      const pw015 = result.pathways.find(p => p.pathwayId === 'PW-015');
+      const pw014 = result.pathways.find((p) => p.pathwayId === 'PW-014');
+      const pw015 = result.pathways.find((p) => p.pathwayId === 'PW-015');
       expect(pw014).toBeUndefined();
       expect(pw015).toBeUndefined();
     });
 
     it('점수 내림차순 정렬 / should be sorted by score descending', () => {
       for (let i = 1; i < result.pathways.length; i++) {
-        expect(result.pathways[i - 1].finalScore).toBeGreaterThanOrEqual(result.pathways[i].finalScore);
+        expect(result.pathways[i - 1].finalScore).toBeGreaterThanOrEqual(
+          result.pathways[i].finalScore,
+        );
       }
     });
 
@@ -104,7 +110,8 @@ describe('DiagnosisEngineService', () => {
         if (pw.finalScore >= 71) expect(pw.feasibilityLabel).toBe('높음');
         else if (pw.finalScore >= 51) expect(pw.feasibilityLabel).toBe('보통');
         else if (pw.finalScore >= 31) expect(pw.feasibilityLabel).toBe('낮음');
-        else if (pw.finalScore >= 1) expect(pw.feasibilityLabel).toBe('매우낮음');
+        else if (pw.finalScore >= 1)
+          expect(pw.feasibilityLabel).toBe('매우낮음');
         else expect(pw.feasibilityLabel).toBe('불가');
       }
     });
@@ -140,34 +147,34 @@ describe('DiagnosisEngineService', () => {
     });
 
     it('E-7 해외초청(PW-009)이 포함 / PW-009 should be included for bachelor+', () => {
-      const pw009 = result.pathways.find(p => p.pathwayId === 'PW-009');
+      const pw009 = result.pathways.find((p) => p.pathwayId === 'PW-009');
       expect(pw009).toBeDefined();
     });
 
     it('E-7 국내전환(PW-010)이 포함 (USA domesticE7=true) / PW-010 should be included', () => {
-      const pw010 = result.pathways.find(p => p.pathwayId === 'PW-010');
+      const pw010 = result.pathways.find((p) => p.pathwayId === 'PW-010');
       expect(pw010).toBeDefined();
     });
 
     it('PW-010 점수 25점 / PW-010 score should be 25', () => {
       // 30 * (75/100) * 1.0 * 1.0 * 1.0 * 1.1 = 24.75 → 25
-      const pw010 = result.pathways.find(p => p.pathwayId === 'PW-010');
+      const pw010 = result.pathways.find((p) => p.pathwayId === 'PW-010');
       expect(pw010).toBeDefined();
       expect(pw010!.finalScore).toBe(25);
     });
 
     it('EPS(PW-006)는 제외 (USA는 EPS 미대상) / PW-006 should be excluded for USA', () => {
-      const pw006 = result.pathways.find(p => p.pathwayId === 'PW-006');
+      const pw006 = result.pathways.find((p) => p.pathwayId === 'PW-006');
       expect(pw006).toBeUndefined();
     });
 
     it('워킹홀리데이(PW-008)는 제외 (USA whCountry=false) / PW-008 excluded for USA', () => {
-      const pw008 = result.pathways.find(p => p.pathwayId === 'PW-008');
+      const pw008 = result.pathways.find((p) => p.pathwayId === 'PW-008');
       expect(pw008).toBeUndefined();
     });
 
     it('GKS 학부(PW-001)는 나이 초과로 제외 / PW-001 excluded (age>25)', () => {
-      const pw001 = result.pathways.find(p => p.pathwayId === 'PW-001');
+      const pw001 = result.pathways.find((p) => p.pathwayId === 'PW-001');
       expect(pw001).toBeUndefined();
     });
 
@@ -205,44 +212,44 @@ describe('DiagnosisEngineService', () => {
     });
 
     it('H-2 방문취업(PW-014) 포함 (동포+중국) / PW-014 should be included for ethnic Korean CHN', () => {
-      const pw014 = result.pathways.find(p => p.pathwayId === 'PW-014');
+      const pw014 = result.pathways.find((p) => p.pathwayId === 'PW-014');
       expect(pw014).toBeDefined();
     });
 
     it('PW-014 점수 35점 / PW-014 score should be 35', () => {
       // 55 * (70/100) * 0.9 * 1.0 * 1.0 * 1.0 = 34.65 → 35
-      const pw014 = result.pathways.find(p => p.pathwayId === 'PW-014');
+      const pw014 = result.pathways.find((p) => p.pathwayId === 'PW-014');
       expect(pw014).toBeDefined();
       expect(pw014!.finalScore).toBe(35);
     });
 
     it('F-4 재외동포(PW-015) 포함 (동포+전문학사) / PW-015 should be included', () => {
-      const pw015 = result.pathways.find(p => p.pathwayId === 'PW-015');
+      const pw015 = result.pathways.find((p) => p.pathwayId === 'PW-015');
       expect(pw015).toBeDefined();
     });
 
     it('PW-015 점수 32점 / PW-015 score should be 32', () => {
       // 50 * (75/100) * 0.95 * 1.0 * 1.0 * 0.9 = 32.0625 → 32
-      const pw015 = result.pathways.find(p => p.pathwayId === 'PW-015');
+      const pw015 = result.pathways.find((p) => p.pathwayId === 'PW-015');
       expect(pw015).toBeDefined();
       expect(pw015!.finalScore).toBe(32);
     });
 
     it('PW-014가 PW-015보다 높은 점수 / PW-014 should score higher than PW-015', () => {
-      const pw014 = result.pathways.find(p => p.pathwayId === 'PW-014');
-      const pw015 = result.pathways.find(p => p.pathwayId === 'PW-015');
+      const pw014 = result.pathways.find((p) => p.pathwayId === 'PW-014');
+      const pw015 = result.pathways.find((p) => p.pathwayId === 'PW-015');
       expect(pw014!.finalScore).toBeGreaterThan(pw015!.finalScore);
     });
 
     it('E-7 경로(PW-009, PW-010)는 학력 미달 제외 / E-7 paths excluded (bachelor required)', () => {
-      const pw009 = result.pathways.find(p => p.pathwayId === 'PW-009');
-      const pw010 = result.pathways.find(p => p.pathwayId === 'PW-010');
+      const pw009 = result.pathways.find((p) => p.pathwayId === 'PW-009');
+      const pw010 = result.pathways.find((p) => p.pathwayId === 'PW-010');
       expect(pw009).toBeUndefined();
       expect(pw010).toBeUndefined();
     });
 
     it('EPS(PW-006)는 제외 (CHN은 EPS 미대상) / PW-006 excluded (CHN not EPS)', () => {
-      const pw006 = result.pathways.find(p => p.pathwayId === 'PW-006');
+      const pw006 = result.pathways.find((p) => p.pathwayId === 'PW-006');
       expect(pw006).toBeUndefined();
     });
   });

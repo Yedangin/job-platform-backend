@@ -12,7 +12,12 @@ import { ScoreCalibrationService } from './score-calibration.service';
  */
 @Module({
   controllers: [DiagnosisController, AdminDiagnosisController],
-  providers: [AuthPrismaService, RedisService, DiagnosisEngineService, ScoreCalibrationService],
+  providers: [
+    AuthPrismaService,
+    RedisService,
+    DiagnosisEngineService,
+    ScoreCalibrationService,
+  ],
   exports: [DiagnosisEngineService],
 })
 export class DiagnosisModule {}

@@ -29,9 +29,13 @@ export class ResumeService {
    */
   private async getUserIdFromSession(sessionId: string): Promise<string> {
     const raw = await this.redisService.get(`session:${sessionId}`);
-    if (!raw) throw new NotFoundException('세션을 찾을 수 없습니다 / Session not found');
+    if (!raw)
+      throw new NotFoundException(
+        '세션을 찾을 수 없습니다 / Session not found',
+      );
     const session = JSON.parse(raw) as SessionData;
-    if (!session.userId) throw new NotFoundException('사용자 ID가 없습니다 / User ID not found');
+    if (!session.userId)
+      throw new NotFoundException('사용자 ID가 없습니다 / User ID not found');
     return session.userId;
   }
 
@@ -108,7 +112,9 @@ export class ResumeService {
       where: { id: BigInt(resumeId) },
     });
     if (!resume) {
-      throw new NotFoundException('이력서를 찾을 수 없습니다 / Resume not found');
+      throw new NotFoundException(
+        '이력서를 찾을 수 없습니다 / Resume not found',
+      );
     }
 
     // 열람권 차감 (이미 열람한 경우 차감 없음)
@@ -130,12 +136,17 @@ export class ResumeService {
    */
   async checkAccess(sessionId: string, resumeId: number) {
     const userId = await this.getUserIdFromSession(sessionId);
-    const remaining = await this.viewingCreditService.getRemainingCredits(userId);
+    const remaining =
+      await this.viewingCreditService.getRemainingCredits(userId);
 
     // 이미 열람 여부 확인 / Check if already viewed
     let alreadyViewed = false;
     try {
-      const history = await this.viewingCreditService.getViewingHistory(userId, 1, 1000);
+      const history = await this.viewingCreditService.getViewingHistory(
+        userId,
+        1,
+        1000,
+      );
       alreadyViewed = history.logs.some((l) => l.resumeId === resumeId);
     } catch {
       // 열람 기록 확인 실패 시 무시 / Ignore viewing history check failure

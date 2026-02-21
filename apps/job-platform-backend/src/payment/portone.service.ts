@@ -44,7 +44,10 @@ export class PortoneService {
   private readonly apiSecret: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.apiSecret = this.configService.get<string>('PORTONE_V2_API_SECRET', '');
+    this.apiSecret = this.configService.get<string>(
+      'PORTONE_V2_API_SECRET',
+      '',
+    );
     if (!this.apiSecret) {
       this.logger.warn(
         '⚠️ PORTONE_V2_API_SECRET not set — payment verification will fail',
@@ -75,7 +78,9 @@ export class PortoneService {
 
       if (!response.ok) {
         const errorBody = await response.text();
-        this.logger.error(`[PortOne] GET failed: ${response.status} — ${errorBody}`);
+        this.logger.error(
+          `[PortOne] GET failed: ${response.status} — ${errorBody}`,
+        );
         throw new InternalServerErrorException(
           `포트원 결제 조회 실패 / PortOne payment query failed: ${response.status}`,
         );
@@ -128,7 +133,9 @@ export class PortoneService {
       );
     }
 
-    this.logger.log(`[PortOne] 결제 검증 성공: ${paymentId}, amount=${expectedAmount}`);
+    this.logger.log(
+      `[PortOne] 결제 검증 성공: ${paymentId}, amount=${expectedAmount}`,
+    );
     return payment;
   }
 
@@ -159,7 +166,9 @@ export class PortoneService {
 
       if (!response.ok) {
         const errorBody = await response.text();
-        this.logger.error(`[PortOne] Cancel failed: ${response.status} — ${errorBody}`);
+        this.logger.error(
+          `[PortOne] Cancel failed: ${response.status} — ${errorBody}`,
+        );
         throw new InternalServerErrorException(
           `포트원 결제 취소 실패 / PortOne cancel failed: ${response.status}`,
         );

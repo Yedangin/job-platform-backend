@@ -40,6 +40,7 @@ model JobPosting {
 
   allowedVisas     String        @map("allowed_visas")
   minKoreanLevel   Int           @default(0) @map("min_korean_level")
+  fulltimeVisaResult Json?       @map("fulltime_visa_result")
 
   contactName      String        @map("contact_name")
   contactPhone     String        @map("contact_phone")
@@ -67,12 +68,15 @@ model JobAttributesAlba {
 }
 
 model JobAttributesFulltime {
-  jobId          BigInt         @id @map("job_id")
-  job            JobPosting     @relation(fields: [jobId], references: [jobId], onDelete: Cascade)
-  salaryMin      Int?           @map("salary_min")
-  salaryMax      Int?           @map("salary_max")
-  experienceLevel String         @map("experience_level")
-  educationLevel  String         @map("education_level")
+  jobId              BigInt         @id @map("job_id")
+  job                JobPosting     @relation(fields: [jobId], references: [jobId], onDelete: Cascade)
+  salaryMin          Int?           @map("salary_min")
+  salaryMax          Int?           @map("salary_max")
+  experienceLevel    String         @map("experience_level")
+  educationLevel     String         @map("education_level")
+  occupationCode     String         @map("occupation_code")
+  preferredMajors    Json?          @map("preferred_majors")
+  overseasHireWilling Boolean       @default(false) @map("overseas_hire_willing")
 
   @@map("job_attributes_fulltime")
 }

@@ -14,7 +14,13 @@ import { PaymentModule } from '../payment/payment.module';
 @Module({
   imports: [VisaRulesModule, PaymentModule],
   controllers: [JobPostingController],
-  providers: [JobPostingService, JobEligibilityService, JobCronService, AuthPrismaService, RedisService],
+  providers: [
+    JobPostingService,
+    JobEligibilityService,
+    JobCronService,
+    AuthPrismaService,
+    RedisService,
+  ],
   exports: [JobPostingService, JobEligibilityService],
 })
 export class JobPostingModule {}

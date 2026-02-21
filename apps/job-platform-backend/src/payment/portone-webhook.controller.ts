@@ -63,11 +63,19 @@ export class PortoneWebhookController {
     try {
       // 1. 서명 검증 / Verify signature
       const rawBody =
-        req.rawBody?.toString('utf-8') ||
-        JSON.stringify(req.body);
+        req.rawBody?.toString('utf-8') || JSON.stringify(req.body);
 
-      if (!this.verifySignature(webhookId, webhookTimestamp, rawBody, webhookSignature)) {
-        this.logger.warn('[Webhook] 서명 검증 실패 / Signature verification failed');
+      if (
+        !this.verifySignature(
+          webhookId,
+          webhookTimestamp,
+          rawBody,
+          webhookSignature,
+        )
+      ) {
+        this.logger.warn(
+          '[Webhook] 서명 검증 실패 / Signature verification failed',
+        );
         return res.status(400).json({ error: 'Invalid signature' });
       }
 
@@ -80,7 +88,8 @@ export class PortoneWebhookController {
       }
 
       // 3. 이벤트 파싱 / Parse event
-      const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+      const body =
+        typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
       const eventType = body.type;
       const paymentId = body.data?.paymentId;
 

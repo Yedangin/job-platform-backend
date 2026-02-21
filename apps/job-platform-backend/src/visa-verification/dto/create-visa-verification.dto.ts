@@ -40,7 +40,8 @@ export class CreateVisaVerificationDto {
   visaExpiryDate: string;
 
   @ApiPropertyOptional({
-    description: '외국인등록번호 / Foreign registration number (13 digits with hyphen)',
+    description:
+      '외국인등록번호 / Foreign registration number (13 digits with hyphen)',
     example: '123456-1234567',
   })
   @IsOptional()

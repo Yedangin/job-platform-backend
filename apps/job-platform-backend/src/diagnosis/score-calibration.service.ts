@@ -90,20 +90,37 @@ export class ScoreCalibrationService {
    */
   private async calculatePathwayStats(
     since: Date,
-  ): Promise<Map<string, { impressions: number; clicks: number; conversions: number; ctr: number }>> {
-    const stats = new Map<string, { impressions: number; clicks: number; conversions: number; ctr: number }>();
+  ): Promise<
+    Map<
+      string,
+      { impressions: number; clicks: number; conversions: number; ctr: number }
+    >
+  > {
+    const stats = new Map<
+      string,
+      { impressions: number; clicks: number; conversions: number; ctr: number }
+    >();
 
     // 세션에서 경로별 추천 횟수 (impression) / Count pathway impressions from sessions
     const sessions = await this.prisma.diagnosisSession.findMany({
       where: { createdAt: { gte: since } },
-      select: { resultsSnapshot: true, convertedToSignup: true, convertedToPaid: true },
+      select: {
+        resultsSnapshot: true,
+        convertedToSignup: true,
+        convertedToPaid: true,
+      },
     });
 
     for (const s of sessions) {
       const snapshot = s.resultsSnapshot as any;
       const pathways = snapshot?.pathways ?? [];
       for (const pw of pathways) {
-        const existing = stats.get(pw.pathwayId) ?? { impressions: 0, clicks: 0, conversions: 0, ctr: 0 };
+        const existing = stats.get(pw.pathwayId) ?? {
+          impressions: 0,
+          clicks: 0,
+          conversions: 0,
+          ctr: 0,
+        };
         existing.impressions++;
         if (s.convertedToSignup || s.convertedToPaid) existing.conversions++;
         stats.set(pw.pathwayId, existing);
@@ -131,7 +148,10 @@ export class ScoreCalibrationService {
 
   /** 평균 CTR 계산 / Calculate average CTR */
   private calculateAverageCtr(
-    stats: Map<string, { impressions: number; clicks: number; conversions: number; ctr: number }>,
+    stats: Map<
+      string,
+      { impressions: number; clicks: number; conversions: number; ctr: number }
+    >,
   ): number {
     let totalCtr = 0;
     let count = 0;
@@ -146,10 +166,25 @@ export class ScoreCalibrationService {
 
   /** 이상치 탐지 / Detect outliers */
   private detectOutliers(
-    stats: Map<string, { impressions: number; clicks: number; conversions: number; ctr: number }>,
+    stats: Map<
+      string,
+      { impressions: number; clicks: number; conversions: number; ctr: number }
+    >,
     avgCtr: number,
-  ): Array<{ pathwayId: string; direction: string; currentCtr: number; avgCtr: number; reason: string }> {
-    const candidates: Array<{ pathwayId: string; direction: string; currentCtr: number; avgCtr: number; reason: string }> = [];
+  ): Array<{
+    pathwayId: string;
+    direction: string;
+    currentCtr: number;
+    avgCtr: number;
+    reason: string;
+  }> {
+    const candidates: Array<{
+      pathwayId: string;
+      direction: string;
+      currentCtr: number;
+      avgCtr: number;
+      reason: string;
+    }> = [];
 
     for (const [pathwayId, val] of stats) {
       if (val.impressions < this.config.minDataCount) continue;

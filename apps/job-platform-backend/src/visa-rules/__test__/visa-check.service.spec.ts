@@ -275,8 +275,12 @@ describe('VisaCheckService', () => {
     it('Evaluator 불합격 시 blocked reasons 반환 / Evaluator rejection returns blocked reasons', async () => {
       mockPrisma.visaType.findFirst.mockResolvedValue(mockE9VisaType);
       mockPrisma.industryCode.findFirst.mockResolvedValue({
-        isSimpleLabor: false, isEntertainment: false, isGambling: false,
-        isGigWork: false, requiresSafetyTraining: false, platformTag: null,
+        isSimpleLabor: false,
+        isEntertainment: false,
+        isGambling: false,
+        isGigWork: false,
+        requiresSafetyTraining: false,
+        platformTag: null,
       });
       mockEvaluatorRegistry.evaluate.mockReturnValue({
         eligible: false,
@@ -303,8 +307,12 @@ describe('VisaCheckService', () => {
     it('Evaluator 합격 시 시간/조건/서류 반환 / Evaluator pass returns hours/conditions/documents', async () => {
       mockPrisma.visaType.findFirst.mockResolvedValue(mockD2VisaType);
       mockPrisma.industryCode.findFirst.mockResolvedValue({
-        isSimpleLabor: false, isEntertainment: false, isGambling: false,
-        isGigWork: false, requiresSafetyTraining: false, platformTag: null,
+        isSimpleLabor: false,
+        isEntertainment: false,
+        isGambling: false,
+        isGigWork: false,
+        requiresSafetyTraining: false,
+        platformTag: null,
       });
       mockEvaluatorRegistry.evaluate.mockReturnValue({
         eligible: true,
@@ -389,9 +397,20 @@ describe('VisaCheckService', () => {
         evaluatedAt: new Date().toISOString(),
       });
       mockPrisma.visaType.findUnique.mockImplementation(({ where }: any) => {
-        if (where.code === 'F-2') return { nameEn: 'Residence', employmentLevel: 'FULL', workType: 'unrestricted' };
-        if (where.code === 'E-7') return { nameEn: 'Special Activities', employmentLevel: 'CONDITIONAL', workType: 'employer_specific' };
-        if (where.code === 'B-1') return { nameEn: 'Visa Exemption', employmentLevel: 'PROHIBITED' };
+        if (where.code === 'F-2')
+          return {
+            nameEn: 'Residence',
+            employmentLevel: 'FULL',
+            workType: 'unrestricted',
+          };
+        if (where.code === 'E-7')
+          return {
+            nameEn: 'Special Activities',
+            employmentLevel: 'CONDITIONAL',
+            workType: 'employer_specific',
+          };
+        if (where.code === 'B-1')
+          return { nameEn: 'Visa Exemption', employmentLevel: 'PROHIBITED' };
         return null;
       });
 
@@ -448,8 +467,14 @@ describe('VisaCheckService', () => {
         permitType: '고용허가',
         maxWorkplaces: 1,
         industryMappings: [
-          { industryCode: { ksicCode: 'C', nameKo: '제조업' }, isAllowed: true },
-          { industryCode: { ksicCode: 'F', nameKo: '건설업' }, isAllowed: true },
+          {
+            industryCode: { ksicCode: 'C', nameKo: '제조업' },
+            isAllowed: true,
+          },
+          {
+            industryCode: { ksicCode: 'F', nameKo: '건설업' },
+            isAllowed: true,
+          },
         ],
         occupationMappings: [],
         prohibitedIndustries: [],
@@ -466,9 +491,9 @@ describe('VisaCheckService', () => {
     it('비자 미발견 시 NotFoundException / Throws NotFoundException for unknown visa', async () => {
       mockPrisma.visaType.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.getEligibleJobConditions('X-99'),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.getEligibleJobConditions('X-99')).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('H-2 금지업종 목록 반환 / Returns prohibited industries for H-2', async () => {
@@ -500,18 +525,22 @@ describe('VisaCheckService', () => {
   describe('getVisaTransitions', () => {
     it('전환 경로 + 체인 반환 / Returns transitions and chains', async () => {
       mockPrisma.visaType.findUnique.mockImplementation(({ where }: any) => {
-        if (where.code === 'D-2') return {
-          code: 'D-2', nameKo: '유학',
-          requiredDocuments: [
-            { documentName: '재학증명서', isRequired: true, sortOrder: 1 },
-          ],
-        };
-        if (where.code === 'D-10') return {
-          code: 'D-10', nameKo: '구직',
-          requiredDocuments: [
-            { documentName: '졸업증명서', isRequired: true, sortOrder: 1 },
-          ],
-        };
+        if (where.code === 'D-2')
+          return {
+            code: 'D-2',
+            nameKo: '유학',
+            requiredDocuments: [
+              { documentName: '재학증명서', isRequired: true, sortOrder: 1 },
+            ],
+          };
+        if (where.code === 'D-10')
+          return {
+            code: 'D-10',
+            nameKo: '구직',
+            requiredDocuments: [
+              { documentName: '졸업증명서', isRequired: true, sortOrder: 1 },
+            ],
+          };
         return null;
       });
 
@@ -566,14 +595,15 @@ describe('VisaCheckService', () => {
     it('비자 미발견 시 NotFoundException / Throws NotFoundException', async () => {
       mockPrisma.visaType.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.getVisaTransitions('X-99'),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.getVisaTransitions('X-99')).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('전환 경로 없는 비자 / Visa with no transitions', async () => {
       mockPrisma.visaType.findUnique.mockResolvedValue({
-        code: 'F-5', nameKo: '영주',
+        code: 'F-5',
+        nameKo: '영주',
       });
       mockPrisma.visaTransition.findMany.mockResolvedValue([]);
       mockPrisma.visaType.findMany.mockResolvedValue([]);

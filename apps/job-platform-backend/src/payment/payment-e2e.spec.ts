@@ -34,16 +34,26 @@ import { PortoneWebhookController } from './portone-webhook.controller';
 // ──── 상품 Fixtures / Product fixtures ────
 const PRODUCTS = {
   JOB_PREMIUM: {
-    id: 1, code: 'JOB_PREMIUM', name: '프리미엄 공고', nameEn: 'Premium Job',
-    category: 'JOB_POSTING', price: 50000, isActive: true,
+    id: 1,
+    code: 'JOB_PREMIUM',
+    name: '프리미엄 공고',
+    nameEn: 'Premium Job',
+    category: 'JOB_POSTING',
+    price: 50000,
+    isActive: true,
     metadata: JSON.stringify({
       standardDays: { partTime: 14, fullTime: 30 },
       premiumDays: { partTime: 30, fullTime: 60 },
     }),
   },
   VIEW_30: {
-    id: 4, code: 'VIEW_30', name: '인재 열람 프로', nameEn: 'Pro Talent View',
-    category: 'TALENT_VIEW', price: 60000, isActive: true,
+    id: 4,
+    code: 'VIEW_30',
+    name: '인재 열람 프로',
+    nameEn: 'Pro Talent View',
+    category: 'TALENT_VIEW',
+    price: 60000,
+    isActive: true,
     metadata: JSON.stringify({ credits: 30, validDays: 90 }),
   },
 };
@@ -77,10 +87,13 @@ describe('E2E 시나리오 1: 프리미엄 업그레이드 / Premium upgrade', (
     };
     mockProductService = { findActiveByCode: jest.fn() };
     mockCouponService = {
-      validate: jest.fn(), calculateDiscount: jest.fn(), recordUsage: jest.fn(),
+      validate: jest.fn(),
+      calculateDiscount: jest.fn(),
+      recordUsage: jest.fn(),
     };
     mockViewingCreditService = {
-      grantCredits: jest.fn(), rollbackCredits: jest.fn(),
+      grantCredits: jest.fn(),
+      rollbackCredits: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -109,7 +122,11 @@ describe('E2E 시나리오 1: 프리미엄 업그레이드 / Premium upgrade', (
       product: PRODUCTS.JOB_PREMIUM,
     });
 
-    const order = await paymentService.createOrder('biz-user-1', 'JOB_PREMIUM', 42);
+    const order = await paymentService.createOrder(
+      'biz-user-1',
+      'JOB_PREMIUM',
+      42,
+    );
     expect(order.totalAmount).toBe(50000);
     expect(order.productName).toBe('프리미엄 공고');
 
@@ -183,7 +200,13 @@ describe('E2E 시나리오 2: 인재 열람 / Talent viewing', () => {
     mockPaymentPrisma = {
       order: { create: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
       payment: { create: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
-      viewingCredit: { create: jest.fn(), findMany: jest.fn(), findFirst: jest.fn(), update: jest.fn(), delete: jest.fn() },
+      viewingCredit: {
+        create: jest.fn(),
+        findMany: jest.fn(),
+        findFirst: jest.fn(),
+        update: jest.fn(),
+        delete: jest.fn(),
+      },
       viewingLog: { findFirst: jest.fn(), create: jest.fn() },
       $transaction: jest.fn((arr) => Promise.resolve(arr.map(() => ({})))),
     };
@@ -191,7 +214,9 @@ describe('E2E 시나리오 2: 인재 열람 / Talent viewing', () => {
       jobPosting: { findUnique: jest.fn(), update: jest.fn() },
     };
     mockPortoneService = {
-      getPayment: jest.fn(), verifyPayment: jest.fn(), cancelPayment: jest.fn(),
+      getPayment: jest.fn(),
+      verifyPayment: jest.fn(),
+      cancelPayment: jest.fn(),
     };
     mockProductService = { findActiveByCode: jest.fn() };
 
@@ -204,12 +229,20 @@ describe('E2E 시나리오 2: 인재 열람 / Talent viewing', () => {
         { provide: MockAuthPrismaService, useValue: mockAuthPrisma },
         { provide: PortoneService, useValue: mockPortoneService },
         { provide: ProductService, useValue: mockProductService },
-        { provide: CouponService, useValue: { validate: jest.fn(), calculateDiscount: jest.fn(), recordUsage: jest.fn() } },
+        {
+          provide: CouponService,
+          useValue: {
+            validate: jest.fn(),
+            calculateDiscount: jest.fn(),
+            recordUsage: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     paymentService = module.get<PaymentService>(PaymentService);
-    viewingCreditService = module.get<ViewingCreditService>(ViewingCreditService);
+    viewingCreditService =
+      module.get<ViewingCreditService>(ViewingCreditService);
   });
 
   it('VIEW_30 구매 → 열람권 30건 → 1건 사용 → 중복 열람 차감 없음 / Buy 30 credits → use 1 → reuse no deduction', async () => {
@@ -243,7 +276,10 @@ describe('E2E 시나리오 2: 인재 열람 / Talent viewing', () => {
     });
     mockPaymentPrisma.$transaction.mockResolvedValue([{}, {}]);
     mockPaymentPrisma.viewingCredit.create.mockResolvedValue({
-      id: 1, totalCredits: 30, usedCredits: 0, source: 'VIEW_30',
+      id: 1,
+      totalCredits: 30,
+      usedCredits: 0,
+      source: 'VIEW_30',
     });
 
     await paymentService.confirmPayment(10, 'portone_view_1');
@@ -262,10 +298,20 @@ describe('E2E 시나리오 2: 인재 열람 / Talent viewing', () => {
     mockPaymentPrisma.viewingLog.findFirst.mockResolvedValue(null);
     mockPaymentPrisma.viewingCredit.findMany
       .mockResolvedValueOnce([
-        { id: 1, totalCredits: 30, usedCredits: 0, expiresAt: new Date('2027-01-01') },
+        {
+          id: 1,
+          totalCredits: 30,
+          usedCredits: 0,
+          expiresAt: new Date('2027-01-01'),
+        },
       ])
       .mockResolvedValueOnce([
-        { id: 1, totalCredits: 30, usedCredits: 1, expiresAt: new Date('2027-01-01') },
+        {
+          id: 1,
+          totalCredits: 30,
+          usedCredits: 1,
+          expiresAt: new Date('2027-01-01'),
+        },
       ]);
 
     const use1 = await viewingCreditService.useCredit('biz-user-2', 100);
@@ -275,7 +321,12 @@ describe('E2E 시나리오 2: 인재 열람 / Talent viewing', () => {
     // STEP 4: 같은 이력서 재열람 → 차감 없음 / Re-view same resume → no deduction
     mockPaymentPrisma.viewingLog.findFirst.mockResolvedValue({ id: 1 });
     mockPaymentPrisma.viewingCredit.findMany.mockResolvedValue([
-      { id: 1, totalCredits: 30, usedCredits: 1, expiresAt: new Date('2027-01-01') },
+      {
+        id: 1,
+        totalCredits: 30,
+        usedCredits: 1,
+        expiresAt: new Date('2027-01-01'),
+      },
     ]);
 
     const use2 = await viewingCreditService.useCredit('biz-user-2', 100);
@@ -294,24 +345,52 @@ describe('E2E 시나리오 3: 쿠폰 / Coupons', () => {
   let mockPaymentPrisma: any;
 
   const welcomeCoupon = {
-    id: 1, code: 'WELCOME_VIEW_5', name: '회원가입 축하 열람 5건',
-    type: 'FREE_ITEM', value: 5, targetProduct: 'TALENT_VIEW',
-    minOrderAmount: null, maxUses: null, usedCount: 0, maxUsesPerUser: 1,
-    startsAt: new Date('2025-01-01'), expiresAt: new Date('2027-01-01'), isActive: true,
+    id: 1,
+    code: 'WELCOME_VIEW_5',
+    name: '회원가입 축하 열람 5건',
+    type: 'FREE_ITEM',
+    value: 5,
+    targetProduct: 'TALENT_VIEW',
+    minOrderAmount: null,
+    maxUses: null,
+    usedCount: 0,
+    maxUsesPerUser: 1,
+    startsAt: new Date('2025-01-01'),
+    expiresAt: new Date('2027-01-01'),
+    isActive: true,
   };
 
   const firstPostCoupon = {
-    id: 2, code: 'FIRST_POST_VIEW_5', name: '첫 공고 축하 열람 5건',
-    type: 'FREE_ITEM', value: 5, targetProduct: 'TALENT_VIEW',
-    minOrderAmount: null, maxUses: null, usedCount: 0, maxUsesPerUser: 1,
-    startsAt: new Date('2025-01-01'), expiresAt: new Date('2027-01-01'), isActive: true,
+    id: 2,
+    code: 'FIRST_POST_VIEW_5',
+    name: '첫 공고 축하 열람 5건',
+    type: 'FREE_ITEM',
+    value: 5,
+    targetProduct: 'TALENT_VIEW',
+    minOrderAmount: null,
+    maxUses: null,
+    usedCount: 0,
+    maxUsesPerUser: 1,
+    startsAt: new Date('2025-01-01'),
+    expiresAt: new Date('2027-01-01'),
+    isActive: true,
   };
 
   beforeEach(async () => {
     mockPaymentPrisma = {
       coupon: { findUnique: jest.fn(), update: jest.fn() },
-      couponUsage: { count: jest.fn(), findFirst: jest.fn(), create: jest.fn() },
-      viewingCredit: { create: jest.fn(), findMany: jest.fn(), findFirst: jest.fn(), update: jest.fn(), delete: jest.fn() },
+      couponUsage: {
+        count: jest.fn(),
+        findFirst: jest.fn(),
+        create: jest.fn(),
+      },
+      viewingCredit: {
+        create: jest.fn(),
+        findMany: jest.fn(),
+        findFirst: jest.fn(),
+        update: jest.fn(),
+        delete: jest.fn(),
+      },
       viewingLog: { findFirst: jest.fn(), create: jest.fn() },
       $transaction: jest.fn((arr) => Promise.resolve(arr.map(() => ({})))),
     };
@@ -325,7 +404,8 @@ describe('E2E 시나리오 3: 쿠폰 / Coupons', () => {
     }).compile();
 
     couponService = module.get<CouponService>(CouponService);
-    viewingCreditService = module.get<ViewingCreditService>(ViewingCreditService);
+    viewingCreditService =
+      module.get<ViewingCreditService>(ViewingCreditService);
   });
 
   it('환영 쿠폰 5건 → 첫 공고 쿠폰 5건 → 열람 5건 사용 → 잔여 5건 / Welcome + first post + use 5', async () => {
@@ -333,7 +413,10 @@ describe('E2E 시나리오 3: 쿠폰 / Coupons', () => {
     mockPaymentPrisma.coupon.findUnique.mockResolvedValue(welcomeCoupon);
     mockPaymentPrisma.couponUsage.findFirst.mockResolvedValue(null);
     mockPaymentPrisma.viewingCredit.create.mockResolvedValue({
-      id: 1, totalCredits: 5, usedCredits: 0, source: 'COUPON:WELCOME',
+      id: 1,
+      totalCredits: 5,
+      usedCredits: 0,
+      source: 'COUPON:WELCOME',
     });
 
     const welcome = await couponService.grantWelcomeCoupons('new-user-1');
@@ -343,10 +426,16 @@ describe('E2E 시나리오 3: 쿠폰 / Coupons', () => {
     mockPaymentPrisma.coupon.findUnique.mockResolvedValue(firstPostCoupon);
     mockPaymentPrisma.couponUsage.findFirst.mockResolvedValue(null);
     mockPaymentPrisma.viewingCredit.create.mockResolvedValue({
-      id: 2, totalCredits: 5, usedCredits: 0, source: 'COUPON:FIRST_POST',
+      id: 2,
+      totalCredits: 5,
+      usedCredits: 0,
+      source: 'COUPON:FIRST_POST',
     });
 
-    const firstPost = await couponService.grantFirstPostCoupons('new-user-1', 1);
+    const firstPost = await couponService.grantFirstPostCoupons(
+      'new-user-1',
+      1,
+    );
     expect(firstPost).toEqual({ credits: 5, source: 'COUPON:FIRST_POST' });
 
     // STEP 3: 열람 5건 사용 / Use 5 credits
@@ -354,25 +443,59 @@ describe('E2E 시나리오 3: 쿠폰 / Coupons', () => {
       mockPaymentPrisma.viewingLog.findFirst.mockResolvedValue(null);
       mockPaymentPrisma.viewingCredit.findMany
         .mockResolvedValueOnce([
-          { id: 1, totalCredits: 5, usedCredits: i, expiresAt: new Date('2027-01-01') },
-          { id: 2, totalCredits: 5, usedCredits: 0, expiresAt: new Date('2027-03-01') },
+          {
+            id: 1,
+            totalCredits: 5,
+            usedCredits: i,
+            expiresAt: new Date('2027-01-01'),
+          },
+          {
+            id: 2,
+            totalCredits: 5,
+            usedCredits: 0,
+            expiresAt: new Date('2027-03-01'),
+          },
         ])
         .mockResolvedValueOnce([
-          { id: 1, totalCredits: 5, usedCredits: i + 1, expiresAt: new Date('2027-01-01') },
-          { id: 2, totalCredits: 5, usedCredits: 0, expiresAt: new Date('2027-03-01') },
+          {
+            id: 1,
+            totalCredits: 5,
+            usedCredits: i + 1,
+            expiresAt: new Date('2027-01-01'),
+          },
+          {
+            id: 2,
+            totalCredits: 5,
+            usedCredits: 0,
+            expiresAt: new Date('2027-03-01'),
+          },
         ]);
 
-      const result = await viewingCreditService.useCredit('new-user-1', 200 + i);
+      const result = await viewingCreditService.useCredit(
+        'new-user-1',
+        200 + i,
+      );
       expect(result.success).toBe(true);
     }
 
     // STEP 4: 잔여 확인 → 5건 (첫 공고 쿠폰 미사용) / Verify remaining = 5
     mockPaymentPrisma.viewingCredit.findMany.mockResolvedValue([
-      { id: 1, totalCredits: 5, usedCredits: 5, expiresAt: new Date('2027-01-01') },
-      { id: 2, totalCredits: 5, usedCredits: 0, expiresAt: new Date('2027-03-01') },
+      {
+        id: 1,
+        totalCredits: 5,
+        usedCredits: 5,
+        expiresAt: new Date('2027-01-01'),
+      },
+      {
+        id: 2,
+        totalCredits: 5,
+        usedCredits: 0,
+        expiresAt: new Date('2027-03-01'),
+      },
     ]);
 
-    const remaining = await viewingCreditService.getRemainingCredits('new-user-1');
+    const remaining =
+      await viewingCreditService.getRemainingCredits('new-user-1');
     expect(remaining).toBe(5); // 첫 공고 쿠폰 5건 남음 / First post coupon 5 remaining
   });
 });
@@ -397,7 +520,9 @@ describe('E2E 시나리오 4: 환불 / Refund', () => {
       jobPosting: { findUnique: jest.fn(), update: jest.fn() },
     };
     mockPortoneService = {
-      getPayment: jest.fn(), verifyPayment: jest.fn(), cancelPayment: jest.fn(),
+      getPayment: jest.fn(),
+      verifyPayment: jest.fn(),
+      cancelPayment: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -407,8 +532,18 @@ describe('E2E 시나리오 4: 환불 / Refund', () => {
         { provide: MockAuthPrismaService, useValue: mockAuthPrisma },
         { provide: PortoneService, useValue: mockPortoneService },
         { provide: ProductService, useValue: { findActiveByCode: jest.fn() } },
-        { provide: CouponService, useValue: { validate: jest.fn(), calculateDiscount: jest.fn(), recordUsage: jest.fn() } },
-        { provide: ViewingCreditService, useValue: { grantCredits: jest.fn(), rollbackCredits: jest.fn() } },
+        {
+          provide: CouponService,
+          useValue: {
+            validate: jest.fn(),
+            calculateDiscount: jest.fn(),
+            recordUsage: jest.fn(),
+          },
+        },
+        {
+          provide: ViewingCreditService,
+          useValue: { grantCredits: jest.fn(), rollbackCredits: jest.fn() },
+        },
       ],
     }).compile();
 
@@ -423,7 +558,11 @@ describe('E2E 시나리오 4: 환불 / Refund', () => {
       status: 'PAID',
       totalAmount: 50000,
       product: PRODUCTS.JOB_PREMIUM,
-      payment: { id: 5, portonePaymentId: 'portone_refund_1', paidAmount: 50000 },
+      payment: {
+        id: 5,
+        portonePaymentId: 'portone_refund_1',
+        paidAmount: 50000,
+      },
       targetJobId: BigInt(99),
     };
 
@@ -436,7 +575,11 @@ describe('E2E 시나리오 4: 환불 / Refund', () => {
     mockAuthPrisma.jobPosting.update.mockResolvedValue({});
 
     // 환불 실행 / Execute refund
-    const result = await paymentService.cancelPayment(5, 'biz-user-3', '서비스 불만족');
+    const result = await paymentService.cancelPayment(
+      5,
+      'biz-user-3',
+      '서비스 불만족',
+    );
     expect(result.status).toBe('CANCELLED');
 
     // 포트원 환불 호출 확인 / Verify PortOne cancel called

@@ -101,7 +101,9 @@ export class E7Evaluator extends BaseVisaEvaluator {
     result.restrictions.push('사업장 변경 시 출입국관리사무소 신고 필요');
 
     if (isSME) {
-      result.notes.push(`중소기업/스타트업 완화 적용 (GNI 70%, ${gniThresholds.sme}만원)`);
+      result.notes.push(
+        `중소기업/스타트업 완화 적용 (GNI 70%, ${gniThresholds.sme}만원)`,
+      );
       result.documents.push('중소기업확인서 또는 벤처기업확인서');
     }
 

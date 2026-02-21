@@ -14,7 +14,13 @@ import {
   Body,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiQuery,
+  ApiParam,
+} from '@nestjs/swagger';
 import { Session, RedisService, SessionData } from 'libs/common/src';
 import { AdminPaymentService } from './admin-payment.service';
 
@@ -30,12 +36,15 @@ export class AdminPaymentController {
    * 어드민 권한 확인 / Verify admin access
    */
   private async verifyAdmin(sessionId: string): Promise<void> {
-    if (!sessionId) throw new UnauthorizedException('로그인 필요 / Login required');
+    if (!sessionId)
+      throw new UnauthorizedException('로그인 필요 / Login required');
     const raw = await this.redisService.get(`session:${sessionId}`);
     if (!raw) throw new UnauthorizedException('세션 만료 / Session expired');
     const session = JSON.parse(raw) as SessionData;
     if (String(session.role) !== '5') {
-      throw new UnauthorizedException('관리자 권한 필요 / Admin access required');
+      throw new UnauthorizedException(
+        '관리자 권한 필요 / Admin access required',
+      );
     }
   }
 
@@ -68,10 +77,7 @@ export class AdminPaymentController {
   @ApiOperation({ summary: '주문 상세 / Order detail' })
   @ApiParam({ name: 'id', type: 'number' })
   @ApiResponse({ status: 200, description: '주문 상세 / Order detail' })
-  async getOrderDetail(
-    @Session() sessionId: string,
-    @Param('id') id: string,
-  ) {
+  async getOrderDetail(@Session() sessionId: string, @Param('id') id: string) {
     await this.verifyAdmin(sessionId);
     return this.adminPaymentService.getOrderDetail(parseInt(id));
   }
@@ -116,7 +122,8 @@ export class AdminPaymentController {
   async updateProduct(
     @Session() sessionId: string,
     @Param('id') id: string,
-    @Body() body: { name?: string; price?: number; isActive?: boolean; metadata?: any },
+    @Body()
+    body: { name?: string; price?: number; isActive?: boolean; metadata?: any },
   ) {
     await this.verifyAdmin(sessionId);
     return this.adminPaymentService.updateProduct(parseInt(id), body);
@@ -137,7 +144,8 @@ export class AdminPaymentController {
   @ApiResponse({ status: 201, description: '쿠폰 생성 완료 / Coupon created' })
   async createCoupon(
     @Session() sessionId: string,
-    @Body() body: {
+    @Body()
+    body: {
       code: string;
       name: string;
       type: string;

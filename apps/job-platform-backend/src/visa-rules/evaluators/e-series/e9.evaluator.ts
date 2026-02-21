@@ -43,9 +43,7 @@ export class E9Evaluator extends BaseVisaEvaluator {
     // 2. 유흥/사행업종 금지 (DB: IndustryCode 플래그) / Entertainment/gambling blocked (DB flags)
     const flags = input.inputIndustryFlags;
     if (flags?.isEntertainment || flags?.isGambling) {
-      result.blockedReasons.push(
-        '유흥업소/사행업종은 E-9 비자 취업 금지 업종',
-      );
+      result.blockedReasons.push('유흥업소/사행업종은 E-9 비자 취업 금지 업종');
       return result;
     }
 

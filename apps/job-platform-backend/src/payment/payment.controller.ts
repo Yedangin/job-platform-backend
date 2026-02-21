@@ -8,13 +8,24 @@ import {
   ParseIntPipe,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiQuery, ApiResponse, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiParam,
+} from '@nestjs/swagger';
 import { Session, RedisService, SessionData } from 'libs/common/src';
 import { PaymentService } from './payment.service';
 import { ProductService } from './product.service';
 import { CouponService } from './coupon.service';
 import { ViewingCreditService } from './viewing-credit.service';
-import { CreateOrderDto, ConfirmPaymentDto, CancelOrderDto, UseCreditDto } from './dto';
+import {
+  CreateOrderDto,
+  ConfirmPaymentDto,
+  CancelOrderDto,
+  UseCreditDto,
+} from './dto';
 
 /**
  * 결제 REST 컨트롤러 / Payment REST controller
@@ -34,9 +45,13 @@ export class PaymentController {
 
   /** 세션에서 userId 추출 / Extract userId from session */
   private async getUserId(sessionId: string): Promise<string> {
-    if (!sessionId) throw new UnauthorizedException('로그인이 필요합니다 / Login required');
+    if (!sessionId)
+      throw new UnauthorizedException('로그인이 필요합니다 / Login required');
     const sd = await this.redisService.get(`session:${sessionId}`);
-    if (!sd) throw new UnauthorizedException('세션이 만료되었습니다 / Session expired');
+    if (!sd)
+      throw new UnauthorizedException(
+        '세션이 만료되었습니다 / Session expired',
+      );
     const session: SessionData = JSON.parse(sd);
     return session.userId;
   }
@@ -64,13 +79,13 @@ export class PaymentController {
   @Post('orders')
   @ApiOperation({ summary: '주문 생성 / Create order' })
   @ApiResponse({ status: 201, description: '주문 생성 완료 / Order created' })
-  @ApiResponse({ status: 400, description: '쿠폰 유효성 실패 / Coupon validation failed' })
+  @ApiResponse({
+    status: 400,
+    description: '쿠폰 유효성 실패 / Coupon validation failed',
+  })
   @ApiResponse({ status: 401, description: '인증 필요 / Auth required' })
   @ApiResponse({ status: 404, description: '상품 없음 / Product not found' })
-  async createOrder(
-    @Session() sessionId: string,
-    @Body() dto: CreateOrderDto,
-  ) {
+  async createOrder(@Session() sessionId: string, @Body() dto: CreateOrderDto) {
     const userId = await this.getUserId(sessionId);
     return this.paymentService.createOrder(
       userId,
@@ -85,9 +100,14 @@ export class PaymentController {
   // ================================================
 
   @Post('orders/:id/confirm')
-  @ApiOperation({ summary: '결제 확인 / Confirm payment (after PortOne checkout)' })
+  @ApiOperation({
+    summary: '결제 확인 / Confirm payment (after PortOne checkout)',
+  })
   @ApiParam({ name: 'id', type: 'number', description: '주문 ID / Order ID' })
-  @ApiResponse({ status: 200, description: '결제 확인 완료 / Payment confirmed' })
+  @ApiResponse({
+    status: 200,
+    description: '결제 확인 완료 / Payment confirmed',
+  })
   @ApiResponse({ status: 400, description: '금액 불일치 / Amount mismatch' })
   @ApiResponse({ status: 401, description: '인증 필요 / Auth required' })
   @ApiResponse({ status: 404, description: '주문 없음 / Order not found' })
@@ -200,12 +220,12 @@ export class PaymentController {
   @ApiTags('Viewing Credits / 열람권')
   @ApiOperation({ summary: '열람권 사용 / Use viewing credit' })
   @ApiResponse({ status: 200, description: '열람 성공 / View success' })
-  @ApiResponse({ status: 400, description: '열람권 부족 / Insufficient credits' })
+  @ApiResponse({
+    status: 400,
+    description: '열람권 부족 / Insufficient credits',
+  })
   @ApiResponse({ status: 401, description: '인증 필요 / Auth required' })
-  async useCredit(
-    @Session() sessionId: string,
-    @Body() dto: UseCreditDto,
-  ) {
+  async useCredit(@Session() sessionId: string, @Body() dto: UseCreditDto) {
     const userId = await this.getUserId(sessionId);
     return this.viewingCreditService.useCredit(userId, dto.resumeId);
   }
@@ -217,7 +237,10 @@ export class PaymentController {
   @Get('viewing-credits/history')
   @ApiTags('Viewing Credits / 열람권')
   @ApiOperation({ summary: '열람 기록 / Viewing history' })
-  @ApiResponse({ status: 200, description: '열람 기록 목록 / Viewing history list' })
+  @ApiResponse({
+    status: 200,
+    description: '열람 기록 목록 / Viewing history list',
+  })
   @ApiResponse({ status: 401, description: '인증 필요 / Auth required' })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })

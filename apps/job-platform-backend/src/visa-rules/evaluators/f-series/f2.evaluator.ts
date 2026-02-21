@@ -80,8 +80,8 @@ export class F2Evaluator extends BaseVisaEvaluator {
     result.scoreBreakdown = breakdown;
 
     const breakdownStr = breakdown
-      .filter(b => b.score > 0)
-      .map(b => `${b.categoryName}: ${b.score}점`)
+      .filter((b) => b.score > 0)
+      .map((b) => `${b.categoryName}: ${b.score}점`)
       .join(', ');
     result.notes.push(`점수 내역: ${breakdownStr || '해당 없음'}`);
 
@@ -110,11 +110,17 @@ export class F2Evaluator extends BaseVisaEvaluator {
       case 'AGE':
         return this.evaluateRangeCriteria(category.criteria, input.age);
       case 'EDUCATION':
-        return this.evaluateMatchCriteria(category.criteria, input.educationLevel);
+        return this.evaluateMatchCriteria(
+          category.criteria,
+          input.educationLevel,
+        );
       case 'KOREAN':
         return this.evaluateKoreanLevel(category.criteria, input);
       case 'INCOME':
-        return this.evaluateRangeCriteria(category.criteria, input.incomeGniPercent);
+        return this.evaluateRangeCriteria(
+          category.criteria,
+          input.incomeGniPercent,
+        );
       case 'SOCIAL':
         return this.evaluateSocialPoints(category.criteria, input);
       default:
@@ -124,7 +130,9 @@ export class F2Evaluator extends BaseVisaEvaluator {
 
   /** 범위 기반 기준 (나이, 소득) / Range-based criteria (age, income) */
   private evaluateRangeCriteria(
-    criteria: NonNullable<VisaTypeWithRelations['pointCategories']>[number]['criteria'],
+    criteria: NonNullable<
+      VisaTypeWithRelations['pointCategories']
+    >[number]['criteria'],
     value: number | undefined,
   ): { score: number; detail: string } {
     if (value === undefined) return { score: 0, detail: '정보 미입력' };
@@ -140,40 +148,60 @@ export class F2Evaluator extends BaseVisaEvaluator {
 
   /** 매칭 기반 기준 (학력) / Match-based criteria (education) */
   private evaluateMatchCriteria(
-    criteria: NonNullable<VisaTypeWithRelations['pointCategories']>[number]['criteria'],
+    criteria: NonNullable<
+      VisaTypeWithRelations['pointCategories']
+    >[number]['criteria'],
     value: string | undefined,
   ): { score: number; detail: string } {
     if (!value) return { score: 0, detail: '정보 미입력' };
-    const match = criteria.find(c => c.matchValue === value);
+    const match = criteria.find((c) => c.matchValue === value);
     if (match) {
-      return { score: match.score, detail: `${match.criteriaName} → ${match.score}점` };
+      return {
+        score: match.score,
+        detail: `${match.criteriaName} → ${match.score}점`,
+      };
     }
     return { score: 0, detail: '해당 기준 없음' };
   }
 
   /** 한국어능력 (TOPIK + KIIP) / Korean proficiency (TOPIK + KIIP) */
   private evaluateKoreanLevel(
-    criteria: NonNullable<VisaTypeWithRelations['pointCategories']>[number]['criteria'],
+    criteria: NonNullable<
+      VisaTypeWithRelations['pointCategories']
+    >[number]['criteria'],
     input: EvaluateVisaInput,
   ): { score: number; detail: string } {
     const results: { score: number; detail: string }[] = [];
 
     if (input.koreanLevel) {
-      const topik = criteria.find(c => c.matchValue === input.koreanLevel);
-      if (topik) results.push({ score: topik.score, detail: `${topik.criteriaName} → ${topik.score}점` });
+      const topik = criteria.find((c) => c.matchValue === input.koreanLevel);
+      if (topik)
+        results.push({
+          score: topik.score,
+          detail: `${topik.criteriaName} → ${topik.score}점`,
+        });
     }
     if (input.socialIntegrationLevel) {
-      const kiip = criteria.find(c => c.matchValue === `KIIP${input.socialIntegrationLevel}`);
-      if (kiip) results.push({ score: kiip.score, detail: `${kiip.criteriaName} → ${kiip.score}점` });
+      const kiip = criteria.find(
+        (c) => c.matchValue === `KIIP${input.socialIntegrationLevel}`,
+      );
+      if (kiip)
+        results.push({
+          score: kiip.score,
+          detail: `${kiip.criteriaName} → ${kiip.score}점`,
+        });
     }
 
-    if (results.length === 0) return { score: 0, detail: '한국어능력 정보 미입력' };
+    if (results.length === 0)
+      return { score: 0, detail: '한국어능력 정보 미입력' };
     return results.reduce((a, b) => (a.score >= b.score ? a : b));
   }
 
   /** 사회통합 가산점 (복수 항목 합산) / Social integration bonus (sum multiple items) */
   private evaluateSocialPoints(
-    criteria: NonNullable<VisaTypeWithRelations['pointCategories']>[number]['criteria'],
+    criteria: NonNullable<
+      VisaTypeWithRelations['pointCategories']
+    >[number]['criteria'],
     input: EvaluateVisaInput,
   ): { score: number; detail: string } {
     let total = 0;
@@ -181,15 +209,19 @@ export class F2Evaluator extends BaseVisaEvaluator {
 
     const check = (matchValue: string, condition: boolean) => {
       if (!condition) return;
-      const c = criteria.find(cr => cr.matchValue === matchValue);
+      const c = criteria.find((cr) => cr.matchValue === matchValue);
       if (c) {
         total += c.score;
-        details.push(`${c.criteriaName}: ${c.score > 0 ? '+' : ''}${c.score}점`);
+        details.push(
+          `${c.criteriaName}: ${c.score > 0 ? '+' : ''}${c.score}점`,
+        );
       }
     };
 
-    if (input.volunteerHours && input.volunteerHours >= 40) check('VOLUNTEER_40H', true);
-    else if (input.volunteerHours && input.volunteerHours >= 20) check('VOLUNTEER_20H', true);
+    if (input.volunteerHours && input.volunteerHours >= 40)
+      check('VOLUNTEER_40H', true);
+    else if (input.volunteerHours && input.volunteerHours >= 20)
+      check('VOLUNTEER_20H', true);
 
     check('KR_CHILD', input.hasKoreanChild === true);
     check('GOV_RECOMMEND', input.hasRecommendation === true);

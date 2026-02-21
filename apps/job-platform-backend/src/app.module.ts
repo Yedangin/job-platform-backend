@@ -33,6 +33,9 @@ import { LoggingModule } from './logging/logging.module';
 import { LawAmendmentModule } from './law-amendment/law-amendment.module';
 import { PaymentModule } from './payment/payment.module';
 import { DiagnosisModule } from './diagnosis/diagnosis.module';
+import { AlbaVisaMatchingModule } from './alba-visa/alba-visa-matching.module';
+import { FulltimeVisaModule } from './fulltime-visa/fulltime-visa.module';
+import { InstitutionsModule } from './institutions/institutions.module';
 import { RequestLogInterceptor } from './logging/request-log.interceptor';
 import { ErrorLogFilter } from './logging/error-log.filter';
 
@@ -93,6 +96,9 @@ import { ErrorLogFilter } from './logging/error-log.filter';
     LawAmendmentModule,
     PaymentModule,
     DiagnosisModule,
+    AlbaVisaMatchingModule,
+    FulltimeVisaModule,
+    InstitutionsModule,
   ],
   controllers: [],
   providers: [

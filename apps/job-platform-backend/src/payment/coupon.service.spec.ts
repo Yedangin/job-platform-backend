@@ -101,9 +101,9 @@ describe('CouponService', () => {
     it('존재하지 않는 쿠폰 / should reject non-existent coupon', async () => {
       mockPaymentPrisma.coupon.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.validate('INVALID', 'user-1'),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.validate('INVALID', 'user-1')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 

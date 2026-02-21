@@ -42,13 +42,12 @@ export class VisaCheckController {
   // ==========================================
   @Post('check')
   @ApiOperation({
-    summary: '소거 알고리즘 기반 비자 적격성 체크 / Elimination-based visa eligibility check',
-    description: '9단계 소거 알고리즘으로 특정 비자의 적격성 판정. 근로시간, 조건, 경고, 필요서류 반환.',
+    summary:
+      '소거 알고리즘 기반 비자 적격성 체크 / Elimination-based visa eligibility check',
+    description:
+      '9단계 소거 알고리즘으로 특정 비자의 적격성 판정. 근로시간, 조건, 경고, 필요서류 반환.',
   })
-  async checkVisa(
-    @Session() sessionId: string,
-    @Body() input: VisaCheckInput,
-  ) {
+  async checkVisa(@Session() sessionId: string, @Body() input: VisaCheckInput) {
     await this.requireAuth(sessionId);
     return await this.visaCheckService.checkVisaEligibility(input);
   }
@@ -59,16 +58,42 @@ export class VisaCheckController {
   // ==========================================
   @Get('eligible-visas')
   @ApiOperation({
-    summary: '채용공고 조건으로 가능한 비자 목록 / Eligible visas for job conditions',
-    description: '채용공고의 업종/고용유형/급여/직종으로 31개 비자 유형 일괄 평가. 채용가능/조건부/불가 3그룹 분류.',
+    summary:
+      '채용공고 조건으로 가능한 비자 목록 / Eligible visas for job conditions',
+    description:
+      '채용공고의 업종/고용유형/급여/직종으로 31개 비자 유형 일괄 평가. 채용가능/조건부/불가 3그룹 분류.',
   })
   @ApiQuery({ name: 'ksicCode', required: true, description: 'KSIC 업종코드' })
-  @ApiQuery({ name: 'companySizeType', required: true, description: 'SME, MID, LARGE, STARTUP' })
-  @ApiQuery({ name: 'jobType', required: true, description: 'FULL_TIME, PART_TIME' })
-  @ApiQuery({ name: 'offeredSalary', required: true, description: '제시급여 (만원/월)' })
-  @ApiQuery({ name: 'employeeCountKorean', required: true, description: '한국인 직원 수' })
-  @ApiQuery({ name: 'employeeCountForeign', required: true, description: '외국인 직원 수' })
-  @ApiQuery({ name: 'targetOccupationCode', required: false, description: 'KSCO 직종코드' })
+  @ApiQuery({
+    name: 'companySizeType',
+    required: true,
+    description: 'SME, MID, LARGE, STARTUP',
+  })
+  @ApiQuery({
+    name: 'jobType',
+    required: true,
+    description: 'FULL_TIME, PART_TIME',
+  })
+  @ApiQuery({
+    name: 'offeredSalary',
+    required: true,
+    description: '제시급여 (만원/월)',
+  })
+  @ApiQuery({
+    name: 'employeeCountKorean',
+    required: true,
+    description: '한국인 직원 수',
+  })
+  @ApiQuery({
+    name: 'employeeCountForeign',
+    required: true,
+    description: '외국인 직원 수',
+  })
+  @ApiQuery({
+    name: 'targetOccupationCode',
+    required: false,
+    description: 'KSCO 직종코드',
+  })
   async getEligibleVisas(
     @Session() sessionId: string,
     @Query('ksicCode') ksicCode: string,
@@ -98,7 +123,8 @@ export class VisaCheckController {
   @Get('eligible-jobs/:visaCode')
   @ApiOperation({
     summary: '비자별 허용 업종/직종 조건 / Allowed job conditions for visa',
-    description: '특정 비자로 취업 가능한 업종(KSIC), 직종(KSCO), 금지업종, 근로시간 제한 반환.',
+    description:
+      '특정 비자로 취업 가능한 업종(KSIC), 직종(KSCO), 금지업종, 근로시간 제한 반환.',
   })
   @ApiParam({ name: 'visaCode', description: '비자 코드 (예: E-9, H-2, F-4)' })
   async getEligibleJobs(
@@ -116,9 +142,13 @@ export class VisaCheckController {
   @Get('transitions/:visaCode')
   @ApiOperation({
     summary: '비자 전환 경로 + 조건 + 필요서류 / Visa transition paths',
-    description: '현재 비자에서 전환 가능한 비자 목록, 조건, 필요서류, 예상 소요기간 반환. 전환 체인(경로 시각화)도 포함.',
+    description:
+      '현재 비자에서 전환 가능한 비자 목록, 조건, 필요서류, 예상 소요기간 반환. 전환 체인(경로 시각화)도 포함.',
   })
-  @ApiParam({ name: 'visaCode', description: '현재 비자 코드 (예: D-2, E-9, H-2)' })
+  @ApiParam({
+    name: 'visaCode',
+    description: '현재 비자 코드 (예: D-2, E-9, H-2)',
+  })
   async getTransitions(
     @Session() sessionId: string,
     @Param('visaCode') visaCode: string,

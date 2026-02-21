@@ -70,7 +70,11 @@ export interface EligibleVisaItem {
   visaNameEn: string | null;
   employmentLevel: string;
   eligible: boolean;
-  hours: { weekday: number | null; weekend: string | null; vacation: string | null } | null;
+  hours: {
+    weekday: number | null;
+    weekend: string | null;
+    vacation: string | null;
+  } | null;
   conditions: string[];
   warnings: string[];
   blockedReasons: string[];
@@ -195,7 +199,10 @@ export class VisaCheckService {
     // Step 8: 고용인원 확인 / Hire quota check
     const warnings: string[] = [];
     const quotaWarning = await this.checkHireQuota(
-      visaType, ksicCode, input.employeeCountKorean, input.employeeCountForeign,
+      visaType,
+      ksicCode,
+      input.employeeCountKorean,
+      input.employeeCountForeign,
     );
     if (quotaWarning) warnings.push(quotaWarning);
 
@@ -222,7 +229,8 @@ export class VisaCheckService {
       hours,
       conditions: evalResult?.restrictions ?? [],
       warnings: [...warnings, ...(evalResult?.notes ?? [])],
-      requiredDocuments: evalResult?.documents ?? this.extractDocuments(visaType),
+      requiredDocuments:
+        evalResult?.documents ?? this.extractDocuments(visaType),
       score,
       requiredScore,
       scoreBreakdown,
@@ -263,7 +271,10 @@ export class VisaCheckService {
     };
 
     // 기존 ruleEngine으로 전체 평가 수행 / Run full evaluation via existing engine
-    const result = await this.ruleEngine.evaluateVisaEligibility(evalInput, true);
+    const result = await this.ruleEngine.evaluateVisaEligibility(
+      evalInput,
+      true,
+    );
 
     // 결과를 3그룹으로 분류 / Classify into 3 groups
     const eligible: EligibleVisaItem[] = [];
@@ -271,7 +282,9 @@ export class VisaCheckService {
     const blocked: EligibleVisaItem[] = [];
 
     for (const ev of result.eligibleVisas) {
-      const vt = await this.prisma.visaType.findUnique({ where: { code: ev.code } });
+      const vt = await this.prisma.visaType.findUnique({
+        where: { code: ev.code },
+      });
       const item: EligibleVisaItem = {
         visaCode: ev.code,
         visaNameKo: ev.nameKo,
@@ -296,7 +309,9 @@ export class VisaCheckService {
     }
 
     for (const bv of result.blockedVisas) {
-      const vt = await this.prisma.visaType.findUnique({ where: { code: bv.code } });
+      const vt = await this.prisma.visaType.findUnique({
+        where: { code: bv.code },
+      });
       blocked.push({
         visaCode: bv.code,
         visaNameKo: bv.nameKo,
@@ -340,11 +355,15 @@ export class VisaCheckService {
       include: {
         industryMappings: {
           where: { isAllowed: true },
-          include: { industryCode: { select: { ksicCode: true, nameKo: true } } },
+          include: {
+            industryCode: { select: { ksicCode: true, nameKo: true } },
+          },
         },
         occupationMappings: {
           where: { isAllowed: true },
-          include: { occupationCode: { select: { kscoCode: true, nameKo: true } } },
+          include: {
+            occupationCode: { select: { kscoCode: true, nameKo: true } },
+          },
         },
         prohibitedIndustries: true,
       },
@@ -372,15 +391,15 @@ export class VisaCheckService {
       visaNameKo: vt.nameKo,
       employmentLevel: vt.employmentLevel,
       workType: vt.workType,
-      allowedIndustries: vt.industryMappings.map(m => ({
+      allowedIndustries: vt.industryMappings.map((m) => ({
         ksicCode: m.industryCode.ksicCode,
         nameKo: m.industryCode.nameKo,
       })),
-      allowedOccupations: vt.occupationMappings.map(m => ({
+      allowedOccupations: vt.occupationMappings.map((m) => ({
         kscoCode: m.occupationCode.kscoCode,
         nameKo: m.occupationCode.nameKo,
       })),
-      prohibitedIndustries: vt.prohibitedIndustries.map(p => ({
+      prohibitedIndustries: vt.prohibitedIndustries.map((p) => ({
         ksicCode: p.ksicCode,
         reasonKo: p.reasonKo,
       })),
@@ -414,17 +433,17 @@ export class VisaCheckService {
     const allChains = await this.prisma.visaTransitionChain.findMany({
       where: { isActive: true },
     });
-    const relevantChains = allChains.filter(
-      c => c.visaPath.includes(visaCode),
+    const relevantChains = allChains.filter((c) =>
+      c.visaPath.includes(visaCode),
     );
 
     // 전환 대상 비자 이름 조회 / Load target visa names
-    const toVisaCodes = transitions.map(t => t.toVisa);
+    const toVisaCodes = transitions.map((t) => t.toVisa);
     const toVisaTypes = await this.prisma.visaType.findMany({
       where: { code: { in: toVisaCodes } },
       select: { code: true, nameKo: true },
     });
-    const visaNameMap = new Map(toVisaTypes.map(v => [v.code, v.nameKo]));
+    const visaNameMap = new Map(toVisaTypes.map((v) => [v.code, v.nameKo]));
 
     // 전환별 필요서류 조회 / Load required documents for target visas
     const transitionResults = await Promise.all(
@@ -432,14 +451,22 @@ export class VisaCheckService {
         let conditions: Record<string, unknown> = {};
         try {
           conditions = JSON.parse(t.conditions ?? '{}');
-        } catch { /* 파싱 실패 무시 / Ignore parse error */ }
+        } catch {
+          /* 파싱 실패 무시 / Ignore parse error */
+        }
 
         // 대상 비자의 서류 / Target visa documents
         const targetVt = await this.prisma.visaType.findUnique({
           where: { code: t.toVisa },
-          include: { requiredDocuments: { where: { isRequired: true }, orderBy: { sortOrder: 'asc' } } },
+          include: {
+            requiredDocuments: {
+              where: { isRequired: true },
+              orderBy: { sortOrder: 'asc' },
+            },
+          },
         });
-        const docs = targetVt?.requiredDocuments.map(d => d.documentName) ?? [];
+        const docs =
+          targetVt?.requiredDocuments.map((d) => d.documentName) ?? [];
 
         return {
           toVisa: t.toVisa,
@@ -457,10 +484,12 @@ export class VisaCheckService {
       fromVisa: visaCode,
       fromVisaName: vt.nameKo,
       transitions: transitionResults,
-      chains: relevantChains.map(c => ({
+      chains: relevantChains.map((c) => ({
         chainName: c.chainNameKo,
         visaPath: c.visaPath,
-        totalEstimatedYears: c.totalEstimatedYears ? Number(c.totalEstimatedYears) : null,
+        totalEstimatedYears: c.totalEstimatedYears
+          ? Number(c.totalEstimatedYears)
+          : null,
         description: c.descriptionKo,
       })),
     };
@@ -567,7 +596,8 @@ export class VisaCheckService {
   }): VisaCheckResult['hours'] {
     if (visaType.workType === 'unrestricted') return null;
 
-    const weekday = visaType.baseWeeklyHours ?? visaType.maxWorkHoursWeekly ?? null;
+    const weekday =
+      visaType.baseWeeklyHours ?? visaType.maxWorkHoursWeekly ?? null;
     return {
       weekday,
       weekend: visaType.weekendHolidayRule ?? null,
@@ -586,8 +616,8 @@ export class VisaCheckService {
     if (quotaRules.length === 0) return null;
 
     // 업종 매칭되는 쿼터 규칙 찾기 / Find matching quota rule for industry
-    const matchedQuota = quotaRules.find(
-      (q: any) => ksicCode.startsWith(q.industryCode.ksicCode),
+    const matchedQuota = quotaRules.find((q: any) =>
+      ksicCode.startsWith(q.industryCode.ksicCode),
     );
     if (!matchedQuota) return null;
 
@@ -618,7 +648,8 @@ export class VisaCheckService {
       conditions: data.conditions ?? [],
       warnings: data.warnings ?? [],
       blockedReasons: data.blockedReasons ?? [],
-      requiredDocuments: data.requiredDocuments ?? this.extractDocuments(visaType),
+      requiredDocuments:
+        data.requiredDocuments ?? this.extractDocuments(visaType),
       score: data.score,
       requiredScore: data.requiredScore,
       scoreBreakdown: data.scoreBreakdown,

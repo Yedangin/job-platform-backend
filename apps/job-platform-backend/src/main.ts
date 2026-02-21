@@ -34,7 +34,10 @@ async function bootstrap() {
     .addTag('Resumes', '이력서 / Resume management')
     .addTag('Visa Verification', '비자 인증 / Visa verification')
     .addTag('Admin', '어드민 / Admin management')
-    .addTag('Law Amendment Management', '법령 변경 관리 / Law amendment management')
+    .addTag(
+      'Law Amendment Management',
+      '법령 변경 관리 / Law amendment management',
+    )
     .addTag('Policy Monitoring', '정책 모니터링 / Policy change monitoring')
     .addTag('Payments', '결제 / Payment system')
     .addTag('Logs', '시스템 로그 / System logs')

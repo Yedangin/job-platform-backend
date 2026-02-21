@@ -60,7 +60,9 @@ export class AdminDiagnosisController {
   // ============================================================
 
   @Get('matrix')
-  @ApiOperation({ summary: '진단 매트릭스 전체 조회 / Get full diagnosis matrix' })
+  @ApiOperation({
+    summary: '진단 매트릭스 전체 조회 / Get full diagnosis matrix',
+  })
   async getMatrix(@Session() sessionId: string) {
     await this.requireAdmin(sessionId);
     return this.diagnosisEngine.getMatrix();
@@ -71,7 +73,9 @@ export class AdminDiagnosisController {
   // ============================================================
 
   @Patch('matrix/:pathwayId')
-  @ApiOperation({ summary: '매트릭스 점수 수정 / Update matrix score for a pathway' })
+  @ApiOperation({
+    summary: '매트릭스 점수 수정 / Update matrix score for a pathway',
+  })
   @ApiParam({ name: 'pathwayId', example: 'PW-003' })
   async updateMatrixScore(
     @Session() sessionId: string,
@@ -99,9 +103,24 @@ export class AdminDiagnosisController {
 
   @Get('analytics')
   @ApiOperation({ summary: '진단 분석 통계 / Diagnosis analytics' })
-  @ApiQuery({ name: 'from', required: false, description: '시작 날짜 / Start date (ISO)', example: '2026-01-01' })
-  @ApiQuery({ name: 'to', required: false, description: '종료 날짜 / End date (ISO)', example: '2026-12-31' })
-  @ApiQuery({ name: 'groupBy', required: false, description: '그룹 기준 / Group by', enum: ['pathway', 'nationality', 'age'] })
+  @ApiQuery({
+    name: 'from',
+    required: false,
+    description: '시작 날짜 / Start date (ISO)',
+    example: '2026-01-01',
+  })
+  @ApiQuery({
+    name: 'to',
+    required: false,
+    description: '종료 날짜 / End date (ISO)',
+    example: '2026-12-31',
+  })
+  @ApiQuery({
+    name: 'groupBy',
+    required: false,
+    description: '그룹 기준 / Group by',
+    enum: ['pathway', 'nationality', 'age'],
+  })
   async getAnalytics(
     @Session() sessionId: string,
     @Query('from') from?: string,
@@ -110,7 +129,9 @@ export class AdminDiagnosisController {
   ) {
     await this.requireAdmin(sessionId);
 
-    const fromDate = from ? new Date(from) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const fromDate = from
+      ? new Date(from)
+      : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     const toDate = to ? new Date(to) : new Date();
     const group = groupBy ?? 'pathway';
 

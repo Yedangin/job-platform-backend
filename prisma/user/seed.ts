@@ -1,5 +1,8 @@
 import { PrismaClient } from '../../generated/prisma-user';
 import * as bcrypt from 'bcrypt';
+import { EDUCATIONAL_INSTITUTIONS } from './seeds/educational-institutions.seed';
+import { EXTENDED_UNIVERSITIES, EXTENDED_LANGUAGE_INSTITUTES } from './seeds/educational-institutions-extended.seed';
+import { ADDITIONAL_COLLEGES, ADDITIONAL_UNIVERSITIES, ADDITIONAL_LANGUAGE_INSTITUTES } from './seeds/educational-institutions-additional.seed';
 
 const prisma = new PrismaClient();
 
@@ -31,7 +34,12 @@ async function main() {
   }
 
   // ============================
-  // 2. 리브소프트 샘플 공고 생성
+  // 2. 교육기관 마스터 데이터 생성
+  // ============================
+  await seedEducationalInstitutions();
+
+  // ============================
+  // 3. 리브소프트 샘플 공고 생성
   // ============================
   await seedLivesoftJobPostings();
 }
@@ -188,6 +196,53 @@ async function seedLivesoftJobPostings() {
     },
   });
   console.log('[Seed] 리브소프트 정규직 공고 생성 완료:', fulltimePosting.id.toString());
+}
+
+async function seedEducationalInstitutions() {
+  console.log('[Seed] 교육기관 마스터 데이터 시딩 시작...');
+
+  const existingCount = await prisma.educationalInstitution.count();
+
+  if (existingCount > 0) {
+    console.log(`[Seed] 교육기관 데이터가 이미 ${existingCount}건 존재합니다. 스킵합니다.`);
+    return;
+  }
+
+  // 기본 50 + 확장 대학 90 + 확장 어학당 50 + 추가 전문대 74 + 추가 대학 5 + 추가 어학당 4 = 총 ~273개
+  // Base 50 + Extended universities 90 + Extended language institutes 50 + Additional colleges 74 + Additional universities 5 + Additional language institutes 4 = Total ~273
+  const allInstitutions = [
+    ...EDUCATIONAL_INSTITUTIONS,
+    ...EXTENDED_UNIVERSITIES,
+    ...EXTENDED_LANGUAGE_INSTITUTES,
+    ...ADDITIONAL_COLLEGES,
+    ...ADDITIONAL_UNIVERSITIES,
+    ...ADDITIONAL_LANGUAGE_INSTITUTES,
+  ];
+
+  let createdCount = 0;
+  for (const inst of allInstitutions) {
+    try {
+      await prisma.educationalInstitution.create({
+        data: {
+          name: inst.name,
+          nameEn: inst.nameEn,
+          type: inst.type,
+          address: inst.address,
+          addressDetail: inst.addressDetail,
+          latitude: inst.latitude,
+          longitude: inst.longitude,
+          isMetroArea: inst.isMetroArea,
+          affiliatedUniversity: inst.affiliatedUniversity,
+          searchKeywords: inst.searchKeywords,
+        },
+      });
+      createdCount++;
+    } catch (error) {
+      console.error(`[Seed] 교육기관 생성 실패: ${inst.name}`, error);
+    }
+  }
+
+  console.log(`[Seed] 교육기관 ${createdCount}/${allInstitutions.length}건 생성 완료`);
 }
 
 main()

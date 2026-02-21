@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  BadRequestException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { PaymentPrismaService } from 'libs/common/src';
 
 /**
@@ -70,7 +66,10 @@ export class ViewingCreditService {
    * 가장 먼저 만료되는 크레딧부터 차감 (FIFO)
    * Deducts from the earliest-expiring credit first (FIFO)
    */
-  async useCredit(userId: string, resumeId: number): Promise<{ success: boolean; remainingCredits: number }> {
+  async useCredit(
+    userId: string,
+    resumeId: number,
+  ): Promise<{ success: boolean; remainingCredits: number }> {
     // 이미 열람한 이력서인지 확인 / Check if already viewed
     const existing = await this.paymentPrisma.viewingLog.findFirst({
       where: { userId, resumeId: BigInt(resumeId) },
@@ -93,9 +92,7 @@ export class ViewingCreditService {
       orderBy: { expiresAt: 'asc' },
     });
 
-    const availableCredit = credits.find(
-      (c) => c.usedCredits < c.totalCredits,
-    );
+    const availableCredit = credits.find((c) => c.usedCredits < c.totalCredits);
 
     if (!availableCredit) {
       throw new BadRequestException(

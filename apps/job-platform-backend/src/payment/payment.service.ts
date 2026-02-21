@@ -55,7 +55,11 @@ export class PaymentService {
       }
 
       discount = this.couponService.calculateDiscount(
-        { type: coupon.type, value: coupon.value, minOrderAmount: coupon.minOrderAmount },
+        {
+          type: coupon.type,
+          value: coupon.value,
+          minOrderAmount: coupon.minOrderAmount,
+        },
         product.price,
       );
       couponId = coupon.id;
@@ -145,7 +149,9 @@ export class PaymentService {
           method,
           status: 'PAID',
           paidAmount: portonePayment.amount.total,
-          paidAt: portonePayment.paidAt ? new Date(portonePayment.paidAt) : new Date(),
+          paidAt: portonePayment.paidAt
+            ? new Date(portonePayment.paidAt)
+            : new Date(),
           receiptUrl: portonePayment.receiptUrl || null,
           cardInfo: portonePayment.method?.card
             ? JSON.stringify(portonePayment.method.card)
@@ -235,11 +241,13 @@ export class PaymentService {
         const isPremium = job.tierType === 'PREMIUM';
         const extensionKey = isPremium ? 'premium' : 'standard';
         const dayKey = isPartTime ? 'partTime' : 'fullTime';
-        const extensionDays = metadata.extensionDays?.[extensionKey]?.[dayKey] || 30;
+        const extensionDays =
+          metadata.extensionDays?.[extensionKey]?.[dayKey] || 30;
 
-        const baseDate = job.expiresAt && job.expiresAt > new Date()
-          ? job.expiresAt
-          : new Date();
+        const baseDate =
+          job.expiresAt && job.expiresAt > new Date()
+            ? job.expiresAt
+            : new Date();
         const newExpiresAt = new Date(baseDate);
         newExpiresAt.setDate(newExpiresAt.getDate() + extensionDays);
 
@@ -262,7 +270,8 @@ export class PaymentService {
       case 'VIEW_30':
       case 'VIEW_100': {
         // 인재 열람권 생성 / Create viewing credits
-        const credits = metadata.credits || parseInt(product.code.replace('VIEW_', ''));
+        const credits =
+          metadata.credits || parseInt(product.code.replace('VIEW_', ''));
         const validDays = metadata.validDays || 30;
 
         await this.viewingCreditService.grantCredits(
@@ -361,7 +370,8 @@ export class PaymentService {
         where: { id: order.payment.id },
         data: {
           status: 'CANCELLED',
-          cancelledAmount: cancelResult.cancelledAmount || order.payment.paidAmount,
+          cancelledAmount:
+            cancelResult.cancelledAmount || order.payment.paidAmount,
           cancelledAt: new Date(),
           cancelReason: reason,
         },
@@ -375,7 +385,9 @@ export class PaymentService {
     // 상품 효과 롤백 / Rollback product effect
     await this.rollbackProductEffect(order);
 
-    this.logger.log(`[Payment] 결제 취소: orderId=${orderId}, reason=${reason}`);
+    this.logger.log(
+      `[Payment] 결제 취소: orderId=${orderId}, reason=${reason}`,
+    );
     return { orderId, status: 'CANCELLED', reason };
   }
 

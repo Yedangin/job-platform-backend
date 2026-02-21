@@ -103,7 +103,14 @@ export class LoggingService {
     page?: number;
     limit?: number;
   }) {
-    const { startDate, endDate, statusCode, path, page = 1, limit = 50 } = filter;
+    const {
+      startDate,
+      endDate,
+      statusCode,
+      path,
+      page = 1,
+      limit = 50,
+    } = filter;
     const where: any = {};
 
     if (startDate || endDate) {
@@ -167,7 +174,14 @@ export class LoggingService {
     page?: number;
     limit?: number;
   }) {
-    const { startDate, endDate, errorType, is500Only, page = 1, limit = 50 } = filter;
+    const {
+      startDate,
+      endDate,
+      errorType,
+      is500Only,
+      page = 1,
+      limit = 50,
+    } = filter;
     const where: any = {};
 
     if (startDate || endDate) {
@@ -200,7 +214,14 @@ export class LoggingService {
     page?: number;
     limit?: number;
   }) {
-    const { startDate, endDate, tableName, adminId, page = 1, limit = 50 } = filter;
+    const {
+      startDate,
+      endDate,
+      tableName,
+      adminId,
+      page = 1,
+      limit = 50,
+    } = filter;
     const where: any = {};
 
     if (startDate || endDate) {

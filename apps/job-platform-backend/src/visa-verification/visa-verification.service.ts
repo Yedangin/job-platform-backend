@@ -40,9 +40,7 @@ export class VisaVerificationService {
       );
     const session = JSON.parse(raw) as SessionData;
     if (!session.userId)
-      throw new NotFoundException(
-        '사용자 ID가 없습니다 / User ID not found',
-      );
+      throw new NotFoundException('사용자 ID가 없습니다 / User ID not found');
     return session.userId;
   }
 
@@ -123,9 +121,7 @@ export class VisaVerificationService {
 
     // OCR 실행 / Run OCR
     const absolutePath = path.resolve(file.path);
-    this.logger.log(
-      `OCR 시작: ${absolutePath} / OCR started: ${absolutePath}`,
-    );
+    this.logger.log(`OCR 시작: ${absolutePath} / OCR started: ${absolutePath}`);
 
     let ocrResult: any;
     try {
@@ -212,7 +208,9 @@ export class VisaVerificationService {
       ocrExtracted: extracted,
       ocrConfidence: ocrResult.confidence,
       needsManualReview:
-        visaCode === 'UNKNOWN' || !extracted.expiryDate || ocrResult.confidence < 70,
+        visaCode === 'UNKNOWN' ||
+        !extracted.expiryDate ||
+        ocrResult.confidence < 70,
     };
   }
 
