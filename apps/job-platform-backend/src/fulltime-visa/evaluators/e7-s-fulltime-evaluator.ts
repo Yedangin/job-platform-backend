@@ -1,22 +1,21 @@
-
 /**
  * E-7-S 특정활동(특정전문직종) 비자 정규직 평가기
  * E-7-S Specific Activities (Specialized Professional) Visa Fulltime Evaluator
  *
- * E-7-S 핵심: 고급 전문인력 비자. 석사 이상 + GNI 200% 이상 연봉 필수.
- * E-7-S core: Advanced professional talent visa. Master's+ degree + salary ≥ GNI × 200% required.
+ * E-7-S 핵심: 고소득 전문인력 비자. GNI × 300% 이상 연봉 시 학력/직종 요건 면제.
+ * E-7-S core: High-income professional visa. Salary ≥ GNI × 300% exempts education/occupation requirements.
  *
  * [E-7-S 요건 / E-7-S Requirements]
- * ① 허용 직종: E-7-1과 동일 (91개 전문직종)
- *    Allowed occupations: Same as E-7-1 (91 professional occupations)
- * ② 최소 연봉: 1인당 GNI × 200% 이상
- *    Minimum salary: ≥ GNI per capita × 200%
- *    - 2024년: 85,520,000원 (GNI 42,760,000 × 2.0)
- *    - 2025년: 88,000,000원 (GNI 44,000,000 × 2.0)
- * ③ 학력: 석사학위 이상 필수
- *    Education: Master's degree or higher required
- * ④ 한국어: TOPIK 요구 없음 (고급 인력)
- *    Korean: No TOPIK requirement (advanced talent)
+ * ① 허용 직종: E-7-1과 동일 (91개 전문직종) — 단순노무/풍속영업 제외
+ *    Allowed occupations: Same as E-7-1 (91 professional occupations) — simple labor/adult entertainment excluded
+ * ② 최소 연봉: 1인당 GNI × 300% 이상 (E-7-S1 고소득자 트랙)
+ *    Minimum salary: ≥ GNI per capita × 300% (E-7-S1 high-income track)
+ *    - 2024년: 132,153,000원 (GNI 44,051,000 × 3.0)
+ *    - 2025/26년: 149,865,000원 (GNI 49,955,000 × 3.0)
+ * ③ 학력/경력: GNI × 3.0 충족 시 학력/경력/직종 요건 면제
+ *    Education/Experience: Exempt from education/experience/occupation requirements if salary ≥ GNI × 3.0
+ * ④ 한국어: TOPIK 요구 없음 (고소득자)
+ *    Korean: No TOPIK requirement (high-income earner)
  *
  * [E-7-S 특전 / E-7-S Benefits]
  * - 배우자 동반 취업 가능 (F-1-11 자격)
@@ -32,8 +31,8 @@
  *             E visa holder transfer (E→E job change)
  *
  * [법적 근거 / Legal Basis]
- * 출입국관리법 시행령 제7조제7항 — E-7-S 연봉 기준 (GNI × 2.0)
- * 법무부 고시 — E-7-S 비자 발급 대상 특정전문직종
+ * 출입국관리법 시행령 별표 1의2 제20호 — E-7-S1 고소득자 트랙 (GNI × 3.0)
+ * 법무부 공고 제2025-406호 — 2026년 E-7 체류자격 임금요건 기준
  */
 
 import {
