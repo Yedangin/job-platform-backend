@@ -4,6 +4,7 @@ export * from './common.service';
 // Decorators
 export * from './common/decorator/current-user.decorator';
 export * from './common/decorator/current-session.decorator';
+export * from './common/decorator/get-pagination-data.decorator';
 export * from './common/decorator/public.decorator';
 export * from './common/decorator/role.decorator';
 export * from './common/decorator/session.decorator';
