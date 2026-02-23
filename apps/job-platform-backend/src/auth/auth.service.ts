@@ -67,8 +67,15 @@ export class AuthService implements OnModuleInit {
   // ✅ 서버 시작 시 Admin 계정 자동 생성
   async onModuleInit() {
     try {
-      const adminEmail = 'admin';
-      const adminPassword = 'adminpage1!';
+      const adminEmail = process.env.ADMIN_EMAIL;
+      const adminPassword = process.env.ADMIN_PASSWORD;
+
+      if (!adminEmail || !adminPassword) {
+        console.warn(
+          '[Admin] ⚠️ ADMIN_EMAIL 또는 ADMIN_PASSWORD 환경 변수가 설정되지 않았습니다. 관리자 계정 생성을 건너뜁니다.',
+        );
+        return;
+      }
 
       const existingAdmin = await this.prisma.user.findFirst({
         where: { email: adminEmail },
@@ -85,9 +92,7 @@ export class AuthService implements OnModuleInit {
             isActive: true,
           },
         });
-        console.log(
-          '[Admin] ✅ 관리자 계정이 생성되었습니다. (admin / adminpage1!)',
-        );
+        console.log('[Admin] ✅ 관리자 계정이 생성되었습니다.');
       } else {
         console.log('[Admin] ✅ 관리자 계정이 이미 존재합니다.');
       }
@@ -621,17 +626,107 @@ export class AuthService implements OnModuleInit {
     const user = await this.prisma.user.findFirst({ where: { email } });
     if (!user) throw new NotFoundException('User does not exist');
 
+    if (user.socialProvider !== 'NONE') {
+      throw new BadRequestException(
+        '소셜 로그인 계정은 비밀번호 초기화를 사용할 수 없습니다.',
+      );
+    }
+
     const token = crypto.randomBytes(32).toString('hex');
     await this.redisService.set(`pw_reset:${token}`, user.id, 3600);
 
+    // Send password reset email via SES (background)
+    setImmediate(async () => {
+      const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
+      const command = new SendEmailCommand({
+        Source: process.env.MAIL_FROM,
+        Destination: { ToAddresses: [email] },
+        Message: {
+          Subject: {
+            Data: '[JobChaja] 비밀번호 재설정 안내',
+            Charset: 'UTF-8',
+          },
+          Body: {
+            Html: {
+              Data: this.getPasswordResetEmailTemplate(resetUrl),
+              Charset: 'UTF-8',
+            },
+          },
+        },
+      });
+
+      try {
+        await this.sesClient.send(command);
+        console.log(`[AWS SES 전송 성공] Password reset email to: ${email}`);
+      } catch (error) {
+        console.error('[AWS SES 전송 실패] Password reset email:', error);
+      }
+    });
+
+    await this.logActivity(
+      user.id,
+      email,
+      null,
+      null,
+      'PASSWORD_RESET_REQUEST',
+      '비밀번호 재설정 요청',
+    );
+
     return {
-      message: `Password reset token (Redis): ${token}`,
+      message: '비밀번호 재설정 이메일이 발송되었습니다.',
     };
   }
 
   async resetPassword(token: string, newPw: string) {
-    // TODO: 구현 필요
-    return { message: 'Password reset successful' };
+    const userId = await this.redisService.get(`pw_reset:${token}`);
+    if (!userId) {
+      throw new BadRequestException('유효하지 않거나 만료된 토큰입니다.');
+    }
+
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+
+    const hashedPassword = await bcrypt.hash(newPw, 10);
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { password: hashedPassword },
+    });
+
+    // Delete the used token
+    await this.redisService.del(`pw_reset:${token}`);
+
+    await this.logActivity(
+      user.id,
+      user.email,
+      null,
+      null,
+      'PASSWORD_RESET',
+      '비밀번호 재설정 완료',
+    );
+
+    return { success: true, message: '비밀번호가 재설정되었습니다.' };
+  }
+
+  private getPasswordResetEmailTemplate(resetUrl: string): string {
+    return `
+    <div style="font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; max-width: 500px; margin: 0 auto; padding: 40px 20px; border: 1px solid #eee; border-radius: 12px;">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <h2 style="color: #007bff; margin: 0; font-size: 28px;">JobChaja</h2>
+      </div>
+      <div style="background-color: #f9f9f9; padding: 30px; border-radius: 8px; text-align: center;">
+        <p style="font-size: 16px; color: #555; margin-bottom: 20px;">비밀번호 재설정을 요청하셨습니다.</p>
+        <p style="font-size: 14px; color: #777;">아래 버튼을 클릭하여 새 비밀번호를 설정해주세요.</p>
+        <div style="margin: 30px 0;">
+          <a href="${resetUrl}" style="display: inline-block; padding: 14px 32px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: bold;">비밀번호 재설정</a>
+        </div>
+        <p style="font-size: 13px; color: #999;">이 링크는 <b>1시간</b> 동안 유효합니다.</p>
+        <p style="font-size: 12px; color: #bbb;">본인이 요청하지 않으셨다면 이 이메일을 무시하셔도 됩니다.</p>
+      </div>
+      <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #bbb;">
+        <p>&copy; 2026 JobChaja. All rights reserved.</p>
+      </div>
+    </div>
+    `;
   }
 
   // --- 9. 관리자 대시보드 통계 조회 ---

@@ -143,11 +143,11 @@ export class AuthController {
 
     const sessionId = String(result.sessionId);
 
-    // 쿠키 설정 (domain 제거하여 현재 도메인 사용)
+    const isProduction = process.env.NODE_ENV === 'production';
     res.cookie('sessionId', sessionId, {
       httpOnly: true,
-      secure: false, // 로컬 개발에서는 false
-      sameSite: 'lax',
+      secure: isProduction,
+      sameSite: isProduction ? 'strict' : 'lax',
       maxAge: 2 * 60 * 60 * 1000,
       path: '/',
     });
@@ -155,7 +155,7 @@ export class AuthController {
     console.log('[Login] 쿠키 설정 완료:', {
       sessionId: sessionId.substring(0, 20) + '...',
       httpOnly: true,
-      sameSite: 'lax',
+      secure: isProduction,
     });
 
     return result;
@@ -767,11 +767,11 @@ export class AuthController {
         message: result.message,
       });
 
-      // 쿠키 설정 (domain 제거하여 현재 도메인 사용)
+      const isProduction = process.env.NODE_ENV === 'production';
       res.cookie('sessionId', result.sessionId, {
         httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
+        secure: isProduction,
+        sameSite: isProduction ? 'strict' : 'lax',
         maxAge: 2 * 60 * 60 * 1000,
         path: '/',
       });

@@ -3,17 +3,19 @@ import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     rawBody: true, // 웹훅 서명 검증용 / For webhook signature verification
   });
 
+  app.use(helmet());
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
 
   app.enableCors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'], // 프론트엔드 URL 명시
+    origin: ['http://localhost:3001', 'http://3.36.79.172:3001'],
     allowedHeaders: ['Authorization', 'Content-Type', 'Cookie'],
     exposedHeaders: ['Authorization'],
     credentials: true, // 쿠키 전송 허용
