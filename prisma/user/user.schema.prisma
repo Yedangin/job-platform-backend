@@ -33,11 +33,18 @@ model User {
   deletedAt         DateTime?       @map("deleted_at")
   deleteScheduledAt DateTime?       @map("delete_scheduled_at")
 
-  // [알림 설정]
+  // [알림 설정 / Notification settings]
   notifSms          Boolean         @default(false) @map("notif_sms")
   notifEmail        Boolean         @default(false) @map("notif_email")
   notifKakao        Boolean         @default(false) @map("notif_kakao")
   notifEnabledAt    DateTime?       @map("notif_enabled_at")
+  // [채널별 동의 일시 / Per-channel consent timestamps]
+  notifSmsEnabledAt   DateTime?     @map("notif_sms_enabled_at")
+  notifEmailEnabledAt DateTime?     @map("notif_email_enabled_at")
+  notifKakaoEnabledAt DateTime?     @map("notif_kakao_enabled_at")
+  // [마케팅 수신 동의 / Marketing consent]
+  marketingConsent    Boolean       @default(false) @map("marketing_consent")
+  marketingConsentAt  DateTime?     @map("marketing_consent_at")
 
   // [관계]
   corporate         CorporateProfile?

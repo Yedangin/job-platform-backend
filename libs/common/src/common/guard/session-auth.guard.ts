@@ -24,10 +24,9 @@ export class SessionAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const cookieSessionId = request.cookies?.sessionId;
     const authHeader: string | undefined = request.headers?.authorization;
-    const bearerSessionId =
-      authHeader?.toLowerCase().startsWith('bearer ')
-        ? authHeader.slice(7).trim()
-        : undefined;
+    const bearerSessionId = authHeader?.toLowerCase().startsWith('bearer ')
+      ? authHeader.slice(7).trim()
+      : undefined;
     const sessionId = cookieSessionId || bearerSessionId;
 
     if (!sessionId) {

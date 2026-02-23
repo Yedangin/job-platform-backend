@@ -8,13 +8,7 @@
  * Filters eligible visas in real-time based on job type and weekly hours.
  */
 
-import {
-  IsString,
-  IsNumber,
-  Min,
-  Max,
-  IsNotEmpty,
-} from 'class-validator';
+import { IsString, IsNumber, Min, Max, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 // ─── Request DTO ───
@@ -47,10 +41,16 @@ export class HiringVisaStatusDto {
   @ApiProperty({ description: '비자 코드 / Visa code', example: 'F-2' })
   visaCode: string;
 
-  @ApiProperty({ description: '비자명 (한국어) / Visa name (Korean)', example: '거주' })
+  @ApiProperty({
+    description: '비자명 (한국어) / Visa name (Korean)',
+    example: '거주',
+  })
   visaName: string;
 
-  @ApiProperty({ description: '비자명 (영어) / Visa name (English)', example: 'Residence' })
+  @ApiProperty({
+    description: '비자명 (영어) / Visa name (English)',
+    example: 'Residence',
+  })
   visaNameEn: string;
 
   @ApiProperty({
@@ -66,7 +66,8 @@ export class HiringVisaStatusDto {
   requiresPermit: boolean;
 
   @ApiProperty({
-    description: '최대 주당 근무시간 (null = 무제한) / Max weekly hours (null = unlimited)',
+    description:
+      '최대 주당 근무시간 (null = 무제한) / Max weekly hours (null = unlimited)',
     example: null,
     nullable: true,
   })

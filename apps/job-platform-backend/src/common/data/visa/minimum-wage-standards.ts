@@ -108,7 +108,9 @@ export function getCurrentMinimumWage(referenceDate?: Date): MinimumWageData {
  * @param year 연도 / Year
  * @returns 최저임금 데이터 또는 undefined / Minimum wage data or undefined
  */
-export function getMinimumWageByYear(year: number): MinimumWageData | undefined {
+export function getMinimumWageByYear(
+  year: number,
+): MinimumWageData | undefined {
   return MINIMUM_WAGE_TABLE.find((mw) => mw.year === year);
 }
 

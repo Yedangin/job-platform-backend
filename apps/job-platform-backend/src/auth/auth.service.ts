@@ -413,8 +413,11 @@ export class AuthService implements OnModuleInit {
       sessionData.role,
     );
 
+    // individual/corporate 포함 조회 — fullName 반환에 필요
+    // Fetch with profile relations to derive fullName
     const user = await this.prisma.user.findUnique({
       where: { id: sessionData.userId },
+      include: { individual: true, corporate: true },
     });
 
     if (!user) throw new NotFoundException('User not found');
@@ -424,10 +427,24 @@ export class AuthService implements OnModuleInit {
       user.userType,
     );
 
+    // fullName 파생: 개인=realName, 기업=managerName, 둘 다 없으면 이메일 앞부분
+    // Derive fullName: individual=realName, corporate=managerName, fallback=email prefix
+    const fullName =
+      user.individual?.realName ||
+      user.corporate?.managerName ||
+      user.email.split('@')[0] ||
+      undefined;
+
     return {
       success: true,
       message: 'Profile retrieved successfully',
-      user: this.mapPrismaUserToProto(user),
+      // proto User 타입을 확장하여 fullName, profileImageUrl 포함
+      // Extend proto User type with fullName and profileImageUrl
+      user: {
+        ...this.mapPrismaUserToProto(user),
+        fullName,
+        profileImageUrl: user.individual?.profileImageUrl || undefined,
+      } as unknown as User,
     };
   }
 
@@ -959,6 +976,46 @@ export class AuthService implements OnModuleInit {
     };
   }
 
+  // --- 11-2. 내 프로필 업데이트 (이름, 프로필 이미지) ---
+  // Update my profile (name, profile image)
+  async updateMyProfile(
+    sessionId: string,
+    data: { fullName?: string; profileImageUrl?: string },
+  ) {
+    const userId = await this.getSessionUserId(sessionId);
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { individual: true, corporate: true },
+    });
+    if (!user) throw new NotFoundException('User not found');
+
+    if (user.userType === 'INDIVIDUAL') {
+      // 개인회원: individualProfile.realName, profileImageUrl 업데이트
+      // Individual: update realName and profileImageUrl in individualProfile
+      if (!user.individual) throw new NotFoundException('Individual profile not found');
+      const updateData: Record<string, unknown> = {};
+      if (data.fullName !== undefined) updateData['realName'] = data.fullName.trim();
+      if (data.profileImageUrl !== undefined) updateData['profileImageUrl'] = data.profileImageUrl;
+      await this.prisma.individualProfile.update({
+        where: { authId: userId },
+        data: updateData,
+      });
+    } else if (user.userType === 'CORPORATE') {
+      // 기업회원: corporateProfile.managerName 업데이트
+      // Corporate: update managerName in corporateProfile
+      if (!user.corporate) throw new NotFoundException('Corporate profile not found');
+      const updateData: Record<string, unknown> = {};
+      if (data.fullName !== undefined) updateData['managerName'] = data.fullName.trim();
+      if (data.profileImageUrl !== undefined) updateData['logoImageUrl'] = data.profileImageUrl;
+      await this.prisma.corporateProfile.update({
+        where: { authId: userId },
+        data: updateData,
+      });
+    }
+
+    return { success: true, message: '프로필이 업데이트되었습니다.' };
+  }
+
   // --- 12. 회원탈퇴 (소프트 삭제) ---
   async requestAccountDeletion(sessionId: string) {
     const userId = await this.getSessionUserId(sessionId);
@@ -995,7 +1052,7 @@ export class AuthService implements OnModuleInit {
     };
   }
 
-  // --- 13. 알림 설정 조회 ---
+  // --- 13. 알림 설정 조회 / Get notification settings ---
   async getNotificationSettings(sessionId: string) {
     const userId = await this.getSessionUserId(sessionId);
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
@@ -1006,21 +1063,36 @@ export class AuthService implements OnModuleInit {
       notifEmail: user.notifEmail,
       notifKakao: user.notifKakao,
       notifEnabledAt: user.notifEnabledAt?.toISOString() || null,
+      // 채널별 동의 일시 / Per-channel consent timestamps
+      notifSmsEnabledAt: (user as any).notifSmsEnabledAt?.toISOString() || null,
+      notifEmailEnabledAt: (user as any).notifEmailEnabledAt?.toISOString() || null,
+      notifKakaoEnabledAt: (user as any).notifKakaoEnabledAt?.toISOString() || null,
+      // 마케팅 수신 동의 / Marketing consent
+      marketingConsent: (user as any).marketingConsent ?? false,
+      marketingConsentAt: (user as any).marketingConsentAt?.toISOString() || null,
     };
   }
 
-  // --- 14. 알림 설정 변경 ---
+  // --- 14. 알림 설정 변경 / Update notification settings ---
   async updateNotificationSettings(
     sessionId: string,
     sms: boolean,
     email: boolean,
     kakao: boolean,
+    marketing?: boolean,
   ) {
     const userId = await this.getSessionUserId(sessionId);
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
 
     const hasAnyEnabled = sms || email || kakao;
+    const now = new Date();
+
+    // 채널별 동의 일시: 새로 켜질 때만 갱신, 끌 때는 null / Update timestamp only when turning ON
+    const prevSms = user.notifSms;
+    const prevEmail = user.notifEmail;
+    const prevKakao = user.notifKakao;
+    const prevMarketing = (user as any).marketingConsent ?? false;
 
     await this.prisma.user.update({
       where: { id: userId },
@@ -1028,8 +1100,17 @@ export class AuthService implements OnModuleInit {
         notifSms: sms,
         notifEmail: email,
         notifKakao: kakao,
-        notifEnabledAt: hasAnyEnabled ? new Date() : null,
-      },
+        notifEnabledAt: hasAnyEnabled ? now : null,
+        // 채널별 타임스탬프: ON으로 바뀌면 현재 시각, OFF로 바뀌면 null
+        notifSmsEnabledAt: sms ? (!prevSms ? now : (user as any).notifSmsEnabledAt ?? now) : null,
+        notifEmailEnabledAt: email ? (!prevEmail ? now : (user as any).notifEmailEnabledAt ?? now) : null,
+        notifKakaoEnabledAt: kakao ? (!prevKakao ? now : (user as any).notifKakaoEnabledAt ?? now) : null,
+        // 마케팅 동의 / Marketing consent
+        ...(marketing !== undefined && {
+          marketingConsent: marketing,
+          marketingConsentAt: marketing ? (!prevMarketing ? now : (user as any).marketingConsentAt ?? now) : null,
+        }),
+      } as any,
     });
 
     await this.logActivity(
@@ -1038,9 +1119,25 @@ export class AuthService implements OnModuleInit {
       null,
       null,
       'NOTIFICATION_UPDATE',
-      `알림 설정 변경: SMS=${sms}, Email=${email}, KakaoTalk=${kakao}`,
+      `알림 설정 변경: SMS=${sms}, Email=${email}, KakaoTalk=${kakao}, Marketing=${marketing}`,
     );
     return { success: true, message: '알림 설정이 변경되었습니다.' };
+  }
+
+  // --- 14-b. 비밀번호 확인 (보안 재인증) / Verify password for security re-auth ---
+  async verifyPassword(sessionId: string, password: string) {
+    const userId = await this.getSessionUserId(sessionId);
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+    if (user.socialProvider !== 'NONE') {
+      throw new BadRequestException('소셜 로그인 계정은 비밀번호가 없습니다.');
+    }
+    if (!user.password) {
+      throw new BadRequestException('비밀번호가 설정되지 않은 계정입니다.');
+    }
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) throw new BadRequestException('비밀번호가 일치하지 않습니다.');
+    return { valid: true };
   }
 
   // --- 15. 고객센터 문의 작성 ---

@@ -58,9 +58,7 @@ const WEEKEND_ONLY_SCHEDULE: AlbaScheduleItem[] = [
  * 기본 알바 공고 입력 생성 헬퍼
  * Helper to create basic alba job input
  */
-function createAlbaJobInput(
-  overrides?: Partial<AlbaJobInput>,
-): AlbaJobInput {
+function createAlbaJobInput(overrides?: Partial<AlbaJobInput>): AlbaJobInput {
   return {
     jobCategoryCode: 'REST_SERVING', // 음식점 서빙 / Restaurant serving
     ksicCode: 'I', // 숙박 및 음식점업 / Accommodation and food service
@@ -245,7 +243,9 @@ describe('D4AlbaEvaluator (D-4 어학연수)', () => {
   describe('Invariance / 불변', () => {
     it('입국 후 6개월 경과 조건 포함 (6-month wait condition included)', () => {
       // [Legal] 출입국관리법 시행령 제23조 — 입국 후 6개월
-      const result = evaluator.evaluate(createAlbaJobInput({ weeklyHours: 10 }));
+      const result = evaluator.evaluate(
+        createAlbaJobInput({ weeklyHours: 10 }),
+      );
       const has6MonthCondition = result.conditions.some(
         (c) => c.includes('6개월') || c.includes('6+ months'),
       );
@@ -254,13 +254,17 @@ describe('D4AlbaEvaluator (D-4 어학연수)', () => {
 
     it('최대 사업장 수 1개 (Max 1 workplace)', () => {
       // [Legal] 법무부 고시 — D-4 최대 1개 사업장
-      const result = evaluator.evaluate(createAlbaJobInput({ weeklyHours: 10 }));
+      const result = evaluator.evaluate(
+        createAlbaJobInput({ weeklyHours: 10 }),
+      );
       expect(result.maxWorkplaces).toBe(1);
     });
 
     it('체류자격외활동허가 필수 (Extra-status activity permit required)', () => {
       // [Legal] 출입국관리법 시행령 제23조
-      const result = evaluator.evaluate(createAlbaJobInput({ weeklyHours: 10 }));
+      const result = evaluator.evaluate(
+        createAlbaJobInput({ weeklyHours: 10 }),
+      );
       expect(result.requiredPermit).toBe('체류자격외활동허가');
     });
   });
@@ -482,7 +486,9 @@ describe('F2AlbaEvaluator (F-2 거주)', () => {
       // [Legal] 법무부 — F-2-7 점수제 소지자는 이전 비자 동일 분야 제한
       const result = evaluator.evaluate(createAlbaJobInput());
       const hasPointSystemCondition = result.conditions.some(
-        (c) => c.includes('F-2') && (c.includes('점수제') || c.includes('point system')),
+        (c) =>
+          c.includes('F-2') &&
+          (c.includes('점수제') || c.includes('point system')),
       );
       expect(hasPointSystemCondition).toBe(true);
     });
@@ -926,7 +932,8 @@ describe('H2AlbaEvaluator (H-2 방문취업)', () => {
       );
       if (result.status !== 'blocked') {
         const hasAgricultureCondition = result.conditions.some(
-          (c) => c.includes('7일') || c.includes('7-day') || c.includes('7 day'),
+          (c) =>
+            c.includes('7일') || c.includes('7-day') || c.includes('7 day'),
         );
         expect(hasAgricultureCondition).toBe(true);
       }

@@ -48,7 +48,8 @@ export class FulltimeVisaMatchingController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'E-7 직종 목록 조회 성공 / E-7 categories retrieved successfully',
+    description:
+      'E-7 직종 목록 조회 성공 / E-7 categories retrieved successfully',
     type: E7CategoriesResponseDto,
   })
   getE7Categories(): E7CategoriesResponseDto {

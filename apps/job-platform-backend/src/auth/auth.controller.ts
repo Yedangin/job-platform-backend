@@ -253,6 +253,23 @@ export class AuthController {
     return await this.authService.getProfileDetail(sessionId);
   }
 
+  // --- 9-2. 내 프로필 업데이트 (이름 변경, 프로필 이미지 URL) ---
+  // Update my profile (name, profile image URL)
+  @Put('my/update-profile')
+  @ApiOperation({ summary: 'Update my profile (name, profile image URL)' })
+  @ApiBody({
+    schema: {
+      example: { fullName: '홍길동', profileImageUrl: 'https://...' },
+    },
+  })
+  async updateMyProfile(
+    @Session() sessionId: string,
+    @Body() body: { fullName?: string; profileImageUrl?: string },
+  ) {
+    if (!sessionId) throw new UnauthorizedException('No session provided');
+    return await this.authService.updateMyProfile(sessionId, body);
+  }
+
   // --- 10. 회원탈퇴 ---
   @Post('delete-account')
   @ApiOperation({ summary: 'Request account deletion (soft delete, 90 days)' })
@@ -269,13 +286,13 @@ export class AuthController {
     return await this.authService.getNotificationSettings(sessionId);
   }
 
-  // --- 12. 알림 설정 변경 ---
+  // --- 12. 알림 설정 변경 / Update notification settings ---
   @Put('my/notification-settings')
-  @ApiOperation({ summary: 'Update notification settings' })
-  @ApiBody({ schema: { example: { sms: true, email: true, kakao: false } } })
+  @ApiOperation({ summary: 'Update notification settings (SMS, email, kakao, marketing)' })
+  @ApiBody({ schema: { example: { sms: true, email: true, kakao: false, marketing: false } } })
   async updateNotificationSettings(
     @Session() sessionId: string,
-    @Body() body: { sms: boolean; email: boolean; kakao: boolean },
+    @Body() body: { sms: boolean; email: boolean; kakao: boolean; marketing?: boolean },
   ) {
     if (!sessionId) throw new UnauthorizedException('No session provided');
     return await this.authService.updateNotificationSettings(
@@ -283,7 +300,20 @@ export class AuthController {
       body.sms,
       body.email,
       body.kakao,
+      body.marketing,
     );
+  }
+
+  // --- 12-b. 비밀번호 확인 (보안 재인증) / Verify current password ---
+  @Post('verify-password')
+  @ApiOperation({ summary: 'Verify current password for security re-authentication' })
+  @ApiBody({ schema: { example: { password: 'currentPassword123' } } })
+  async verifyPassword(
+    @Session() sessionId: string,
+    @Body() body: { password: string },
+  ) {
+    if (!sessionId) throw new UnauthorizedException('No session provided');
+    return await this.authService.verifyPassword(sessionId, body.password);
   }
 
   // --- 13. 고객센터 문의 작성 ---

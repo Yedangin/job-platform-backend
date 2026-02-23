@@ -142,10 +142,7 @@ export class NotificationController implements OnModuleInit {
     // Admin role check (4 = ADMIN, 5 = SUPERADMIN)
     const role = session.role;
     const isAdmin =
-      role === 'ADMIN' ||
-      role === 'SUPERADMIN' ||
-      role === 4 ||
-      role === 5;
+      role === 'ADMIN' || role === 'SUPERADMIN' || role === 4 || role === 5;
     if (!isAdmin) {
       throw new HttpException('Forbidden: Admin only', HttpStatus.FORBIDDEN);
     }
@@ -172,7 +169,12 @@ export class NotificationController implements OnModuleInit {
       }
 
       if (userIds.length === 0) {
-        return { success: false, sent: 0, failed: 0, message: 'No users found' };
+        return {
+          success: false,
+          sent: 0,
+          failed: 0,
+          message: 'No users found',
+        };
       }
 
       return await firstValueFrom(
@@ -198,9 +200,7 @@ export class NotificationController implements OnModuleInit {
   @ApiResponse({ status: 200, description: 'User IDs retrieved.' })
   async getAllUserIds() {
     try {
-      return await firstValueFrom(
-        this.notificationService.getAllUserIds({}),
-      );
+      return await firstValueFrom(this.notificationService.getAllUserIds({}));
     } catch (error: any) {
       throw new HttpException(
         error.details || 'Failed to get user IDs',
@@ -225,19 +225,24 @@ export class NotificationController implements OnModuleInit {
     },
   ) {
     try {
-      const typeKey = String(body.notificationType || 'STATUS_ALERT').toUpperCase();
+      const typeKey = String(
+        body.notificationType || 'STATUS_ALERT',
+      ).toUpperCase();
       const channelKey = String(body.channel || 'BOTH').toUpperCase();
 
       const notificationType =
         (NotificationType as any)[typeKey] ?? NotificationType.STATUS_ALERT;
-      const channel = (NotificationChannel as any)[channelKey] ?? NotificationChannel.BOTH;
+      const channel =
+        (NotificationChannel as any)[channelKey] ?? NotificationChannel.BOTH;
 
       return await firstValueFrom(
         this.notificationService.sendNotification({
           userId: body.targetUserId || session.userId,
           email: body.targetEmail || session.email,
           subject: body.title || 'Test Notification',
-          content: body.message || 'This is a test notification from /notifications/test.',
+          content:
+            body.message ||
+            'This is a test notification from /notifications/test.',
           notificationType,
           channel,
         }),

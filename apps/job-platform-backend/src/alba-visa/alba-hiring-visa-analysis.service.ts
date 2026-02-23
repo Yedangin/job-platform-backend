@@ -34,19 +34,85 @@ interface VisaDefinition {
 
 const INITIAL_VISA_LIST: VisaDefinition[] = [
   // Free Employment (자유취업)
-  { visaCode: 'F-2', visaName: '거주', visaNameEn: 'Residence', category: 'free', maxWeeklyHours: null },
-  { visaCode: 'F-5', visaName: '영주', visaNameEn: 'Permanent Residence', category: 'free', maxWeeklyHours: null },
-  { visaCode: 'F-6', visaName: '결혼이민', visaNameEn: 'Marriage Immigration', category: 'free', maxWeeklyHours: null },
-  { visaCode: 'F-4', visaName: '재외동포', visaNameEn: 'Overseas Korean', category: 'free', maxWeeklyHours: null },
-  { visaCode: 'H-1', visaName: '워킹홀리데이', visaNameEn: 'Working Holiday', category: 'free', maxWeeklyHours: 25 },
-  { visaCode: 'H-2', visaName: '방문취업', visaNameEn: 'Visit & Employment', category: 'free', maxWeeklyHours: null },
+  {
+    visaCode: 'F-2',
+    visaName: '거주',
+    visaNameEn: 'Residence',
+    category: 'free',
+    maxWeeklyHours: null,
+  },
+  {
+    visaCode: 'F-5',
+    visaName: '영주',
+    visaNameEn: 'Permanent Residence',
+    category: 'free',
+    maxWeeklyHours: null,
+  },
+  {
+    visaCode: 'F-6',
+    visaName: '결혼이민',
+    visaNameEn: 'Marriage Immigration',
+    category: 'free',
+    maxWeeklyHours: null,
+  },
+  {
+    visaCode: 'F-4',
+    visaName: '재외동포',
+    visaNameEn: 'Overseas Korean',
+    category: 'free',
+    maxWeeklyHours: null,
+  },
+  {
+    visaCode: 'H-1',
+    visaName: '워킹홀리데이',
+    visaNameEn: 'Working Holiday',
+    category: 'free',
+    maxWeeklyHours: 25,
+  },
+  {
+    visaCode: 'H-2',
+    visaName: '방문취업',
+    visaNameEn: 'Visit & Employment',
+    category: 'free',
+    maxWeeklyHours: null,
+  },
 
   // Permit Required (허가 필요)
-  { visaCode: 'D-2', visaName: '유학', visaNameEn: 'Study Abroad', category: 'permit', maxWeeklyHours: 25 },
-  { visaCode: 'D-4', visaName: '어학연수', visaNameEn: 'Language Training', category: 'permit', maxWeeklyHours: 20 },
-  { visaCode: 'D-10', visaName: '구직', visaNameEn: 'Job Seeking', category: 'permit', maxWeeklyHours: null },
-  { visaCode: 'F-1', visaName: '방문동거', visaNameEn: 'Family Visit', category: 'permit', maxWeeklyHours: null },
-  { visaCode: 'F-3', visaName: '동반', visaNameEn: 'Dependent Family', category: 'permit', maxWeeklyHours: null },
+  {
+    visaCode: 'D-2',
+    visaName: '유학',
+    visaNameEn: 'Study Abroad',
+    category: 'permit',
+    maxWeeklyHours: 25,
+  },
+  {
+    visaCode: 'D-4',
+    visaName: '어학연수',
+    visaNameEn: 'Language Training',
+    category: 'permit',
+    maxWeeklyHours: 20,
+  },
+  {
+    visaCode: 'D-10',
+    visaName: '구직',
+    visaNameEn: 'Job Seeking',
+    category: 'permit',
+    maxWeeklyHours: null,
+  },
+  {
+    visaCode: 'F-1',
+    visaName: '방문동거',
+    visaNameEn: 'Family Visit',
+    category: 'permit',
+    maxWeeklyHours: null,
+  },
+  {
+    visaCode: 'F-3',
+    visaName: '동반',
+    visaNameEn: 'Dependent Family',
+    category: 'permit',
+    maxWeeklyHours: null,
+  },
 ];
 
 @Injectable()
@@ -112,9 +178,11 @@ export class AlbaHiringVisaAnalysisService {
         isBlockedIndustryForH2,
       },
       summary: {
-        totalEligible: freeEmployment.filter((v) => v.status === 'eligible').length +
+        totalEligible:
+          freeEmployment.filter((v) => v.status === 'eligible').length +
           permitRequired.filter((v) => v.status === 'eligible').length,
-        totalRestricted: freeEmployment.filter((v) => v.status === 'restricted').length +
+        totalRestricted:
+          freeEmployment.filter((v) => v.status === 'restricted').length +
           permitRequired.filter((v) => v.status === 'restricted').length,
         totalBlocked: blocked.length,
       },
@@ -160,9 +228,7 @@ export class AlbaHiringVisaAnalysisService {
       result.status = 'blocked';
       result.reason =
         '단순노무 업종은 F-4 비자로 취업할 수 없습니다. / Simple labor jobs are not permitted under F-4 visa.';
-      appliedRules.push(
-        'Simple Labor → F-4 차단 / F-4 blocked',
-      );
+      appliedRules.push('Simple Labor → F-4 차단 / F-4 blocked');
       return result;
     }
 
@@ -171,9 +237,7 @@ export class AlbaHiringVisaAnalysisService {
       result.status = 'blocked';
       result.reason =
         '해당 업종은 H-2 비자 네거티브 리스트에 포함됩니다. / This industry is on the H-2 visa negative list.';
-      appliedRules.push(
-        'Industry Restriction → H-2 차단 / H-2 blocked',
-      );
+      appliedRules.push('Industry Restriction → H-2 차단 / H-2 blocked');
       return result;
     }
 
@@ -182,41 +246,31 @@ export class AlbaHiringVisaAnalysisService {
     // D-2: > 25h/week → blocked
     if (visa.visaCode === 'D-2' && weeklyHours > 25) {
       result.status = 'blocked';
-      result.reason =
-        `D-2 비자는 주 25시간을 초과할 수 없습니다 (현재: ${weeklyHours}시간). / D-2 visa cannot exceed 25 hours/week (current: ${weeklyHours}h).`;
-      appliedRules.push(
-        'Working Hours → D-2 차단 (>25h) / D-2 blocked (>25h)',
-      );
+      result.reason = `D-2 비자는 주 25시간을 초과할 수 없습니다 (현재: ${weeklyHours}시간). / D-2 visa cannot exceed 25 hours/week (current: ${weeklyHours}h).`;
+      appliedRules.push('Working Hours → D-2 차단 (>25h) / D-2 blocked (>25h)');
       return result;
     }
 
     // D-4: > 20h/week → blocked
     if (visa.visaCode === 'D-4' && weeklyHours > 20) {
       result.status = 'blocked';
-      result.reason =
-        `D-4 비자는 주 20시간을 초과할 수 없습니다 (현재: ${weeklyHours}시간). / D-4 visa cannot exceed 20 hours/week (current: ${weeklyHours}h).`;
-      appliedRules.push(
-        'Working Hours → D-4 차단 (>20h) / D-4 blocked (>20h)',
-      );
+      result.reason = `D-4 비자는 주 20시간을 초과할 수 없습니다 (현재: ${weeklyHours}시간). / D-4 visa cannot exceed 20 hours/week (current: ${weeklyHours}h).`;
+      appliedRules.push('Working Hours → D-4 차단 (>20h) / D-4 blocked (>20h)');
       return result;
     }
 
     // H-1: > 25h/week → blocked
     if (visa.visaCode === 'H-1' && weeklyHours > 25) {
       result.status = 'blocked';
-      result.reason =
-        `H-1 비자는 주 25시간을 초과할 수 없습니다 (현재: ${weeklyHours}시간). / H-1 visa cannot exceed 25 hours/week (current: ${weeklyHours}h).`;
-      appliedRules.push(
-        'Working Hours → H-1 차단 (>25h) / H-1 blocked (>25h)',
-      );
+      result.reason = `H-1 비자는 주 25시간을 초과할 수 없습니다 (현재: ${weeklyHours}시간). / H-1 visa cannot exceed 25 hours/week (current: ${weeklyHours}h).`;
+      appliedRules.push('Working Hours → H-1 차단 (>25h) / H-1 blocked (>25h)');
       return result;
     }
 
     // ─── Hour-restricted but within limit → mark as restricted ───
     if (visa.maxWeeklyHours !== null && weeklyHours <= visa.maxWeeklyHours) {
       result.status = 'restricted';
-      result.reason =
-        `주 ${visa.maxWeeklyHours}시간 이내 근무 가능 (허가 필요). / May work up to ${visa.maxWeeklyHours}h/week (permit required).`;
+      result.reason = `주 ${visa.maxWeeklyHours}시간 이내 근무 가능 (허가 필요). / May work up to ${visa.maxWeeklyHours}h/week (permit required).`;
     }
 
     return result;

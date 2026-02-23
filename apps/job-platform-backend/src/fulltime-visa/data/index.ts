@@ -16,7 +16,4 @@ export * from './e7-occupation-map';
 export * from './occupation-code-table';
 
 // ── 인구감소지역 (공용 모듈에서 re-export) / Depopulation Areas (from shared module) ──
-export {
-  isDepopulationArea,
-  DEPOPULATION_AREAS,
-} from '../../common/data/visa';
+export { isDepopulationArea, DEPOPULATION_AREAS } from '../../common/data/visa';

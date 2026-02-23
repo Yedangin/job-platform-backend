@@ -46,7 +46,10 @@ import {
   IFulltimeVisaEvaluator,
   createEmptyFulltimeResult,
 } from './fulltime-evaluator.interface';
-import { getKsicMapping, isSimpleLaborOccupation } from '../../common/data/visa';
+import {
+  getKsicMapping,
+  isSimpleLaborOccupation,
+} from '../../common/data/visa';
 
 export class F2FulltimeEvaluator implements IFulltimeVisaEvaluator {
   readonly visaCode = 'F-2';

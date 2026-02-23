@@ -5642,6 +5642,11 @@ export namespace Prisma {
     notifEmail: boolean | null
     notifKakao: boolean | null
     notifEnabledAt: Date | null
+    notifSmsEnabledAt: Date | null
+    notifEmailEnabledAt: Date | null
+    notifKakaoEnabledAt: Date | null
+    marketingConsent: boolean | null
+    marketingConsentAt: Date | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -5660,6 +5665,11 @@ export namespace Prisma {
     notifEmail: boolean | null
     notifKakao: boolean | null
     notifEnabledAt: Date | null
+    notifSmsEnabledAt: Date | null
+    notifEmailEnabledAt: Date | null
+    notifKakaoEnabledAt: Date | null
+    marketingConsent: boolean | null
+    marketingConsentAt: Date | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -5678,6 +5688,11 @@ export namespace Prisma {
     notifEmail: number
     notifKakao: number
     notifEnabledAt: number
+    notifSmsEnabledAt: number
+    notifEmailEnabledAt: number
+    notifKakaoEnabledAt: number
+    marketingConsent: number
+    marketingConsentAt: number
     _all: number
   }
 
@@ -5698,6 +5713,11 @@ export namespace Prisma {
     notifEmail?: true
     notifKakao?: true
     notifEnabledAt?: true
+    notifSmsEnabledAt?: true
+    notifEmailEnabledAt?: true
+    notifKakaoEnabledAt?: true
+    marketingConsent?: true
+    marketingConsentAt?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -5716,6 +5736,11 @@ export namespace Prisma {
     notifEmail?: true
     notifKakao?: true
     notifEnabledAt?: true
+    notifSmsEnabledAt?: true
+    notifEmailEnabledAt?: true
+    notifKakaoEnabledAt?: true
+    marketingConsent?: true
+    marketingConsentAt?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -5734,6 +5759,11 @@ export namespace Prisma {
     notifEmail?: true
     notifKakao?: true
     notifEnabledAt?: true
+    notifSmsEnabledAt?: true
+    notifEmailEnabledAt?: true
+    notifKakaoEnabledAt?: true
+    marketingConsent?: true
+    marketingConsentAt?: true
     _all?: true
   }
 
@@ -5825,6 +5855,11 @@ export namespace Prisma {
     notifEmail: boolean
     notifKakao: boolean
     notifEnabledAt: Date | null
+    notifSmsEnabledAt: Date | null
+    notifEmailEnabledAt: Date | null
+    notifKakaoEnabledAt: Date | null
+    marketingConsent: boolean
+    marketingConsentAt: Date | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -5860,6 +5895,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: boolean
+    notifSmsEnabledAt?: boolean
+    notifEmailEnabledAt?: boolean
+    notifKakaoEnabledAt?: boolean
+    marketingConsent?: boolean
+    marketingConsentAt?: boolean
     corporate?: boolean | User$corporateArgs<ExtArgs>
     individual?: boolean | User$individualArgs<ExtArgs>
     supportTickets?: boolean | User$supportTicketsArgs<ExtArgs>
@@ -5884,6 +5924,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: boolean
+    notifSmsEnabledAt?: boolean
+    notifEmailEnabledAt?: boolean
+    notifKakaoEnabledAt?: boolean
+    marketingConsent?: boolean
+    marketingConsentAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5902,6 +5947,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: boolean
+    notifSmsEnabledAt?: boolean
+    notifEmailEnabledAt?: boolean
+    notifKakaoEnabledAt?: boolean
+    marketingConsent?: boolean
+    marketingConsentAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -5920,9 +5970,14 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: boolean
+    notifSmsEnabledAt?: boolean
+    notifEmailEnabledAt?: boolean
+    notifKakaoEnabledAt?: boolean
+    marketingConsent?: boolean
+    marketingConsentAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "socialProvider" | "socialProviderId" | "userType" | "isActive" | "joinedAt" | "lastLoginAt" | "deletedAt" | "deleteScheduledAt" | "notifSms" | "notifEmail" | "notifKakao" | "notifEnabledAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "socialProvider" | "socialProviderId" | "userType" | "isActive" | "joinedAt" | "lastLoginAt" | "deletedAt" | "deleteScheduledAt" | "notifSms" | "notifEmail" | "notifKakao" | "notifEnabledAt" | "notifSmsEnabledAt" | "notifEmailEnabledAt" | "notifKakaoEnabledAt" | "marketingConsent" | "marketingConsentAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     corporate?: boolean | User$corporateArgs<ExtArgs>
     individual?: boolean | User$individualArgs<ExtArgs>
@@ -5959,6 +6014,11 @@ export namespace Prisma {
       notifEmail: boolean
       notifKakao: boolean
       notifEnabledAt: Date | null
+      notifSmsEnabledAt: Date | null
+      notifEmailEnabledAt: Date | null
+      notifKakaoEnabledAt: Date | null
+      marketingConsent: boolean
+      marketingConsentAt: Date | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -6402,6 +6462,11 @@ export namespace Prisma {
     readonly notifEmail: FieldRef<"User", 'Boolean'>
     readonly notifKakao: FieldRef<"User", 'Boolean'>
     readonly notifEnabledAt: FieldRef<"User", 'DateTime'>
+    readonly notifSmsEnabledAt: FieldRef<"User", 'DateTime'>
+    readonly notifEmailEnabledAt: FieldRef<"User", 'DateTime'>
+    readonly notifKakaoEnabledAt: FieldRef<"User", 'DateTime'>
+    readonly marketingConsent: FieldRef<"User", 'Boolean'>
+    readonly marketingConsentAt: FieldRef<"User", 'DateTime'>
   }
     
 
@@ -8463,6 +8528,8 @@ export namespace Prisma {
     totalCareerMonths: number | null
     availableAnnualFund: number | null
     topikLevel: number | null
+    legalStayYears: number | null
+    koreaExperienceYears: number | null
     kiipStage: number | null
     annualIncome: number | null
     violationCount: number | null
@@ -8476,6 +8543,8 @@ export namespace Prisma {
     totalCareerMonths: number | null
     availableAnnualFund: number | null
     topikLevel: number | null
+    legalStayYears: number | null
+    koreaExperienceYears: number | null
     kiipStage: number | null
     annualIncome: number | null
     violationCount: number | null
@@ -8511,6 +8580,9 @@ export namespace Prisma {
     isEthnicKorean: boolean | null
     finalGoal: string | null
     priorityPreference: string | null
+    nativeSpeakerOf: string | null
+    legalStayYears: number | null
+    koreaExperienceYears: number | null
     topikExpiryDate: Date | null
     kiipStage: number | null
     koreanAncestryCountry: string | null
@@ -8553,6 +8625,9 @@ export namespace Prisma {
     isEthnicKorean: boolean | null
     finalGoal: string | null
     priorityPreference: string | null
+    nativeSpeakerOf: string | null
+    legalStayYears: number | null
+    koreaExperienceYears: number | null
     topikExpiryDate: Date | null
     kiipStage: number | null
     koreanAncestryCountry: string | null
@@ -8595,6 +8670,10 @@ export namespace Prisma {
     isEthnicKorean: number
     finalGoal: number
     priorityPreference: number
+    nativeSpeakerOf: number
+    professionalLicense: number
+    legalStayYears: number
+    koreaExperienceYears: number
     topikExpiryDate: number
     kiipStage: number
     koreanAncestryCountry: number
@@ -8617,6 +8696,8 @@ export namespace Prisma {
     totalCareerMonths?: true
     availableAnnualFund?: true
     topikLevel?: true
+    legalStayYears?: true
+    koreaExperienceYears?: true
     kiipStage?: true
     annualIncome?: true
     violationCount?: true
@@ -8630,6 +8711,8 @@ export namespace Prisma {
     totalCareerMonths?: true
     availableAnnualFund?: true
     topikLevel?: true
+    legalStayYears?: true
+    koreaExperienceYears?: true
     kiipStage?: true
     annualIncome?: true
     violationCount?: true
@@ -8665,6 +8748,9 @@ export namespace Prisma {
     isEthnicKorean?: true
     finalGoal?: true
     priorityPreference?: true
+    nativeSpeakerOf?: true
+    legalStayYears?: true
+    koreaExperienceYears?: true
     topikExpiryDate?: true
     kiipStage?: true
     koreanAncestryCountry?: true
@@ -8707,6 +8793,9 @@ export namespace Prisma {
     isEthnicKorean?: true
     finalGoal?: true
     priorityPreference?: true
+    nativeSpeakerOf?: true
+    legalStayYears?: true
+    koreaExperienceYears?: true
     topikExpiryDate?: true
     kiipStage?: true
     koreanAncestryCountry?: true
@@ -8749,6 +8838,10 @@ export namespace Prisma {
     isEthnicKorean?: true
     finalGoal?: true
     priorityPreference?: true
+    nativeSpeakerOf?: true
+    professionalLicense?: true
+    legalStayYears?: true
+    koreaExperienceYears?: true
     topikExpiryDate?: true
     kiipStage?: true
     koreanAncestryCountry?: true
@@ -8878,6 +8971,10 @@ export namespace Prisma {
     isEthnicKorean: boolean
     finalGoal: string | null
     priorityPreference: string | null
+    nativeSpeakerOf: string | null
+    professionalLicense: JsonValue | null
+    legalStayYears: number | null
+    koreaExperienceYears: number | null
     topikExpiryDate: Date | null
     kiipStage: number | null
     koreanAncestryCountry: string | null
@@ -8939,6 +9036,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: boolean
     priorityPreference?: boolean
+    nativeSpeakerOf?: boolean
+    professionalLicense?: boolean
+    legalStayYears?: boolean
+    koreaExperienceYears?: boolean
     topikExpiryDate?: boolean
     kiipStage?: boolean
     koreanAncestryCountry?: boolean
@@ -8988,6 +9089,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: boolean
     priorityPreference?: boolean
+    nativeSpeakerOf?: boolean
+    professionalLicense?: boolean
+    legalStayYears?: boolean
+    koreaExperienceYears?: boolean
     topikExpiryDate?: boolean
     kiipStage?: boolean
     koreanAncestryCountry?: boolean
@@ -9031,6 +9136,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: boolean
     priorityPreference?: boolean
+    nativeSpeakerOf?: boolean
+    professionalLicense?: boolean
+    legalStayYears?: boolean
+    koreaExperienceYears?: boolean
     topikExpiryDate?: boolean
     kiipStage?: boolean
     koreanAncestryCountry?: boolean
@@ -9074,6 +9183,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: boolean
     priorityPreference?: boolean
+    nativeSpeakerOf?: boolean
+    professionalLicense?: boolean
+    legalStayYears?: boolean
+    koreaExperienceYears?: boolean
     topikExpiryDate?: boolean
     kiipStage?: boolean
     koreanAncestryCountry?: boolean
@@ -9088,7 +9201,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type IndividualProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"individualId" | "authId" | "realName" | "nationality" | "birthDate" | "gender" | "addressRoad" | "visaType" | "visaExpiryDate" | "desiredJobType" | "desiredSalary" | "desiredIndustries" | "isOpenToScout" | "finalEducationLvl" | "koreanFluencyLvl" | "totalCareerMonths" | "profileImageUrl" | "resumeFileUrl" | "portfolioUrl" | "selfIntro" | "isProfileCompleted" | "visaSubType" | "availableAnnualFund" | "topikLevel" | "isEthnicKorean" | "finalGoal" | "priorityPreference" | "topikExpiryDate" | "kiipStage" | "koreanAncestryCountry" | "annualIncome" | "hasCriminalRecord" | "hasImmigrationViolation" | "violationCount" | "koreaStayMonths" | "currentEmployerMonths" | "depopulationArea" | "createdAt" | "updatedAt", ExtArgs["result"]["individualProfile"]>
+  export type IndividualProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"individualId" | "authId" | "realName" | "nationality" | "birthDate" | "gender" | "addressRoad" | "visaType" | "visaExpiryDate" | "desiredJobType" | "desiredSalary" | "desiredIndustries" | "isOpenToScout" | "finalEducationLvl" | "koreanFluencyLvl" | "totalCareerMonths" | "profileImageUrl" | "resumeFileUrl" | "portfolioUrl" | "selfIntro" | "isProfileCompleted" | "visaSubType" | "availableAnnualFund" | "topikLevel" | "isEthnicKorean" | "finalGoal" | "priorityPreference" | "nativeSpeakerOf" | "professionalLicense" | "legalStayYears" | "koreaExperienceYears" | "topikExpiryDate" | "kiipStage" | "koreanAncestryCountry" | "annualIncome" | "hasCriminalRecord" | "hasImmigrationViolation" | "violationCount" | "koreaStayMonths" | "currentEmployerMonths" | "depopulationArea" | "createdAt" | "updatedAt", ExtArgs["result"]["individualProfile"]>
   export type IndividualProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     accessLogs?: boolean | IndividualProfile$accessLogsArgs<ExtArgs>
@@ -9143,6 +9256,10 @@ export namespace Prisma {
       isEthnicKorean: boolean
       finalGoal: string | null
       priorityPreference: string | null
+      nativeSpeakerOf: string | null
+      professionalLicense: Prisma.JsonValue | null
+      legalStayYears: number | null
+      koreaExperienceYears: number | null
       topikExpiryDate: Date | null
       kiipStage: number | null
       koreanAncestryCountry: string | null
@@ -9611,6 +9728,10 @@ export namespace Prisma {
     readonly isEthnicKorean: FieldRef<"IndividualProfile", 'Boolean'>
     readonly finalGoal: FieldRef<"IndividualProfile", 'String'>
     readonly priorityPreference: FieldRef<"IndividualProfile", 'String'>
+    readonly nativeSpeakerOf: FieldRef<"IndividualProfile", 'String'>
+    readonly professionalLicense: FieldRef<"IndividualProfile", 'Json'>
+    readonly legalStayYears: FieldRef<"IndividualProfile", 'Int'>
+    readonly koreaExperienceYears: FieldRef<"IndividualProfile", 'Int'>
     readonly topikExpiryDate: FieldRef<"IndividualProfile", 'DateTime'>
     readonly kiipStage: FieldRef<"IndividualProfile", 'Int'>
     readonly koreanAncestryCountry: FieldRef<"IndividualProfile", 'String'>
@@ -57739,7 +57860,12 @@ export namespace Prisma {
     notifSms: 'notifSms',
     notifEmail: 'notifEmail',
     notifKakao: 'notifKakao',
-    notifEnabledAt: 'notifEnabledAt'
+    notifEnabledAt: 'notifEnabledAt',
+    notifSmsEnabledAt: 'notifSmsEnabledAt',
+    notifEmailEnabledAt: 'notifEmailEnabledAt',
+    notifKakaoEnabledAt: 'notifKakaoEnabledAt',
+    marketingConsent: 'marketingConsent',
+    marketingConsentAt: 'marketingConsentAt'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -57815,6 +57941,10 @@ export namespace Prisma {
     isEthnicKorean: 'isEthnicKorean',
     finalGoal: 'finalGoal',
     priorityPreference: 'priorityPreference',
+    nativeSpeakerOf: 'nativeSpeakerOf',
+    professionalLicense: 'professionalLicense',
+    legalStayYears: 'legalStayYears',
+    koreaExperienceYears: 'koreaExperienceYears',
     topikExpiryDate: 'topikExpiryDate',
     kiipStage: 'kiipStage',
     koreanAncestryCountry: 'koreanAncestryCountry',
@@ -58774,6 +58904,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
    * Reference to a field of type 'InstitutionType'
    */
   export type EnumInstitutionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InstitutionType'>
@@ -59068,20 +59212,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Json'
-   */
-  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-  /**
-   * Reference to a field of type 'QueryMode'
-   */
-  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
-    
-
-
-  /**
    * Reference to a field of type 'VisaVerifyMethod'
    */
   export type EnumVisaVerifyMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VisaVerifyMethod'>
@@ -59131,6 +59261,11 @@ export namespace Prisma {
     notifEmail?: BoolFilter<"User"> | boolean
     notifKakao?: BoolFilter<"User"> | boolean
     notifEnabledAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    notifSmsEnabledAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    notifEmailEnabledAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    notifKakaoEnabledAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    marketingConsent?: BoolFilter<"User"> | boolean
+    marketingConsentAt?: DateTimeNullableFilter<"User"> | Date | string | null
     corporate?: XOR<CorporateProfileNullableScalarRelationFilter, CorporateProfileWhereInput> | null
     individual?: XOR<IndividualProfileNullableScalarRelationFilter, IndividualProfileWhereInput> | null
     supportTickets?: SupportTicketListRelationFilter
@@ -59154,6 +59289,11 @@ export namespace Prisma {
     notifEmail?: SortOrder
     notifKakao?: SortOrder
     notifEnabledAt?: SortOrderInput | SortOrder
+    notifSmsEnabledAt?: SortOrderInput | SortOrder
+    notifEmailEnabledAt?: SortOrderInput | SortOrder
+    notifKakaoEnabledAt?: SortOrderInput | SortOrder
+    marketingConsent?: SortOrder
+    marketingConsentAt?: SortOrderInput | SortOrder
     corporate?: CorporateProfileOrderByWithRelationInput
     individual?: IndividualProfileOrderByWithRelationInput
     supportTickets?: SupportTicketOrderByRelationAggregateInput
@@ -59181,6 +59321,11 @@ export namespace Prisma {
     notifEmail?: BoolFilter<"User"> | boolean
     notifKakao?: BoolFilter<"User"> | boolean
     notifEnabledAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    notifSmsEnabledAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    notifEmailEnabledAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    notifKakaoEnabledAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    marketingConsent?: BoolFilter<"User"> | boolean
+    marketingConsentAt?: DateTimeNullableFilter<"User"> | Date | string | null
     corporate?: XOR<CorporateProfileNullableScalarRelationFilter, CorporateProfileWhereInput> | null
     individual?: XOR<IndividualProfileNullableScalarRelationFilter, IndividualProfileWhereInput> | null
     supportTickets?: SupportTicketListRelationFilter
@@ -59204,6 +59349,11 @@ export namespace Prisma {
     notifEmail?: SortOrder
     notifKakao?: SortOrder
     notifEnabledAt?: SortOrderInput | SortOrder
+    notifSmsEnabledAt?: SortOrderInput | SortOrder
+    notifEmailEnabledAt?: SortOrderInput | SortOrder
+    notifKakaoEnabledAt?: SortOrderInput | SortOrder
+    marketingConsent?: SortOrder
+    marketingConsentAt?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -59228,6 +59378,11 @@ export namespace Prisma {
     notifEmail?: BoolWithAggregatesFilter<"User"> | boolean
     notifKakao?: BoolWithAggregatesFilter<"User"> | boolean
     notifEnabledAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    notifSmsEnabledAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    notifEmailEnabledAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    notifKakaoEnabledAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    marketingConsent?: BoolWithAggregatesFilter<"User"> | boolean
+    marketingConsentAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   }
 
   export type CorporateProfileWhereInput = {
@@ -59476,6 +59631,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFilter<"IndividualProfile"> | boolean
     finalGoal?: StringNullableFilter<"IndividualProfile"> | string | null
     priorityPreference?: StringNullableFilter<"IndividualProfile"> | string | null
+    nativeSpeakerOf?: StringNullableFilter<"IndividualProfile"> | string | null
+    professionalLicense?: JsonNullableFilter<"IndividualProfile">
+    legalStayYears?: IntNullableFilter<"IndividualProfile"> | number | null
+    koreaExperienceYears?: IntNullableFilter<"IndividualProfile"> | number | null
     topikExpiryDate?: DateTimeNullableFilter<"IndividualProfile"> | Date | string | null
     kiipStage?: IntNullableFilter<"IndividualProfile"> | number | null
     koreanAncestryCountry?: StringNullableFilter<"IndividualProfile"> | string | null
@@ -59524,6 +59683,10 @@ export namespace Prisma {
     isEthnicKorean?: SortOrder
     finalGoal?: SortOrderInput | SortOrder
     priorityPreference?: SortOrderInput | SortOrder
+    nativeSpeakerOf?: SortOrderInput | SortOrder
+    professionalLicense?: SortOrderInput | SortOrder
+    legalStayYears?: SortOrderInput | SortOrder
+    koreaExperienceYears?: SortOrderInput | SortOrder
     topikExpiryDate?: SortOrderInput | SortOrder
     kiipStage?: SortOrderInput | SortOrder
     koreanAncestryCountry?: SortOrderInput | SortOrder
@@ -59575,6 +59738,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFilter<"IndividualProfile"> | boolean
     finalGoal?: StringNullableFilter<"IndividualProfile"> | string | null
     priorityPreference?: StringNullableFilter<"IndividualProfile"> | string | null
+    nativeSpeakerOf?: StringNullableFilter<"IndividualProfile"> | string | null
+    professionalLicense?: JsonNullableFilter<"IndividualProfile">
+    legalStayYears?: IntNullableFilter<"IndividualProfile"> | number | null
+    koreaExperienceYears?: IntNullableFilter<"IndividualProfile"> | number | null
     topikExpiryDate?: DateTimeNullableFilter<"IndividualProfile"> | Date | string | null
     kiipStage?: IntNullableFilter<"IndividualProfile"> | number | null
     koreanAncestryCountry?: StringNullableFilter<"IndividualProfile"> | string | null
@@ -59623,6 +59790,10 @@ export namespace Prisma {
     isEthnicKorean?: SortOrder
     finalGoal?: SortOrderInput | SortOrder
     priorityPreference?: SortOrderInput | SortOrder
+    nativeSpeakerOf?: SortOrderInput | SortOrder
+    professionalLicense?: SortOrderInput | SortOrder
+    legalStayYears?: SortOrderInput | SortOrder
+    koreaExperienceYears?: SortOrderInput | SortOrder
     topikExpiryDate?: SortOrderInput | SortOrder
     kiipStage?: SortOrderInput | SortOrder
     koreanAncestryCountry?: SortOrderInput | SortOrder
@@ -59673,6 +59844,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolWithAggregatesFilter<"IndividualProfile"> | boolean
     finalGoal?: StringNullableWithAggregatesFilter<"IndividualProfile"> | string | null
     priorityPreference?: StringNullableWithAggregatesFilter<"IndividualProfile"> | string | null
+    nativeSpeakerOf?: StringNullableWithAggregatesFilter<"IndividualProfile"> | string | null
+    professionalLicense?: JsonNullableWithAggregatesFilter<"IndividualProfile">
+    legalStayYears?: IntNullableWithAggregatesFilter<"IndividualProfile"> | number | null
+    koreaExperienceYears?: IntNullableWithAggregatesFilter<"IndividualProfile"> | number | null
     topikExpiryDate?: DateTimeNullableWithAggregatesFilter<"IndividualProfile"> | Date | string | null
     kiipStage?: IntNullableWithAggregatesFilter<"IndividualProfile"> | number | null
     koreanAncestryCountry?: StringNullableWithAggregatesFilter<"IndividualProfile"> | string | null
@@ -63325,6 +63500,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: Date | string | null
+    notifSmsEnabledAt?: Date | string | null
+    notifEmailEnabledAt?: Date | string | null
+    notifKakaoEnabledAt?: Date | string | null
+    marketingConsent?: boolean
+    marketingConsentAt?: Date | string | null
     corporate?: CorporateProfileCreateNestedOneWithoutUserInput
     individual?: IndividualProfileCreateNestedOneWithoutUserInput
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
@@ -63348,6 +63528,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: Date | string | null
+    notifSmsEnabledAt?: Date | string | null
+    notifEmailEnabledAt?: Date | string | null
+    notifKakaoEnabledAt?: Date | string | null
+    marketingConsent?: boolean
+    marketingConsentAt?: Date | string | null
     corporate?: CorporateProfileUncheckedCreateNestedOneWithoutUserInput
     individual?: IndividualProfileUncheckedCreateNestedOneWithoutUserInput
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
@@ -63371,6 +63556,11 @@ export namespace Prisma {
     notifEmail?: BoolFieldUpdateOperationsInput | boolean
     notifKakao?: BoolFieldUpdateOperationsInput | boolean
     notifEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifSmsEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifEmailEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifKakaoEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    marketingConsent?: BoolFieldUpdateOperationsInput | boolean
+    marketingConsentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     corporate?: CorporateProfileUpdateOneWithoutUserNestedInput
     individual?: IndividualProfileUpdateOneWithoutUserNestedInput
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
@@ -63394,6 +63584,11 @@ export namespace Prisma {
     notifEmail?: BoolFieldUpdateOperationsInput | boolean
     notifKakao?: BoolFieldUpdateOperationsInput | boolean
     notifEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifSmsEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifEmailEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifKakaoEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    marketingConsent?: BoolFieldUpdateOperationsInput | boolean
+    marketingConsentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     corporate?: CorporateProfileUncheckedUpdateOneWithoutUserNestedInput
     individual?: IndividualProfileUncheckedUpdateOneWithoutUserNestedInput
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
@@ -63417,6 +63612,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: Date | string | null
+    notifSmsEnabledAt?: Date | string | null
+    notifEmailEnabledAt?: Date | string | null
+    notifKakaoEnabledAt?: Date | string | null
+    marketingConsent?: boolean
+    marketingConsentAt?: Date | string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -63435,6 +63635,11 @@ export namespace Prisma {
     notifEmail?: BoolFieldUpdateOperationsInput | boolean
     notifKakao?: BoolFieldUpdateOperationsInput | boolean
     notifEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifSmsEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifEmailEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifKakaoEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    marketingConsent?: BoolFieldUpdateOperationsInput | boolean
+    marketingConsentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -63453,6 +63658,11 @@ export namespace Prisma {
     notifEmail?: BoolFieldUpdateOperationsInput | boolean
     notifKakao?: BoolFieldUpdateOperationsInput | boolean
     notifEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifSmsEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifEmailEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifKakaoEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    marketingConsent?: BoolFieldUpdateOperationsInput | boolean
+    marketingConsentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CorporateProfileCreateInput = {
@@ -63758,6 +63968,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: string | null
     priorityPreference?: string | null
+    nativeSpeakerOf?: string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: number | null
+    koreaExperienceYears?: number | null
     topikExpiryDate?: Date | string | null
     kiipStage?: number | null
     koreanAncestryCountry?: string | null
@@ -63806,6 +64020,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: string | null
     priorityPreference?: string | null
+    nativeSpeakerOf?: string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: number | null
+    koreaExperienceYears?: number | null
     topikExpiryDate?: Date | string | null
     kiipStage?: number | null
     koreanAncestryCountry?: string | null
@@ -63852,6 +64070,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63900,6 +64122,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63947,6 +64173,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: string | null
     priorityPreference?: string | null
+    nativeSpeakerOf?: string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: number | null
+    koreaExperienceYears?: number | null
     topikExpiryDate?: Date | string | null
     kiipStage?: number | null
     koreanAncestryCountry?: string | null
@@ -63988,6 +64218,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64030,6 +64264,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -68281,6 +68519,11 @@ export namespace Prisma {
     notifEmail?: SortOrder
     notifKakao?: SortOrder
     notifEnabledAt?: SortOrder
+    notifSmsEnabledAt?: SortOrder
+    notifEmailEnabledAt?: SortOrder
+    notifKakaoEnabledAt?: SortOrder
+    marketingConsent?: SortOrder
+    marketingConsentAt?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -68299,6 +68542,11 @@ export namespace Prisma {
     notifEmail?: SortOrder
     notifKakao?: SortOrder
     notifEnabledAt?: SortOrder
+    notifSmsEnabledAt?: SortOrder
+    notifEmailEnabledAt?: SortOrder
+    notifKakaoEnabledAt?: SortOrder
+    marketingConsent?: SortOrder
+    marketingConsentAt?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -68317,6 +68565,11 @@ export namespace Prisma {
     notifEmail?: SortOrder
     notifKakao?: SortOrder
     notifEnabledAt?: SortOrder
+    notifSmsEnabledAt?: SortOrder
+    notifEmailEnabledAt?: SortOrder
+    notifKakaoEnabledAt?: SortOrder
+    marketingConsent?: SortOrder
+    marketingConsentAt?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -68700,6 +68953,29 @@ export namespace Prisma {
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type ProfileEducationListRelationFilter = {
     every?: ProfileEducationWhereInput
@@ -68769,6 +69045,10 @@ export namespace Prisma {
     isEthnicKorean?: SortOrder
     finalGoal?: SortOrder
     priorityPreference?: SortOrder
+    nativeSpeakerOf?: SortOrder
+    professionalLicense?: SortOrder
+    legalStayYears?: SortOrder
+    koreaExperienceYears?: SortOrder
     topikExpiryDate?: SortOrder
     kiipStage?: SortOrder
     koreanAncestryCountry?: SortOrder
@@ -68789,6 +69069,8 @@ export namespace Prisma {
     totalCareerMonths?: SortOrder
     availableAnnualFund?: SortOrder
     topikLevel?: SortOrder
+    legalStayYears?: SortOrder
+    koreaExperienceYears?: SortOrder
     kiipStage?: SortOrder
     annualIncome?: SortOrder
     violationCount?: SortOrder
@@ -68824,6 +69106,9 @@ export namespace Prisma {
     isEthnicKorean?: SortOrder
     finalGoal?: SortOrder
     priorityPreference?: SortOrder
+    nativeSpeakerOf?: SortOrder
+    legalStayYears?: SortOrder
+    koreaExperienceYears?: SortOrder
     topikExpiryDate?: SortOrder
     kiipStage?: SortOrder
     koreanAncestryCountry?: SortOrder
@@ -68866,6 +69151,9 @@ export namespace Prisma {
     isEthnicKorean?: SortOrder
     finalGoal?: SortOrder
     priorityPreference?: SortOrder
+    nativeSpeakerOf?: SortOrder
+    legalStayYears?: SortOrder
+    koreaExperienceYears?: SortOrder
     topikExpiryDate?: SortOrder
     kiipStage?: SortOrder
     koreanAncestryCountry?: SortOrder
@@ -68886,6 +69174,8 @@ export namespace Prisma {
     totalCareerMonths?: SortOrder
     availableAnnualFund?: SortOrder
     topikLevel?: SortOrder
+    legalStayYears?: SortOrder
+    koreaExperienceYears?: SortOrder
     kiipStage?: SortOrder
     annualIncome?: SortOrder
     violationCount?: SortOrder
@@ -68947,6 +69237,32 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type CorporateProfileScalarRelationFilter = {
@@ -71651,29 +71967,6 @@ export namespace Prisma {
     _min?: NestedEnumAdminActionTypeFilter<$PrismaModel>
     _max?: NestedEnumAdminActionTypeFilter<$PrismaModel>
   }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type ResumeCountOrderByAggregateInput = {
     id?: SortOrder
@@ -71732,32 +72025,6 @@ export namespace Prisma {
     topikLevel?: SortOrder
     kiipLevel?: SortOrder
     preferredSalary?: SortOrder
-  }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type EnumVisaVerifyMethodFilter<$PrismaModel = never> = {
@@ -74467,6 +74734,29 @@ export namespace Prisma {
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type NestedEnumInstitutionTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.InstitutionType | EnumInstitutionTypeFieldRefInput<$PrismaModel>
@@ -74917,29 +75207,6 @@ export namespace Prisma {
     _min?: NestedEnumAdminActionTypeFilter<$PrismaModel>
     _max?: NestedEnumAdminActionTypeFilter<$PrismaModel>
   }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type NestedEnumVisaVerifyMethodFilter<$PrismaModel = never> = {
     equals?: $Enums.VisaVerifyMethod | EnumVisaVerifyMethodFieldRefInput<$PrismaModel>
@@ -75108,6 +75375,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: string | null
     priorityPreference?: string | null
+    nativeSpeakerOf?: string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: number | null
+    koreaExperienceYears?: number | null
     topikExpiryDate?: Date | string | null
     kiipStage?: number | null
     koreanAncestryCountry?: string | null
@@ -75154,6 +75425,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: string | null
     priorityPreference?: string | null
+    nativeSpeakerOf?: string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: number | null
+    koreaExperienceYears?: number | null
     topikExpiryDate?: Date | string | null
     kiipStage?: number | null
     koreanAncestryCountry?: string | null
@@ -75413,6 +75688,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -75459,6 +75738,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -75614,6 +75897,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: Date | string | null
+    notifSmsEnabledAt?: Date | string | null
+    notifEmailEnabledAt?: Date | string | null
+    notifKakaoEnabledAt?: Date | string | null
+    marketingConsent?: boolean
+    marketingConsentAt?: Date | string | null
     individual?: IndividualProfileCreateNestedOneWithoutUserInput
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     resume?: ResumeCreateNestedOneWithoutUserInput
@@ -75636,6 +75924,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: Date | string | null
+    notifSmsEnabledAt?: Date | string | null
+    notifEmailEnabledAt?: Date | string | null
+    notifKakaoEnabledAt?: Date | string | null
+    marketingConsent?: boolean
+    marketingConsentAt?: Date | string | null
     individual?: IndividualProfileUncheckedCreateNestedOneWithoutUserInput
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     resume?: ResumeUncheckedCreateNestedOneWithoutUserInput
@@ -75696,6 +75989,11 @@ export namespace Prisma {
     notifEmail?: BoolFieldUpdateOperationsInput | boolean
     notifKakao?: BoolFieldUpdateOperationsInput | boolean
     notifEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifSmsEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifEmailEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifKakaoEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    marketingConsent?: BoolFieldUpdateOperationsInput | boolean
+    marketingConsentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     individual?: IndividualProfileUpdateOneWithoutUserNestedInput
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     resume?: ResumeUpdateOneWithoutUserNestedInput
@@ -75718,6 +76016,11 @@ export namespace Prisma {
     notifEmail?: BoolFieldUpdateOperationsInput | boolean
     notifKakao?: BoolFieldUpdateOperationsInput | boolean
     notifEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifSmsEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifEmailEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifKakaoEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    marketingConsent?: BoolFieldUpdateOperationsInput | boolean
+    marketingConsentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     individual?: IndividualProfileUncheckedUpdateOneWithoutUserNestedInput
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     resume?: ResumeUncheckedUpdateOneWithoutUserNestedInput
@@ -75766,6 +76069,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: Date | string | null
+    notifSmsEnabledAt?: Date | string | null
+    notifEmailEnabledAt?: Date | string | null
+    notifKakaoEnabledAt?: Date | string | null
+    marketingConsent?: boolean
+    marketingConsentAt?: Date | string | null
     corporate?: CorporateProfileCreateNestedOneWithoutUserInput
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
     resume?: ResumeCreateNestedOneWithoutUserInput
@@ -75788,6 +76096,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: Date | string | null
+    notifSmsEnabledAt?: Date | string | null
+    notifEmailEnabledAt?: Date | string | null
+    notifKakaoEnabledAt?: Date | string | null
+    marketingConsent?: boolean
+    marketingConsentAt?: Date | string | null
     corporate?: CorporateProfileUncheckedCreateNestedOneWithoutUserInput
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
     resume?: ResumeUncheckedCreateNestedOneWithoutUserInput
@@ -75996,6 +76309,11 @@ export namespace Prisma {
     notifEmail?: BoolFieldUpdateOperationsInput | boolean
     notifKakao?: BoolFieldUpdateOperationsInput | boolean
     notifEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifSmsEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifEmailEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifKakaoEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    marketingConsent?: BoolFieldUpdateOperationsInput | boolean
+    marketingConsentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     corporate?: CorporateProfileUpdateOneWithoutUserNestedInput
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
     resume?: ResumeUpdateOneWithoutUserNestedInput
@@ -76018,6 +76336,11 @@ export namespace Prisma {
     notifEmail?: BoolFieldUpdateOperationsInput | boolean
     notifKakao?: BoolFieldUpdateOperationsInput | boolean
     notifEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifSmsEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifEmailEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifKakaoEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    marketingConsent?: BoolFieldUpdateOperationsInput | boolean
+    marketingConsentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     corporate?: CorporateProfileUncheckedUpdateOneWithoutUserNestedInput
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     resume?: ResumeUncheckedUpdateOneWithoutUserNestedInput
@@ -76283,6 +76606,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: string | null
     priorityPreference?: string | null
+    nativeSpeakerOf?: string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: number | null
+    koreaExperienceYears?: number | null
     topikExpiryDate?: Date | string | null
     kiipStage?: number | null
     koreanAncestryCountry?: string | null
@@ -76330,6 +76657,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: string | null
     priorityPreference?: string | null
+    nativeSpeakerOf?: string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: number | null
+    koreaExperienceYears?: number | null
     topikExpiryDate?: Date | string | null
     kiipStage?: number | null
     koreanAncestryCountry?: string | null
@@ -76480,6 +76811,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76527,6 +76862,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76636,6 +76975,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: string | null
     priorityPreference?: string | null
+    nativeSpeakerOf?: string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: number | null
+    koreaExperienceYears?: number | null
     topikExpiryDate?: Date | string | null
     kiipStage?: number | null
     koreanAncestryCountry?: string | null
@@ -76683,6 +77026,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: string | null
     priorityPreference?: string | null
+    nativeSpeakerOf?: string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: number | null
+    koreaExperienceYears?: number | null
     topikExpiryDate?: Date | string | null
     kiipStage?: number | null
     koreanAncestryCountry?: string | null
@@ -76783,6 +77130,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76830,6 +77181,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -76920,6 +77275,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: string | null
     priorityPreference?: string | null
+    nativeSpeakerOf?: string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: number | null
+    koreaExperienceYears?: number | null
     topikExpiryDate?: Date | string | null
     kiipStage?: number | null
     koreanAncestryCountry?: string | null
@@ -76967,6 +77326,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: string | null
     priorityPreference?: string | null
+    nativeSpeakerOf?: string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: number | null
+    koreaExperienceYears?: number | null
     topikExpiryDate?: Date | string | null
     kiipStage?: number | null
     koreanAncestryCountry?: string | null
@@ -77028,6 +77391,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -77075,6 +77442,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -77120,6 +77491,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: string | null
     priorityPreference?: string | null
+    nativeSpeakerOf?: string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: number | null
+    koreaExperienceYears?: number | null
     topikExpiryDate?: Date | string | null
     kiipStage?: number | null
     koreanAncestryCountry?: string | null
@@ -77167,6 +77542,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: string | null
     priorityPreference?: string | null
+    nativeSpeakerOf?: string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: number | null
+    koreaExperienceYears?: number | null
     topikExpiryDate?: Date | string | null
     kiipStage?: number | null
     koreanAncestryCountry?: string | null
@@ -77228,6 +77607,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -77275,6 +77658,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -77309,6 +77696,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: Date | string | null
+    notifSmsEnabledAt?: Date | string | null
+    notifEmailEnabledAt?: Date | string | null
+    notifKakaoEnabledAt?: Date | string | null
+    marketingConsent?: boolean
+    marketingConsentAt?: Date | string | null
     corporate?: CorporateProfileCreateNestedOneWithoutUserInput
     individual?: IndividualProfileCreateNestedOneWithoutUserInput
     resume?: ResumeCreateNestedOneWithoutUserInput
@@ -77331,6 +77723,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: Date | string | null
+    notifSmsEnabledAt?: Date | string | null
+    notifEmailEnabledAt?: Date | string | null
+    notifKakaoEnabledAt?: Date | string | null
+    marketingConsent?: boolean
+    marketingConsentAt?: Date | string | null
     corporate?: CorporateProfileUncheckedCreateNestedOneWithoutUserInput
     individual?: IndividualProfileUncheckedCreateNestedOneWithoutUserInput
     resume?: ResumeUncheckedCreateNestedOneWithoutUserInput
@@ -77369,6 +77766,11 @@ export namespace Prisma {
     notifEmail?: BoolFieldUpdateOperationsInput | boolean
     notifKakao?: BoolFieldUpdateOperationsInput | boolean
     notifEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifSmsEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifEmailEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifKakaoEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    marketingConsent?: BoolFieldUpdateOperationsInput | boolean
+    marketingConsentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     corporate?: CorporateProfileUpdateOneWithoutUserNestedInput
     individual?: IndividualProfileUpdateOneWithoutUserNestedInput
     resume?: ResumeUpdateOneWithoutUserNestedInput
@@ -77391,6 +77793,11 @@ export namespace Prisma {
     notifEmail?: BoolFieldUpdateOperationsInput | boolean
     notifKakao?: BoolFieldUpdateOperationsInput | boolean
     notifEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifSmsEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifEmailEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifKakaoEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    marketingConsent?: BoolFieldUpdateOperationsInput | boolean
+    marketingConsentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     corporate?: CorporateProfileUncheckedUpdateOneWithoutUserNestedInput
     individual?: IndividualProfileUncheckedUpdateOneWithoutUserNestedInput
     resume?: ResumeUncheckedUpdateOneWithoutUserNestedInput
@@ -81436,6 +81843,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: Date | string | null
+    notifSmsEnabledAt?: Date | string | null
+    notifEmailEnabledAt?: Date | string | null
+    notifKakaoEnabledAt?: Date | string | null
+    marketingConsent?: boolean
+    marketingConsentAt?: Date | string | null
     corporate?: CorporateProfileCreateNestedOneWithoutUserInput
     individual?: IndividualProfileCreateNestedOneWithoutUserInput
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
@@ -81458,6 +81870,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: Date | string | null
+    notifSmsEnabledAt?: Date | string | null
+    notifEmailEnabledAt?: Date | string | null
+    notifKakaoEnabledAt?: Date | string | null
+    marketingConsent?: boolean
+    marketingConsentAt?: Date | string | null
     corporate?: CorporateProfileUncheckedCreateNestedOneWithoutUserInput
     individual?: IndividualProfileUncheckedCreateNestedOneWithoutUserInput
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
@@ -81496,6 +81913,11 @@ export namespace Prisma {
     notifEmail?: BoolFieldUpdateOperationsInput | boolean
     notifKakao?: BoolFieldUpdateOperationsInput | boolean
     notifEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifSmsEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifEmailEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifKakaoEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    marketingConsent?: BoolFieldUpdateOperationsInput | boolean
+    marketingConsentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     corporate?: CorporateProfileUpdateOneWithoutUserNestedInput
     individual?: IndividualProfileUpdateOneWithoutUserNestedInput
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
@@ -81518,6 +81940,11 @@ export namespace Prisma {
     notifEmail?: BoolFieldUpdateOperationsInput | boolean
     notifKakao?: BoolFieldUpdateOperationsInput | boolean
     notifEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifSmsEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifEmailEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifKakaoEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    marketingConsent?: BoolFieldUpdateOperationsInput | boolean
+    marketingConsentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     corporate?: CorporateProfileUncheckedUpdateOneWithoutUserNestedInput
     individual?: IndividualProfileUncheckedUpdateOneWithoutUserNestedInput
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
@@ -81540,6 +81967,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: Date | string | null
+    notifSmsEnabledAt?: Date | string | null
+    notifEmailEnabledAt?: Date | string | null
+    notifKakaoEnabledAt?: Date | string | null
+    marketingConsent?: boolean
+    marketingConsentAt?: Date | string | null
     corporate?: CorporateProfileCreateNestedOneWithoutUserInput
     individual?: IndividualProfileCreateNestedOneWithoutUserInput
     supportTickets?: SupportTicketCreateNestedManyWithoutUserInput
@@ -81562,6 +81994,11 @@ export namespace Prisma {
     notifEmail?: boolean
     notifKakao?: boolean
     notifEnabledAt?: Date | string | null
+    notifSmsEnabledAt?: Date | string | null
+    notifEmailEnabledAt?: Date | string | null
+    notifKakaoEnabledAt?: Date | string | null
+    marketingConsent?: boolean
+    marketingConsentAt?: Date | string | null
     corporate?: CorporateProfileUncheckedCreateNestedOneWithoutUserInput
     individual?: IndividualProfileUncheckedCreateNestedOneWithoutUserInput
     supportTickets?: SupportTicketUncheckedCreateNestedManyWithoutUserInput
@@ -81600,6 +82037,11 @@ export namespace Prisma {
     notifEmail?: BoolFieldUpdateOperationsInput | boolean
     notifKakao?: BoolFieldUpdateOperationsInput | boolean
     notifEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifSmsEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifEmailEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifKakaoEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    marketingConsent?: BoolFieldUpdateOperationsInput | boolean
+    marketingConsentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     corporate?: CorporateProfileUpdateOneWithoutUserNestedInput
     individual?: IndividualProfileUpdateOneWithoutUserNestedInput
     supportTickets?: SupportTicketUpdateManyWithoutUserNestedInput
@@ -81622,6 +82064,11 @@ export namespace Prisma {
     notifEmail?: BoolFieldUpdateOperationsInput | boolean
     notifKakao?: BoolFieldUpdateOperationsInput | boolean
     notifEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifSmsEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifEmailEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    notifKakaoEnabledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    marketingConsent?: BoolFieldUpdateOperationsInput | boolean
+    marketingConsentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     corporate?: CorporateProfileUncheckedUpdateOneWithoutUserNestedInput
     individual?: IndividualProfileUncheckedUpdateOneWithoutUserNestedInput
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
@@ -81655,6 +82102,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: string | null
     priorityPreference?: string | null
+    nativeSpeakerOf?: string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: number | null
+    koreaExperienceYears?: number | null
     topikExpiryDate?: Date | string | null
     kiipStage?: number | null
     koreanAncestryCountry?: string | null
@@ -81702,6 +82153,10 @@ export namespace Prisma {
     isEthnicKorean?: boolean
     finalGoal?: string | null
     priorityPreference?: string | null
+    nativeSpeakerOf?: string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: number | null
+    koreaExperienceYears?: number | null
     topikExpiryDate?: Date | string | null
     kiipStage?: number | null
     koreanAncestryCountry?: string | null
@@ -81789,6 +82244,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null
@@ -81836,6 +82295,10 @@ export namespace Prisma {
     isEthnicKorean?: BoolFieldUpdateOperationsInput | boolean
     finalGoal?: NullableStringFieldUpdateOperationsInput | string | null
     priorityPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    nativeSpeakerOf?: NullableStringFieldUpdateOperationsInput | string | null
+    professionalLicense?: NullableJsonNullValueInput | InputJsonValue
+    legalStayYears?: NullableIntFieldUpdateOperationsInput | number | null
+    koreaExperienceYears?: NullableIntFieldUpdateOperationsInput | number | null
     topikExpiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     kiipStage?: NullableIntFieldUpdateOperationsInput | number | null
     koreanAncestryCountry?: NullableStringFieldUpdateOperationsInput | string | null

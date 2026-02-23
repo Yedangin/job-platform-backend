@@ -135,7 +135,12 @@ exports.Prisma.UserScalarFieldEnum = {
   notifSms: 'notifSms',
   notifEmail: 'notifEmail',
   notifKakao: 'notifKakao',
-  notifEnabledAt: 'notifEnabledAt'
+  notifEnabledAt: 'notifEnabledAt',
+  notifSmsEnabledAt: 'notifSmsEnabledAt',
+  notifEmailEnabledAt: 'notifEmailEnabledAt',
+  notifKakaoEnabledAt: 'notifKakaoEnabledAt',
+  marketingConsent: 'marketingConsent',
+  marketingConsentAt: 'marketingConsentAt'
 };
 
 exports.Prisma.CorporateProfileScalarFieldEnum = {
@@ -205,6 +210,10 @@ exports.Prisma.IndividualProfileScalarFieldEnum = {
   isEthnicKorean: 'isEthnicKorean',
   finalGoal: 'finalGoal',
   priorityPreference: 'priorityPreference',
+  nativeSpeakerOf: 'nativeSpeakerOf',
+  professionalLicense: 'professionalLicense',
+  legalStayYears: 'legalStayYears',
+  koreaExperienceYears: 'koreaExperienceYears',
   topikExpiryDate: 'topikExpiryDate',
   kiipStage: 'kiipStage',
   koreanAncestryCountry: 'koreanAncestryCountry',

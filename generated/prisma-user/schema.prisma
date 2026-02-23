@@ -4,8 +4,9 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "../../generated/prisma-user"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows", "darwin-arm64", "debian-openssl-3.0.x"]
+  output        = "../../generated/prisma-user"
 }
 
 // ========================================
@@ -32,11 +33,18 @@ model User {
   deletedAt         DateTime? @map("deleted_at")
   deleteScheduledAt DateTime? @map("delete_scheduled_at")
 
-  // [알림 설정]
-  notifSms       Boolean   @default(false) @map("notif_sms")
-  notifEmail     Boolean   @default(false) @map("notif_email")
-  notifKakao     Boolean   @default(false) @map("notif_kakao")
-  notifEnabledAt DateTime? @map("notif_enabled_at")
+  // [알림 설정 / Notification settings]
+  notifSms            Boolean   @default(false) @map("notif_sms")
+  notifEmail          Boolean   @default(false) @map("notif_email")
+  notifKakao          Boolean   @default(false) @map("notif_kakao")
+  notifEnabledAt      DateTime? @map("notif_enabled_at")
+  // [채널별 동의 일시 / Per-channel consent timestamps]
+  notifSmsEnabledAt   DateTime? @map("notif_sms_enabled_at")
+  notifEmailEnabledAt DateTime? @map("notif_email_enabled_at")
+  notifKakaoEnabledAt DateTime? @map("notif_kakao_enabled_at")
+  // [마케팅 수신 동의 / Marketing consent]
+  marketingConsent    Boolean   @default(false) @map("marketing_consent")
+  marketingConsentAt  DateTime? @map("marketing_consent_at")
 
   // [관계]
   corporate        CorporateProfile?
@@ -193,12 +201,16 @@ model IndividualProfile {
 
   // ── [7. 진단 엔진용 확장 (P0: 즉시 필요)] ──
   // ── Diagnosis engine extension fields (P0: immediate) ──
-  visaSubType         String? @map("visa_sub_type") // E-7-1, F-2-7 등 세부비자 / Detailed visa sub-type
-  availableAnnualFund Int     @default(0) @map("available_annual_fund") // 연간 가용자금(만원) / Annual available fund (만원)
-  topikLevel          Int?    @map("topik_level") // TOPIK 0-6급 / TOPIK level 0-6
-  isEthnicKorean      Boolean @default(false) @map("is_ethnic_korean") // 재외동포 여부 / Ethnic Korean status
-  finalGoal           String? @map("final_goal") // employment / degree / permanent_residence / explore
-  priorityPreference  String? @map("priority_preference") // speed / stability / cost / income
+  visaSubType          String? @map("visa_sub_type") // E-7-1, F-2-7 등 세부비자 / Detailed visa sub-type
+  availableAnnualFund  Int     @default(0) @map("available_annual_fund") // 연간 가용자금(만원) / Annual available fund (만원)
+  topikLevel           Int?    @map("topik_level") // TOPIK 0-6급 / TOPIK level 0-6
+  isEthnicKorean       Boolean @default(false) @map("is_ethnic_korean") // 재외동포 여부 / Ethnic Korean status
+  finalGoal            String? @map("final_goal") // employment / degree / permanent_residence / explore
+  priorityPreference   String? @map("priority_preference") // speed / stability / cost / income
+  nativeSpeakerOf      String? @map("native_speaker_of") // 모국어 ISO 639-1 (en, zh, vi 등) / Native language ISO code
+  professionalLicense  Json?   @map("professional_license") // 전문자격증 목록 (JSON 배열) / Professional licenses (JSON array)
+  legalStayYears       Int?    @map("legal_stay_years") // 합법 체류 기간(년) / Legal stay duration (years)
+  koreaExperienceYears Int?    @map("korea_experience_years") // 한국 경력 기간(년) / Korea work experience (years)
 
   // ── [8. 진단 정밀도 향상 (P1: 다음 스프린트)] ──
   // ── Diagnosis precision fields (P1: next sprint) ──
@@ -266,6 +278,50 @@ model TalentAccessLog {
 }
 
 // ========================================
+// [교육기관 마스터] 대학교 + 어학당 DB
+// Educational institutions master: universities + language institutes
+// ========================================
+model EducationalInstitution {
+  id     BigInt  @id @default(autoincrement()) @map("institution_id")
+  name   String  @map("name") // 서울대학교 언어교육원
+  nameEn String? @map("name_en") // SNU Language Education Institute
+
+  type InstitutionType @map("type")
+
+  // [주소 및 좌표 / Address and coordinates]
+  address       String  @map("address") // 서울특별시 관악구 관악로 1
+  addressDetail String? @map("address_detail") // 140동 (언어교육원)
+  latitude      Decimal @map("latitude") @db.Decimal(10, 7) // 37.4601234
+  longitude     Decimal @map("longitude") @db.Decimal(10, 7) // 126.9520123
+
+  // [메타 정보 / Meta info]
+  isMetroArea          Boolean @default(false) @map("is_metro_area") // 수도권 여부 (거리 제한 90분/60분 구분)
+  affiliatedUniversity String? @map("affiliated_university") // 어학당의 경우 소속 대학
+
+  // [검색 최적화 / Search optimization]
+  searchKeywords String[] @map("search_keywords") // ["서울대", "SNU", "서울대 어학당"]
+
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // [관계 / Relations]
+  educations ProfileEducation[]
+
+  @@index([type])
+  @@index([isMetroArea])
+  @@map("educational_institutions")
+}
+
+enum InstitutionType {
+  UNIVERSITY // 4년제 대학교
+  COLLEGE // 전문대학
+  GRADUATE_SCHOOL // 대학원
+  LANGUAGE_INSTITUTE // 어학당
+  VOCATIONAL_SCHOOL // 직업전문학교
+}
+
+// ========================================
 // [학력 정보] E-7 비자 핵심 정보
 // ========================================
 model ProfileEducation {
@@ -283,6 +339,24 @@ model ProfileEducation {
 
   gpaScore Decimal? @map("gps_score") @db.Decimal(3, 2)
 
+  // [신규] 교육기관 연결 (국내 대학/어학당만) / New: institution reference (Korean institutions only)
+  institutionId BigInt?                 @map("institution_id")
+  institution   EducationalInstitution? @relation(fields: [institutionId], references: [id])
+
+  // [신규] 학교 국가 코드 / New: school country code
+  schoolCountry String @default("KR") @map("school_country") // ISO 3166-1 alpha-2
+
+  // [신규] 증명서 파일 / Certificate document
+  certificateFileUrl    String?   @map("certificate_file_url")
+  certificateFileName   String?   @map("certificate_file_name")
+  certificateUploadedAt DateTime? @map("certificate_uploaded_at")
+
+  // [신규] 증명서 인증 상태 / Verification status
+  isVerified Boolean   @default(false) @map("is_verified")
+  verifiedAt DateTime? @map("verified_at")
+  verifiedBy String?   @map("verified_by") // admin userId
+
+  @@index([institutionId])
   @@map("profile_educations")
 }
 

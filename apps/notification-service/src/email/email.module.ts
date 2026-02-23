@@ -25,9 +25,9 @@ import { EmailService } from './email.service';
         },
         template: {
           dir: join(
-              process.cwd(),
-              'apps/notification-service/src/email/templates',
-            ),
+            process.cwd(),
+            'apps/notification-service/src/email/templates',
+          ),
           adapter: new HandlebarsAdapter(),
           options: {
             strict: false,

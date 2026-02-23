@@ -238,8 +238,7 @@ export class NotificationServiceService {
         success: false,
         sent: 0,
         failed: request.userIds.length,
-        message:
-          error instanceof Error ? error.message : 'Broadcast failed',
+        message: error instanceof Error ? error.message : 'Broadcast failed',
       };
     }
   }
