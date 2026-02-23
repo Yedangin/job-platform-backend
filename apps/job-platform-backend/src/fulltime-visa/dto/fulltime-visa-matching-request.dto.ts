@@ -203,7 +203,7 @@ export class FulltimeJobInputDto {
 
   @ApiPropertyOptional({
     description:
-      '회사 정보 (E-7-2 고용비율, E-1/E-2/E-3 기관 유형 체크용) / Company information',
+      '회사 정보 (E-7-2/E-7-3 고용비율 체크용) / Company information (for E-7-2/3 employment ratio)',
     type: CompanyInfoDto,
   })
   @IsOptional()
@@ -249,6 +249,34 @@ export class ApplicantProfileDto {
   @IsString()
   @Length(1, 50)
   major?: string;
+
+  @ApiPropertyOptional({
+    description:
+      '국내 대학 졸업 여부 (고등교육법 제2조 기준) / Domestic university graduate (Higher Education Act Art.2)',
+    example: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isDomesticUniversity?: boolean;
+
+  @ApiPropertyOptional({
+    description:
+      '국내 대학 학위 수준 (isDomesticUniversity=true일 때) / Domestic university degree level',
+    enum: EducationLevelEnum,
+    example: EducationLevelEnum.BACHELOR,
+  })
+  @IsOptional()
+  @IsEnum(EducationLevelEnum)
+  domesticDegreeLevel?: EducationLevelEnum;
+
+  @ApiPropertyOptional({
+    description:
+      '졸업예정 여부 (D-2 전환 시 최종학기) / Graduating status (D-2 final semester)',
+    example: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isGraduating?: boolean;
 
   @ApiProperty({
     description: '경력 연수 (년) / Experience years',

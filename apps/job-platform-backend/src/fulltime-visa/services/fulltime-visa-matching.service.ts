@@ -31,22 +31,23 @@ import {
   ApplicantProfile,
 } from '../evaluators/fulltime-evaluator.interface';
 
-// Evaluators
+// Evaluators — 9종 비자 (법무부공고 2025-406호 기준)
+// 제외: E-1~E-6 (교육/연구/면허직), E-7-4/E-9 (고용허가제), E-7-S (GNI 3배 초고연봉), D-4, H-2
 import { F5FulltimeEvaluator } from '../evaluators/f5-fulltime-evaluator';
 import { F6FulltimeEvaluator } from '../evaluators/f6-fulltime-evaluator';
 import { F2FulltimeEvaluator } from '../evaluators/f2-fulltime-evaluator';
 import { F4FulltimeEvaluator } from '../evaluators/f4-fulltime-evaluator';
 import { E71FulltimeEvaluator } from '../evaluators/e7-1-fulltime-evaluator';
 import { E72FulltimeEvaluator } from '../evaluators/e7-2-fulltime-evaluator';
-import { E74FulltimeEvaluator } from '../evaluators/e7-4-fulltime-evaluator';
-import { E7SFulltimeEvaluator } from '../evaluators/e7-s-fulltime-evaluator';
-import { E1FulltimeEvaluator } from '../evaluators/e1-fulltime-evaluator';
-import { E2FulltimeEvaluator } from '../evaluators/e2-fulltime-evaluator';
-import { E3FulltimeEvaluator } from '../evaluators/e3-fulltime-evaluator';
-import { E5FulltimeEvaluator } from '../evaluators/e5-fulltime-evaluator';
+import { E73FulltimeEvaluator } from '../evaluators/e7-3-fulltime-evaluator';
+import { D2FulltimeEvaluator } from '../evaluators/d2-fulltime-evaluator';
+import { D10FulltimeEvaluator } from '../evaluators/d10-fulltime-evaluator';
 
 // E-7 직종 카테고리 상수 / E-7 job category constants
 import { getAllowedJobCodesByE7Type } from '../constants/e7-job-categories';
+
+// GNI/연봉 기준 데이터 / GNI/salary threshold data
+import { getCurrentE7MinSalary } from '../data/gni-table';
 
 @Injectable()
 export class FulltimeVisaMatchingService {
@@ -54,28 +55,22 @@ export class FulltimeVisaMatchingService {
   private readonly evaluators: IFulltimeVisaEvaluator[];
 
   constructor() {
-    // 전체 비자 Evaluator 목록 / All visa evaluators list
+    // 플랫폼 비자 Evaluator 목록 (9종) / Platform visa evaluators (9 types)
     this.evaluators = [
-      // F비자 (즉시 채용 가능) / F visas (Immediate hiring)
+      // IMMEDIATE: F비자 (즉시 채용 가능) / F visas (Immediate hiring)
       new F5FulltimeEvaluator(),
       new F6FulltimeEvaluator(),
       new F2FulltimeEvaluator(),
       new F4FulltimeEvaluator(),
 
-      // E-7 비자 (스폰서/이직 채용) / E-7 visas (Sponsor/Transfer hiring)
+      // SPONSOR + TRANSFER: E-7 비자 / E-7 visas
       new E71FulltimeEvaluator(),
       new E72FulltimeEvaluator(),
-      new E74FulltimeEvaluator(),
-      new E7SFulltimeEvaluator(),
+      new E73FulltimeEvaluator(),
 
-      // E-1~E-6 비자 (스폰서 채용) / E-1~E-6 visas (Sponsor hiring)
-      new E1FulltimeEvaluator(),
-      new E2FulltimeEvaluator(),
-      new E3FulltimeEvaluator(),
-      new E5FulltimeEvaluator(),
-
-      // TODO: D-10, D-2 Evaluator 추가 예정
-      // TODO: Add D-10, D-2 Evaluators later
+      // TRANSITION: D비자 → E-7 전환 / D visas → E-7 transition
+      new D2FulltimeEvaluator(),
+      new D10FulltimeEvaluator(),
     ];
   }
 
@@ -108,7 +103,7 @@ export class FulltimeVisaMatchingService {
         sigungu: dto.jobInput.workAddress.sigungu,
         isDepopulationArea: dto.jobInput.workAddress.isDepopulationArea,
       },
-      companyInfo: dto.jobInput.companyInfo, // E-1, E-2, E-3, E-7-2 고용비율 확인용
+      companyInfo: dto.jobInput.companyInfo, // E-7-2, E-7-3 고용비율 확인용
     };
 
     // 전체 비자 평가 / Evaluate all visas
@@ -207,7 +202,7 @@ export class FulltimeVisaMatchingService {
         sigungu: dto.jobInput.workAddress.sigungu,
         isDepopulationArea: dto.jobInput.workAddress.isDepopulationArea,
       },
-      companyInfo: dto.jobInput.companyInfo, // E-1, E-2, E-3, E-7-2 고용비율 확인용
+      companyInfo: dto.jobInput.companyInfo, // E-7-2, E-7-3 고용비율 확인용
     };
 
     const profile: ApplicantProfile = {
@@ -215,6 +210,9 @@ export class FulltimeVisaMatchingService {
       currentVisaSubtype: dto.applicantProfile.currentVisaSubtype,
       educationLevel: dto.applicantProfile.educationLevel,
       major: dto.applicantProfile.major,
+      isDomesticUniversity: dto.applicantProfile.isDomesticUniversity,
+      domesticDegreeLevel: dto.applicantProfile.domesticDegreeLevel,
+      isGraduating: dto.applicantProfile.isGraduating,
       experienceYears: dto.applicantProfile.experienceYears,
       topikLevel: dto.applicantProfile.topikLevel,
       nativeSpeakerOf: dto.applicantProfile.nativeSpeakerOf,
@@ -369,41 +367,36 @@ export class FulltimeVisaMatchingService {
   }
 
   /**
-   * 정규직 비자 필터링 규칙 조회 (프론트엔드 실시간 필터링용)
-   * Get fulltime visa filter rules (for frontend real-time filtering)
+   * 정규직 비자 필터링 규칙 조회 (프론트엔드 참조용)
+   * Get fulltime visa filter rules (for frontend reference)
    *
-   * 플랫폼 채용 가능 비자만 포함 (고용허가제 E-9, H-2, E-7-4 제외)
-   * Only includes platform-hireable visas (excludes employment permit system)
+   * ⚠️ 이 데이터는 프론트엔드 표시용 참고 정보입니다.
+   * 실제 비자 판단은 POST /fulltime-visa/evaluate API에서 수행합니다.
    *
-   * 4가지 채용 경로 / 4 hiring tracks:
-   * - IMMEDIATE: 즉시채용 (비자절차 불필요)
-   * - TRANSITION: E-7 전환 (체류자격 변경)
-   * - TRANSFER: E-7 이직 (근무처 변경)
-   * - SPONSOR: E-7 해외초청 (신규발급)
+   * 9종 비자, 12개 트랙 항목 (법무부공고 2025-406호 기준)
+   * 9 visa types, 12 track items (per MOJ Notice 2025-406)
    *
-   * @returns 비자 필터링 규칙 목록 (12개) / Visa filter rules list (12 visas)
+   * @returns 비자 필터링 규칙 목록 (12개) / Visa filter rules list (12 items)
    */
   async getFilterRules(): Promise<FulltimeVisaFilterRulesResponseDto> {
     this.logger.log(
       '[getFilterRules] 비자 필터링 규칙 조회 / Fetching visa filter rules',
     );
 
-    // 플랫폼 채용 가능 비자 규칙 (12개)
-    // Platform-hireable visa rules (12 visas)
+    // 동적으로 최소 연봉 조회 / Dynamically fetch minimum salaries
+    const e71Min = getCurrentE7MinSalary('E-7-1');
+    const e72Min = getCurrentE7MinSalary('E-7-2');
+    const e73Min = getCurrentE7MinSalary('E-7-3');
+
+    // E-7 전체 허용 직종 (E-7-1 + E-7-2 + E-7-3)
+    const allE7JobCodes = [
+      ...getAllowedJobCodesByE7Type('E-7-1'),
+      ...getAllowedJobCodesByE7Type('E-7-2'),
+      ...getAllowedJobCodesByE7Type('E-7-3'),
+    ];
+
     const visas: VisaFilterRuleDto[] = [
-      // ========== IMMEDIATE: 즉시 채용 가능 (3개) ==========
-      {
-        visaCode: 'F-2',
-        visaName: '거주',
-        visaNameEn: 'Resident',
-        hiringTrack: 'IMMEDIATE',
-        minSalary: null, // 제한 없음 / No limit
-        minEducation: null, // 제한 없음 / No limit
-        requiresOverseasHire: false,
-        allowedJobCategories: null, // 모든 직종 가능 / All jobs allowed
-        notes: 'F-2 비자 소지자는 별도 제한 없이 자유롭게 취업 가능',
-        requiresEntryLevel: false,
-      },
+      // ========== IMMEDIATE: 즉시 채용 가능 (4개) ==========
       {
         visaCode: 'F-5',
         visaName: '영주',
@@ -412,8 +405,8 @@ export class FulltimeVisaMatchingService {
         minSalary: null,
         minEducation: null,
         requiresOverseasHire: false,
-        allowedJobCategories: null, // 모든 직종 가능
-        notes: 'F-5 영주 비자는 취업 제한 없음',
+        allowedJobCategories: null,
+        notes: 'F-5 영주 비자 — 취업 제한 없음',
         requiresEntryLevel: false,
       },
       {
@@ -424,62 +417,71 @@ export class FulltimeVisaMatchingService {
         minSalary: null,
         minEducation: null,
         requiresOverseasHire: false,
-        allowedJobCategories: null, // 모든 직종 가능
-        notes: 'F-6 결혼이민 비자는 취업 제한 없음',
+        allowedJobCategories: null,
+        notes: 'F-6 결혼이민 — 취업 제한 없음',
+        requiresEntryLevel: false,
+      },
+      {
+        visaCode: 'F-2',
+        visaName: '거주',
+        visaNameEn: 'Resident',
+        hiringTrack: 'IMMEDIATE',
+        minSalary: null,
+        minEducation: null,
+        requiresOverseasHire: false,
+        allowedJobCategories: null,
+        notes: 'F-2 거주 — 유흥업소/단순노무 제한 (인구감소지역 예외)',
+        requiresEntryLevel: false,
+      },
+      {
+        visaCode: 'F-4',
+        visaName: '재외동포',
+        visaNameEn: 'Overseas Korean',
+        hiringTrack: 'IMMEDIATE',
+        minSalary: null,
+        minEducation: null,
+        requiresOverseasHire: false,
+        allowedJobCategories: null,
+        notes: 'F-4 재외동포 — 풍속/공공이익/단순노무 제한 (인구감소지역 예외). 2026.2.12 H-2/F-4 통합',
         requiresEntryLevel: false,
       },
 
-      // ========== TRANSITION: E-7 전환 (3개) ==========
+      // ========== SPONSOR: E-7 해외초청 (3개) ==========
       {
-        visaCode: 'D-2',
-        visaName: '유학',
-        visaNameEn: 'Study',
-        hiringTrack: 'TRANSITION',
-        minSalary: 28000000, // E-7 전환 기준
-        minEducation: 'BACHELOR', // 학사 이상 (졸업 필요)
-        requiresOverseasHire: false, // 국내 체류 중
-        allowedJobCategories: [
-          ...getAllowedJobCodesByE7Type('E-7-1'),
-          ...getAllowedJobCodesByE7Type('E-7-2'),
-          ...getAllowedJobCodesByE7Type('E-7-3'),
-        ], // 전체 E-7 허용 직종 (87개)
-        notes:
-          'D-2 유학 비자 보유자가 졸업예정(최종학기) 또는 졸업 후 E-7로 전환 시 채용 가능. 신입 채용만 해당.',
-        requiresEntryLevel: true, // 졸업예정자/졸업자는 신입만
+        visaCode: 'E-7-1',
+        visaName: 'E-7-1 신규',
+        visaNameEn: 'E-7-1 New Sponsor',
+        hiringTrack: 'SPONSOR',
+        minSalary: e71Min,
+        minEducation: 'BACHELOR',
+        requiresOverseasHire: true,
+        allowedJobCategories: getAllowedJobCodesByE7Type('E-7-1'),
+        notes: `E-7-1 전문인력 신규 — 최소 연봉 ${e71Min.toLocaleString()}원 (법무부공고 2025-406호)`,
+        requiresEntryLevel: false,
       },
       {
-        visaCode: 'D-4',
-        visaName: '어학연수',
-        visaNameEn: 'Language Training',
-        hiringTrack: 'TRANSITION',
-        minSalary: 28000000, // E-7 전환 기준
-        minEducation: null, // 학력 제한 없음 (조건은 추후 조정)
-        requiresOverseasHire: false, // 국내 체류 중
-        allowedJobCategories: [
-          ...getAllowedJobCodesByE7Type('E-7-1'),
-          ...getAllowedJobCodesByE7Type('E-7-2'),
-          ...getAllowedJobCodesByE7Type('E-7-3'),
-        ], // 전체 E-7 허용 직종 (87개)
-        notes:
-          'D-4 어학연수 비자 보유자가 E-7로 전환 시 채용 가능. 조건은 추후 설정 예정.',
-        requiresEntryLevel: true, // 신입 채용만
+        visaCode: 'E-7-2',
+        visaName: 'E-7-2 신규',
+        visaNameEn: 'E-7-2 New Sponsor',
+        hiringTrack: 'SPONSOR',
+        minSalary: e72Min,
+        minEducation: null,
+        requiresOverseasHire: true,
+        allowedJobCategories: getAllowedJobCodesByE7Type('E-7-2'),
+        notes: `E-7-2 준전문인력 신규 — 최소 연봉 ${e72Min.toLocaleString()}원. 고용비율 20% 제한`,
+        requiresEntryLevel: false,
       },
       {
-        visaCode: 'D-10',
-        visaName: '구직',
-        visaNameEn: 'Job Seeking',
-        hiringTrack: 'TRANSITION',
-        minSalary: 28000000, // E-7 전환 기준
-        minEducation: 'BACHELOR', // 학사 이상
-        requiresOverseasHire: false, // 국내 체류 중
-        allowedJobCategories: [
-          ...getAllowedJobCodesByE7Type('E-7-1'),
-          ...getAllowedJobCodesByE7Type('E-7-2'),
-          ...getAllowedJobCodesByE7Type('E-7-3'),
-        ], // 전체 E-7 허용 직종 (87개)
-        notes:
-          'D-10 구직 비자 보유자가 E-7로 전환 시 채용 가능. 신입/경력 모두 가능.',
-        requiresEntryLevel: false, // 경력자도 가능 (퇴사 후 구직)
+        visaCode: 'E-7-3',
+        visaName: 'E-7-3 신규',
+        visaNameEn: 'E-7-3 New Sponsor',
+        hiringTrack: 'SPONSOR',
+        minSalary: e73Min,
+        minEducation: null,
+        requiresOverseasHire: true,
+        allowedJobCategories: getAllowedJobCodesByE7Type('E-7-3'),
+        notes: `E-7-3 일반기능인력 신규 — 최소 연봉 ${e73Min.toLocaleString()}원. 기업추천 방식 (점수제 아님)`,
+        requiresEntryLevel: false,
       },
 
       // ========== TRANSFER: E-7 이직 (3개) ==========
@@ -488,12 +490,11 @@ export class FulltimeVisaMatchingService {
         visaName: 'E-7-1 이직',
         visaNameEn: 'E-7-1 Transfer',
         hiringTrack: 'TRANSFER',
-        minSalary: 34400000, // GNI 80% (2025년 기준 약 4,300만원의 80%)
-        minEducation: 'BACHELOR', // 학사 이상
-        requiresOverseasHire: false, // 국내 체류 중
-        allowedJobCategories: getAllowedJobCodesByE7Type('E-7-1'), // E-7-1 허용 직종 67개
-        notes:
-          'E-7-1 비자 보유자가 직장 변경 시 채용 가능. 근무처 변경 신고 필요.',
+        minSalary: e71Min,
+        minEducation: 'BACHELOR',
+        requiresOverseasHire: false,
+        allowedJobCategories: getAllowedJobCodesByE7Type('E-7-1'),
+        notes: 'E-7-1 전문인력 이직 — 근무처 변경 신고 필요',
         requiresEntryLevel: false,
       },
       {
@@ -501,12 +502,11 @@ export class FulltimeVisaMatchingService {
         visaName: 'E-7-2 이직',
         visaNameEn: 'E-7-2 Transfer',
         hiringTrack: 'TRANSFER',
-        minSalary: 25200000, // 최저임금 이상 (2025년 기준 월 약 210만원 * 12개월)
-        minEducation: 'ASSOCIATE', // 전문학사 이상
-        requiresOverseasHire: false, // 국내 체류 중
-        allowedJobCategories: getAllowedJobCodesByE7Type('E-7-2'), // E-7-2 허용 직종 10개
-        notes:
-          'E-7-2 비자 보유자가 직장 변경 시 채용 가능. 근무처 변경 신고 필요.',
+        minSalary: e72Min,
+        minEducation: null,
+        requiresOverseasHire: false,
+        allowedJobCategories: getAllowedJobCodesByE7Type('E-7-2'),
+        notes: 'E-7-2 준전문인력 이직 — 근무처 변경 신고 필요. 고용비율 20% 제한',
         requiresEntryLevel: false,
       },
       {
@@ -514,53 +514,37 @@ export class FulltimeVisaMatchingService {
         visaName: 'E-7-3 이직',
         visaNameEn: 'E-7-3 Transfer',
         hiringTrack: 'TRANSFER',
-        minSalary: 25200000, // 최저임금 이상 (2025년 기준)
-        minEducation: null, // 학력 제한 없음 (일반기능인력)
-        requiresOverseasHire: false, // 국내 체류 중
-        allowedJobCategories: getAllowedJobCodesByE7Type('E-7-3'), // E-7-3 허용 직종 13개
-        notes:
-          'E-7-3 비자 보유자가 직장 변경 시 채용 가능. 근무처 변경 신고 필요.',
+        minSalary: e73Min,
+        minEducation: null,
+        requiresOverseasHire: false,
+        allowedJobCategories: getAllowedJobCodesByE7Type('E-7-3'),
+        notes: 'E-7-3 일반기능인력 이직 — 근무처 변경 신고 필요',
         requiresEntryLevel: false,
       },
 
-      // ========== SPONSOR: E-7 해외초청 (3개) ==========
+      // ========== TRANSITION: E-7 전환 (2개) ==========
       {
-        visaCode: 'E-7-1',
-        visaName: 'E-7-1 신규',
-        visaNameEn: 'E-7-1 New',
-        hiringTrack: 'SPONSOR',
-        minSalary: 34400000, // GNI 80% (2025년 기준)
-        minEducation: 'BACHELOR', // 학사 이상
-        requiresOverseasHire: true, // 해외 초청
-        allowedJobCategories: getAllowedJobCodesByE7Type('E-7-1'), // E-7-1 허용 직종 67개
-        notes:
-          'E-7-1 비자 신규 발급. 전문 직종 취업 가능. 법무부 지정 직종 한정.',
-        requiresEntryLevel: false,
+        visaCode: 'D-2',
+        visaName: '유학 → E-7',
+        visaNameEn: 'Study → E-7 Transition',
+        hiringTrack: 'TRANSITION',
+        minSalary: e72Min, // 최소 기준 (E-7-2/3 수준)
+        minEducation: 'ASSOCIATE',
+        requiresOverseasHire: false,
+        allowedJobCategories: allE7JobCodes,
+        notes: 'D-2 유학 → E-7 전환. 국내 대학 졸업(예정)자 특례 적용. D-2-7 고용비율 면제',
+        requiresEntryLevel: true,
       },
       {
-        visaCode: 'E-7-2',
-        visaName: 'E-7-2 신규',
-        visaNameEn: 'E-7-2 New',
-        hiringTrack: 'SPONSOR',
-        minSalary: 25200000, // 최저임금 이상 (2025년 기준)
-        minEducation: 'ASSOCIATE', // 전문학사 이상
-        requiresOverseasHire: true, // 해외 초청
-        allowedJobCategories: getAllowedJobCodesByE7Type('E-7-2'), // E-7-2 허용 직종 10개
-        notes:
-          'E-7-2 비자 신규 발급. 준전문 직종 취업 가능. 외국인 고용비율 20% 이하 유지 필요.',
-        requiresEntryLevel: false,
-      },
-      {
-        visaCode: 'E-7-3',
-        visaName: 'E-7-3 신규',
-        visaNameEn: 'E-7-3 New',
-        hiringTrack: 'SPONSOR',
-        minSalary: 25200000, // 최저임금 이상 (2025년 기준)
-        minEducation: null, // 학력 제한 없음 (일반기능인력)
-        requiresOverseasHire: true, // 해외 초청
-        allowedJobCategories: getAllowedJobCodesByE7Type('E-7-3'), // E-7-3 허용 직종 13개
-        notes:
-          'E-7-3 비자 신규 발급. 점수제 기준 충족 시 발급. 학력/경력/한국어능력 종합 평가.',
+        visaCode: 'D-10',
+        visaName: '구직 → E-7',
+        visaNameEn: 'Job Seeking → E-7 Transition',
+        hiringTrack: 'TRANSITION',
+        minSalary: e72Min, // 최소 기준 (E-7-2/3 수준)
+        minEducation: 'BACHELOR',
+        requiresOverseasHire: false,
+        allowedJobCategories: allE7JobCodes,
+        notes: 'D-10 구직 → E-7 전환. 최대 2년 내 전환 필요',
         requiresEntryLevel: false,
       },
     ];

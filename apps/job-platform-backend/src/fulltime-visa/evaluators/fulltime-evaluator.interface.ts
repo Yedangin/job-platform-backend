@@ -92,7 +92,7 @@ export interface ApplicantProfile {
   /** 현재 비자 타입 / Current visa type */
   currentVisaType: string;
 
-  /** 현재 비자 세부 타입 (E-7-1, E-7-4 등) / Current visa subtype */
+  /** 현재 비자 세부 타입 (E-7-1, D-2-7, D-10-1 등) / Current visa subtype */
   currentVisaSubtype?: string;
 
   /** 학력 수준 / Education level */
@@ -105,6 +105,34 @@ export interface ApplicantProfile {
 
   /** 전공 / Major */
   major?: string;
+
+  /**
+   * 국내 대학 졸업 여부 (고등교육법 제2조 기준)
+   * Domestic (Korean) university graduate (per Higher Education Act Article 2)
+   *
+   * true일 경우 E-7-1/2/3 학력/경력 특례 적용:
+   * - 학사+: 경력불요, 전공무관
+   * - 전문학사: 경력불요, 전공관련만
+   */
+  isDomesticUniversity?: boolean;
+
+  /**
+   * 국내 대학 학위 수준 (isDomesticUniversity=true일 때만 유효)
+   * Domestic university degree level (only valid when isDomesticUniversity=true)
+   * HIGH_SCHOOL은 대학 학위가 아니므로 evaluator에서 무시됨
+   */
+  domesticDegreeLevel?:
+    | 'HIGH_SCHOOL'
+    | 'ASSOCIATE'
+    | 'BACHELOR'
+    | 'MASTER'
+    | 'DOCTORATE';
+
+  /**
+   * 졸업예정 여부 (D-2 전환 시 최종학기 여부)
+   * Graduating status (for D-2 transition, is in final semester)
+   */
+  isGraduating?: boolean;
 
   /** 경력 연수 (년) / Experience years */
   experienceYears: number;

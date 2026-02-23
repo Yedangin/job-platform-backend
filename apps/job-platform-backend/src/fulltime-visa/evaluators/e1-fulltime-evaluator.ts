@@ -1,3 +1,4 @@
+// @ts-nocheck — 플랫폼에서 제외. 파일 보관용. / Excluded from platform. Kept for reference.
 /**
  * E-1 교수 비자 정규직 평가기
  * E-1 Professor Visa Fulltime Evaluator

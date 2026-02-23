@@ -1,3 +1,4 @@
+// @ts-nocheck — 플랫폼에서 제외 (고용허가제). 파일 보관용. / Excluded from platform (employment permit). Kept for reference.
 /**
  * E-7-4 숙련기능인력 비자 정규직 평가기
  * E-7-4 Skilled Worker Visa Fulltime Evaluator

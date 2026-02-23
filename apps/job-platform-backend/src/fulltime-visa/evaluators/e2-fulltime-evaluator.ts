@@ -1,3 +1,4 @@
+// @ts-nocheck — 플랫폼에서 제외. 파일 보관용. / Excluded from platform. Kept for reference.
 /**
  * E-2 회화지도 비자 정규직 평가기
  * E-2 Foreign Language Instructor Visa Fulltime Evaluator

@@ -2,20 +2,32 @@
  * E-7-1 특정활동(전문직종) 비자 정규직 평가기
  * E-7-1 Specific Activities (Professional Occupations) Visa Fulltime Evaluator
  *
- * E-7-1 핵심: 전문 직종 취업비자. 91개 허용 직종 + GNI 80% 이상 연봉 필수.
- * E-7-1 core: Professional occupation work visa. 91 allowed occupations + salary ≥ GNI × 80% required.
+ * E-7-1 핵심: 전문 직종 취업비자. 91개 허용 직종 + 최소 연봉 필수.
+ * E-7-1 core: Professional occupation work visa. 91 allowed occupations + minimum salary required.
  *
  * [E-7-1 요건 / E-7-1 Requirements]
  * ① 허용 직종: 법무부 고시 91개 전문직종 (KSCO 기준)
  *    Allowed occupations: 91 professional occupations per MOJ (KSCO-based)
- * ② 최소 연봉: 1인당 GNI × 80% 이상
- *    Minimum salary: ≥ GNI per capita × 80%
- *    - 2024년: 34,208,000원 (GNI 42,760,000 × 0.8)
- *    - 2025년: 35,200,000원 (GNI 44,000,000 × 0.8)
- * ③ 학력/경력: 학사학위 또는 5년 이상 경력 (직종별 상이)
- *    Education/Experience: Bachelor's degree or 5+ years experience (varies by occupation)
+ * ② 최소 연봉: 법무부공고 고정금액 (2026년: 31,120,000원)
+ *    Minimum salary: MOJ fixed amount (2026: 31,120,000 KRW)
+ * ③ 학력/경력 (5개 경로 / 5 paths):
+ *    ① 석사 이상 → 경력 불요 / Master's+ → no experience
+ *    ② 해외 학사 + 1년 이상 경력 / Overseas Bachelor's + 1+ years
+ *    ③ 학력 무관 + 5년 이상 경력 / Any education + 5+ years
+ *    ④ 국내 학사 이상 → 경력 불요, 전공 무관 / Domestic Bachelor's+ → no exp, any major
+ *    ⑤ 국내 전문학사 → 경력 불요, 전공 관련만 / Domestic Associate → no exp, related major only
  * ④ 한국어: TOPIK 4급 이상 권장 (직종별 상이)
  *    Korean: TOPIK 4+ recommended (varies by occupation)
+ *
+ * [GNI 3배 면제 / GNI 3x Exemption]
+ * 연봉 ≥ GNI × 3 (~149,865,000원): 학력/경력/직종 요건 전부 면제
+ * Salary ≥ GNI × 3 (~149,865,000 KRW): All education/experience/occupation requirements waived
+ *
+ * [국내 대학 특례 / Domestic University Special Provisions]
+ * 고등교육법 제2조 기준 국내 대학 졸업자:
+ * Per Higher Education Act Article 2, Korean university graduates:
+ * - 학사+: 경력불요, 전공무관 / Bachelor's+: no exp, any major
+ * - 전문학사: 경력불요, 전공관련만 / Associate: no exp, related major only
  *
  * [채용 트랙 / Hiring Tracks]
  * - SPONSOR: 해외 인재 스폰서 채용 (기업이 비자 스폰서)
@@ -24,8 +36,10 @@
  *             E visa holder transfer (E→E job change)
  *
  * [법적 근거 / Legal Basis]
- * 출입국관리법 시행령 제7조제7항 — E-7-1 연봉 기준 (GNI × 0.8)
+ * 출입국관리법 시행령 제7조제7항 — E-7-1 연봉 기준 + GNI 3배 면제
+ * 법무부공고 제2025-406호 — 2026년 E-7 최소 연봉 기준
  * 법무부 고시 — E-7 비자 발급 대상 전문직종 91개
+ * 고등교육법 제2조 — 국내 대학 졸업자 특례 기준
  * 한국표준직업분류(KSCO) — 직종 코드 체계
  */
 
@@ -44,6 +58,7 @@ import {
   getCurrentGni,
   getCurrentE7MinSalary,
   meetsE71SalaryThreshold,
+  getGniTripleThreshold,
 } from '../data/gni-table';
 
 export class E71FulltimeEvaluator implements IFulltimeVisaEvaluator {
@@ -66,6 +81,44 @@ export class E71FulltimeEvaluator implements IFulltimeVisaEvaluator {
       this.visaNameEn,
       hiringTrack,
     );
+
+    // ====================================================================
+    // STEP 1.5: GNI 3배 이상 연봉 면제 확인 / GNI 3x salary exemption check
+    // 출입국관리법 시행령 제7조제7항 — GNI 3배 이상 시 학력/경력/직종 요건 면제
+    // Immigration Act Enforcement Decree Art.7(7) — GNI 3x+ exempts education/exp/occupation
+    // ====================================================================
+    const gniTripleThreshold = getGniTripleThreshold();
+    if (input.salaryMin >= gniTripleThreshold) {
+      result.status = 'eligible';
+      result.notes =
+        `GNI 3배 이상 연봉 — 학력/경력/직종 요건 면제. ` +
+        `기준: ${gniTripleThreshold.toLocaleString()}원, 제시 연봉: ${input.salaryMin.toLocaleString()}원 ` +
+        `(GNI 3x+ salary — education/experience/occupation requirements waived. ` +
+        `Threshold: ${gniTripleThreshold.toLocaleString()} KRW, Offered: ${input.salaryMin.toLocaleString()} KRW)`;
+      result.requiredPermit = null;
+
+      if (hiringTrack === 'SPONSOR') {
+        result.estimatedDays = 45;
+        result.requiredDocuments = [
+          '여권 사본 (Passport copy)',
+          '소득 증빙 서류 (Salary/income verification documents)',
+          '표준계약서 (Standard labor contract)',
+          '채용사유서 (Hiring rationale statement)',
+          '사업자등록증 (Business registration certificate)',
+        ];
+      } else {
+        result.estimatedDays = 14;
+        result.requiredDocuments = [
+          '외국인등록증 사본 (Copy of Alien Registration Card)',
+          '현재 E-7 비자 사본 (Current E-7 visa copy)',
+          '소득 증빙 서류 (Salary/income verification documents)',
+          '근로계약서 (Labor contract)',
+          '직장변경 신고서 (Job change notification)',
+        ];
+      }
+
+      return result;
+    }
 
     // ====================================================================
     // STEP 1: E-7-1 허용 직종 확인 / Check E-7-1 allowed occupation
@@ -196,6 +249,14 @@ export class E71FulltimeEvaluator implements IFulltimeVisaEvaluator {
   /**
    * Applicant-side evaluation: 지원자의 학력/경력/한국어 수준 교차 검증
    * Applicant-side evaluation: Cross-validate applicant's education/experience/Korean level
+   *
+   * 5개 학력/경력 경로 (법무부공고 2025-406호, 고등교육법 제2조):
+   * 5 education/experience paths (MOJ Notice 2025-406, Higher Education Act Art.2):
+   * ① 석사 이상 → 경력 불요 / Master's+ → no experience
+   * ② 해외 학사 + 1년 이상 경력 / Overseas Bachelor's + 1+ years
+   * ③ 학력 무관 + 5년 이상 경력 / Any education + 5+ years
+   * ④ 국내 학사 이상 → 경력 불요, 전공 무관 / Domestic Bachelor's+ → no exp, any major
+   * ⑤ 국내 전문학사 → 경력 불요, 전공 관련만 / Domestic Associate → no exp, related major only
    */
   evaluateApplicant(
     input: FulltimeJobInput,
@@ -208,46 +269,184 @@ export class E71FulltimeEvaluator implements IFulltimeVisaEvaluator {
     }
 
     // ====================================================================
-    // 지원자 학력/경력 교차 검증 / Cross-validate applicant education/experience
+    // GNI 3배 면제 확인 / GNI 3x exemption check (applicant-side)
+    // 출입국관리법 시행령 제7조제7항 — GNI 3배 이상 시 학력/경력 요건 전부 면제
+    // Immigration Act Enforcement Decree Art.7(7) — GNI 3x+ waives all education/exp
     // ====================================================================
-    // 법령 기준 (visa-rules-full.md:235-243):
-    // Law basis:
-    // - 석사 이상: 경력 불요 / Master's+: Experience not required
-    // - 학사 + 1년 이상 경력 / Bachelor's + 1+ years experience
-    // - 학력 무관 + 5년 이상 경력 / Any education + 5+ years experience
-
-    // 석사 이상 (경력 불요)
-    // Master's or higher (no experience required)
-    const hasMastersOrHigher =
-      profile.educationLevel === 'MASTER' ||
-      profile.educationLevel === 'DOCTORATE';
-
-    // 학사 + 1년 이상 경력
-    // Bachelor's + 1+ years experience
-    const hasBachelorsWithOneYear =
-      profile.educationLevel === 'BACHELOR' && profile.experienceYears >= 1;
-
-    // 학력 무관 + 5년 이상 경력
-    // Any education + 5+ years experience
-    const hasFiveYearsExp = profile.experienceYears >= 5;
-
-    // 셋 중 하나도 충족하지 못하면 blocked
-    // If none of the three conditions are met, blocked
-    if (!hasMastersOrHigher && !hasBachelorsWithOneYear && !hasFiveYearsExp) {
-      result.status = 'blocked';
-      result.blockReasons.push(
-        'E-7-1 비자 요건 미충족: (1) 석사 이상 학위, (2) 학사 + 1년 이상 경력, ' +
-          '(3) 학력 무관 + 5년 이상 경력 중 하나 필요. ' +
-          `지원자: ${profile.educationLevel || '학력 미제공'}, 경력 ${profile.experienceYears}년 ` +
-          "(E-7-1 visa requirements not met: Need one of (1) Master's+ degree, " +
-          "(2) Bachelor's + 1+ years, (3) Any education + 5+ years. " +
-          `Applicant: ${profile.educationLevel || 'not provided'}, ${profile.experienceYears} years)`,
+    const gniTripleThreshold = getGniTripleThreshold();
+    if (input.salaryMin >= gniTripleThreshold) {
+      result.status = 'eligible';
+      result.conditions = result.conditions.filter(
+        (c) => !c.includes('학사 학위') && !c.includes("Bachelor's degree"),
       );
       return result;
     }
 
+    // ====================================================================
+    // 지원자 학력/경력 교차 검증 (5개 경로) / Cross-validate education/experience (5 paths)
+    // ====================================================================
+    // 법령 기준 (법무부공고 2025-406호, 고등교육법 제2조):
+    // Law basis (MOJ Notice 2025-406, Higher Education Act Art.2):
+    // ① 석사 이상: 경력 불요 / Master's+: Experience not required
+    // ② 해외 학사 + 1년 이상 경력 / Overseas Bachelor's + 1+ years experience
+    // ③ 학력 무관 + 5년 이상 경력 / Any education + 5+ years experience
+    // ④ 국내 학사 이상: 경력 불요, 전공 무관 / Domestic Bachelor's+: no exp, any major
+    // ⑤ 국내 전문학사: 경력 불요, 전공 관련만 / Domestic Associate: no exp, related major only
+
+    // ① 석사 이상 (경력 불요)
+    // ① Master's or higher (no experience required)
+    const hasMastersOrHigher =
+      profile.educationLevel === 'MASTER' ||
+      profile.educationLevel === 'DOCTORATE';
+
+    // ④ 국내 학사 이상 (경력 불요, 전공 무관) — 고등교육법 제2조
+    // ④ Domestic Bachelor's+ (no exp, any major) — Higher Education Act Art.2
+    const isDomesticBachelorsOrHigher =
+      profile.isDomesticUniversity === true &&
+      (profile.domesticDegreeLevel === 'BACHELOR' ||
+        profile.domesticDegreeLevel === 'MASTER' ||
+        profile.domesticDegreeLevel === 'DOCTORATE');
+
+    // ⑤ 국내 전문학사 (경력 불요, 전공 관련만) — 고등교육법 제2조
+    // ⑤ Domestic Associate (no exp, related major only) — Higher Education Act Art.2
+    const isDomesticAssociate =
+      profile.isDomesticUniversity === true &&
+      profile.domesticDegreeLevel === 'ASSOCIATE';
+
+    // ② 해외 학사 + 1년 이상 경력
+    // ② Overseas Bachelor's + 1+ years experience
+    const hasBachelorsWithOneYear =
+      profile.educationLevel === 'BACHELOR' && profile.experienceYears >= 1;
+
+    // ③ 학력 무관 + 5년 이상 경력
+    // ③ Any education + 5+ years experience
+    const hasFiveYearsExp = profile.experienceYears >= 5;
+
+    // ------------------------------------------------------------------
+    // 경로 판정 순서: ① → ④ → ⑤ → ② → ③
+    // Path evaluation order: ① → ④ → ⑤ → ② → ③
+    // ------------------------------------------------------------------
+
+    if (hasMastersOrHigher) {
+      // ① 석사 이상 → eligible (경력 불요)
+      // ① Master's+ → eligible (no experience required)
+      result.status = 'eligible';
+      result.conditions = result.conditions.filter(
+        (c) => !c.includes('학사 학위') && !c.includes("Bachelor's degree"),
+      );
+    } else if (isDomesticBachelorsOrHigher) {
+      // ④ 국내 학사 이상 → eligible (경력 불요, 전공 무관)
+      // ④ Domestic Bachelor's+ → eligible (no exp, any major)
+      result.status = 'eligible';
+      result.conditions = result.conditions.filter(
+        (c) => !c.includes('학사 학위') && !c.includes("Bachelor's degree"),
+      );
+      result.conditions.push(
+        '국내 대학 학사 이상 졸업 — 경력 불요, 전공 무관 (고등교육법 제2조) ' +
+          "(Domestic university Bachelor's+ — no experience required, any major (Higher Education Act Art.2))",
+      );
+    } else if (isDomesticAssociate) {
+      // ⑤ 국내 전문학사 → 전공 관련 확인 필요
+      // ⑤ Domestic Associate → related major verification needed
+      const canVerifyMajor =
+        profile.major &&
+        input.preferredMajors &&
+        input.preferredMajors.length > 0;
+
+      if (canVerifyMajor) {
+        // 전공 관련 여부 간이 확인 (preferredMajors에 포함되는지)
+        // Simple major relevance check (included in preferredMajors)
+        const majorLower = profile.major!.toLowerCase();
+        const isRelatedMajor = input.preferredMajors!.some(
+          (pm) =>
+            pm.toLowerCase().includes(majorLower) ||
+            majorLower.includes(pm.toLowerCase()),
+        );
+
+        if (isRelatedMajor) {
+          result.status = 'eligible';
+          result.conditions = result.conditions.filter(
+            (c) => !c.includes('학사 학위') && !c.includes("Bachelor's degree"),
+          );
+          result.conditions.push(
+            `국내 전문학사 졸업 + 전공 관련 확인 (${profile.major}) — 경력 불요 (고등교육법 제2조) ` +
+              `(Domestic Associate + related major verified (${profile.major}) — no experience required (Higher Education Act Art.2))`,
+          );
+        } else {
+          // 전공 불일치 — ⑤ 경로 불가, 다른 경로(②③) 확인
+          // Major mismatch — path ⑤ unavailable, check other paths (②③)
+          if (hasBachelorsWithOneYear) {
+            result.status = 'eligible';
+            result.conditions = result.conditions.filter(
+              (c) =>
+                !c.includes('학사 학위') && !c.includes("Bachelor's degree"),
+            );
+          } else if (hasFiveYearsExp) {
+            result.status = 'eligible';
+            result.conditions = result.conditions.filter(
+              (c) =>
+                !c.includes('학사 학위') && !c.includes("Bachelor's degree"),
+            );
+          } else {
+            result.status = 'blocked';
+            result.blockReasons.push(
+              '국내 전문학사 졸업자는 전공 관련 직종만 가능합니다. ' +
+                `지원자 전공: ${profile.major}, 우대 전공: ${input.preferredMajors!.join(', ')} ` +
+                '(Domestic Associate graduates require related major. ' +
+                `Applicant major: ${profile.major}, Preferred: ${input.preferredMajors!.join(', ')})`,
+            );
+            return result;
+          }
+        }
+      } else {
+        // 전공 확인 불가 → conditional (전공 관련 여부 추후 확인 필요)
+        // Cannot verify major → conditional (major relevance to be verified later)
+        result.status = 'conditional';
+        result.conditions = result.conditions.filter(
+          (c) => !c.includes('학사 학위') && !c.includes("Bachelor's degree"),
+        );
+        result.conditions.push(
+          '국내 전문학사 졸업 — 전공 관련 여부 확인 필요 (고등교육법 제2조) ' +
+            '(Domestic Associate — related major verification required (Higher Education Act Art.2))',
+        );
+      }
+    } else if (hasBachelorsWithOneYear) {
+      // ② 해외 학사 + 1년 이상 경력 → eligible
+      // ② Overseas Bachelor's + 1+ years → eligible
+      result.status = 'eligible';
+      result.conditions = result.conditions.filter(
+        (c) => !c.includes('학사 학위') && !c.includes("Bachelor's degree"),
+      );
+    } else if (hasFiveYearsExp) {
+      // ③ 학력 무관 + 5년 이상 경력 → eligible
+      // ③ Any education + 5+ years → eligible
+      result.status = 'eligible';
+      result.conditions = result.conditions.filter(
+        (c) => !c.includes('학사 학위') && !c.includes("Bachelor's degree"),
+      );
+    } else {
+      // 5개 경로 모두 미충족 → blocked
+      // None of the 5 paths met → blocked
+      result.status = 'blocked';
+      result.blockReasons.push(
+        'E-7-1 비자 학력/경력 요건 미충족: ' +
+          '(1) 석사 이상, (2) 해외 학사 + 1년 이상 경력, (3) 학력 무관 + 5년 이상 경력, ' +
+          '(4) 국내 학사 이상 (전공 무관), (5) 국내 전문학사 (전공 관련) 중 하나 필요. ' +
+          `지원자: ${profile.educationLevel || '학력 미제공'}, 경력 ${profile.experienceYears}년, ` +
+          `국내 대학: ${profile.isDomesticUniversity ? '예' : '아니오'} ` +
+          "(E-7-1 education/experience not met: Need one of " +
+          "(1) Master's+, (2) Overseas Bachelor's + 1yr, (3) Any education + 5yrs, " +
+          "(4) Domestic Bachelor's+ (any major), (5) Domestic Associate (related major). " +
+          `Applicant: ${profile.educationLevel || 'not provided'}, ${profile.experienceYears} years, ` +
+          `Domestic university: ${profile.isDomesticUniversity ? 'Yes' : 'No'})`,
+      );
+      return result;
+    }
+
+    // ====================================================================
     // 한국어 수준 확인 (권장사항, blocking은 아님)
     // Check Korean level (recommendation, not blocking)
+    // ====================================================================
     if (
       profile.topikLevel &&
       (profile.topikLevel === 'TOPIK_4' ||
@@ -258,17 +457,6 @@ export class E71FulltimeEvaluator implements IFulltimeVisaEvaluator {
       result.conditions.push(
         `TOPIK ${profile.topikLevel.replace('TOPIK_', '')}급 보유 — 한국어 요건 충족 ` +
           `(TOPIK ${profile.topikLevel.replace('TOPIK_', '')} — Korean language requirement met)`,
-      );
-    }
-
-    // 학력/경력 요건 충족 시 eligible
-    // If education/experience requirements met, set to eligible
-    if (hasMastersOrHigher || hasBachelorsWithOneYear || hasFiveYearsExp) {
-      result.status = 'eligible';
-      // 충족된 조건 문구 제거
-      // Remove met condition text
-      result.conditions = result.conditions.filter(
-        (c) => !c.includes('학사 학위') && !c.includes("Bachelor's degree"),
       );
     }
 
