@@ -40,7 +40,9 @@ import {
  * 기본값: E-7-1 허용 직종(2223 응용 소프트웨어 개발자), 충분한 연봉
  * Defaults: E-7-1 allowed occupation (2223 Application Software Developer), sufficient salary
  */
-function createJobInput(overrides: Partial<FulltimeJobInput> = {}): FulltimeJobInput {
+function createJobInput(
+  overrides: Partial<FulltimeJobInput> = {},
+): FulltimeJobInput {
   return {
     occupationCode: '2223', // E-7-1 응용 소프트웨어 개발자 / Application Software Developer
     salaryMin: 40_000_000,
@@ -61,7 +63,9 @@ function createJobInput(overrides: Partial<FulltimeJobInput> = {}): FulltimeJobI
  * 기본 ApplicantProfile 생성 헬퍼
  * Default ApplicantProfile creation helper
  */
-function createApplicantProfile(overrides: Partial<ApplicantProfile> = {}): ApplicantProfile {
+function createApplicantProfile(
+  overrides: Partial<ApplicantProfile> = {},
+): ApplicantProfile {
   return {
     currentVisaType: 'D-2',
     educationLevel: 'BACHELOR',
@@ -110,7 +114,10 @@ describe('D2FulltimeEvaluator — D-2 유학→E-7 전환', () => {
   describe('① 불변 속성 (Invariants)', () => {
     // 출입국관리법 시행령 제23조 — D-2 → E-7 전환은 항상 TRANSITION 트랙
     it('hiringTrack은 항상 TRANSITION이다', () => {
-      const input = createJobInput({ occupationCode: E71_OCCUPATION, salaryMin: E71_MIN_SALARY });
+      const input = createJobInput({
+        occupationCode: E71_OCCUPATION,
+        salaryMin: E71_MIN_SALARY,
+      });
       const result = evaluator.evaluateJob(input);
       expect(result.hiringTrack).toBe('TRANSITION');
     });
@@ -141,7 +148,10 @@ describe('D2FulltimeEvaluator — D-2 유학→E-7 전환', () => {
     // D-2 소지자는 국내 대학 재학/졸업이므로 isDomesticUniversity=true 자동 적용
     // 고등교육법 제2조 — D-2 holders are by definition domestic university students
     it('D-2 소지자는 국내 대학 졸업이므로 isDomesticUniversity=true가 자동 적용된다', () => {
-      const input = createJobInput({ occupationCode: E71_OCCUPATION, salaryMin: E71_MIN_SALARY });
+      const input = createJobInput({
+        occupationCode: E71_OCCUPATION,
+        salaryMin: E71_MIN_SALARY,
+      });
       const profile = createApplicantProfile({
         currentVisaType: 'D-2',
         educationLevel: 'BACHELOR',
@@ -150,7 +160,9 @@ describe('D2FulltimeEvaluator — D-2 유학→E-7 전환', () => {
       const result = evaluator.evaluateApplicant(input, profile);
       // D-2 + BACHELOR + isDomesticUniversity → eligible with domestic provision
       expect(result.status).toBe('eligible');
-      expect(result.conditions.some((c) => c.includes('국내 대학 특례'))).toBe(true);
+      expect(result.conditions.some((c) => c.includes('국내 대학 특례'))).toBe(
+        true,
+      );
     });
   });
 
@@ -369,7 +381,9 @@ describe('D2FulltimeEvaluator — D-2 유학→E-7 전환', () => {
       });
       const result = evaluator.evaluateApplicant(input, profile);
       expect(result.status).toBe('blocked');
-      expect(result.blockReasons.some((r) => r.includes('D-2 비자 소지자만'))).toBe(true);
+      expect(
+        result.blockReasons.some((r) => r.includes('D-2 비자 소지자만')),
+      ).toBe(true);
     });
 
     // E-7-3 직종 경계값: 25,890,000 → pass
@@ -436,7 +450,9 @@ describe('D2FulltimeEvaluator — D-2 유학→E-7 전환', () => {
       });
       const result = evaluator.evaluateJob(input);
       expect(result.requiredDocuments.length).toBeGreaterThan(0);
-      expect(result.requiredDocuments.some((d) => d.includes('졸업'))).toBe(true);
+      expect(result.requiredDocuments.some((d) => d.includes('졸업'))).toBe(
+        true,
+      );
     });
   });
 });
@@ -462,7 +478,10 @@ describe('D10FulltimeEvaluator — D-10 구직→E-7 전환', () => {
   describe('① 불변 속성 (Invariants)', () => {
     // 출입국관리법 시행령 제23조 — D-10 → E-7 전환은 항상 TRANSITION 트랙
     it('hiringTrack은 항상 TRANSITION이다', () => {
-      const input = createJobInput({ occupationCode: E71_OCCUPATION, salaryMin: E71_MIN_SALARY });
+      const input = createJobInput({
+        occupationCode: E71_OCCUPATION,
+        salaryMin: E71_MIN_SALARY,
+      });
       const result = evaluator.evaluateJob(input);
       expect(result.hiringTrack).toBe('TRANSITION');
     });
@@ -504,7 +523,9 @@ describe('D10FulltimeEvaluator — D-10 구직→E-7 전환', () => {
       });
       const result = evaluator.evaluateApplicant(input, profile);
       expect(result.status).toBe('blocked');
-      expect(result.blockReasons.some((r) => r.includes('학사 이상'))).toBe(true);
+      expect(result.blockReasons.some((r) => r.includes('학사 이상'))).toBe(
+        true,
+      );
     });
   });
 
@@ -538,7 +559,9 @@ describe('D10FulltimeEvaluator — D-10 구직→E-7 전환', () => {
       });
       const result = evaluator.evaluateApplicant(input, profile);
       expect(result.status).toBe('eligible');
-      expect(result.conditions.some((c) => c.includes('국내 대학 특례'))).toBe(true);
+      expect(result.conditions.some((c) => c.includes('국내 대학 특례'))).toBe(
+        true,
+      );
     });
 
     // 국내 대학 특례 — isDomesticUniversity=true + BACHELOR → 경력불요, 전공무관
@@ -555,7 +578,9 @@ describe('D10FulltimeEvaluator — D-10 구직→E-7 전환', () => {
       });
       const result = evaluator.evaluateApplicant(input, profile);
       expect(result.status).toBe('eligible');
-      expect(result.conditions.some((c) => c.includes('국내 대학 특례'))).toBe(true);
+      expect(result.conditions.some((c) => c.includes('국내 대학 특례'))).toBe(
+        true,
+      );
       expect(result.conditions.some((c) => c.includes('경력불요'))).toBe(true);
     });
 
@@ -655,7 +680,9 @@ describe('D10FulltimeEvaluator — D-10 구직→E-7 전환', () => {
       });
       const result = evaluator.evaluateApplicant(input, profile);
       expect(result.status).toBe('blocked');
-      expect(result.blockReasons.some((r) => r.includes('학사 이상'))).toBe(true);
+      expect(result.blockReasons.some((r) => r.includes('학사 이상'))).toBe(
+        true,
+      );
     });
 
     // 학력 경계: HIGH_SCHOOL → blocked
@@ -708,7 +735,9 @@ describe('D10FulltimeEvaluator — D-10 구직→E-7 전환', () => {
       });
       const result = evaluator.evaluateApplicant(input, profile);
       expect(result.status).toBe('blocked');
-      expect(result.blockReasons.some((r) => r.includes('전환 요건 미충족'))).toBe(true);
+      expect(
+        result.blockReasons.some((r) => r.includes('전환 요건 미충족')),
+      ).toBe(true);
     });
 
     // 비자 타입 불일치: D-10 evaluator에 D-2 지원자 → blocked
@@ -723,7 +752,9 @@ describe('D10FulltimeEvaluator — D-10 구직→E-7 전환', () => {
       });
       const result = evaluator.evaluateApplicant(input, profile);
       expect(result.status).toBe('blocked');
-      expect(result.blockReasons.some((r) => r.includes('D-10 비자 소지자만'))).toBe(true);
+      expect(
+        result.blockReasons.some((r) => r.includes('D-10 비자 소지자만')),
+      ).toBe(true);
     });
   });
 
@@ -832,12 +863,7 @@ describe('Cross-Evaluator Integration Tests — 전체 평가기 불변 속성 �
     // 법무부공고 제2025-406호 — 모든 E-7 최소 연봉은 하한 기준이므로 단조성 보장
     it('salary를 올릴 때 non-blocked 비자 수는 감소하지 않는다 (E-7-1 직종)', () => {
       const salaryLevels = [
-        20_000_000,
-        25_890_000,
-        31_120_000,
-        40_000_000,
-        60_000_000,
-        150_000_000,
+        20_000_000, 25_890_000, 31_120_000, 40_000_000, 60_000_000, 150_000_000,
       ];
 
       let prevNonBlockedCount = 0;
@@ -864,12 +890,7 @@ describe('Cross-Evaluator Integration Tests — 전체 평가기 불변 속성 �
 
     // E-7-2 직종에서도 단조성 검증
     it('salary를 올릴 때 non-blocked 비자 수는 감소하지 않는다 (E-7-2 직종)', () => {
-      const salaryLevels = [
-        20_000_000,
-        25_890_000,
-        31_120_000,
-        50_000_000,
-      ];
+      const salaryLevels = [20_000_000, 25_890_000, 31_120_000, 50_000_000];
 
       let prevNonBlockedCount = 0;
 
@@ -895,12 +916,7 @@ describe('Cross-Evaluator Integration Tests — 전체 평가기 불변 속성 �
 
     // E-7-3 직종에서도 단조성 검증
     it('salary를 올릴 때 non-blocked 비자 수는 감소하지 않는다 (E-7-3 직종)', () => {
-      const salaryLevels = [
-        20_000_000,
-        25_890_000,
-        31_120_000,
-        50_000_000,
-      ];
+      const salaryLevels = [20_000_000, 25_890_000, 31_120_000, 50_000_000];
 
       let prevNonBlockedCount = 0;
 
@@ -933,15 +949,23 @@ describe('Cross-Evaluator Integration Tests — 전체 평가기 불변 속성 �
   // ==========================================================================
   describe('모든 evaluator는 visaCode를 정확히 반환한다', () => {
     const expectedVisaCodes = [
-      'F-5', 'F-6', 'F-2', 'F-4',
-      'E-7-1', 'E-7-2', 'E-7-3',
-      'D-2', 'D-10',
+      'F-5',
+      'F-6',
+      'F-2',
+      'F-4',
+      'E-7-1',
+      'E-7-2',
+      'E-7-3',
+      'D-2',
+      'D-10',
     ];
 
     it.each(expectedVisaCodes)(
       'evaluator.visaCode === %s 이고 evaluateJob 결과에도 동일 visaCode',
       (expectedCode) => {
-        const evaluator = allEvaluators.find((e) => e.visaCode === expectedCode);
+        const evaluator = allEvaluators.find(
+          (e) => e.visaCode === expectedCode,
+        );
         expect(evaluator).toBeDefined();
 
         const input = createJobInput({

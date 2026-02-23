@@ -434,7 +434,7 @@ export class E71FulltimeEvaluator implements IFulltimeVisaEvaluator {
           '(4) 국내 학사 이상 (전공 무관), (5) 국내 전문학사 (전공 관련) 중 하나 필요. ' +
           `지원자: ${profile.educationLevel || '학력 미제공'}, 경력 ${profile.experienceYears}년, ` +
           `국내 대학: ${profile.isDomesticUniversity ? '예' : '아니오'} ` +
-          "(E-7-1 education/experience not met: Need one of " +
+          '(E-7-1 education/experience not met: Need one of ' +
           "(1) Master's+, (2) Overseas Bachelor's + 1yr, (3) Any education + 5yrs, " +
           "(4) Domestic Bachelor's+ (any major), (5) Domestic Associate (related major). " +
           `Applicant: ${profile.educationLevel || 'not provided'}, ${profile.experienceYears} years, ` +

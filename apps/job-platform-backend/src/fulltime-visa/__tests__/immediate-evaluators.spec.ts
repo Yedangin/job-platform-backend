@@ -150,7 +150,10 @@ describe('F5FulltimeEvaluator', () => {
     // 법령 근거: 출입국관리법 시행령 별표1 제28호 — applicant 평가도 동일
     it('evaluateApplicant: 프로필과 무관하게 항상 eligible', () => {
       const input = createJobInput();
-      const profile = createProfile('F-5', { educationLevel: 'HIGH_SCHOOL', experienceYears: 0 });
+      const profile = createProfile('F-5', {
+        educationLevel: 'HIGH_SCHOOL',
+        experienceYears: 0,
+      });
       const result = evaluator.evaluateApplicant(input, profile);
 
       expect(result.status).toBe('eligible');
@@ -239,7 +242,10 @@ describe('F6FulltimeEvaluator', () => {
     // 법령 근거: 출입국관리법 시행령 별표1 제28호의2 — applicant 평가도 동일
     it('evaluateApplicant: 프로필과 무관하게 항상 eligible', () => {
       const input = createJobInput();
-      const profile = createProfile('F-6', { educationLevel: 'HIGH_SCHOOL', experienceYears: 0 });
+      const profile = createProfile('F-6', {
+        educationLevel: 'HIGH_SCHOOL',
+        experienceYears: 0,
+      });
       const result = evaluator.evaluateApplicant(input, profile);
 
       expect(result.status).toBe('eligible');
@@ -270,7 +276,9 @@ describe('F2FulltimeEvaluator', () => {
     // 법령 근거: 출입국관리법 시행령 별표1의3 — 유흥업소 취업 금지
     it('유흥업소 직종은 어떤 조건에서든 blocked (인구감소지역도 불가)', () => {
       // 비인구감소지역 유흥
-      const entertainmentNormal = createJobInput({ occupationCode: 'ENTERTAINMENT' });
+      const entertainmentNormal = createJobInput({
+        occupationCode: 'ENTERTAINMENT',
+      });
       const resultNormal = evaluator.evaluateJob(entertainmentNormal);
       expect(resultNormal.status).toBe('blocked');
       expect(resultNormal.blockReasons.length).toBeGreaterThan(0);
@@ -279,7 +287,11 @@ describe('F2FulltimeEvaluator', () => {
       // 인구감소지역 유흥 — 여전히 blocked
       const entertainmentDepop = createJobInput({
         occupationCode: 'ENTERTAINMENT',
-        workAddress: { sido: '경상북도', sigungu: '영양군', isDepopulationArea: true },
+        workAddress: {
+          sido: '경상북도',
+          sigungu: '영양군',
+          isDepopulationArea: true,
+        },
       });
       const resultDepop = evaluator.evaluateJob(entertainmentDepop);
       expect(resultDepop.status).toBe('blocked');
@@ -331,7 +343,11 @@ describe('F2FulltimeEvaluator', () => {
     it('occupationCode=9111 (단순노무) + isDepopulationArea=true → conditional (제한 해제)', () => {
       const input = createJobInput({
         occupationCode: '9111',
-        workAddress: { sido: '경상북도', sigungu: '영양군', isDepopulationArea: true },
+        workAddress: {
+          sido: '경상북도',
+          sigungu: '영양군',
+          isDepopulationArea: true,
+        },
       });
       const result = evaluator.evaluateJob(input);
 
@@ -459,7 +475,9 @@ describe('F4FulltimeEvaluator', () => {
   describe('① 불변: 유흥 항상 금지, 비유흥/비단순노무/비공공이익 항상 허용', () => {
     // 법령 근거: 출입국관리법 시행령 제23조의3 — 선량한 풍속 위반 업종 금지
     it('유흥업소 직종은 어떤 조건에서든 blocked (인구감소지역도 불가)', () => {
-      const entertainmentNormal = createJobInput({ occupationCode: 'ENTERTAINMENT' });
+      const entertainmentNormal = createJobInput({
+        occupationCode: 'ENTERTAINMENT',
+      });
       const resultNormal = evaluator.evaluateJob(entertainmentNormal);
       expect(resultNormal.status).toBe('blocked');
       expect(resultNormal.blockReasons[0]).toContain('풍속');
@@ -467,7 +485,11 @@ describe('F4FulltimeEvaluator', () => {
       // 인구감소지역에서도 유흥은 여전히 blocked
       const entertainmentDepop = createJobInput({
         occupationCode: 'ENTERTAINMENT',
-        workAddress: { sido: '경상북도', sigungu: '영양군', isDepopulationArea: true },
+        workAddress: {
+          sido: '경상북도',
+          sigungu: '영양군',
+          isDepopulationArea: true,
+        },
       });
       const resultDepop = evaluator.evaluateJob(entertainmentDepop);
       expect(resultDepop.status).toBe('blocked');
@@ -519,7 +541,11 @@ describe('F4FulltimeEvaluator', () => {
     it('occupationCode=9111 (단순노무) + isDepopulationArea=true → eligible (인구감소지역 예외)', () => {
       const input = createJobInput({
         occupationCode: '9111',
-        workAddress: { sido: '경상북도', sigungu: '영양군', isDepopulationArea: true },
+        workAddress: {
+          sido: '경상북도',
+          sigungu: '영양군',
+          isDepopulationArea: true,
+        },
       });
       const result = evaluator.evaluateJob(input);
 
@@ -554,7 +580,11 @@ describe('F4FulltimeEvaluator', () => {
     it('공공이익 제한직종(4221) + 인구감소지역 → evaluateJob에서 여전히 blocked', () => {
       const input = createJobInput({
         occupationCode: '4221',
-        workAddress: { sido: '경상북도', sigungu: '영양군', isDepopulationArea: true },
+        workAddress: {
+          sido: '경상북도',
+          sigungu: '영양군',
+          isDepopulationArea: true,
+        },
       });
       const result = evaluator.evaluateJob(input);
 

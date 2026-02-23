@@ -50,10 +50,7 @@ import { getCurrentE7MinSalary, getCurrentGni } from '../data/gni-table';
 /**
  * E-7-3 직종별 특수요건 / Occupation-specific special requirements
  */
-const E73_SPECIAL_REQUIREMENTS: Record<
-  string,
-  { ko: string; en: string }
-> = {
+const E73_SPECIAL_REQUIREMENTS: Record<string, { ko: string; en: string }> = {
   // 조선용접공: 국제 중급 이상 용접자격증 필수
   // Shipbuilding Welder: International intermediate+ welding certificate required
   '7430': {
@@ -389,7 +386,9 @@ export class E73FulltimeEvaluator implements IFulltimeVisaEvaluator {
             profile.topikLevel === 'TOPIK_5' ||
             profile.topikLevel === 'TOPIK_6')
         ) {
-          result.conditions = result.conditions.filter((c) => !c.includes('TOPIK'));
+          result.conditions = result.conditions.filter(
+            (c) => !c.includes('TOPIK'),
+          );
           result.conditions.push(
             `TOPIK ${profile.topikLevel.replace('TOPIK_', '')}급 보유 — 한국어 요건 충족 ` +
               `(TOPIK ${profile.topikLevel.replace('TOPIK_', '')} — Korean language requirement met)`,
@@ -423,7 +422,9 @@ export class E73FulltimeEvaluator implements IFulltimeVisaEvaluator {
             profile.topikLevel === 'TOPIK_5' ||
             profile.topikLevel === 'TOPIK_6')
         ) {
-          result.conditions = result.conditions.filter((c) => !c.includes('TOPIK'));
+          result.conditions = result.conditions.filter(
+            (c) => !c.includes('TOPIK'),
+          );
           result.conditions.push(
             `TOPIK ${profile.topikLevel.replace('TOPIK_', '')}급 보유 — 한국어 요건 충족 ` +
               `(TOPIK ${profile.topikLevel.replace('TOPIK_', '')} — Korean language requirement met)`,

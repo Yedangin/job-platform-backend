@@ -133,8 +133,8 @@ describe('E-7-1 전문인력 (E71FulltimeEvaluator)', () => {
 
       expect(result.status).not.toBe('blocked');
       // 연봉 관련 차단 사유 없어야 함
-      const salaryBlocks = result.blockReasons.filter((r) =>
-        r.includes('연봉') || r.includes('salary'),
+      const salaryBlocks = result.blockReasons.filter(
+        (r) => r.includes('연봉') || r.includes('salary'),
       );
       expect(salaryBlocks).toHaveLength(0);
     });
@@ -502,9 +502,11 @@ describe('E-7-2 준전문인력 (E72FulltimeEvaluator)', () => {
       const result = evaluator.evaluateJob(input);
 
       expect(result.status).toBe('blocked');
-      expect(result.blockReasons.some(
-        (r) => r.includes('고용비율') || r.includes('employment ratio'),
-      )).toBe(true);
+      expect(
+        result.blockReasons.some(
+          (r) => r.includes('고용비율') || r.includes('employment ratio'),
+        ),
+      ).toBe(true);
     });
   });
 
@@ -565,9 +567,11 @@ describe('E-7-2 준전문인력 (E72FulltimeEvaluator)', () => {
       // 국내 전문학사는 conditional (전공 관련 확인 필요)
       expect(result.status).toBe('conditional');
       expect(result.blockReasons).toHaveLength(0);
-      expect(result.conditions.some(
-        (c) => c.includes('전문학사') || c.includes('Associate'),
-      )).toBe(true);
+      expect(
+        result.conditions.some(
+          (c) => c.includes('전문학사') || c.includes('Associate'),
+        ),
+      ).toBe(true);
     });
 
     // 국내 학사 이상 특례 → eligible
@@ -672,19 +676,19 @@ describe('E-7-3 일반기능인력 (E73FulltimeEvaluator)', () => {
   // E-7-3 허용 직종 코드 목록 (e7-job-categories.ts에서 추출)
   // E-7-3 allowed occupation codes (from e7-job-categories.ts)
   const E73_ALLOWED_CODES = [
-    '6139',    // 동물 사육사
-    '6301',    // 양식 기술자
-    '7103',    // 할랄 도축원
-    '7303',    // 악기 제조 및 조율사
-    '7430',    // 조선 용접공
-    '76212',   // 선박 전기원
-    '7836',    // 선박 도장공
-    '7521',    // 항공기 정비원
-    'S8417',   // 항공기(부품) 제조원
-    '76231',   // 송전 전기원
-    'S8541',   // 자동차 부품제조원
-    'S75104',  // 자동차 판금도장원
-    'S71032',  // 도축원
+    '6139', // 동물 사육사
+    '6301', // 양식 기술자
+    '7103', // 할랄 도축원
+    '7303', // 악기 제조 및 조율사
+    '7430', // 조선 용접공
+    '76212', // 선박 전기원
+    '7836', // 선박 도장공
+    '7521', // 항공기 정비원
+    'S8417', // 항공기(부품) 제조원
+    '76231', // 송전 전기원
+    'S8541', // 자동차 부품제조원
+    'S75104', // 자동차 판금도장원
+    'S71032', // 도축원
   ];
 
   // --------------------------------------------------------------------------
@@ -863,9 +867,11 @@ describe('E-7-3 일반기능인력 (E73FulltimeEvaluator)', () => {
       const result = evaluator.evaluateApplicant(input, profile);
 
       expect(result.status).toBe('blocked');
-      expect(result.blockReasons.some(
-        (r) => r.includes('10년') || r.includes('10+'),
-      )).toBe(true);
+      expect(
+        result.blockReasons.some(
+          (r) => r.includes('10년') || r.includes('10+'),
+        ),
+      ).toBe(true);
     });
 
     // 악기제조/조율사: 10년 이상 경력 → eligible

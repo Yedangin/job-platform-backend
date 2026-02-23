@@ -199,7 +199,8 @@ export class D10FulltimeEvaluator implements IFulltimeVisaEvaluator {
     if (profile.isDomesticUniversity) {
       // 국내 대학 특례 적용 (고등교육법 제2조)
       // Domestic university special provision (Higher Education Act Article 2)
-      const domesticDegree = profile.domesticDegreeLevel || profile.educationLevel;
+      const domesticDegree =
+        profile.domesticDegreeLevel || profile.educationLevel;
 
       if (
         domesticDegree === 'BACHELOR' ||
@@ -275,7 +276,7 @@ export class D10FulltimeEvaluator implements IFulltimeVisaEvaluator {
           'D-10 → E-7 전환 요건 미충족 (해외 대학): (1) 석사 이상 학위, ' +
             '(2) 학사 + 1년 이상 경력, (3) 학력 무관 + 5년 이상 경력 중 하나 필요. ' +
             `지원자: ${profile.educationLevel || '학력 미제공'}, 경력 ${profile.experienceYears}년 ` +
-            "(D-10 → E-7 transition requirements not met (overseas university): Need one of " +
+            '(D-10 → E-7 transition requirements not met (overseas university): Need one of ' +
             "(1) Master's+ degree, (2) Bachelor's + 1+ years, (3) Any education + 5+ years. " +
             `Applicant: ${profile.educationLevel || 'not provided'}, ${profile.experienceYears} years)`,
         );

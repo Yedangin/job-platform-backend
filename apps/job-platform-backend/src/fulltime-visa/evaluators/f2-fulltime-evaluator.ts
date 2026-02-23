@@ -46,12 +46,7 @@ import {
   IFulltimeVisaEvaluator,
   createEmptyFulltimeResult,
 } from './fulltime-evaluator.interface';
-<<<<<<< HEAD
-import { getKsicMapping } from '../../alba-visa/data/ksic-mapping';
-import { isSimpleLaborOccupation } from '../data/occupation-code-table';
-=======
-import { getKsicMapping } from '../../common/data/visa';
->>>>>>> ba747a8 (feat: add alba hiring visa analysis service and refactor evaluators)
+import { getKsicMapping, isSimpleLaborOccupation } from '../../common/data/visa';
 
 export class F2FulltimeEvaluator implements IFulltimeVisaEvaluator {
   readonly visaCode = 'F-2';
@@ -217,7 +212,9 @@ export class F2FulltimeEvaluator implements IFulltimeVisaEvaluator {
         // 유흥/단순노무가 아닌 경우 → eligible
         // If not entertainment/simple labor → eligible
         result.status = 'eligible';
-        result.conditions = result.conditions.filter((c) => !c.includes('F-2-7'));
+        result.conditions = result.conditions.filter(
+          (c) => !c.includes('F-2-7'),
+        );
         result.notes =
           'F-2-7 점수제 — 유흥/단순노무 외 자유 취업 가능 ' +
           '(F-2-7 Point system — Free employment except entertainment/simple labor)';

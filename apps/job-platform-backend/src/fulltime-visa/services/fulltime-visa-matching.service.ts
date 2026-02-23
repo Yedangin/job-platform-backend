@@ -25,6 +25,9 @@ import {
   VisaFilterRuleDto,
 } from '../dto/fulltime-visa-filter-rules-response.dto';
 import {
+  E7CategoriesResponseDto,
+} from '../dto/e7-categories-response.dto';
+import {
   IFulltimeVisaEvaluator,
   FulltimeVisaEvalResult,
   FulltimeJobInput,
@@ -44,7 +47,7 @@ import { D2FulltimeEvaluator } from '../evaluators/d2-fulltime-evaluator';
 import { D10FulltimeEvaluator } from '../evaluators/d10-fulltime-evaluator';
 
 // E-7 직종 카테고리 상수 / E-7 job category constants
-import { getAllowedJobCodesByE7Type } from '../constants/e7-job-categories';
+import { getAllowedJobCodesByE7Type, E7_JOB_CATEGORIES, E7_STATS } from '../constants/e7-job-categories';
 
 // GNI/연봉 기준 데이터 / GNI/salary threshold data
 import { getCurrentE7MinSalary } from '../data/gni-table';
@@ -347,6 +350,34 @@ export class FulltimeVisaMatchingService {
   }
 
   /**
+   * E-7 직종 목록 조회 (프론트엔드 드롭다운용)
+   * Get E-7 job categories (for frontend dropdown)
+   *
+   * 웹/앱 공통으로 사용하는 직종 선택 데이터.
+   * Shared dropdown data for web and app.
+   * 법무부 고시 기준 — 개정 시 백엔드 상수만 수정하면 됨.
+   * Based on MOJ notice — only backend constant needs update when revised.
+   */
+  getE7Categories(): E7CategoriesResponseDto {
+    this.logger.log('[getE7Categories] E-7 직종 목록 조회 / Fetching E-7 job categories');
+
+    return {
+      categories: E7_JOB_CATEGORIES.map((cat) => ({
+        code: cat.code,
+        nameKo: cat.nameKo,
+        nameEn: cat.nameEn,
+        e7Type: cat.e7Type,
+        categoryGroup: cat.categoryGroup,
+      })),
+      e71Count: E7_STATS['E-7-1'],
+      e72Count: E7_STATS['E-7-2'],
+      e73Count: E7_STATS['E-7-3'],
+      totalCount: E7_STATS.total,
+      basedOn: '2026-01-01',
+    };
+  }
+
+  /**
    * FulltimeVisaEvalResult → VisaEvalResultDto 변환
    * Convert FulltimeVisaEvalResult to VisaEvalResultDto
    */
@@ -442,7 +473,8 @@ export class FulltimeVisaMatchingService {
         minEducation: null,
         requiresOverseasHire: false,
         allowedJobCategories: null,
-        notes: 'F-4 재외동포 — 풍속/공공이익/단순노무 제한 (인구감소지역 예외). 2026.2.12 H-2/F-4 통합',
+        notes:
+          'F-4 재외동포 — 풍속/공공이익/단순노무 제한 (인구감소지역 예외). 2026.2.12 H-2/F-4 통합',
         requiresEntryLevel: false,
       },
 
@@ -506,7 +538,8 @@ export class FulltimeVisaMatchingService {
         minEducation: null,
         requiresOverseasHire: false,
         allowedJobCategories: getAllowedJobCodesByE7Type('E-7-2'),
-        notes: 'E-7-2 준전문인력 이직 — 근무처 변경 신고 필요. 고용비율 20% 제한',
+        notes:
+          'E-7-2 준전문인력 이직 — 근무처 변경 신고 필요. 고용비율 20% 제한',
         requiresEntryLevel: false,
       },
       {
@@ -532,7 +565,8 @@ export class FulltimeVisaMatchingService {
         minEducation: 'ASSOCIATE',
         requiresOverseasHire: false,
         allowedJobCategories: allE7JobCodes,
-        notes: 'D-2 유학 → E-7 전환. 국내 대학 졸업(예정)자 특례 적용. D-2-7 고용비율 면제',
+        notes:
+          'D-2 유학 → E-7 전환. 국내 대학 졸업(예정)자 특례 적용. D-2-7 고용비율 면제',
         requiresEntryLevel: true,
       },
       {

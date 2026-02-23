@@ -134,13 +134,13 @@ export function getCurrentGni(referenceDate?: Date): GniData {
   const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
 
   const applicableGni = GNI_TABLE.find(
-    (gni) => dateStr >= gni.effectiveFrom && dateStr <= gni.effectiveTo
+    (gni) => dateStr >= gni.effectiveFrom && dateStr <= gni.effectiveTo,
   );
 
   if (!applicableGni) {
     throw new Error(
       `적용 가능한 GNI 데이터를 찾을 수 없습니다. 기준일: ${dateStr} / ` +
-      `No applicable GNI data found for date: ${dateStr}`
+        `No applicable GNI data found for date: ${dateStr}`,
     );
   }
 
@@ -175,7 +175,7 @@ export function getGniByYear(year: number): GniData | undefined {
  */
 export function getCurrentE7MinSalary(
   e7Subtype: 'E-7-1' | 'E-7-2' | 'E-7-3',
-  referenceDate?: Date
+  referenceDate?: Date,
 ): number {
   const date = referenceDate ?? new Date();
   const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
@@ -235,9 +235,8 @@ export function getGniTripleThreshold(referenceDate?: Date): number {
  */
 export function meetsE71SalaryThreshold(
   salaryAnnual: number,
-  referenceDate?: Date
+  referenceDate?: Date,
 ): boolean {
   const minSalary = getCurrentE7MinSalary('E-7-1', referenceDate);
   return salaryAnnual >= minSalary;
 }
-

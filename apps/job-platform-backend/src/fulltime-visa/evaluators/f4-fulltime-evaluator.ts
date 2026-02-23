@@ -267,9 +267,7 @@ export class F4FulltimeEvaluator implements IFulltimeVisaEvaluator {
     //         (always blocked, 8 occupations)
     // 재외동포(F-4) 자격의 취업활동 제한범위 고시 (2026.2.2 시행)
     // ====================================================================
-    if (
-      isF4PublicInterestRestricted(input.occupationCode, occupationName)
-    ) {
+    if (isF4PublicInterestRestricted(input.occupationCode, occupationName)) {
       const matchedRestriction = getMatchedPublicInterestRestriction(
         input.occupationCode,
         occupationName,

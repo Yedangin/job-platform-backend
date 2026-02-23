@@ -20,6 +20,7 @@ import {
   FulltimeVisaMatchingWithApplicantResponseDto,
 } from '../dto/fulltime-visa-matching-response.dto';
 import { FulltimeVisaFilterRulesResponseDto } from '../dto/fulltime-visa-filter-rules-response.dto';
+import { E7CategoriesResponseDto } from '../dto/e7-categories-response.dto';
 
 @ApiTags('Fulltime Visa Matching')
 @Controller('fulltime-visa')
@@ -27,6 +28,32 @@ export class FulltimeVisaMatchingController {
   constructor(
     private readonly fulltimeVisaMatchingService: FulltimeVisaMatchingService,
   ) {}
+
+  /**
+   * E-7 직종 목록 조회 (웹/앱 드롭다운용)
+   * Get E-7 job categories (for web/app dropdown)
+   *
+   * 법무부 고시 기준 E-7 허용 직종 90개를 반환합니다.
+   * Returns 90 E-7 permitted occupations per MOJ notice.
+   * 공고 등록 시 직종 선택 드롭다운에 사용합니다.
+   * Used for occupation selection dropdown in job posting.
+   */
+  @Get('e7-categories')
+  @ApiOperation({
+    summary: 'E-7 직종 목록 조회 / Get E-7 job categories',
+    description:
+      '법무부 고시 기준 E-7 비자 허용 직종 90개를 반환합니다. ' +
+      '공고 등록 시 직종 선택 드롭다운에 사용합니다. (웹/앱 공통) ' +
+      '(Returns 90 E-7 permitted occupations. Used for job posting occupation dropdown — shared by web and app)',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'E-7 직종 목록 조회 성공 / E-7 categories retrieved successfully',
+    type: E7CategoriesResponseDto,
+  })
+  getE7Categories(): E7CategoriesResponseDto {
+    return this.fulltimeVisaMatchingService.getE7Categories();
+  }
 
   /**
    * 정규직 비자 필터링 규칙 조회 (프론트엔드 실시간 필터링용)

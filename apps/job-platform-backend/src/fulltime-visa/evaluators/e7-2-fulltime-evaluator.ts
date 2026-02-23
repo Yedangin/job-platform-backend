@@ -271,7 +271,9 @@ export class E72FulltimeEvaluator implements IFulltimeVisaEvaluator {
             profile.topikLevel === 'TOPIK_5' ||
             profile.topikLevel === 'TOPIK_6')
         ) {
-          result.conditions = result.conditions.filter((c) => !c.includes('TOPIK'));
+          result.conditions = result.conditions.filter(
+            (c) => !c.includes('TOPIK'),
+          );
           result.conditions.push(
             `TOPIK ${profile.topikLevel.replace('TOPIK_', '')}급 보유 — 한국어 요건 충족 ` +
               `(TOPIK ${profile.topikLevel.replace('TOPIK_', '')} — Korean language requirement met)`,
@@ -301,7 +303,9 @@ export class E72FulltimeEvaluator implements IFulltimeVisaEvaluator {
             profile.topikLevel === 'TOPIK_5' ||
             profile.topikLevel === 'TOPIK_6')
         ) {
-          result.conditions = result.conditions.filter((c) => !c.includes('TOPIK'));
+          result.conditions = result.conditions.filter(
+            (c) => !c.includes('TOPIK'),
+          );
           result.conditions.push(
             `TOPIK ${profile.topikLevel.replace('TOPIK_', '')}급 보유 — 한국어 요건 충족 ` +
               `(TOPIK ${profile.topikLevel.replace('TOPIK_', '')} — Korean language requirement met)`,
