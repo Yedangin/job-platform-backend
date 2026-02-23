@@ -210,6 +210,16 @@ export class FulltimeJobInputDto {
   @ValidateNested()
   @Type(() => CompanyInfoDto)
   companyInfo?: CompanyInfoDto;
+
+  @ApiPropertyOptional({
+    description:
+      '첨단산업발전법상 첨단기술·제품 분야 해당 여부 (E-7-S2 판단용) / ' +
+      'Whether occupation falls under Advanced Industry Development Act advanced technology/product sector (for E-7-S2)',
+    example: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isAdvancedIndustry?: boolean;
 }
 
 /**

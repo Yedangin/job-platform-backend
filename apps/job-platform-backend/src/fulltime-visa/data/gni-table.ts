@@ -259,3 +259,25 @@ export function meetsE7sSalaryThreshold(
   const gni = getCurrentGni(referenceDate);
   return salaryAnnual >= gni.e7sMinSalary;
 }
+
+/**
+ * E-7-S2 연봉 기준 충족 여부 확인 (GNI × 1.0)
+ * Check if salary meets E-7-S2 threshold (GNI × 1.0 = gniPerCapita)
+ *
+ * E-7-S2 첨단산업 트랙: 첨단산업발전법상 첨단기술·제품 분야 + GNI × 1.0 + 점수 60점
+ * E-7-S2 Advanced Industry track: Advanced Industry Act sector + GNI × 1.0 + 60 points
+ *
+ * 법적 근거: 출입국관리법 시행령 별표 1의2 제20호 — E-7-S2 첨단산업 트랙
+ * Legal basis: Immigration Act Enforcement Decree Annex 1-2 No. 20 — E-7-S2 advanced industry track
+ *
+ * @param salaryAnnual 연봉 (원) / Annual salary (KRW)
+ * @param referenceDate 기준 날짜 (optional) / Reference date
+ * @returns 기준 충족 여부 / Whether threshold is met
+ */
+export function meetsE7s2SalaryThreshold(
+  salaryAnnual: number,
+  referenceDate?: Date,
+): boolean {
+  const gni = getCurrentGni(referenceDate);
+  return salaryAnnual >= gni.gniPerCapita; // GNI × 1.0
+}

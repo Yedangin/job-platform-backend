@@ -111,6 +111,7 @@ export class FulltimeVisaMatchingService {
         isDepopulationArea: dto.jobInput.workAddress.isDepopulationArea,
       },
       companyInfo: dto.jobInput.companyInfo, // E-7-2, E-7-3 고용비율 확인용
+      isAdvancedIndustry: dto.jobInput.isAdvancedIndustry, // E-7-S2 첨단산업 트랙 확인용
     };
 
     // 전체 비자 평가 / Evaluate all visas
@@ -210,6 +211,7 @@ export class FulltimeVisaMatchingService {
         isDepopulationArea: dto.jobInput.workAddress.isDepopulationArea,
       },
       companyInfo: dto.jobInput.companyInfo, // E-7-2, E-7-3 고용비율 확인용
+      isAdvancedIndustry: dto.jobInput.isAdvancedIndustry, // E-7-S2 첨단산업 트랙 확인용
     };
 
     const profile: ApplicantProfile = {
