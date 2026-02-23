@@ -785,6 +785,8 @@ export const D2_PENALTIES: ReadonlyArray<D2Penalty> = [
     violationEn: 'Minimum wage violation',
     studentPenaltyKo: '해당없음',
     studentPenaltyEn: 'N/A',
+    // 최저시급 값은 common/data/visa/minimum-wage-standards.ts 참조
+    // Minimum wage value: see common/data/visa/minimum-wage-standards.ts
     employerPenaltyKo:
       '3년 이하 징역 또는 2,000만원 이하 벌금 (2025년 최저시급: 10,030원)',
     employerPenaltyEn:

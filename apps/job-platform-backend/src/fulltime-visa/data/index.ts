@@ -15,10 +15,8 @@ export * from './e7-occupation-map';
 // ── 한국표준직업분류 / Korean Standard Classification of Occupations ──
 export * from './occupation-code-table';
 
-// ── 인구감소지역 (알바와 공용) / Depopulation Areas (shared with alba) ──
-// 알바 비자 매칭의 depopulation-areas.ts를 re-export
-// Re-export depopulation-areas.ts from alba visa matching
+// ── 인구감소지역 (공용 모듈에서 re-export) / Depopulation Areas (from shared module) ──
 export {
   isDepopulationArea,
   DEPOPULATION_AREAS,
-} from '../../alba-visa/data/depopulation-areas';
+} from '../../common/data/visa';

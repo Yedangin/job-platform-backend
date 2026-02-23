@@ -2,35 +2,17 @@
  * F-4 재외동포비자 알바 평가기
  * F-4 Overseas Korean Visa Alba (Part-time) Evaluator
  *
- * F-4 핵심: 별도 허가 없이 자유 취업. 단, 3가지 제한 존재.
- * F-4 core: Free employment without separate permit. But 3 restrictions exist.
- *
- * [3가지 제한 / Three Restrictions]
- * ① 단순노무 (직업분류 9번대) — BLOCKED, 8개 예외 직종 제외
- *    Simple labor (occupational classification 9xx) — BLOCKED, except 8 exception jobs
- * ② 선량한 풍속 위반 (유흥주점, 사행행위 등) — ALWAYS BLOCKED
- *    Violation of public morals (entertainment bars, gambling) — ALWAYS BLOCKED
- * ③ 공공이익 제한 (피부관리사, 목욕관리사, 노래방·PC방 직원 등) — ALWAYS BLOCKED
- *    Public interest restriction (skin care, bath house, karaoke/PC staff) — ALWAYS BLOCKED
- *
- * [F-4-R 지역특화형 / F-4-R Regional Type]
- * 인구감소지역에서는 ①단순노무 제한 해제. ②풍속 + ③공공이익 제한만 유지.
- * In depopulation areas, ①simple labor restriction lifted. Only ②morals + ③public interest remain.
- *
- * [판별 순서 / Evaluation Order]
- * 1. 풍속 위반 확인 (항상 금지, F-4-R도 금지) / Public morals check (always blocked)
- * 2. 공공이익 제한 확인 (항상 금지, F-4-R도 금지) / Public interest check (always blocked)
- * 3. 예외 8개 직종 확인 → conditional / 8 exception jobs check → conditional
- * 4. 단순노무 여부 판별 / Simple labor determination
- *    4-a. 단순노무 아님 → eligible / Not simple labor → eligible
- *    4-b. 인구감소지역(F-4-R) → eligible (단순노무 제한 해제)
- * 5. 단순노무, 예외 아님, 비인구감소지역 → blocked
- *
- * [법적 근거 / Legal Basis]
- * 출입국관리법 시행령 제23조의3
- * 법무부 고시 — F-4 취업활동 제한 업종
- * 법무부 고시 (2024) — 단순노무 제한 일부 완화 (8개 예외 직종)
- * 2025년: 건설업 단순노무 허용 확대 + H-2→F-4 통합 추진 중
+ * @visaCode       F-4
+ * @legalBasis     출입국관리법 시행령 제23조의3 / Immigration Control Act Enforcement Decree Art. 23-3
+ *                 법무부 고시 — F-4 취업활동 제한 업종 / MOJ Notice — F-4 Employment Restricted Industries
+ *                 법무부 고시 (2024) — 단순노무 제한 일부 완화 (8개 예외 직종) / MOJ Notice (2024) — Partial Simple Labor Relaxation (8 exceptions)
+ * @conditionSummary
+ *   - 별도 허가 없이 자유 취업 (Free employment without permit)
+ *   - 풍속 위반 업종 항상 금지 (Public morals violations always blocked)
+ *   - 공공이익 제한 업종 항상 금지 (Public interest restrictions always blocked)
+ *   - 단순노무 금지 (8개 예외 제외) (Simple labor blocked, except 8 exceptions)
+ *   - F-4-R 인구감소지역: 단순노무 제한 해제 (F-4-R depopulation area: simple labor allowed)
+ * @lastVerified   2026-02-23
  */
 
 import {
@@ -49,7 +31,7 @@ import {
   isF4SimpleLaborBlocked,
   isF4ExceptionAllowed,
 } from '../data/f4-simple-labor';
-import { getKsicMapping } from '../data/ksic-mapping';
+import { getKsicMapping } from '../../common/data/visa';
 
 export class F4AlbaEvaluator implements IAlbaVisaEvaluator {
   readonly visaCode = 'F-4';

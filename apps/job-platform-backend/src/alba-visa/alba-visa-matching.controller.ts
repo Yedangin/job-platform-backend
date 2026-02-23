@@ -25,12 +25,18 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { AlbaVisaMatchingService } from './alba-visa-matching.service';
 import { AlbaVisaMatchingRequestDto } from './dto/alba-visa-matching-request.dto';
 import { AlbaVisaMatchingResponseDto } from './dto/alba-visa-matching-response.dto';
+import { AlbaHiringVisaAnalysisService } from './alba-hiring-visa-analysis.service';
+import {
+  AlbaHiringVisaAnalysisRequestDto,
+  AlbaHiringVisaAnalysisResponseDto,
+} from './dto/alba-hiring-visa-analysis.dto';
 
 @ApiTags('alba-visa-matching')
 @Controller('api/alba')
 export class AlbaVisaMatchingController {
   constructor(
     private readonly albaVisaMatchingService: AlbaVisaMatchingService,
+    private readonly albaHiringVisaAnalysisService: AlbaHiringVisaAnalysisService,
   ) {}
 
   /**
@@ -91,5 +97,61 @@ Auto-called on posting save, but also callable independently for preview.
     @Body() dto: AlbaVisaMatchingRequestDto,
   ): AlbaVisaMatchingResponseDto {
     return this.albaVisaMatchingService.evaluateAll(dto);
+  }
+
+  /**
+   * 고용주용 비자 분석 (실시간 필터링)
+   * Hiring Manager Visa Analysis (Real-time Filtering)
+   *
+   * 알바 공고 작성 시 직종과 근무시간을 입력하면
+   * 고용 가능한 비자를 실시간으로 필터링합니다.
+   *
+   * Filters eligible visas in real-time when hiring manager
+   * inputs job category and weekly hours during job posting.
+   *
+   * @param dto 분석 요청 DTO / Analysis request DTO
+   * @returns 비자 분석 결과 / Visa analysis results
+   */
+  @Post('hiring/visa-analysis')
+  @HttpCode(HttpStatus.OK)
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  @ApiOperation({
+    summary:
+      '고용주용 비자 분석 (실시간) / Hiring Manager Visa Analysis (Real-time)',
+    description: `
+고용주가 알바 공고 작성 시 직종코드와 주당 근무시간을 입력하면,
+고용 가능한 비자를 실시간으로 필터링하여 반환합니다.
+
+When a hiring manager inputs job category and weekly hours,
+this endpoint filters and returns eligible visas in real-time.
+
+## 필터링 규칙 / Filtering Rules
+1. **유흥업소** → 모든 비자 차단 / Adult Entertainment → Block ALL
+2. **단순노무** → F-4 제외 / Simple Labor → Remove F-4
+3. **업종 제한** → H-2 네거티브 리스트 해당 시 제외 / Industry → Remove H-2
+4. **근무시간 초과** / Working Hours:
+   - D-2: >25h/week → 제외
+   - D-4: >20h/week → 제외
+   - H-1: >25h/week → 제외
+
+## 비자 분류 / Visa Categories
+**자유취업 / Free Employment:** F-2, F-5, F-6, F-4, H-1, H-2
+**허가필요 / Permit Required:** D-2, D-4, D-10, F-1, F-3
+    `,
+  })
+  @ApiBody({ type: AlbaHiringVisaAnalysisRequestDto })
+  @ApiResponse({
+    status: 200,
+    description: '비자 분석 결과 반환 / Visa analysis results returned',
+    type: AlbaHiringVisaAnalysisResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: '유효성 검증 실패 / Validation error',
+  })
+  analyzeHiringVisas(
+    @Body() dto: AlbaHiringVisaAnalysisRequestDto,
+  ): AlbaHiringVisaAnalysisResponseDto {
+    return this.albaHiringVisaAnalysisService.analyze(dto);
   }
 }

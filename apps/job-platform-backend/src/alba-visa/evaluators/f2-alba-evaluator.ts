@@ -2,28 +2,15 @@
  * F-2 거주비자 알바 평가기
  * F-2 Residence Visa Alba (Part-time) Evaluator
  *
- * F-2는 거의 제한 없음:
- * F-2 has almost no restrictions:
- * - 시간 제한 없음 (no hour limit)
- * - 업종 제한 거의 없음 (almost no industry restriction)
- * - 사업장 수 제한 없음 (no workplace limit)
- *
- * 예외: F-2(라,바) 점수제 → 이전 비자와 동일 분야에서만 근무 가능
- * Exception: F-2(ra,ba) point system → work only in same field as previous visa
- *
- * [고용주 의무 / Employer Obligations]
- * - 별도 고용허가 불필요 (No separate employment permit required)
- * - 통상적 근로계약 + 4대보험 (Standard labor contract + 4 major insurance)
- * - 산재보험 의무 가입 (Industrial accident insurance mandatory)
- * - 건강보험 의무 가입 (Health insurance mandatory)
- * - 서면 근로계약서 교부 의무 (Written labor contract issuance mandatory)
- *
- * [법적 근거 / Legal Basis]
- * 출입국관리법 시행령 제12조 별표1 (F-2 체류자격)
- * 법무부 — F-2 거주자격 취업활동 범위
- * 근로기준법 제17조 — 서면 근로계약서 교부 의무
- * 산업재해보상보험법 — 외국인근로자 산재보험 적용
- * 국민건강보험법 — 외국인 건강보험 적용
+ * @visaCode       F-2
+ * @legalBasis     출입국관리법 시행령 제12조 별표1 (F-2 체류자격) / Immigration Control Act Enforcement Decree Art. 12, Schedule 1
+ *                 법무부 — F-2 거주자격 취업활동 범위 / MOJ — F-2 Residence Employment Activity Scope
+ *                 근로기준법 제17조 — 서면 근로계약서 교부 의무 / Labor Standards Act Art. 17
+ * @conditionSummary
+ *   - 시간/사업장 무제한, 별도 허가 불필요 (Unlimited hours/workplaces, no permit)
+ *   - 유흥업소만 금지 (Only entertainment venues blocked)
+ *   - F-2(라,바) 점수제: 이전 비자 동일 분야 제한 (F-2 point system: same field as previous visa)
+ * @lastVerified   2026-02-23
  */
 
 import {

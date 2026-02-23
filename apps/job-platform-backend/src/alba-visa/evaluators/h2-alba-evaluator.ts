@@ -2,31 +2,16 @@
  * H-2 방문취업비자 알바 평가기
  * H-2 Visit & Employment Visa Alba (Part-time) Evaluator
  *
- * H-2 핵심: 특례고용허가제 + 네거티브 리스트 방식 (2023.1.1 기준 22개 중분류)
- * H-2 key: Special Employment Permit System + Negative list approach (22 mid-categories as of 2023.1.1)
- *
- * 평가 순서 / Evaluation order:
- * 1. 유흥업소 판별 → 즉시 blocked
- *    Entertainment venue check → immediately blocked
- * 2. 직종별 H-2 네거티브 매핑 확인 (중분류 수준)
- *    Check per-job-category H-2 negative mapping (mid-category level)
- * 3. 예외 소분류 확인 (청소업, 사업시설 유지관리 등)
- *    Check exception sub-categories (cleaning, facility maintenance, etc.)
- * 4. 조건부(회색지대) 직종 판별 (배달, 사무보조 등)
- *    Conditional (gray area) category determination (delivery, office assist, etc.)
- * 5. 네거티브 아닌 경우 → eligible + 특례고용허가 조건 추가
- *    Not negative → eligible + special employment permit conditions
- *
- * 모든 eligible/conditional 결과에 고용주 의무사항 조건 포함
- * All eligible/conditional results include employer obligation conditions
- *
- * [법적 근거 / Legal Basis]
- * 출입국관리법 시행령 제12조 별표1 (H-2 체류자격)
- * Immigration Control Act Enforcement Decree Article 12, Schedule 1 (H-2 status)
- * 외국인근로자의 고용 등에 관한 법률 제12조 (특례고용허가)
- * Act on Employment of Foreign Workers Article 12 (Special Employment Permit)
- * 법무부 고시 — H-2 허용/금지 업종 (2023.1.1)
- * MOJ Notice — H-2 Permitted/Prohibited Industries (2023.1.1)
+ * @visaCode       H-2
+ * @legalBasis     출입국관리법 시행령 제12조 별표1 (H-2 체류자격) / Immigration Control Act Enforcement Decree Art. 12, Schedule 1
+ *                 외국인근로자의 고용 등에 관한 법률 제12조 (특례고용허가) / Act on Employment of Foreign Workers Art. 12
+ *                 법무부 고시 — H-2 허용/금지 업종 (2023.1.1) / MOJ Notice — H-2 Permitted/Prohibited Industries (2023.1.1)
+ * @conditionSummary
+ *   - 특례고용허가제 + 네거티브 리스트 방식 (Special Employment Permit System + negative list)
+ *   - 22개 중분류 금지 (22 mid-categories blocked, as of 2023.1.1)
+ *   - 유흥업소 즉시 차단 (Entertainment venues immediately blocked)
+ *   - 시간/사업장 무제한 (Unlimited hours/workplaces within permit scope)
+ * @lastVerified   2026-02-23
  */
 
 import {
@@ -42,7 +27,7 @@ import {
   isH2ConditionalJobCategory,
   isH2NegativeSection,
 } from '../data/h2-negative-list';
-import { getKsicMapping } from '../data/ksic-mapping';
+import { getKsicMapping } from '../../common/data/visa';
 
 export class H2AlbaEvaluator implements IAlbaVisaEvaluator {
   readonly visaCode = 'H-2';

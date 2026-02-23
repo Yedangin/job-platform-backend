@@ -46,8 +46,12 @@ import {
   IFulltimeVisaEvaluator,
   createEmptyFulltimeResult,
 } from './fulltime-evaluator.interface';
+<<<<<<< HEAD
 import { getKsicMapping } from '../../alba-visa/data/ksic-mapping';
 import { isSimpleLaborOccupation } from '../data/occupation-code-table';
+=======
+import { getKsicMapping } from '../../common/data/visa';
+>>>>>>> ba747a8 (feat: add alba hiring visa analysis service and refactor evaluators)
 
 export class F2FulltimeEvaluator implements IFulltimeVisaEvaluator {
   readonly visaCode = 'F-2';

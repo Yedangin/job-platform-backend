@@ -30,8 +30,8 @@ import {
   AlbaVisaEvalResult,
   IAlbaVisaEvaluator,
 } from './evaluators/alba-evaluator.interface';
-import { getKsicMapping } from './data/ksic-mapping';
-import { isDepopulationArea } from './data/depopulation-areas';
+import { getKsicMapping } from '../common/data/visa';
+import { isDepopulationArea } from '../common/data/visa';
 
 // 평가기 임포트 / Evaluator imports
 import { D2AlbaEvaluator } from './evaluators/d2-alba-evaluator';

@@ -2,25 +2,17 @@
  * D-4 어학연수비자 알바 평가기
  * D-4 Language Training Visa Alba (Part-time) Evaluator
  *
- * D-2(유학)와 유사하지만 다음 핵심 차이점이 있음:
- * Similar to D-2 (Study Abroad) but with these key differences:
- *
- * 1. 입국/자격변경 후 6개월 경과 필수 (6-month waiting period mandatory)
- * 2. 최대 1개 사업장만 허용 (only 1 workplace, D-2 allows 2)
- * 3. 허가 기간 최대 6개월 (permit duration max 6 months, D-2 allows 1 year)
- * 4. 주 20시간 고정 — 방학/공휴일 포함, 무제한 아님
- *    Fixed 20h/week — includes vacation/holidays, NO unlimited exception
- * 5. TOPIK 2급 + 출석률 90% 이상 필요 (lower than D-2's TOPIK 3~4급)
- *    TOPIK Level 2+ with 90%+ attendance required
- * 6. TOPIK 미충족 시 주 10시간만 가능 (10h/week if TOPIK not met)
- * 7. 근무지 거리: 학교/거주지에서 1시간 이내 (not 90/60 min like D-2)
- *    Distance: within 1 hour from school/residence
- * 8. 금지 업종은 D-2와 동일 (blocked industries same as D-2)
- * 9. 체류자격외활동허가 필요 (extra-status activity permit required)
- *
- * [법적 근거 / Legal Basis]
- * 출입국관리법 시행령 제23조 (체류자격외활동허가)
- * 법무부 고시 — 어학연수생 시간제취업 허용범위
+ * @visaCode       D-4
+ * @legalBasis     출입국관리법 시행령 제23조 (체류자격외활동허가) / Immigration Control Act Enforcement Decree Art. 23
+ *                 법무부 고시 — 어학연수생 시간제취업 허용범위 / MOJ Notice — Part-time Employment Scope for Language Trainees
+ * @conditionSummary
+ *   - 입국 후 6개월 경과 필수 (6-month waiting period mandatory)
+ *   - 최대 1개 사업장 (Max 1 workplace)
+ *   - 주 20시간 고정 — 방학/공휴일 무제한 없음 (Fixed 20h/week, no vacation unlimited)
+ *   - TOPIK 2급 + 출석률 90% 이상 (TOPIK 2+ with 90%+ attendance)
+ *   - TOPIK 미충족 시 주 10시간 (10h/week without TOPIK)
+ *   - 거리 제한: 학교/거주지 1시간 이내 (Distance: within 1h from school/residence)
+ * @lastVerified   2026-02-23
  */
 
 import {
@@ -34,7 +26,7 @@ import {
   D2_BLOCK_DELIVERY,
   D2_CONDITIONAL_KSIC_CODES,
 } from '../data/d2-blocked-industries';
-import { getKsicMapping } from '../data/ksic-mapping';
+import { getKsicMapping } from '../../common/data/visa';
 
 /** D-4 최대 사업장 수 / D-4 maximum concurrent workplaces */
 const D4_MAX_WORKPLACES = 1;

@@ -54,8 +54,7 @@ import {
   IFulltimeVisaEvaluator,
   createEmptyFulltimeResult,
 } from './fulltime-evaluator.interface';
-import { isSimpleLaborOccupation } from '../data/occupation-code-table';
-import { getKsicMapping } from '../../alba-visa/data/ksic-mapping';
+import { isSimpleLaborOccupation, getKsicMapping } from '../../common/data/visa';
 
 // ============================================================================
 // 공공이익 제한직종 [붙임2] 8개

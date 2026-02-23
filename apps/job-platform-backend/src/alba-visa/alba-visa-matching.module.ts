@@ -23,10 +23,11 @@
 import { Module } from '@nestjs/common';
 import { AlbaVisaMatchingController } from './alba-visa-matching.controller';
 import { AlbaVisaMatchingService } from './alba-visa-matching.service';
+import { AlbaHiringVisaAnalysisService } from './alba-hiring-visa-analysis.service';
 
 @Module({
   controllers: [AlbaVisaMatchingController],
-  providers: [AlbaVisaMatchingService],
-  exports: [AlbaVisaMatchingService],
+  providers: [AlbaVisaMatchingService, AlbaHiringVisaAnalysisService],
+  exports: [AlbaVisaMatchingService, AlbaHiringVisaAnalysisService],
 })
 export class AlbaVisaMatchingModule {}

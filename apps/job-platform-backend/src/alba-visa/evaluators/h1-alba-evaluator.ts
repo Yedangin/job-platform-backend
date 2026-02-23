@@ -2,40 +2,16 @@
  * H-1 워킹홀리데이 비자 알바 평가기
  * H-1 Working Holiday Visa Alba (Part-time) Evaluator
  *
- * H-1 핵심 특징:
- * H-1 key features:
- * - 대부분의 업종 취업 가능 (most industries allowed)
- * - 선량한 풍속 위반 업종 불가 (industries violating public morals prohibited)
- *   → 유흥주점, 사행업소, PC방, 노래방 등
- *   → Entertainment bars, gambling, PC rooms, karaoke rooms, etc.
- * - 시간 제한 없음 (no hour limit)
- * - 체류기간 최대 1년, 18~30세 대상 (max 1 year stay, ages 18-30)
- * - 협정국별 세부 조건 상이 (detailed conditions vary by agreement country)
- * - 사업장 수 특별 제한 없음 (no specific workplace limit)
- *
- * [허용 업종 예시 / Allowed Industry Examples]
- * - 음식점, 카페, 편의점, 마트 → eligible
- *   Restaurant, cafe, convenience store, mart → eligible
- * - 공장, 건설, 물류창고 → eligible
- *   Factory, construction, warehouse → eligible
- *
- * [금지 업종 예시 / Blocked Industry Examples]
- * - 유흥주점, 사행업소, PC방, 노래방 → blocked
- *   Entertainment bars, gambling, PC rooms, karaoke rooms → blocked
- *
- * [고용주 의무 / Employer Obligations]
- * - 별도 고용허가 불필요 (No separate employment permit required)
- * - 4대보험 중 산재보험·건강보험 의무 가입
- *   (Industrial accident insurance and health insurance mandatory among 4 major insurance)
- * - 서면 근로계약서 교부 의무 (Written labor contract issuance mandatory)
- *
- * [법적 근거 / Legal Basis]
- * 출입국관리법 시행령 제12조 별표1 (H-1 체류자격)
- * 각국 워킹홀리데이 협정
- * Each country's Working Holiday Agreement
- * 근로기준법 제17조 — 서면 근로계약서 교부 의무
- * 산업재해보상보험법 — 외국인근로자 산재보험 적용
- * 국민건강보험법 — 외국인 건강보험 적용
+ * @visaCode       H-1
+ * @legalBasis     출입국관리법 시행령 제12조 별표1 (H-1 체류자격) / Immigration Control Act Enforcement Decree Art. 12, Schedule 1
+ *                 각국 워킹홀리데이 협정 / Each Country's Working Holiday Agreement
+ *                 근로기준법 제17조 — 서면 근로계약서 교부 의무 / Labor Standards Act Art. 17
+ * @conditionSummary
+ *   - 대부분의 업종 취업 가능 (Most industries allowed)
+ *   - 선량한 풍속 위반 업종 불가 (Public morals violation industries blocked)
+ *   - 시간/사업장 무제한, 별도 허가 불필요 (Unlimited hours/workplaces, no permit)
+ *   - 체류기간 최대 1년, 18~30세 대상 (Max 1 year stay, ages 18-30)
+ * @lastVerified   2026-02-23
  */
 
 import {
@@ -44,7 +20,7 @@ import {
   IAlbaVisaEvaluator,
   createEmptyAlbaResult,
 } from './alba-evaluator.interface';
-import { getKsicMapping } from '../data/ksic-mapping';
+import { getKsicMapping } from '../../common/data/visa';
 
 export class H1AlbaEvaluator implements IAlbaVisaEvaluator {
   readonly visaCode = 'H-1';

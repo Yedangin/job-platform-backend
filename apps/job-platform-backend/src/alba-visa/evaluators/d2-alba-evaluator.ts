@@ -2,29 +2,16 @@
  * D-2 유학비자 알바 평가기
  * D-2 Study Visa Alba (Part-time) Evaluator
  *
- * [가장 복잡한 평가기 / Most complex evaluator]
- *
- * 판별 순서 / Evaluation order:
- * 1. D-2 하위유형 확인 (D-2-5 연구 → 차단, D-2-8 단기유학 → 6개월 대기)
- *    Sub-type check (D-2-5 Research → blocked, D-2-8 Short-term → 6-month wait)
- * 2. 업종 제한 확인 (건설=절대금지, 유흥=전면금지, 긱워크/파견=전면금지, 제조업=TOPIK 4+ 조건부)
- *    Industry restriction check (construction=absolute block, entertainment=full block, gig/dispatch=full block, manufacturing=TOPIK 4+ conditional)
- * 3. 시간 제한 확인 (2025 TOPIK 매트릭스: 학기 중/방학/주말 별도 판정)
- *    Hour limit check (2025 TOPIK matrix: separate evaluation for semester/vacation/weekend)
- * 4. 사업장 수 경고 (최대 2개)
- *    Workplace count warning (max 2)
- * 5. 거리 제한 안내 (수도권 90분 / 비수도권 60분)
- *    Distance restriction note (metro 90min / non-metro 60min)
- * 6. 고용주 서류 안내 + 위반 시 처벌 안내
- *    Employer document guidance + violation penalty guidance
- *
- * [법적 근거 / Legal Basis]
- * 출입국관리법 시행령 제23조
- * 법무부 고시 — 외국인유학생 시간제취업 허용범위
- *
- * [필수 허가 / Required Permit]
- * 체류자격외활동허가 (NOT 시간제취업허가)
- * Extra-status activity permit (NOT part-time employment permit)
+ * @visaCode       D-2
+ * @legalBasis     출입국관리법 시행령 제23조 (체류자격외활동허가) / Immigration Control Act Enforcement Decree Art. 23
+ *                 법무부 고시 — 외국인유학생 시간제취업 허용범위 / MOJ Notice — Part-time Employment Scope for Foreign Students
+ * @conditionSummary
+ *   - 체류자격외활동허가 필수 (Extra-status activity permit required)
+ *   - 건설·유흥·긱워크 절대 금지 (Construction, entertainment, gig work absolutely blocked)
+ *   - 2025 TOPIK 매트릭스 기반 시간 제한 (Hour limits based on 2025 TOPIK matrix)
+ *   - 최대 2개 사업장 (Max 2 workplaces)
+ *   - 거리 제한: 수도권 90분 / 비수도권 60분 (Distance: metro 90min / non-metro 60min)
+ * @lastVerified   2026-02-23
  */
 
 import {
@@ -49,7 +36,7 @@ import {
   D2SubTypeRule,
   D2HourRule,
 } from '../data/d2-blocked-industries';
-import { getKsicMapping } from '../data/ksic-mapping';
+import { getKsicMapping } from '../../common/data/visa';
 
 export class D2AlbaEvaluator implements IAlbaVisaEvaluator {
   readonly visaCode = 'D-2';

@@ -2,44 +2,15 @@
  * D-10 구직비자 알바 평가기
  * D-10 Job Seeking Visa Alba (Part-time) Evaluator
  *
- * D-10 비자는 두 가지 경로가 존재하지만, 알바(단순노무) 관점에서는 대부분 불가:
- * D-10 visa has two paths, but for alba (simple labor) purposes, mostly blocked:
- *
- * [경로 A: 인턴 활동 / Path A: Internship Activity]
- * - 체류자격외활동허가 불필요 (no extra-status activity permit needed)
- * - E-1~E-7 전문직종만 가능 (only E-1~E-7 professional fields)
- * - 1일 8시간, 주 40시간 (8h/day, 40h/week)
- * - 인턴 시작 후 15일 이내 연수개시신고 필수 (report within 15 days)
- * - 동일 기업 인턴 기간 최대 1년 (max 1 year per company, since 2025.10.29)
- * - 단순노무(알바, 식당 서빙, 매장) 불가 (simple labor BLOCKED)
- *
- * [경로 B: 시간제 아르바이트 특례 / Path B: Part-time Alba Exception]
- * - D-2→D-10 변경자만 해당 (only D-2→D-10 status changers)
- * - 전문학사 이상 학위 (3년 미경과) + TOPIK 4급+ (associate degree+ within 3 years, TOPIK 4+)
- * - E-1~E-7 체류 경력 없어야 함 (no prior E-1~E-7 stay history)
- * - 주 20시간 (주말·공휴일 무제한), TOPIK 5급+: 주 30시간
- *   (20h/week weekdays, unlimited weekends; TOPIK 5+: 30h/week)
- * - 개인 자격 확인 불가 → 공고 수준에서는 판별 불가
- *   (cannot verify individual qualifications at job posting level)
- *
- * [D-10 하위유형별 허용 / D-10 Sub-type Permissions]
- * - D-10-1 (유학생 출신): 인턴 ✅, 알바 ✅ (특례요건 충족 시)
- * - D-10-1 (전문직 경력자): 인턴 ❌, 알바 ❌
- * - D-10-2 (기술창업준비): 인턴 ❌, 알바 ❌
- * - D-10-3 (첨단기술인턴): 인턴 ✅ (첨단기술 한정), 알바 ❌
- *
- * [결론 / Conclusion]
- * 공고 수준 평가에서는:
- * At job posting level:
- * - 전문직종(IT, 번역, 사무보조 등) → conditional (인턴 활동 가능)
- *   Professional jobs (IT, translation, office assist) → conditional (internship possible)
- * - 그 외 모든 알바(식당, 카페, 편의점, 공장 등) → blocked
- *   All other alba (restaurant, cafe, convenience store, factory) → blocked
- *
- * [법적 근거 / Legal Basis]
- * 출입국관리법 시행령 제12조 별표1 (D-10 체류자격)
- * 법무부 — D-10 비자 인턴 활동 허용 범위
- * 법무부 — D-10 비자 시간제 아르바이트 특례 (2025)
+ * @visaCode       D-10
+ * @legalBasis     출입국관리법 시행령 제12조 별표1 (D-10 체류자격) / Immigration Control Act Enforcement Decree Art. 12, Schedule 1
+ *                 법무부 — D-10 비자 인턴 활동 허용 범위 / MOJ — D-10 Visa Internship Activity Scope
+ *                 법무부 — D-10 비자 시간제 아르바이트 특례 (2025) / MOJ — D-10 Part-time Alba Exception (2025)
+ * @conditionSummary
+ *   - 경로 A (인턴): E-1~E-7 전문직종만 가능, 주 40시간, 허가 불필요 (Path A: professional fields only, 40h/week, no permit)
+ *   - 경로 B (특례): D-2→D-10 변경자, TOPIK 4+, 주 20시간 (Path B: D-2→D-10 changers, TOPIK 4+, 20h/week)
+ *   - 단순노무 알바 → blocked (Simple labor alba → blocked)
+ * @lastVerified   2026-02-23
  */
 
 import {
@@ -48,7 +19,7 @@ import {
   IAlbaVisaEvaluator,
   createEmptyAlbaResult,
 } from './alba-evaluator.interface';
-import { getKsicMapping } from '../data/ksic-mapping';
+import { getKsicMapping } from '../../common/data/visa';
 
 /**
  * D-10 인턴 경로(Path A)에서 허용되는 전문직 직종 코드 목록
