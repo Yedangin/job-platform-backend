@@ -1,4 +1,4 @@
-// @ts-nocheck — 플랫폼에서 제외 (GNI 3배 초고연봉). 파일 보관용. / Excluded from platform (GNI 3x ultra-high salary). Kept for reference.
+
 /**
  * E-7-S 특정활동(특정전문직종) 비자 정규직 평가기
  * E-7-S Specific Activities (Specialized Professional) Visa Fulltime Evaluator

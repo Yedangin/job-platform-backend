@@ -24,9 +24,7 @@ import {
   FulltimeVisaFilterRulesResponseDto,
   VisaFilterRuleDto,
 } from '../dto/fulltime-visa-filter-rules-response.dto';
-import {
-  E7CategoriesResponseDto,
-} from '../dto/e7-categories-response.dto';
+import { E7CategoriesResponseDto } from '../dto/e7-categories-response.dto';
 import {
   IFulltimeVisaEvaluator,
   FulltimeVisaEvalResult,
@@ -34,8 +32,8 @@ import {
   ApplicantProfile,
 } from '../evaluators/fulltime-evaluator.interface';
 
-// Evaluators — 9종 비자 (법무부공고 2025-406호 기준)
-// 제외: E-1~E-6 (교육/연구/면허직), E-7-4/E-9 (고용허가제), E-7-S (GNI 3배 초고연봉), D-4, H-2
+// Evaluators — 10종 비자 (법무부공고 2025-406호 기준)
+// 제외: E-1~E-6 (교육/연구/면허직), E-7-4/E-9 (고용허가제), D-4, H-2
 import { F5FulltimeEvaluator } from '../evaluators/f5-fulltime-evaluator';
 import { F6FulltimeEvaluator } from '../evaluators/f6-fulltime-evaluator';
 import { F2FulltimeEvaluator } from '../evaluators/f2-fulltime-evaluator';
@@ -43,11 +41,16 @@ import { F4FulltimeEvaluator } from '../evaluators/f4-fulltime-evaluator';
 import { E71FulltimeEvaluator } from '../evaluators/e7-1-fulltime-evaluator';
 import { E72FulltimeEvaluator } from '../evaluators/e7-2-fulltime-evaluator';
 import { E73FulltimeEvaluator } from '../evaluators/e7-3-fulltime-evaluator';
+import { E7SFulltimeEvaluator } from '../evaluators/e7-s-fulltime-evaluator';
 import { D2FulltimeEvaluator } from '../evaluators/d2-fulltime-evaluator';
 import { D10FulltimeEvaluator } from '../evaluators/d10-fulltime-evaluator';
 
 // E-7 직종 카테고리 상수 / E-7 job category constants
-import { getAllowedJobCodesByE7Type, E7_JOB_CATEGORIES, E7_STATS } from '../constants/e7-job-categories';
+import {
+  getAllowedJobCodesByE7Type,
+  E7_JOB_CATEGORIES,
+  E7_STATS,
+} from '../constants/e7-job-categories';
 
 // GNI/연봉 기준 데이터 / GNI/salary threshold data
 import { getCurrentE7MinSalary } from '../data/gni-table';
@@ -58,7 +61,7 @@ export class FulltimeVisaMatchingService {
   private readonly evaluators: IFulltimeVisaEvaluator[];
 
   constructor() {
-    // 플랫폼 비자 Evaluator 목록 (9종) / Platform visa evaluators (9 types)
+    // 플랫폼 비자 Evaluator 목록 (10종) / Platform visa evaluators (10 types)
     this.evaluators = [
       // IMMEDIATE: F비자 (즉시 채용 가능) / F visas (Immediate hiring)
       new F5FulltimeEvaluator(),
@@ -70,6 +73,7 @@ export class FulltimeVisaMatchingService {
       new E71FulltimeEvaluator(),
       new E72FulltimeEvaluator(),
       new E73FulltimeEvaluator(),
+      new E7SFulltimeEvaluator(),
 
       // TRANSITION: D비자 → E-7 전환 / D visas → E-7 transition
       new D2FulltimeEvaluator(),
@@ -359,7 +363,9 @@ export class FulltimeVisaMatchingService {
    * Based on MOJ notice — only backend constant needs update when revised.
    */
   getE7Categories(): E7CategoriesResponseDto {
-    this.logger.log('[getE7Categories] E-7 직종 목록 조회 / Fetching E-7 job categories');
+    this.logger.log(
+      '[getE7Categories] E-7 직종 목록 조회 / Fetching E-7 job categories',
+    );
 
     return {
       categories: E7_JOB_CATEGORIES.map((cat) => ({
@@ -404,7 +410,7 @@ export class FulltimeVisaMatchingService {
    * ⚠️ 이 데이터는 프론트엔드 표시용 참고 정보입니다.
    * 실제 비자 판단은 POST /fulltime-visa/evaluate API에서 수행합니다.
    *
-   * 9종 비자, 12개 트랙 항목 (법무부공고 2025-406호 기준)
+   * 10종 비자, 12개 트랙 항목 (법무부공고 2025-406호 기준)
    * 9 visa types, 12 track items (per MOJ Notice 2025-406)
    *
    * @returns 비자 필터링 규칙 목록 (12개) / Visa filter rules list (12 items)

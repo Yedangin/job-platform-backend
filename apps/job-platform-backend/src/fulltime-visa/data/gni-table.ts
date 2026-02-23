@@ -240,3 +240,22 @@ export function meetsE71SalaryThreshold(
   const minSalary = getCurrentE7MinSalary('E-7-1', referenceDate);
   return salaryAnnual >= minSalary;
 }
+
+/**
+ * E-7-S 연봉 기준 충족 여부 확인 (GNI × 3.0)
+ * Check if salary meets E-7-S threshold (GNI × 3.0)
+ *
+ * 출입국관리법 시행령 제7조제7항 — 학력/경력/직종 요건 면제 기준
+ * Immigration Act Enforcement Decree Art. 7(7) — Exemption from education/experience/occupation requirements
+ *
+ * @param salaryAnnual 연봉 (원) / Annual salary (KRW)
+ * @param referenceDate 기준 날짜 (optional) / Reference date
+ * @returns 기준 충족 여부 / Whether threshold is met
+ */
+export function meetsE7sSalaryThreshold(
+  salaryAnnual: number,
+  referenceDate?: Date,
+): boolean {
+  const gni = getCurrentGni(referenceDate);
+  return salaryAnnual >= gni.e7sMinSalary;
+}
