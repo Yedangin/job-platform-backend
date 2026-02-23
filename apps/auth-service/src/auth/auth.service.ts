@@ -241,13 +241,73 @@ export class AuthService {
     const user = await this.prisma.user.findFirst({ where: { email } });
     if (!user) throw new NotFoundException('User does not exist');
 
+    if (user.socialProvider && user.socialProvider !== 'NONE') {
+      throw new BadRequestException(
+        '소셜 로그인 계정은 비밀번호 초기화를 사용할 수 없습니다.',
+      );
+    }
+
     const token = crypto.randomBytes(32).toString('hex');
-    // DB 테이블이 없으므로 Redis에 1시간 저장
     await this.redisService.set(`pw_reset:${token}`, user.id, 3600);
 
+    // Send password reset email via SES (background)
+    setImmediate(async () => {
+      const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${token}`;
+      const command = new SendEmailCommand({
+        Source: process.env.MAIL_FROM,
+        Destination: { ToAddresses: [email] },
+        Message: {
+          Subject: {
+            Data: '[JobChaja] 비밀번호 재설정 안내',
+            Charset: 'UTF-8',
+          },
+          Body: {
+            Html: {
+              Data: `
+                <div style="font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; max-width: 500px; margin: 0 auto; padding: 40px 20px;">
+                  <h2 style="color: #007bff;">JobChaja 비밀번호 재설정</h2>
+                  <p>아래 링크를 클릭하여 비밀번호를 재설정해주세요.</p>
+                  <a href="${resetUrl}" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 6px;">비밀번호 재설정</a>
+                  <p style="margin-top: 20px; font-size: 13px; color: #999;">이 링크는 1시간 동안 유효합니다.</p>
+                </div>
+              `,
+              Charset: 'UTF-8',
+            },
+          },
+        },
+      });
+
+      try {
+        await this.sesClient.send(command);
+        console.log(`[AWS SES 전송 성공] Password reset email to: ${email}`);
+      } catch (error) {
+        console.error('[AWS SES 전송 실패] Password reset email:', error);
+      }
+    });
+
     return {
-      message: `Password reset token (Redis): ${token}`,
+      message: '비밀번호 재설정 이메일이 발송되었습니다.',
     };
+  }
+
+  async resetPassword(token: string, newPw: string) {
+    const userId = await this.redisService.get(`pw_reset:${token}`);
+    if (!userId) {
+      throw new BadRequestException('유효하지 않거나 만료된 토큰입니다.');
+    }
+
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+
+    const hashedPassword = await bcrypt.hash(newPw, 10);
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { password: hashedPassword },
+    });
+
+    await this.redisService.del(`pw_reset:${token}`);
+
+    return { success: true, message: '비밀번호가 재설정되었습니다.' };
   }
 
   async logout(sessionId: string): Promise<RegisterSuccessResponse> {
