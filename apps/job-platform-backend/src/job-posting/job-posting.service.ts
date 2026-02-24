@@ -541,6 +541,66 @@ export class JobPostingService {
   }
 
   // ========================================
+  // 공고 삭제
+  // ========================================
+  async deleteJobPosting(userId: string, jobId: string) {
+    const job = await this.getOwnedJob(userId, jobId);
+
+    if (job.status === 'DRAFT') {
+      // DRAFT는 하드 삭제
+      await this.prisma.jobPosting.delete({
+        where: { id: BigInt(jobId) },
+      });
+    } else {
+      // 나머지는 CLOSED 처리
+      await this.prisma.jobPosting.update({
+        where: { id: BigInt(jobId) },
+        data: { status: 'CLOSED' },
+      });
+    }
+
+    return { success: true };
+  }
+
+  // ========================================
+  // 공고 끌어올리기 (Bump)
+  // ========================================
+  async bumpJobPosting(userId: string, jobId: string) {
+    const job = await this.getOwnedJob(userId, jobId);
+
+    if (job.status !== 'ACTIVE') {
+      throw new BadRequestException('Only ACTIVE postings can be bumped');
+    }
+
+    await this.prisma.jobPosting.update({
+      where: { id: BigInt(jobId) },
+      data: { bumpedAt: new Date() },
+    });
+
+    return { success: true };
+  }
+
+  // ========================================
+  // 긴급 공고 토글 (Toggle Urgent)
+  // ========================================
+  async toggleUrgent(userId: string, jobId: string) {
+    const job = await this.getOwnedJob(userId, jobId);
+
+    if (job.status !== 'ACTIVE') {
+      throw new BadRequestException(
+        'Only ACTIVE postings can toggle urgent',
+      );
+    }
+
+    await this.prisma.jobPosting.update({
+      where: { id: BigInt(jobId) },
+      data: { isUrgent: !job.isUrgent },
+    });
+
+    return { success: true, isUrgent: !job.isUrgent };
+  }
+
+  // ========================================
   // Helpers
   // ========================================
   private async getOwnedJob(userId: string, jobId: string) {
