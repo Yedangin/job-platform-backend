@@ -194,6 +194,11 @@ export type JobAttributesFulltime = $Result.DefaultSelection<Prisma.$JobAttribut
  */
 export type JobApplication = $Result.DefaultSelection<Prisma.$JobApplicationPayload>
 /**
+ * Model InterviewSlot
+ * 
+ */
+export type InterviewSlot = $Result.DefaultSelection<Prisma.$InterviewSlotPayload>
+/**
  * Model JobScrap
  * 
  */
@@ -490,13 +495,24 @@ export type InterviewType = (typeof InterviewType)[keyof typeof InterviewType]
 export const ApplicationStatus: {
   PENDING: 'PENDING',
   REVIEWING: 'REVIEWING',
+  INTERVIEW_REQUESTED: 'INTERVIEW_REQUESTED',
   INTERVIEW_SCHEDULED: 'INTERVIEW_SCHEDULED',
+  COORDINATION_NEEDED: 'COORDINATION_NEEDED',
+  CONFIRMED: 'CONFIRMED',
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
   CANCELLED: 'CANCELLED'
 };
 
 export type ApplicationStatus = (typeof ApplicationStatus)[keyof typeof ApplicationStatus]
+
+
+export const ActorType: {
+  EMPLOYER: 'EMPLOYER',
+  APPLICANT: 'APPLICANT'
+};
+
+export type ActorType = (typeof ActorType)[keyof typeof ActorType]
 
 
 export const AdminActionType: {
@@ -635,6 +651,10 @@ export const InterviewType: typeof $Enums.InterviewType
 export type ApplicationStatus = $Enums.ApplicationStatus
 
 export const ApplicationStatus: typeof $Enums.ApplicationStatus
+
+export type ActorType = $Enums.ActorType
+
+export const ActorType: typeof $Enums.ActorType
 
 export type AdminActionType = $Enums.AdminActionType
 
@@ -1132,6 +1152,16 @@ export class PrismaClient<
     * ```
     */
   get jobApplication(): Prisma.JobApplicationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.interviewSlot`: Exposes CRUD operations for the **InterviewSlot** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more InterviewSlots
+    * const interviewSlots = await prisma.interviewSlot.findMany()
+    * ```
+    */
+  get interviewSlot(): Prisma.InterviewSlotDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.jobScrap`: Exposes CRUD operations for the **JobScrap** model.
@@ -1678,6 +1708,7 @@ export namespace Prisma {
     JobAttributesAlba: 'JobAttributesAlba',
     JobAttributesFulltime: 'JobAttributesFulltime',
     JobApplication: 'JobApplication',
+    InterviewSlot: 'InterviewSlot',
     JobScrap: 'JobScrap',
     AdminJobAction: 'AdminJobAction',
     Resume: 'Resume',
@@ -1703,7 +1734,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "corporateProfile" | "individualProfile" | "talentAccessLog" | "educationalInstitution" | "profileEducation" | "profileCareer" | "profileLanguage" | "supportTicket" | "activityLog" | "visaType" | "industryCode" | "visaRule" | "policyChange" | "scrapingState" | "visaEvaluationLog" | "occupationCode" | "visaOccupationMapping" | "visaIndustryMapping" | "visaCountryRestriction" | "pointSystemCategory" | "pointSystemCriteria" | "visaRequiredDocument" | "hireQuotaRule" | "prohibitedIndustry" | "workHourRule" | "visaTransition" | "scoringSystem" | "scoringCriteria" | "visaTransitionChain" | "jobProduct" | "jobOrder" | "jobPosting" | "jobAttributesAlba" | "jobAttributesFulltime" | "jobApplication" | "jobScrap" | "adminJobAction" | "resume" | "visaVerification" | "diagnosisSession" | "diagnosisPathwayClick" | "scoreCalibrationLog"
+      modelProps: "user" | "corporateProfile" | "individualProfile" | "talentAccessLog" | "educationalInstitution" | "profileEducation" | "profileCareer" | "profileLanguage" | "supportTicket" | "activityLog" | "visaType" | "industryCode" | "visaRule" | "policyChange" | "scrapingState" | "visaEvaluationLog" | "occupationCode" | "visaOccupationMapping" | "visaIndustryMapping" | "visaCountryRestriction" | "pointSystemCategory" | "pointSystemCriteria" | "visaRequiredDocument" | "hireQuotaRule" | "prohibitedIndustry" | "workHourRule" | "visaTransition" | "scoringSystem" | "scoringCriteria" | "visaTransitionChain" | "jobProduct" | "jobOrder" | "jobPosting" | "jobAttributesAlba" | "jobAttributesFulltime" | "jobApplication" | "interviewSlot" | "jobScrap" | "adminJobAction" | "resume" | "visaVerification" | "diagnosisSession" | "diagnosisPathwayClick" | "scoreCalibrationLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -4371,6 +4402,80 @@ export namespace Prisma {
           }
         }
       }
+      InterviewSlot: {
+        payload: Prisma.$InterviewSlotPayload<ExtArgs>
+        fields: Prisma.InterviewSlotFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.InterviewSlotFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewSlotPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.InterviewSlotFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewSlotPayload>
+          }
+          findFirst: {
+            args: Prisma.InterviewSlotFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewSlotPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.InterviewSlotFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewSlotPayload>
+          }
+          findMany: {
+            args: Prisma.InterviewSlotFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewSlotPayload>[]
+          }
+          create: {
+            args: Prisma.InterviewSlotCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewSlotPayload>
+          }
+          createMany: {
+            args: Prisma.InterviewSlotCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.InterviewSlotCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewSlotPayload>[]
+          }
+          delete: {
+            args: Prisma.InterviewSlotDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewSlotPayload>
+          }
+          update: {
+            args: Prisma.InterviewSlotUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewSlotPayload>
+          }
+          deleteMany: {
+            args: Prisma.InterviewSlotDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.InterviewSlotUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.InterviewSlotUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewSlotPayload>[]
+          }
+          upsert: {
+            args: Prisma.InterviewSlotUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewSlotPayload>
+          }
+          aggregate: {
+            args: Prisma.InterviewSlotAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInterviewSlot>
+          }
+          groupBy: {
+            args: Prisma.InterviewSlotGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InterviewSlotGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.InterviewSlotCountArgs<ExtArgs>
+            result: $Utils.Optional<InterviewSlotCountAggregateOutputType> | number
+          }
+        }
+      }
       JobScrap: {
         payload: Prisma.$JobScrapPayload<ExtArgs>
         fields: Prisma.JobScrapFieldRefs
@@ -5009,6 +5114,7 @@ export namespace Prisma {
     jobAttributesAlba?: JobAttributesAlbaOmit
     jobAttributesFulltime?: JobAttributesFulltimeOmit
     jobApplication?: JobApplicationOmit
+    interviewSlot?: InterviewSlotOmit
     jobScrap?: JobScrapOmit
     adminJobAction?: AdminJobActionOmit
     resume?: ResumeOmit
@@ -5546,11 +5652,13 @@ export namespace Prisma {
    */
 
   export type JobPostingCountOutputType = {
+    interviewSlots: number
     applications: number
     scraps: number
   }
 
   export type JobPostingCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    interviewSlots?: boolean | JobPostingCountOutputTypeCountInterviewSlotsArgs
     applications?: boolean | JobPostingCountOutputTypeCountApplicationsArgs
     scraps?: boolean | JobPostingCountOutputTypeCountScrapsArgs
   }
@@ -5564,6 +5672,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the JobPostingCountOutputType
      */
     select?: JobPostingCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * JobPostingCountOutputType without action
+   */
+  export type JobPostingCountOutputTypeCountInterviewSlotsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewSlotWhereInput
   }
 
   /**
@@ -44850,6 +44965,9 @@ export namespace Prisma {
     suspendedBy: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    isPremium: boolean | null
+    premiumStartAt: Date | null
+    premiumEndAt: Date | null
   }
 
   export type JobPostingMaxAggregateOutputType = {
@@ -44892,6 +45010,9 @@ export namespace Prisma {
     suspendedBy: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    isPremium: boolean | null
+    premiumStartAt: Date | null
+    premiumEndAt: Date | null
   }
 
   export type JobPostingCountAggregateOutputType = {
@@ -44934,6 +45055,10 @@ export namespace Prisma {
     suspendedBy: number
     createdAt: number
     updatedAt: number
+    isPremium: number
+    premiumStartAt: number
+    premiumEndAt: number
+    fulltimeVisaResult: number
     _all: number
   }
 
@@ -44998,6 +45123,9 @@ export namespace Prisma {
     suspendedBy?: true
     createdAt?: true
     updatedAt?: true
+    isPremium?: true
+    premiumStartAt?: true
+    premiumEndAt?: true
   }
 
   export type JobPostingMaxAggregateInputType = {
@@ -45040,6 +45168,9 @@ export namespace Prisma {
     suspendedBy?: true
     createdAt?: true
     updatedAt?: true
+    isPremium?: true
+    premiumStartAt?: true
+    premiumEndAt?: true
   }
 
   export type JobPostingCountAggregateInputType = {
@@ -45082,6 +45213,10 @@ export namespace Prisma {
     suspendedBy?: true
     createdAt?: true
     updatedAt?: true
+    isPremium?: true
+    premiumStartAt?: true
+    premiumEndAt?: true
+    fulltimeVisaResult?: true
     _all?: true
   }
 
@@ -45211,6 +45346,10 @@ export namespace Prisma {
     suspendedBy: string | null
     createdAt: Date
     updatedAt: Date
+    isPremium: boolean
+    premiumStartAt: Date | null
+    premiumEndAt: Date | null
+    fulltimeVisaResult: JsonValue | null
     _count: JobPostingCountAggregateOutputType | null
     _avg: JobPostingAvgAggregateOutputType | null
     _sum: JobPostingSumAggregateOutputType | null
@@ -45272,8 +45411,13 @@ export namespace Prisma {
     suspendedBy?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    isPremium?: boolean
+    premiumStartAt?: boolean
+    premiumEndAt?: boolean
+    fulltimeVisaResult?: boolean
     albaAttributes?: boolean | JobPosting$albaAttributesArgs<ExtArgs>
     fulltimeAttributes?: boolean | JobPosting$fulltimeAttributesArgs<ExtArgs>
+    interviewSlots?: boolean | JobPosting$interviewSlotsArgs<ExtArgs>
     applications?: boolean | JobPosting$applicationsArgs<ExtArgs>
     scraps?: boolean | JobPosting$scrapsArgs<ExtArgs>
     _count?: boolean | JobPostingCountOutputTypeDefaultArgs<ExtArgs>
@@ -45319,6 +45463,10 @@ export namespace Prisma {
     suspendedBy?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    isPremium?: boolean
+    premiumStartAt?: boolean
+    premiumEndAt?: boolean
+    fulltimeVisaResult?: boolean
   }, ExtArgs["result"]["jobPosting"]>
 
   export type JobPostingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -45361,6 +45509,10 @@ export namespace Prisma {
     suspendedBy?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    isPremium?: boolean
+    premiumStartAt?: boolean
+    premiumEndAt?: boolean
+    fulltimeVisaResult?: boolean
   }, ExtArgs["result"]["jobPosting"]>
 
   export type JobPostingSelectScalar = {
@@ -45403,12 +45555,17 @@ export namespace Prisma {
     suspendedBy?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    isPremium?: boolean
+    premiumStartAt?: boolean
+    premiumEndAt?: boolean
+    fulltimeVisaResult?: boolean
   }
 
-  export type JobPostingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "corporateId" | "orderId" | "boardType" | "tierType" | "title" | "description" | "workContentImg" | "status" | "closingDate" | "allowedVisas" | "minKoreanLevel" | "displayAddress" | "actualAddress" | "workIntensity" | "benefits" | "contactName" | "contactPhone" | "contactEmail" | "applicationMethod" | "externalUrl" | "externalEmail" | "interviewMethod" | "interviewPlace" | "employmentSubType" | "expiresAt" | "bumpedAt" | "isUrgent" | "isFeatured" | "featuredUntil" | "upgradedAt" | "viewCount" | "scrapCount" | "applyCount" | "suspendedAt" | "suspendReason" | "suspendedBy" | "createdAt" | "updatedAt", ExtArgs["result"]["jobPosting"]>
+  export type JobPostingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "corporateId" | "orderId" | "boardType" | "tierType" | "title" | "description" | "workContentImg" | "status" | "closingDate" | "allowedVisas" | "minKoreanLevel" | "displayAddress" | "actualAddress" | "workIntensity" | "benefits" | "contactName" | "contactPhone" | "contactEmail" | "applicationMethod" | "externalUrl" | "externalEmail" | "interviewMethod" | "interviewPlace" | "employmentSubType" | "expiresAt" | "bumpedAt" | "isUrgent" | "isFeatured" | "featuredUntil" | "upgradedAt" | "viewCount" | "scrapCount" | "applyCount" | "suspendedAt" | "suspendReason" | "suspendedBy" | "createdAt" | "updatedAt" | "isPremium" | "premiumStartAt" | "premiumEndAt" | "fulltimeVisaResult", ExtArgs["result"]["jobPosting"]>
   export type JobPostingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     albaAttributes?: boolean | JobPosting$albaAttributesArgs<ExtArgs>
     fulltimeAttributes?: boolean | JobPosting$fulltimeAttributesArgs<ExtArgs>
+    interviewSlots?: boolean | JobPosting$interviewSlotsArgs<ExtArgs>
     applications?: boolean | JobPosting$applicationsArgs<ExtArgs>
     scraps?: boolean | JobPosting$scrapsArgs<ExtArgs>
     _count?: boolean | JobPostingCountOutputTypeDefaultArgs<ExtArgs>
@@ -45421,6 +45578,7 @@ export namespace Prisma {
     objects: {
       albaAttributes: Prisma.$JobAttributesAlbaPayload<ExtArgs> | null
       fulltimeAttributes: Prisma.$JobAttributesFulltimePayload<ExtArgs> | null
+      interviewSlots: Prisma.$InterviewSlotPayload<ExtArgs>[]
       applications: Prisma.$JobApplicationPayload<ExtArgs>[]
       scraps: Prisma.$JobScrapPayload<ExtArgs>[]
     }
@@ -45464,6 +45622,10 @@ export namespace Prisma {
       suspendedBy: string | null
       createdAt: Date
       updatedAt: Date
+      isPremium: boolean
+      premiumStartAt: Date | null
+      premiumEndAt: Date | null
+      fulltimeVisaResult: Prisma.JsonValue | null
     }, ExtArgs["result"]["jobPosting"]>
     composites: {}
   }
@@ -45860,6 +46022,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     albaAttributes<T extends JobPosting$albaAttributesArgs<ExtArgs> = {}>(args?: Subset<T, JobPosting$albaAttributesArgs<ExtArgs>>): Prisma__JobAttributesAlbaClient<$Result.GetResult<Prisma.$JobAttributesAlbaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     fulltimeAttributes<T extends JobPosting$fulltimeAttributesArgs<ExtArgs> = {}>(args?: Subset<T, JobPosting$fulltimeAttributesArgs<ExtArgs>>): Prisma__JobAttributesFulltimeClient<$Result.GetResult<Prisma.$JobAttributesFulltimePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    interviewSlots<T extends JobPosting$interviewSlotsArgs<ExtArgs> = {}>(args?: Subset<T, JobPosting$interviewSlotsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewSlotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     applications<T extends JobPosting$applicationsArgs<ExtArgs> = {}>(args?: Subset<T, JobPosting$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     scraps<T extends JobPosting$scrapsArgs<ExtArgs> = {}>(args?: Subset<T, JobPosting$scrapsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobScrapPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -45930,6 +46093,10 @@ export namespace Prisma {
     readonly suspendedBy: FieldRef<"JobPosting", 'String'>
     readonly createdAt: FieldRef<"JobPosting", 'DateTime'>
     readonly updatedAt: FieldRef<"JobPosting", 'DateTime'>
+    readonly isPremium: FieldRef<"JobPosting", 'Boolean'>
+    readonly premiumStartAt: FieldRef<"JobPosting", 'DateTime'>
+    readonly premiumEndAt: FieldRef<"JobPosting", 'DateTime'>
+    readonly fulltimeVisaResult: FieldRef<"JobPosting", 'Json'>
   }
     
 
@@ -46353,6 +46520,30 @@ export namespace Prisma {
      */
     include?: JobAttributesFulltimeInclude<ExtArgs> | null
     where?: JobAttributesFulltimeWhereInput
+  }
+
+  /**
+   * JobPosting.interviewSlots
+   */
+  export type JobPosting$interviewSlotsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewSlot
+     */
+    select?: InterviewSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewSlot
+     */
+    omit?: InterviewSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewSlotInclude<ExtArgs> | null
+    where?: InterviewSlotWhereInput
+    orderBy?: InterviewSlotOrderByWithRelationInput | InterviewSlotOrderByWithRelationInput[]
+    cursor?: InterviewSlotWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InterviewSlotScalarFieldEnum | InterviewSlotScalarFieldEnum[]
   }
 
   /**
@@ -48646,11 +48837,13 @@ export namespace Prisma {
   export type JobApplicationAvgAggregateOutputType = {
     id: number | null
     jobId: number | null
+    selectedSlotId: number | null
   }
 
   export type JobApplicationSumAggregateOutputType = {
     id: bigint | null
     jobId: bigint | null
+    selectedSlotId: bigint | null
   }
 
   export type JobApplicationMinAggregateOutputType = {
@@ -48661,6 +48854,9 @@ export namespace Prisma {
     status: $Enums.ApplicationStatus | null
     coverLetter: string | null
     resumeSnapshot: string | null
+    selectedSlotId: bigint | null
+    proposedBy: $Enums.ActorType | null
+    proposedTime: Date | null
     selfReportedAt: Date | null
     interviewDate: Date | null
     interviewNote: string | null
@@ -48678,6 +48874,9 @@ export namespace Prisma {
     status: $Enums.ApplicationStatus | null
     coverLetter: string | null
     resumeSnapshot: string | null
+    selectedSlotId: bigint | null
+    proposedBy: $Enums.ActorType | null
+    proposedTime: Date | null
     selfReportedAt: Date | null
     interviewDate: Date | null
     interviewNote: string | null
@@ -48695,6 +48894,9 @@ export namespace Prisma {
     status: number
     coverLetter: number
     resumeSnapshot: number
+    selectedSlotId: number
+    proposedBy: number
+    proposedTime: number
     selfReportedAt: number
     interviewDate: number
     interviewNote: number
@@ -48709,11 +48911,13 @@ export namespace Prisma {
   export type JobApplicationAvgAggregateInputType = {
     id?: true
     jobId?: true
+    selectedSlotId?: true
   }
 
   export type JobApplicationSumAggregateInputType = {
     id?: true
     jobId?: true
+    selectedSlotId?: true
   }
 
   export type JobApplicationMinAggregateInputType = {
@@ -48724,6 +48928,9 @@ export namespace Prisma {
     status?: true
     coverLetter?: true
     resumeSnapshot?: true
+    selectedSlotId?: true
+    proposedBy?: true
+    proposedTime?: true
     selfReportedAt?: true
     interviewDate?: true
     interviewNote?: true
@@ -48741,6 +48948,9 @@ export namespace Prisma {
     status?: true
     coverLetter?: true
     resumeSnapshot?: true
+    selectedSlotId?: true
+    proposedBy?: true
+    proposedTime?: true
     selfReportedAt?: true
     interviewDate?: true
     interviewNote?: true
@@ -48758,6 +48968,9 @@ export namespace Prisma {
     status?: true
     coverLetter?: true
     resumeSnapshot?: true
+    selectedSlotId?: true
+    proposedBy?: true
+    proposedTime?: true
     selfReportedAt?: true
     interviewDate?: true
     interviewNote?: true
@@ -48862,6 +49075,9 @@ export namespace Prisma {
     status: $Enums.ApplicationStatus
     coverLetter: string | null
     resumeSnapshot: string | null
+    selectedSlotId: bigint | null
+    proposedBy: $Enums.ActorType | null
+    proposedTime: Date | null
     selfReportedAt: Date | null
     interviewDate: Date | null
     interviewNote: string | null
@@ -48898,6 +49114,9 @@ export namespace Prisma {
     status?: boolean
     coverLetter?: boolean
     resumeSnapshot?: boolean
+    selectedSlotId?: boolean
+    proposedBy?: boolean
+    proposedTime?: boolean
     selfReportedAt?: boolean
     interviewDate?: boolean
     interviewNote?: boolean
@@ -48906,6 +49125,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
+    selectedSlot?: boolean | JobApplication$selectedSlotArgs<ExtArgs>
   }, ExtArgs["result"]["jobApplication"]>
 
   export type JobApplicationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -48916,6 +49136,9 @@ export namespace Prisma {
     status?: boolean
     coverLetter?: boolean
     resumeSnapshot?: boolean
+    selectedSlotId?: boolean
+    proposedBy?: boolean
+    proposedTime?: boolean
     selfReportedAt?: boolean
     interviewDate?: boolean
     interviewNote?: boolean
@@ -48924,6 +49147,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
+    selectedSlot?: boolean | JobApplication$selectedSlotArgs<ExtArgs>
   }, ExtArgs["result"]["jobApplication"]>
 
   export type JobApplicationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -48934,6 +49158,9 @@ export namespace Prisma {
     status?: boolean
     coverLetter?: boolean
     resumeSnapshot?: boolean
+    selectedSlotId?: boolean
+    proposedBy?: boolean
+    proposedTime?: boolean
     selfReportedAt?: boolean
     interviewDate?: boolean
     interviewNote?: boolean
@@ -48942,6 +49169,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
+    selectedSlot?: boolean | JobApplication$selectedSlotArgs<ExtArgs>
   }, ExtArgs["result"]["jobApplication"]>
 
   export type JobApplicationSelectScalar = {
@@ -48952,6 +49180,9 @@ export namespace Prisma {
     status?: boolean
     coverLetter?: boolean
     resumeSnapshot?: boolean
+    selectedSlotId?: boolean
+    proposedBy?: boolean
+    proposedTime?: boolean
     selfReportedAt?: boolean
     interviewDate?: boolean
     interviewNote?: boolean
@@ -48961,21 +49192,25 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type JobApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "applicantId" | "applicationMethod" | "status" | "coverLetter" | "resumeSnapshot" | "selfReportedAt" | "interviewDate" | "interviewNote" | "rejectionReason" | "resultNotifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["jobApplication"]>
+  export type JobApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "applicantId" | "applicationMethod" | "status" | "coverLetter" | "resumeSnapshot" | "selectedSlotId" | "proposedBy" | "proposedTime" | "selfReportedAt" | "interviewDate" | "interviewNote" | "rejectionReason" | "resultNotifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["jobApplication"]>
   export type JobApplicationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
+    selectedSlot?: boolean | JobApplication$selectedSlotArgs<ExtArgs>
   }
   export type JobApplicationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
+    selectedSlot?: boolean | JobApplication$selectedSlotArgs<ExtArgs>
   }
   export type JobApplicationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
+    selectedSlot?: boolean | JobApplication$selectedSlotArgs<ExtArgs>
   }
 
   export type $JobApplicationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "JobApplication"
     objects: {
       job: Prisma.$JobPostingPayload<ExtArgs>
+      selectedSlot: Prisma.$InterviewSlotPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
@@ -48985,6 +49220,9 @@ export namespace Prisma {
       status: $Enums.ApplicationStatus
       coverLetter: string | null
       resumeSnapshot: string | null
+      selectedSlotId: bigint | null
+      proposedBy: $Enums.ActorType | null
+      proposedTime: Date | null
       selfReportedAt: Date | null
       interviewDate: Date | null
       interviewNote: string | null
@@ -49387,6 +49625,7 @@ export namespace Prisma {
   export interface Prisma__JobApplicationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     job<T extends JobPostingDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobPostingDefaultArgs<ExtArgs>>): Prisma__JobPostingClient<$Result.GetResult<Prisma.$JobPostingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    selectedSlot<T extends JobApplication$selectedSlotArgs<ExtArgs> = {}>(args?: Subset<T, JobApplication$selectedSlotArgs<ExtArgs>>): Prisma__InterviewSlotClient<$Result.GetResult<Prisma.$InterviewSlotPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -49423,6 +49662,9 @@ export namespace Prisma {
     readonly status: FieldRef<"JobApplication", 'ApplicationStatus'>
     readonly coverLetter: FieldRef<"JobApplication", 'String'>
     readonly resumeSnapshot: FieldRef<"JobApplication", 'String'>
+    readonly selectedSlotId: FieldRef<"JobApplication", 'BigInt'>
+    readonly proposedBy: FieldRef<"JobApplication", 'ActorType'>
+    readonly proposedTime: FieldRef<"JobApplication", 'DateTime'>
     readonly selfReportedAt: FieldRef<"JobApplication", 'DateTime'>
     readonly interviewDate: FieldRef<"JobApplication", 'DateTime'>
     readonly interviewNote: FieldRef<"JobApplication", 'String'>
@@ -49826,6 +50068,25 @@ export namespace Prisma {
   }
 
   /**
+   * JobApplication.selectedSlot
+   */
+  export type JobApplication$selectedSlotArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewSlot
+     */
+    select?: InterviewSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewSlot
+     */
+    omit?: InterviewSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewSlotInclude<ExtArgs> | null
+    where?: InterviewSlotWhereInput
+  }
+
+  /**
    * JobApplication without action
    */
   export type JobApplicationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -49841,6 +50102,1151 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: JobApplicationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model InterviewSlot
+   */
+
+  export type AggregateInterviewSlot = {
+    _count: InterviewSlotCountAggregateOutputType | null
+    _avg: InterviewSlotAvgAggregateOutputType | null
+    _sum: InterviewSlotSumAggregateOutputType | null
+    _min: InterviewSlotMinAggregateOutputType | null
+    _max: InterviewSlotMaxAggregateOutputType | null
+  }
+
+  export type InterviewSlotAvgAggregateOutputType = {
+    id: number | null
+    jobId: number | null
+  }
+
+  export type InterviewSlotSumAggregateOutputType = {
+    id: bigint | null
+    jobId: bigint | null
+  }
+
+  export type InterviewSlotMinAggregateOutputType = {
+    id: bigint | null
+    jobId: bigint | null
+    startTime: Date | null
+    endTime: Date | null
+    isBooked: boolean | null
+    location: string | null
+    notes: string | null
+  }
+
+  export type InterviewSlotMaxAggregateOutputType = {
+    id: bigint | null
+    jobId: bigint | null
+    startTime: Date | null
+    endTime: Date | null
+    isBooked: boolean | null
+    location: string | null
+    notes: string | null
+  }
+
+  export type InterviewSlotCountAggregateOutputType = {
+    id: number
+    jobId: number
+    startTime: number
+    endTime: number
+    isBooked: number
+    location: number
+    notes: number
+    _all: number
+  }
+
+
+  export type InterviewSlotAvgAggregateInputType = {
+    id?: true
+    jobId?: true
+  }
+
+  export type InterviewSlotSumAggregateInputType = {
+    id?: true
+    jobId?: true
+  }
+
+  export type InterviewSlotMinAggregateInputType = {
+    id?: true
+    jobId?: true
+    startTime?: true
+    endTime?: true
+    isBooked?: true
+    location?: true
+    notes?: true
+  }
+
+  export type InterviewSlotMaxAggregateInputType = {
+    id?: true
+    jobId?: true
+    startTime?: true
+    endTime?: true
+    isBooked?: true
+    location?: true
+    notes?: true
+  }
+
+  export type InterviewSlotCountAggregateInputType = {
+    id?: true
+    jobId?: true
+    startTime?: true
+    endTime?: true
+    isBooked?: true
+    location?: true
+    notes?: true
+    _all?: true
+  }
+
+  export type InterviewSlotAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InterviewSlot to aggregate.
+     */
+    where?: InterviewSlotWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewSlots to fetch.
+     */
+    orderBy?: InterviewSlotOrderByWithRelationInput | InterviewSlotOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: InterviewSlotWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewSlots from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewSlots.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned InterviewSlots
+    **/
+    _count?: true | InterviewSlotCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: InterviewSlotAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: InterviewSlotSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: InterviewSlotMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: InterviewSlotMaxAggregateInputType
+  }
+
+  export type GetInterviewSlotAggregateType<T extends InterviewSlotAggregateArgs> = {
+        [P in keyof T & keyof AggregateInterviewSlot]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateInterviewSlot[P]>
+      : GetScalarType<T[P], AggregateInterviewSlot[P]>
+  }
+
+
+
+
+  export type InterviewSlotGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewSlotWhereInput
+    orderBy?: InterviewSlotOrderByWithAggregationInput | InterviewSlotOrderByWithAggregationInput[]
+    by: InterviewSlotScalarFieldEnum[] | InterviewSlotScalarFieldEnum
+    having?: InterviewSlotScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: InterviewSlotCountAggregateInputType | true
+    _avg?: InterviewSlotAvgAggregateInputType
+    _sum?: InterviewSlotSumAggregateInputType
+    _min?: InterviewSlotMinAggregateInputType
+    _max?: InterviewSlotMaxAggregateInputType
+  }
+
+  export type InterviewSlotGroupByOutputType = {
+    id: bigint
+    jobId: bigint
+    startTime: Date
+    endTime: Date
+    isBooked: boolean
+    location: string | null
+    notes: string | null
+    _count: InterviewSlotCountAggregateOutputType | null
+    _avg: InterviewSlotAvgAggregateOutputType | null
+    _sum: InterviewSlotSumAggregateOutputType | null
+    _min: InterviewSlotMinAggregateOutputType | null
+    _max: InterviewSlotMaxAggregateOutputType | null
+  }
+
+  type GetInterviewSlotGroupByPayload<T extends InterviewSlotGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<InterviewSlotGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof InterviewSlotGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], InterviewSlotGroupByOutputType[P]>
+            : GetScalarType<T[P], InterviewSlotGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type InterviewSlotSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    isBooked?: boolean
+    location?: boolean
+    notes?: boolean
+    job?: boolean | JobPostingDefaultArgs<ExtArgs>
+    bookedApplication?: boolean | InterviewSlot$bookedApplicationArgs<ExtArgs>
+  }, ExtArgs["result"]["interviewSlot"]>
+
+  export type InterviewSlotSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    isBooked?: boolean
+    location?: boolean
+    notes?: boolean
+    job?: boolean | JobPostingDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["interviewSlot"]>
+
+  export type InterviewSlotSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    isBooked?: boolean
+    location?: boolean
+    notes?: boolean
+    job?: boolean | JobPostingDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["interviewSlot"]>
+
+  export type InterviewSlotSelectScalar = {
+    id?: boolean
+    jobId?: boolean
+    startTime?: boolean
+    endTime?: boolean
+    isBooked?: boolean
+    location?: boolean
+    notes?: boolean
+  }
+
+  export type InterviewSlotOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "startTime" | "endTime" | "isBooked" | "location" | "notes", ExtArgs["result"]["interviewSlot"]>
+  export type InterviewSlotInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobPostingDefaultArgs<ExtArgs>
+    bookedApplication?: boolean | InterviewSlot$bookedApplicationArgs<ExtArgs>
+  }
+  export type InterviewSlotIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobPostingDefaultArgs<ExtArgs>
+  }
+  export type InterviewSlotIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobPostingDefaultArgs<ExtArgs>
+  }
+
+  export type $InterviewSlotPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "InterviewSlot"
+    objects: {
+      job: Prisma.$JobPostingPayload<ExtArgs>
+      bookedApplication: Prisma.$JobApplicationPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      jobId: bigint
+      startTime: Date
+      endTime: Date
+      isBooked: boolean
+      location: string | null
+      notes: string | null
+    }, ExtArgs["result"]["interviewSlot"]>
+    composites: {}
+  }
+
+  type InterviewSlotGetPayload<S extends boolean | null | undefined | InterviewSlotDefaultArgs> = $Result.GetResult<Prisma.$InterviewSlotPayload, S>
+
+  type InterviewSlotCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<InterviewSlotFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InterviewSlotCountAggregateInputType | true
+    }
+
+  export interface InterviewSlotDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['InterviewSlot'], meta: { name: 'InterviewSlot' } }
+    /**
+     * Find zero or one InterviewSlot that matches the filter.
+     * @param {InterviewSlotFindUniqueArgs} args - Arguments to find a InterviewSlot
+     * @example
+     * // Get one InterviewSlot
+     * const interviewSlot = await prisma.interviewSlot.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends InterviewSlotFindUniqueArgs>(args: SelectSubset<T, InterviewSlotFindUniqueArgs<ExtArgs>>): Prisma__InterviewSlotClient<$Result.GetResult<Prisma.$InterviewSlotPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one InterviewSlot that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {InterviewSlotFindUniqueOrThrowArgs} args - Arguments to find a InterviewSlot
+     * @example
+     * // Get one InterviewSlot
+     * const interviewSlot = await prisma.interviewSlot.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends InterviewSlotFindUniqueOrThrowArgs>(args: SelectSubset<T, InterviewSlotFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InterviewSlotClient<$Result.GetResult<Prisma.$InterviewSlotPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InterviewSlot that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewSlotFindFirstArgs} args - Arguments to find a InterviewSlot
+     * @example
+     * // Get one InterviewSlot
+     * const interviewSlot = await prisma.interviewSlot.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends InterviewSlotFindFirstArgs>(args?: SelectSubset<T, InterviewSlotFindFirstArgs<ExtArgs>>): Prisma__InterviewSlotClient<$Result.GetResult<Prisma.$InterviewSlotPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InterviewSlot that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewSlotFindFirstOrThrowArgs} args - Arguments to find a InterviewSlot
+     * @example
+     * // Get one InterviewSlot
+     * const interviewSlot = await prisma.interviewSlot.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends InterviewSlotFindFirstOrThrowArgs>(args?: SelectSubset<T, InterviewSlotFindFirstOrThrowArgs<ExtArgs>>): Prisma__InterviewSlotClient<$Result.GetResult<Prisma.$InterviewSlotPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more InterviewSlots that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewSlotFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all InterviewSlots
+     * const interviewSlots = await prisma.interviewSlot.findMany()
+     * 
+     * // Get first 10 InterviewSlots
+     * const interviewSlots = await prisma.interviewSlot.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const interviewSlotWithIdOnly = await prisma.interviewSlot.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends InterviewSlotFindManyArgs>(args?: SelectSubset<T, InterviewSlotFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewSlotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a InterviewSlot.
+     * @param {InterviewSlotCreateArgs} args - Arguments to create a InterviewSlot.
+     * @example
+     * // Create one InterviewSlot
+     * const InterviewSlot = await prisma.interviewSlot.create({
+     *   data: {
+     *     // ... data to create a InterviewSlot
+     *   }
+     * })
+     * 
+     */
+    create<T extends InterviewSlotCreateArgs>(args: SelectSubset<T, InterviewSlotCreateArgs<ExtArgs>>): Prisma__InterviewSlotClient<$Result.GetResult<Prisma.$InterviewSlotPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many InterviewSlots.
+     * @param {InterviewSlotCreateManyArgs} args - Arguments to create many InterviewSlots.
+     * @example
+     * // Create many InterviewSlots
+     * const interviewSlot = await prisma.interviewSlot.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends InterviewSlotCreateManyArgs>(args?: SelectSubset<T, InterviewSlotCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many InterviewSlots and returns the data saved in the database.
+     * @param {InterviewSlotCreateManyAndReturnArgs} args - Arguments to create many InterviewSlots.
+     * @example
+     * // Create many InterviewSlots
+     * const interviewSlot = await prisma.interviewSlot.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many InterviewSlots and only return the `id`
+     * const interviewSlotWithIdOnly = await prisma.interviewSlot.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends InterviewSlotCreateManyAndReturnArgs>(args?: SelectSubset<T, InterviewSlotCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewSlotPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a InterviewSlot.
+     * @param {InterviewSlotDeleteArgs} args - Arguments to delete one InterviewSlot.
+     * @example
+     * // Delete one InterviewSlot
+     * const InterviewSlot = await prisma.interviewSlot.delete({
+     *   where: {
+     *     // ... filter to delete one InterviewSlot
+     *   }
+     * })
+     * 
+     */
+    delete<T extends InterviewSlotDeleteArgs>(args: SelectSubset<T, InterviewSlotDeleteArgs<ExtArgs>>): Prisma__InterviewSlotClient<$Result.GetResult<Prisma.$InterviewSlotPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one InterviewSlot.
+     * @param {InterviewSlotUpdateArgs} args - Arguments to update one InterviewSlot.
+     * @example
+     * // Update one InterviewSlot
+     * const interviewSlot = await prisma.interviewSlot.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends InterviewSlotUpdateArgs>(args: SelectSubset<T, InterviewSlotUpdateArgs<ExtArgs>>): Prisma__InterviewSlotClient<$Result.GetResult<Prisma.$InterviewSlotPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more InterviewSlots.
+     * @param {InterviewSlotDeleteManyArgs} args - Arguments to filter InterviewSlots to delete.
+     * @example
+     * // Delete a few InterviewSlots
+     * const { count } = await prisma.interviewSlot.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends InterviewSlotDeleteManyArgs>(args?: SelectSubset<T, InterviewSlotDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InterviewSlots.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewSlotUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many InterviewSlots
+     * const interviewSlot = await prisma.interviewSlot.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends InterviewSlotUpdateManyArgs>(args: SelectSubset<T, InterviewSlotUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InterviewSlots and returns the data updated in the database.
+     * @param {InterviewSlotUpdateManyAndReturnArgs} args - Arguments to update many InterviewSlots.
+     * @example
+     * // Update many InterviewSlots
+     * const interviewSlot = await prisma.interviewSlot.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more InterviewSlots and only return the `id`
+     * const interviewSlotWithIdOnly = await prisma.interviewSlot.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends InterviewSlotUpdateManyAndReturnArgs>(args: SelectSubset<T, InterviewSlotUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewSlotPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one InterviewSlot.
+     * @param {InterviewSlotUpsertArgs} args - Arguments to update or create a InterviewSlot.
+     * @example
+     * // Update or create a InterviewSlot
+     * const interviewSlot = await prisma.interviewSlot.upsert({
+     *   create: {
+     *     // ... data to create a InterviewSlot
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the InterviewSlot we want to update
+     *   }
+     * })
+     */
+    upsert<T extends InterviewSlotUpsertArgs>(args: SelectSubset<T, InterviewSlotUpsertArgs<ExtArgs>>): Prisma__InterviewSlotClient<$Result.GetResult<Prisma.$InterviewSlotPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of InterviewSlots.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewSlotCountArgs} args - Arguments to filter InterviewSlots to count.
+     * @example
+     * // Count the number of InterviewSlots
+     * const count = await prisma.interviewSlot.count({
+     *   where: {
+     *     // ... the filter for the InterviewSlots we want to count
+     *   }
+     * })
+    **/
+    count<T extends InterviewSlotCountArgs>(
+      args?: Subset<T, InterviewSlotCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], InterviewSlotCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a InterviewSlot.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewSlotAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends InterviewSlotAggregateArgs>(args: Subset<T, InterviewSlotAggregateArgs>): Prisma.PrismaPromise<GetInterviewSlotAggregateType<T>>
+
+    /**
+     * Group by InterviewSlot.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewSlotGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends InterviewSlotGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: InterviewSlotGroupByArgs['orderBy'] }
+        : { orderBy?: InterviewSlotGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, InterviewSlotGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInterviewSlotGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the InterviewSlot model
+   */
+  readonly fields: InterviewSlotFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for InterviewSlot.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__InterviewSlotClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    job<T extends JobPostingDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobPostingDefaultArgs<ExtArgs>>): Prisma__JobPostingClient<$Result.GetResult<Prisma.$JobPostingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    bookedApplication<T extends InterviewSlot$bookedApplicationArgs<ExtArgs> = {}>(args?: Subset<T, InterviewSlot$bookedApplicationArgs<ExtArgs>>): Prisma__JobApplicationClient<$Result.GetResult<Prisma.$JobApplicationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the InterviewSlot model
+   */
+  interface InterviewSlotFieldRefs {
+    readonly id: FieldRef<"InterviewSlot", 'BigInt'>
+    readonly jobId: FieldRef<"InterviewSlot", 'BigInt'>
+    readonly startTime: FieldRef<"InterviewSlot", 'DateTime'>
+    readonly endTime: FieldRef<"InterviewSlot", 'DateTime'>
+    readonly isBooked: FieldRef<"InterviewSlot", 'Boolean'>
+    readonly location: FieldRef<"InterviewSlot", 'String'>
+    readonly notes: FieldRef<"InterviewSlot", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * InterviewSlot findUnique
+   */
+  export type InterviewSlotFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewSlot
+     */
+    select?: InterviewSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewSlot
+     */
+    omit?: InterviewSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewSlotInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewSlot to fetch.
+     */
+    where: InterviewSlotWhereUniqueInput
+  }
+
+  /**
+   * InterviewSlot findUniqueOrThrow
+   */
+  export type InterviewSlotFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewSlot
+     */
+    select?: InterviewSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewSlot
+     */
+    omit?: InterviewSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewSlotInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewSlot to fetch.
+     */
+    where: InterviewSlotWhereUniqueInput
+  }
+
+  /**
+   * InterviewSlot findFirst
+   */
+  export type InterviewSlotFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewSlot
+     */
+    select?: InterviewSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewSlot
+     */
+    omit?: InterviewSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewSlotInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewSlot to fetch.
+     */
+    where?: InterviewSlotWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewSlots to fetch.
+     */
+    orderBy?: InterviewSlotOrderByWithRelationInput | InterviewSlotOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InterviewSlots.
+     */
+    cursor?: InterviewSlotWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewSlots from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewSlots.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InterviewSlots.
+     */
+    distinct?: InterviewSlotScalarFieldEnum | InterviewSlotScalarFieldEnum[]
+  }
+
+  /**
+   * InterviewSlot findFirstOrThrow
+   */
+  export type InterviewSlotFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewSlot
+     */
+    select?: InterviewSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewSlot
+     */
+    omit?: InterviewSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewSlotInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewSlot to fetch.
+     */
+    where?: InterviewSlotWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewSlots to fetch.
+     */
+    orderBy?: InterviewSlotOrderByWithRelationInput | InterviewSlotOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InterviewSlots.
+     */
+    cursor?: InterviewSlotWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewSlots from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewSlots.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InterviewSlots.
+     */
+    distinct?: InterviewSlotScalarFieldEnum | InterviewSlotScalarFieldEnum[]
+  }
+
+  /**
+   * InterviewSlot findMany
+   */
+  export type InterviewSlotFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewSlot
+     */
+    select?: InterviewSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewSlot
+     */
+    omit?: InterviewSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewSlotInclude<ExtArgs> | null
+    /**
+     * Filter, which InterviewSlots to fetch.
+     */
+    where?: InterviewSlotWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InterviewSlots to fetch.
+     */
+    orderBy?: InterviewSlotOrderByWithRelationInput | InterviewSlotOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing InterviewSlots.
+     */
+    cursor?: InterviewSlotWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InterviewSlots from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InterviewSlots.
+     */
+    skip?: number
+    distinct?: InterviewSlotScalarFieldEnum | InterviewSlotScalarFieldEnum[]
+  }
+
+  /**
+   * InterviewSlot create
+   */
+  export type InterviewSlotCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewSlot
+     */
+    select?: InterviewSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewSlot
+     */
+    omit?: InterviewSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewSlotInclude<ExtArgs> | null
+    /**
+     * The data needed to create a InterviewSlot.
+     */
+    data: XOR<InterviewSlotCreateInput, InterviewSlotUncheckedCreateInput>
+  }
+
+  /**
+   * InterviewSlot createMany
+   */
+  export type InterviewSlotCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many InterviewSlots.
+     */
+    data: InterviewSlotCreateManyInput | InterviewSlotCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * InterviewSlot createManyAndReturn
+   */
+  export type InterviewSlotCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewSlot
+     */
+    select?: InterviewSlotSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewSlot
+     */
+    omit?: InterviewSlotOmit<ExtArgs> | null
+    /**
+     * The data used to create many InterviewSlots.
+     */
+    data: InterviewSlotCreateManyInput | InterviewSlotCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewSlotIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InterviewSlot update
+   */
+  export type InterviewSlotUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewSlot
+     */
+    select?: InterviewSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewSlot
+     */
+    omit?: InterviewSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewSlotInclude<ExtArgs> | null
+    /**
+     * The data needed to update a InterviewSlot.
+     */
+    data: XOR<InterviewSlotUpdateInput, InterviewSlotUncheckedUpdateInput>
+    /**
+     * Choose, which InterviewSlot to update.
+     */
+    where: InterviewSlotWhereUniqueInput
+  }
+
+  /**
+   * InterviewSlot updateMany
+   */
+  export type InterviewSlotUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update InterviewSlots.
+     */
+    data: XOR<InterviewSlotUpdateManyMutationInput, InterviewSlotUncheckedUpdateManyInput>
+    /**
+     * Filter which InterviewSlots to update
+     */
+    where?: InterviewSlotWhereInput
+    /**
+     * Limit how many InterviewSlots to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * InterviewSlot updateManyAndReturn
+   */
+  export type InterviewSlotUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewSlot
+     */
+    select?: InterviewSlotSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewSlot
+     */
+    omit?: InterviewSlotOmit<ExtArgs> | null
+    /**
+     * The data used to update InterviewSlots.
+     */
+    data: XOR<InterviewSlotUpdateManyMutationInput, InterviewSlotUncheckedUpdateManyInput>
+    /**
+     * Filter which InterviewSlots to update
+     */
+    where?: InterviewSlotWhereInput
+    /**
+     * Limit how many InterviewSlots to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewSlotIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * InterviewSlot upsert
+   */
+  export type InterviewSlotUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewSlot
+     */
+    select?: InterviewSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewSlot
+     */
+    omit?: InterviewSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewSlotInclude<ExtArgs> | null
+    /**
+     * The filter to search for the InterviewSlot to update in case it exists.
+     */
+    where: InterviewSlotWhereUniqueInput
+    /**
+     * In case the InterviewSlot found by the `where` argument doesn't exist, create a new InterviewSlot with this data.
+     */
+    create: XOR<InterviewSlotCreateInput, InterviewSlotUncheckedCreateInput>
+    /**
+     * In case the InterviewSlot was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<InterviewSlotUpdateInput, InterviewSlotUncheckedUpdateInput>
+  }
+
+  /**
+   * InterviewSlot delete
+   */
+  export type InterviewSlotDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewSlot
+     */
+    select?: InterviewSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewSlot
+     */
+    omit?: InterviewSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewSlotInclude<ExtArgs> | null
+    /**
+     * Filter which InterviewSlot to delete.
+     */
+    where: InterviewSlotWhereUniqueInput
+  }
+
+  /**
+   * InterviewSlot deleteMany
+   */
+  export type InterviewSlotDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InterviewSlots to delete
+     */
+    where?: InterviewSlotWhereInput
+    /**
+     * Limit how many InterviewSlots to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * InterviewSlot.bookedApplication
+   */
+  export type InterviewSlot$bookedApplicationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobApplication
+     */
+    select?: JobApplicationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobApplication
+     */
+    omit?: JobApplicationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobApplicationInclude<ExtArgs> | null
+    where?: JobApplicationWhereInput
+  }
+
+  /**
+   * InterviewSlot without action
+   */
+  export type InterviewSlotDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InterviewSlot
+     */
+    select?: InterviewSlotSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InterviewSlot
+     */
+    omit?: InterviewSlotOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewSlotInclude<ExtArgs> | null
   }
 
 
@@ -58503,7 +59909,11 @@ export namespace Prisma {
     suspendReason: 'suspendReason',
     suspendedBy: 'suspendedBy',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    isPremium: 'isPremium',
+    premiumStartAt: 'premiumStartAt',
+    premiumEndAt: 'premiumEndAt',
+    fulltimeVisaResult: 'fulltimeVisaResult'
   };
 
   export type JobPostingScalarFieldEnum = (typeof JobPostingScalarFieldEnum)[keyof typeof JobPostingScalarFieldEnum]
@@ -58540,6 +59950,9 @@ export namespace Prisma {
     status: 'status',
     coverLetter: 'coverLetter',
     resumeSnapshot: 'resumeSnapshot',
+    selectedSlotId: 'selectedSlotId',
+    proposedBy: 'proposedBy',
+    proposedTime: 'proposedTime',
     selfReportedAt: 'selfReportedAt',
     interviewDate: 'interviewDate',
     interviewNote: 'interviewNote',
@@ -58550,6 +59963,19 @@ export namespace Prisma {
   };
 
   export type JobApplicationScalarFieldEnum = (typeof JobApplicationScalarFieldEnum)[keyof typeof JobApplicationScalarFieldEnum]
+
+
+  export const InterviewSlotScalarFieldEnum: {
+    id: 'id',
+    jobId: 'jobId',
+    startTime: 'startTime',
+    endTime: 'endTime',
+    isBooked: 'isBooked',
+    location: 'location',
+    notes: 'notes'
+  };
+
+  export type InterviewSlotScalarFieldEnum = (typeof InterviewSlotScalarFieldEnum)[keyof typeof InterviewSlotScalarFieldEnum]
 
 
   export const JobScrapScalarFieldEnum: {
@@ -59194,6 +60620,20 @@ export namespace Prisma {
    * Reference to a field of type 'ApplicationStatus[]'
    */
   export type ListEnumApplicationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApplicationStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ActorType'
+   */
+  export type EnumActorTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActorType'>
+    
+
+
+  /**
+   * Reference to a field of type 'ActorType[]'
+   */
+  export type ListEnumActorTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActorType[]'>
     
 
 
@@ -62512,8 +63952,13 @@ export namespace Prisma {
     suspendedBy?: StringNullableFilter<"JobPosting"> | string | null
     createdAt?: DateTimeFilter<"JobPosting"> | Date | string
     updatedAt?: DateTimeFilter<"JobPosting"> | Date | string
+    isPremium?: BoolFilter<"JobPosting"> | boolean
+    premiumStartAt?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
+    premiumEndAt?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
+    fulltimeVisaResult?: JsonNullableFilter<"JobPosting">
     albaAttributes?: XOR<JobAttributesAlbaNullableScalarRelationFilter, JobAttributesAlbaWhereInput> | null
     fulltimeAttributes?: XOR<JobAttributesFulltimeNullableScalarRelationFilter, JobAttributesFulltimeWhereInput> | null
+    interviewSlots?: InterviewSlotListRelationFilter
     applications?: JobApplicationListRelationFilter
     scraps?: JobScrapListRelationFilter
   }
@@ -62558,8 +64003,13 @@ export namespace Prisma {
     suspendedBy?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isPremium?: SortOrder
+    premiumStartAt?: SortOrderInput | SortOrder
+    premiumEndAt?: SortOrderInput | SortOrder
+    fulltimeVisaResult?: SortOrderInput | SortOrder
     albaAttributes?: JobAttributesAlbaOrderByWithRelationInput
     fulltimeAttributes?: JobAttributesFulltimeOrderByWithRelationInput
+    interviewSlots?: InterviewSlotOrderByRelationAggregateInput
     applications?: JobApplicationOrderByRelationAggregateInput
     scraps?: JobScrapOrderByRelationAggregateInput
   }
@@ -62607,8 +64057,13 @@ export namespace Prisma {
     suspendedBy?: StringNullableFilter<"JobPosting"> | string | null
     createdAt?: DateTimeFilter<"JobPosting"> | Date | string
     updatedAt?: DateTimeFilter<"JobPosting"> | Date | string
+    isPremium?: BoolFilter<"JobPosting"> | boolean
+    premiumStartAt?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
+    premiumEndAt?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
+    fulltimeVisaResult?: JsonNullableFilter<"JobPosting">
     albaAttributes?: XOR<JobAttributesAlbaNullableScalarRelationFilter, JobAttributesAlbaWhereInput> | null
     fulltimeAttributes?: XOR<JobAttributesFulltimeNullableScalarRelationFilter, JobAttributesFulltimeWhereInput> | null
+    interviewSlots?: InterviewSlotListRelationFilter
     applications?: JobApplicationListRelationFilter
     scraps?: JobScrapListRelationFilter
   }, "id">
@@ -62653,6 +64108,10 @@ export namespace Prisma {
     suspendedBy?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isPremium?: SortOrder
+    premiumStartAt?: SortOrderInput | SortOrder
+    premiumEndAt?: SortOrderInput | SortOrder
+    fulltimeVisaResult?: SortOrderInput | SortOrder
     _count?: JobPostingCountOrderByAggregateInput
     _avg?: JobPostingAvgOrderByAggregateInput
     _max?: JobPostingMaxOrderByAggregateInput
@@ -62703,6 +64162,10 @@ export namespace Prisma {
     suspendedBy?: StringNullableWithAggregatesFilter<"JobPosting"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"JobPosting"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"JobPosting"> | Date | string
+    isPremium?: BoolWithAggregatesFilter<"JobPosting"> | boolean
+    premiumStartAt?: DateTimeNullableWithAggregatesFilter<"JobPosting"> | Date | string | null
+    premiumEndAt?: DateTimeNullableWithAggregatesFilter<"JobPosting"> | Date | string | null
+    fulltimeVisaResult?: JsonNullableWithAggregatesFilter<"JobPosting">
   }
 
   export type JobAttributesAlbaWhereInput = {
@@ -62835,6 +64298,9 @@ export namespace Prisma {
     status?: EnumApplicationStatusFilter<"JobApplication"> | $Enums.ApplicationStatus
     coverLetter?: StringNullableFilter<"JobApplication"> | string | null
     resumeSnapshot?: StringNullableFilter<"JobApplication"> | string | null
+    selectedSlotId?: BigIntNullableFilter<"JobApplication"> | bigint | number | null
+    proposedBy?: EnumActorTypeNullableFilter<"JobApplication"> | $Enums.ActorType | null
+    proposedTime?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     selfReportedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     interviewDate?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     interviewNote?: StringNullableFilter<"JobApplication"> | string | null
@@ -62843,6 +64309,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"JobApplication"> | Date | string
     updatedAt?: DateTimeFilter<"JobApplication"> | Date | string
     job?: XOR<JobPostingScalarRelationFilter, JobPostingWhereInput>
+    selectedSlot?: XOR<InterviewSlotNullableScalarRelationFilter, InterviewSlotWhereInput> | null
   }
 
   export type JobApplicationOrderByWithRelationInput = {
@@ -62853,6 +64320,9 @@ export namespace Prisma {
     status?: SortOrder
     coverLetter?: SortOrderInput | SortOrder
     resumeSnapshot?: SortOrderInput | SortOrder
+    selectedSlotId?: SortOrderInput | SortOrder
+    proposedBy?: SortOrderInput | SortOrder
+    proposedTime?: SortOrderInput | SortOrder
     selfReportedAt?: SortOrderInput | SortOrder
     interviewDate?: SortOrderInput | SortOrder
     interviewNote?: SortOrderInput | SortOrder
@@ -62861,10 +64331,12 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     job?: JobPostingOrderByWithRelationInput
+    selectedSlot?: InterviewSlotOrderByWithRelationInput
   }
 
   export type JobApplicationWhereUniqueInput = Prisma.AtLeast<{
     id?: bigint | number
+    selectedSlotId?: bigint | number
     jobId_applicantId?: JobApplicationJobIdApplicantIdCompoundUniqueInput
     AND?: JobApplicationWhereInput | JobApplicationWhereInput[]
     OR?: JobApplicationWhereInput[]
@@ -62875,6 +64347,8 @@ export namespace Prisma {
     status?: EnumApplicationStatusFilter<"JobApplication"> | $Enums.ApplicationStatus
     coverLetter?: StringNullableFilter<"JobApplication"> | string | null
     resumeSnapshot?: StringNullableFilter<"JobApplication"> | string | null
+    proposedBy?: EnumActorTypeNullableFilter<"JobApplication"> | $Enums.ActorType | null
+    proposedTime?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     selfReportedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     interviewDate?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     interviewNote?: StringNullableFilter<"JobApplication"> | string | null
@@ -62883,7 +64357,8 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"JobApplication"> | Date | string
     updatedAt?: DateTimeFilter<"JobApplication"> | Date | string
     job?: XOR<JobPostingScalarRelationFilter, JobPostingWhereInput>
-  }, "id" | "jobId_applicantId">
+    selectedSlot?: XOR<InterviewSlotNullableScalarRelationFilter, InterviewSlotWhereInput> | null
+  }, "id" | "selectedSlotId" | "jobId_applicantId">
 
   export type JobApplicationOrderByWithAggregationInput = {
     id?: SortOrder
@@ -62893,6 +64368,9 @@ export namespace Prisma {
     status?: SortOrder
     coverLetter?: SortOrderInput | SortOrder
     resumeSnapshot?: SortOrderInput | SortOrder
+    selectedSlotId?: SortOrderInput | SortOrder
+    proposedBy?: SortOrderInput | SortOrder
+    proposedTime?: SortOrderInput | SortOrder
     selfReportedAt?: SortOrderInput | SortOrder
     interviewDate?: SortOrderInput | SortOrder
     interviewNote?: SortOrderInput | SortOrder
@@ -62918,6 +64396,9 @@ export namespace Prisma {
     status?: EnumApplicationStatusWithAggregatesFilter<"JobApplication"> | $Enums.ApplicationStatus
     coverLetter?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
     resumeSnapshot?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
+    selectedSlotId?: BigIntNullableWithAggregatesFilter<"JobApplication"> | bigint | number | null
+    proposedBy?: EnumActorTypeNullableWithAggregatesFilter<"JobApplication"> | $Enums.ActorType | null
+    proposedTime?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
     selfReportedAt?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
     interviewDate?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
     interviewNote?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
@@ -62925,6 +64406,76 @@ export namespace Prisma {
     resultNotifiedAt?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"JobApplication"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"JobApplication"> | Date | string
+  }
+
+  export type InterviewSlotWhereInput = {
+    AND?: InterviewSlotWhereInput | InterviewSlotWhereInput[]
+    OR?: InterviewSlotWhereInput[]
+    NOT?: InterviewSlotWhereInput | InterviewSlotWhereInput[]
+    id?: BigIntFilter<"InterviewSlot"> | bigint | number
+    jobId?: BigIntFilter<"InterviewSlot"> | bigint | number
+    startTime?: DateTimeFilter<"InterviewSlot"> | Date | string
+    endTime?: DateTimeFilter<"InterviewSlot"> | Date | string
+    isBooked?: BoolFilter<"InterviewSlot"> | boolean
+    location?: StringNullableFilter<"InterviewSlot"> | string | null
+    notes?: StringNullableFilter<"InterviewSlot"> | string | null
+    job?: XOR<JobPostingScalarRelationFilter, JobPostingWhereInput>
+    bookedApplication?: XOR<JobApplicationNullableScalarRelationFilter, JobApplicationWhereInput> | null
+  }
+
+  export type InterviewSlotOrderByWithRelationInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    isBooked?: SortOrder
+    location?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    job?: JobPostingOrderByWithRelationInput
+    bookedApplication?: JobApplicationOrderByWithRelationInput
+  }
+
+  export type InterviewSlotWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    AND?: InterviewSlotWhereInput | InterviewSlotWhereInput[]
+    OR?: InterviewSlotWhereInput[]
+    NOT?: InterviewSlotWhereInput | InterviewSlotWhereInput[]
+    jobId?: BigIntFilter<"InterviewSlot"> | bigint | number
+    startTime?: DateTimeFilter<"InterviewSlot"> | Date | string
+    endTime?: DateTimeFilter<"InterviewSlot"> | Date | string
+    isBooked?: BoolFilter<"InterviewSlot"> | boolean
+    location?: StringNullableFilter<"InterviewSlot"> | string | null
+    notes?: StringNullableFilter<"InterviewSlot"> | string | null
+    job?: XOR<JobPostingScalarRelationFilter, JobPostingWhereInput>
+    bookedApplication?: XOR<JobApplicationNullableScalarRelationFilter, JobApplicationWhereInput> | null
+  }, "id">
+
+  export type InterviewSlotOrderByWithAggregationInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    isBooked?: SortOrder
+    location?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    _count?: InterviewSlotCountOrderByAggregateInput
+    _avg?: InterviewSlotAvgOrderByAggregateInput
+    _max?: InterviewSlotMaxOrderByAggregateInput
+    _min?: InterviewSlotMinOrderByAggregateInput
+    _sum?: InterviewSlotSumOrderByAggregateInput
+  }
+
+  export type InterviewSlotScalarWhereWithAggregatesInput = {
+    AND?: InterviewSlotScalarWhereWithAggregatesInput | InterviewSlotScalarWhereWithAggregatesInput[]
+    OR?: InterviewSlotScalarWhereWithAggregatesInput[]
+    NOT?: InterviewSlotScalarWhereWithAggregatesInput | InterviewSlotScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"InterviewSlot"> | bigint | number
+    jobId?: BigIntWithAggregatesFilter<"InterviewSlot"> | bigint | number
+    startTime?: DateTimeWithAggregatesFilter<"InterviewSlot"> | Date | string
+    endTime?: DateTimeWithAggregatesFilter<"InterviewSlot"> | Date | string
+    isBooked?: BoolWithAggregatesFilter<"InterviewSlot"> | boolean
+    location?: StringNullableWithAggregatesFilter<"InterviewSlot"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"InterviewSlot"> | string | null
   }
 
   export type JobScrapWhereInput = {
@@ -67272,8 +68823,13 @@ export namespace Prisma {
     suspendedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isPremium?: boolean
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeCreateNestedOneWithoutJobInput
+    interviewSlots?: InterviewSlotCreateNestedManyWithoutJobInput
     applications?: JobApplicationCreateNestedManyWithoutJobInput
     scraps?: JobScrapCreateNestedManyWithoutJobInput
   }
@@ -67318,8 +68874,13 @@ export namespace Prisma {
     suspendedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isPremium?: boolean
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedCreateNestedOneWithoutJobInput
+    interviewSlots?: InterviewSlotUncheckedCreateNestedManyWithoutJobInput
     applications?: JobApplicationUncheckedCreateNestedManyWithoutJobInput
     scraps?: JobScrapUncheckedCreateNestedManyWithoutJobInput
   }
@@ -67364,8 +68925,13 @@ export namespace Prisma {
     suspendedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUpdateOneWithoutJobNestedInput
+    interviewSlots?: InterviewSlotUpdateManyWithoutJobNestedInput
     applications?: JobApplicationUpdateManyWithoutJobNestedInput
     scraps?: JobScrapUpdateManyWithoutJobNestedInput
   }
@@ -67410,8 +68976,13 @@ export namespace Prisma {
     suspendedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedUpdateOneWithoutJobNestedInput
+    interviewSlots?: InterviewSlotUncheckedUpdateManyWithoutJobNestedInput
     applications?: JobApplicationUncheckedUpdateManyWithoutJobNestedInput
     scraps?: JobScrapUncheckedUpdateManyWithoutJobNestedInput
   }
@@ -67456,6 +69027,10 @@ export namespace Prisma {
     suspendedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isPremium?: boolean
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type JobPostingUpdateManyMutationInput = {
@@ -67498,6 +69073,10 @@ export namespace Prisma {
     suspendedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type JobPostingUncheckedUpdateManyInput = {
@@ -67540,6 +69119,10 @@ export namespace Prisma {
     suspendedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type JobAttributesAlbaCreateInput = {
@@ -67666,6 +69249,8 @@ export namespace Prisma {
     status?: $Enums.ApplicationStatus
     coverLetter?: string | null
     resumeSnapshot?: string | null
+    proposedBy?: $Enums.ActorType | null
+    proposedTime?: Date | string | null
     selfReportedAt?: Date | string | null
     interviewDate?: Date | string | null
     interviewNote?: string | null
@@ -67674,6 +69259,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     job: JobPostingCreateNestedOneWithoutApplicationsInput
+    selectedSlot?: InterviewSlotCreateNestedOneWithoutBookedApplicationInput
   }
 
   export type JobApplicationUncheckedCreateInput = {
@@ -67684,6 +69270,9 @@ export namespace Prisma {
     status?: $Enums.ApplicationStatus
     coverLetter?: string | null
     resumeSnapshot?: string | null
+    selectedSlotId?: bigint | number | null
+    proposedBy?: $Enums.ActorType | null
+    proposedTime?: Date | string | null
     selfReportedAt?: Date | string | null
     interviewDate?: Date | string | null
     interviewNote?: string | null
@@ -67700,6 +69289,8 @@ export namespace Prisma {
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
     coverLetter?: NullableStringFieldUpdateOperationsInput | string | null
     resumeSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -67708,6 +69299,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobPostingUpdateOneRequiredWithoutApplicationsNestedInput
+    selectedSlot?: InterviewSlotUpdateOneWithoutBookedApplicationNestedInput
   }
 
   export type JobApplicationUncheckedUpdateInput = {
@@ -67718,6 +69310,9 @@ export namespace Prisma {
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
     coverLetter?: NullableStringFieldUpdateOperationsInput | string | null
     resumeSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    selectedSlotId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -67735,6 +69330,9 @@ export namespace Prisma {
     status?: $Enums.ApplicationStatus
     coverLetter?: string | null
     resumeSnapshot?: string | null
+    selectedSlotId?: bigint | number | null
+    proposedBy?: $Enums.ActorType | null
+    proposedTime?: Date | string | null
     selfReportedAt?: Date | string | null
     interviewDate?: Date | string | null
     interviewNote?: string | null
@@ -67751,6 +69349,8 @@ export namespace Prisma {
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
     coverLetter?: NullableStringFieldUpdateOperationsInput | string | null
     resumeSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -67768,6 +69368,9 @@ export namespace Prisma {
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
     coverLetter?: NullableStringFieldUpdateOperationsInput | string | null
     resumeSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    selectedSlotId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -67775,6 +69378,79 @@ export namespace Prisma {
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewSlotCreateInput = {
+    id?: bigint | number
+    startTime: Date | string
+    endTime: Date | string
+    isBooked?: boolean
+    location?: string | null
+    notes?: string | null
+    job: JobPostingCreateNestedOneWithoutInterviewSlotsInput
+    bookedApplication?: JobApplicationCreateNestedOneWithoutSelectedSlotInput
+  }
+
+  export type InterviewSlotUncheckedCreateInput = {
+    id?: bigint | number
+    jobId: bigint | number
+    startTime: Date | string
+    endTime: Date | string
+    isBooked?: boolean
+    location?: string | null
+    notes?: string | null
+    bookedApplication?: JobApplicationUncheckedCreateNestedOneWithoutSelectedSlotInput
+  }
+
+  export type InterviewSlotUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isBooked?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    job?: JobPostingUpdateOneRequiredWithoutInterviewSlotsNestedInput
+    bookedApplication?: JobApplicationUpdateOneWithoutSelectedSlotNestedInput
+  }
+
+  export type InterviewSlotUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    jobId?: BigIntFieldUpdateOperationsInput | bigint | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isBooked?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    bookedApplication?: JobApplicationUncheckedUpdateOneWithoutSelectedSlotNestedInput
+  }
+
+  export type InterviewSlotCreateManyInput = {
+    id?: bigint | number
+    jobId: bigint | number
+    startTime: Date | string
+    endTime: Date | string
+    isBooked?: boolean
+    location?: string | null
+    notes?: string | null
+  }
+
+  export type InterviewSlotUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isBooked?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type InterviewSlotUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    jobId?: BigIntFieldUpdateOperationsInput | bigint | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isBooked?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type JobScrapCreateInput = {
@@ -71501,6 +73177,12 @@ export namespace Prisma {
     isNot?: JobAttributesFulltimeWhereInput | null
   }
 
+  export type InterviewSlotListRelationFilter = {
+    every?: InterviewSlotWhereInput
+    some?: InterviewSlotWhereInput
+    none?: InterviewSlotWhereInput
+  }
+
   export type JobApplicationListRelationFilter = {
     every?: JobApplicationWhereInput
     some?: JobApplicationWhereInput
@@ -71511,6 +73193,10 @@ export namespace Prisma {
     every?: JobScrapWhereInput
     some?: JobScrapWhereInput
     none?: JobScrapWhereInput
+  }
+
+  export type InterviewSlotOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type JobApplicationOrderByRelationAggregateInput = {
@@ -71561,6 +73247,10 @@ export namespace Prisma {
     suspendedBy?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isPremium?: SortOrder
+    premiumStartAt?: SortOrder
+    premiumEndAt?: SortOrder
+    fulltimeVisaResult?: SortOrder
   }
 
   export type JobPostingAvgOrderByAggregateInput = {
@@ -71613,6 +73303,9 @@ export namespace Prisma {
     suspendedBy?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isPremium?: SortOrder
+    premiumStartAt?: SortOrder
+    premiumEndAt?: SortOrder
   }
 
   export type JobPostingMinOrderByAggregateInput = {
@@ -71655,6 +73348,9 @@ export namespace Prisma {
     suspendedBy?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isPremium?: SortOrder
+    premiumStartAt?: SortOrder
+    premiumEndAt?: SortOrder
   }
 
   export type JobPostingSumOrderByAggregateInput = {
@@ -71802,6 +73498,18 @@ export namespace Prisma {
     not?: NestedEnumApplicationStatusFilter<$PrismaModel> | $Enums.ApplicationStatus
   }
 
+  export type EnumActorTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ActorType | EnumActorTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ActorType[] | ListEnumActorTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ActorType[] | ListEnumActorTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumActorTypeNullableFilter<$PrismaModel> | $Enums.ActorType | null
+  }
+
+  export type InterviewSlotNullableScalarRelationFilter = {
+    is?: InterviewSlotWhereInput | null
+    isNot?: InterviewSlotWhereInput | null
+  }
+
   export type JobApplicationJobIdApplicantIdCompoundUniqueInput = {
     jobId: bigint | number
     applicantId: string
@@ -71815,6 +73523,9 @@ export namespace Prisma {
     status?: SortOrder
     coverLetter?: SortOrder
     resumeSnapshot?: SortOrder
+    selectedSlotId?: SortOrder
+    proposedBy?: SortOrder
+    proposedTime?: SortOrder
     selfReportedAt?: SortOrder
     interviewDate?: SortOrder
     interviewNote?: SortOrder
@@ -71827,6 +73538,7 @@ export namespace Prisma {
   export type JobApplicationAvgOrderByAggregateInput = {
     id?: SortOrder
     jobId?: SortOrder
+    selectedSlotId?: SortOrder
   }
 
   export type JobApplicationMaxOrderByAggregateInput = {
@@ -71837,6 +73549,9 @@ export namespace Prisma {
     status?: SortOrder
     coverLetter?: SortOrder
     resumeSnapshot?: SortOrder
+    selectedSlotId?: SortOrder
+    proposedBy?: SortOrder
+    proposedTime?: SortOrder
     selfReportedAt?: SortOrder
     interviewDate?: SortOrder
     interviewNote?: SortOrder
@@ -71854,6 +73569,9 @@ export namespace Prisma {
     status?: SortOrder
     coverLetter?: SortOrder
     resumeSnapshot?: SortOrder
+    selectedSlotId?: SortOrder
+    proposedBy?: SortOrder
+    proposedTime?: SortOrder
     selfReportedAt?: SortOrder
     interviewDate?: SortOrder
     interviewNote?: SortOrder
@@ -71866,6 +73584,7 @@ export namespace Prisma {
   export type JobApplicationSumOrderByAggregateInput = {
     id?: SortOrder
     jobId?: SortOrder
+    selectedSlotId?: SortOrder
   }
 
   export type EnumApplicationStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -71876,6 +73595,61 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumApplicationStatusFilter<$PrismaModel>
     _max?: NestedEnumApplicationStatusFilter<$PrismaModel>
+  }
+
+  export type EnumActorTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ActorType | EnumActorTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ActorType[] | ListEnumActorTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ActorType[] | ListEnumActorTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumActorTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.ActorType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumActorTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumActorTypeNullableFilter<$PrismaModel>
+  }
+
+  export type JobApplicationNullableScalarRelationFilter = {
+    is?: JobApplicationWhereInput | null
+    isNot?: JobApplicationWhereInput | null
+  }
+
+  export type InterviewSlotCountOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    isBooked?: SortOrder
+    location?: SortOrder
+    notes?: SortOrder
+  }
+
+  export type InterviewSlotAvgOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+  }
+
+  export type InterviewSlotMaxOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    isBooked?: SortOrder
+    location?: SortOrder
+    notes?: SortOrder
+  }
+
+  export type InterviewSlotMinOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    startTime?: SortOrder
+    endTime?: SortOrder
+    isBooked?: SortOrder
+    location?: SortOrder
+    notes?: SortOrder
+  }
+
+  export type InterviewSlotSumOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
   }
 
   export type JobScrapJobIdUserIdCompoundUniqueInput = {
@@ -73999,6 +75773,13 @@ export namespace Prisma {
     connect?: JobAttributesFulltimeWhereUniqueInput
   }
 
+  export type InterviewSlotCreateNestedManyWithoutJobInput = {
+    create?: XOR<InterviewSlotCreateWithoutJobInput, InterviewSlotUncheckedCreateWithoutJobInput> | InterviewSlotCreateWithoutJobInput[] | InterviewSlotUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: InterviewSlotCreateOrConnectWithoutJobInput | InterviewSlotCreateOrConnectWithoutJobInput[]
+    createMany?: InterviewSlotCreateManyJobInputEnvelope
+    connect?: InterviewSlotWhereUniqueInput | InterviewSlotWhereUniqueInput[]
+  }
+
   export type JobApplicationCreateNestedManyWithoutJobInput = {
     create?: XOR<JobApplicationCreateWithoutJobInput, JobApplicationUncheckedCreateWithoutJobInput> | JobApplicationCreateWithoutJobInput[] | JobApplicationUncheckedCreateWithoutJobInput[]
     connectOrCreate?: JobApplicationCreateOrConnectWithoutJobInput | JobApplicationCreateOrConnectWithoutJobInput[]
@@ -74023,6 +75804,13 @@ export namespace Prisma {
     create?: XOR<JobAttributesFulltimeCreateWithoutJobInput, JobAttributesFulltimeUncheckedCreateWithoutJobInput>
     connectOrCreate?: JobAttributesFulltimeCreateOrConnectWithoutJobInput
     connect?: JobAttributesFulltimeWhereUniqueInput
+  }
+
+  export type InterviewSlotUncheckedCreateNestedManyWithoutJobInput = {
+    create?: XOR<InterviewSlotCreateWithoutJobInput, InterviewSlotUncheckedCreateWithoutJobInput> | InterviewSlotCreateWithoutJobInput[] | InterviewSlotUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: InterviewSlotCreateOrConnectWithoutJobInput | InterviewSlotCreateOrConnectWithoutJobInput[]
+    createMany?: InterviewSlotCreateManyJobInputEnvelope
+    connect?: InterviewSlotWhereUniqueInput | InterviewSlotWhereUniqueInput[]
   }
 
   export type JobApplicationUncheckedCreateNestedManyWithoutJobInput = {
@@ -74079,6 +75867,20 @@ export namespace Prisma {
     update?: XOR<XOR<JobAttributesFulltimeUpdateToOneWithWhereWithoutJobInput, JobAttributesFulltimeUpdateWithoutJobInput>, JobAttributesFulltimeUncheckedUpdateWithoutJobInput>
   }
 
+  export type InterviewSlotUpdateManyWithoutJobNestedInput = {
+    create?: XOR<InterviewSlotCreateWithoutJobInput, InterviewSlotUncheckedCreateWithoutJobInput> | InterviewSlotCreateWithoutJobInput[] | InterviewSlotUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: InterviewSlotCreateOrConnectWithoutJobInput | InterviewSlotCreateOrConnectWithoutJobInput[]
+    upsert?: InterviewSlotUpsertWithWhereUniqueWithoutJobInput | InterviewSlotUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: InterviewSlotCreateManyJobInputEnvelope
+    set?: InterviewSlotWhereUniqueInput | InterviewSlotWhereUniqueInput[]
+    disconnect?: InterviewSlotWhereUniqueInput | InterviewSlotWhereUniqueInput[]
+    delete?: InterviewSlotWhereUniqueInput | InterviewSlotWhereUniqueInput[]
+    connect?: InterviewSlotWhereUniqueInput | InterviewSlotWhereUniqueInput[]
+    update?: InterviewSlotUpdateWithWhereUniqueWithoutJobInput | InterviewSlotUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: InterviewSlotUpdateManyWithWhereWithoutJobInput | InterviewSlotUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: InterviewSlotScalarWhereInput | InterviewSlotScalarWhereInput[]
+  }
+
   export type JobApplicationUpdateManyWithoutJobNestedInput = {
     create?: XOR<JobApplicationCreateWithoutJobInput, JobApplicationUncheckedCreateWithoutJobInput> | JobApplicationCreateWithoutJobInput[] | JobApplicationUncheckedCreateWithoutJobInput[]
     connectOrCreate?: JobApplicationCreateOrConnectWithoutJobInput | JobApplicationCreateOrConnectWithoutJobInput[]
@@ -74125,6 +75927,20 @@ export namespace Prisma {
     delete?: JobAttributesFulltimeWhereInput | boolean
     connect?: JobAttributesFulltimeWhereUniqueInput
     update?: XOR<XOR<JobAttributesFulltimeUpdateToOneWithWhereWithoutJobInput, JobAttributesFulltimeUpdateWithoutJobInput>, JobAttributesFulltimeUncheckedUpdateWithoutJobInput>
+  }
+
+  export type InterviewSlotUncheckedUpdateManyWithoutJobNestedInput = {
+    create?: XOR<InterviewSlotCreateWithoutJobInput, InterviewSlotUncheckedCreateWithoutJobInput> | InterviewSlotCreateWithoutJobInput[] | InterviewSlotUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: InterviewSlotCreateOrConnectWithoutJobInput | InterviewSlotCreateOrConnectWithoutJobInput[]
+    upsert?: InterviewSlotUpsertWithWhereUniqueWithoutJobInput | InterviewSlotUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: InterviewSlotCreateManyJobInputEnvelope
+    set?: InterviewSlotWhereUniqueInput | InterviewSlotWhereUniqueInput[]
+    disconnect?: InterviewSlotWhereUniqueInput | InterviewSlotWhereUniqueInput[]
+    delete?: InterviewSlotWhereUniqueInput | InterviewSlotWhereUniqueInput[]
+    connect?: InterviewSlotWhereUniqueInput | InterviewSlotWhereUniqueInput[]
+    update?: InterviewSlotUpdateWithWhereUniqueWithoutJobInput | InterviewSlotUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: InterviewSlotUpdateManyWithWhereWithoutJobInput | InterviewSlotUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: InterviewSlotScalarWhereInput | InterviewSlotScalarWhereInput[]
   }
 
   export type JobApplicationUncheckedUpdateManyWithoutJobNestedInput = {
@@ -74189,8 +76005,18 @@ export namespace Prisma {
     connect?: JobPostingWhereUniqueInput
   }
 
+  export type InterviewSlotCreateNestedOneWithoutBookedApplicationInput = {
+    create?: XOR<InterviewSlotCreateWithoutBookedApplicationInput, InterviewSlotUncheckedCreateWithoutBookedApplicationInput>
+    connectOrCreate?: InterviewSlotCreateOrConnectWithoutBookedApplicationInput
+    connect?: InterviewSlotWhereUniqueInput
+  }
+
   export type EnumApplicationStatusFieldUpdateOperationsInput = {
     set?: $Enums.ApplicationStatus
+  }
+
+  export type NullableEnumActorTypeFieldUpdateOperationsInput = {
+    set?: $Enums.ActorType | null
   }
 
   export type JobPostingUpdateOneRequiredWithoutApplicationsNestedInput = {
@@ -74199,6 +76025,62 @@ export namespace Prisma {
     upsert?: JobPostingUpsertWithoutApplicationsInput
     connect?: JobPostingWhereUniqueInput
     update?: XOR<XOR<JobPostingUpdateToOneWithWhereWithoutApplicationsInput, JobPostingUpdateWithoutApplicationsInput>, JobPostingUncheckedUpdateWithoutApplicationsInput>
+  }
+
+  export type InterviewSlotUpdateOneWithoutBookedApplicationNestedInput = {
+    create?: XOR<InterviewSlotCreateWithoutBookedApplicationInput, InterviewSlotUncheckedCreateWithoutBookedApplicationInput>
+    connectOrCreate?: InterviewSlotCreateOrConnectWithoutBookedApplicationInput
+    upsert?: InterviewSlotUpsertWithoutBookedApplicationInput
+    disconnect?: InterviewSlotWhereInput | boolean
+    delete?: InterviewSlotWhereInput | boolean
+    connect?: InterviewSlotWhereUniqueInput
+    update?: XOR<XOR<InterviewSlotUpdateToOneWithWhereWithoutBookedApplicationInput, InterviewSlotUpdateWithoutBookedApplicationInput>, InterviewSlotUncheckedUpdateWithoutBookedApplicationInput>
+  }
+
+  export type JobPostingCreateNestedOneWithoutInterviewSlotsInput = {
+    create?: XOR<JobPostingCreateWithoutInterviewSlotsInput, JobPostingUncheckedCreateWithoutInterviewSlotsInput>
+    connectOrCreate?: JobPostingCreateOrConnectWithoutInterviewSlotsInput
+    connect?: JobPostingWhereUniqueInput
+  }
+
+  export type JobApplicationCreateNestedOneWithoutSelectedSlotInput = {
+    create?: XOR<JobApplicationCreateWithoutSelectedSlotInput, JobApplicationUncheckedCreateWithoutSelectedSlotInput>
+    connectOrCreate?: JobApplicationCreateOrConnectWithoutSelectedSlotInput
+    connect?: JobApplicationWhereUniqueInput
+  }
+
+  export type JobApplicationUncheckedCreateNestedOneWithoutSelectedSlotInput = {
+    create?: XOR<JobApplicationCreateWithoutSelectedSlotInput, JobApplicationUncheckedCreateWithoutSelectedSlotInput>
+    connectOrCreate?: JobApplicationCreateOrConnectWithoutSelectedSlotInput
+    connect?: JobApplicationWhereUniqueInput
+  }
+
+  export type JobPostingUpdateOneRequiredWithoutInterviewSlotsNestedInput = {
+    create?: XOR<JobPostingCreateWithoutInterviewSlotsInput, JobPostingUncheckedCreateWithoutInterviewSlotsInput>
+    connectOrCreate?: JobPostingCreateOrConnectWithoutInterviewSlotsInput
+    upsert?: JobPostingUpsertWithoutInterviewSlotsInput
+    connect?: JobPostingWhereUniqueInput
+    update?: XOR<XOR<JobPostingUpdateToOneWithWhereWithoutInterviewSlotsInput, JobPostingUpdateWithoutInterviewSlotsInput>, JobPostingUncheckedUpdateWithoutInterviewSlotsInput>
+  }
+
+  export type JobApplicationUpdateOneWithoutSelectedSlotNestedInput = {
+    create?: XOR<JobApplicationCreateWithoutSelectedSlotInput, JobApplicationUncheckedCreateWithoutSelectedSlotInput>
+    connectOrCreate?: JobApplicationCreateOrConnectWithoutSelectedSlotInput
+    upsert?: JobApplicationUpsertWithoutSelectedSlotInput
+    disconnect?: JobApplicationWhereInput | boolean
+    delete?: JobApplicationWhereInput | boolean
+    connect?: JobApplicationWhereUniqueInput
+    update?: XOR<XOR<JobApplicationUpdateToOneWithWhereWithoutSelectedSlotInput, JobApplicationUpdateWithoutSelectedSlotInput>, JobApplicationUncheckedUpdateWithoutSelectedSlotInput>
+  }
+
+  export type JobApplicationUncheckedUpdateOneWithoutSelectedSlotNestedInput = {
+    create?: XOR<JobApplicationCreateWithoutSelectedSlotInput, JobApplicationUncheckedCreateWithoutSelectedSlotInput>
+    connectOrCreate?: JobApplicationCreateOrConnectWithoutSelectedSlotInput
+    upsert?: JobApplicationUpsertWithoutSelectedSlotInput
+    disconnect?: JobApplicationWhereInput | boolean
+    delete?: JobApplicationWhereInput | boolean
+    connect?: JobApplicationWhereUniqueInput
+    update?: XOR<XOR<JobApplicationUpdateToOneWithWhereWithoutSelectedSlotInput, JobApplicationUpdateWithoutSelectedSlotInput>, JobApplicationUncheckedUpdateWithoutSelectedSlotInput>
   }
 
   export type JobPostingCreateNestedOneWithoutScrapsInput = {
@@ -75181,6 +77063,13 @@ export namespace Prisma {
     not?: NestedEnumApplicationStatusFilter<$PrismaModel> | $Enums.ApplicationStatus
   }
 
+  export type NestedEnumActorTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ActorType | EnumActorTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ActorType[] | ListEnumActorTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ActorType[] | ListEnumActorTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumActorTypeNullableFilter<$PrismaModel> | $Enums.ActorType | null
+  }
+
   export type NestedEnumApplicationStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ApplicationStatus | EnumApplicationStatusFieldRefInput<$PrismaModel>
     in?: $Enums.ApplicationStatus[] | ListEnumApplicationStatusFieldRefInput<$PrismaModel>
@@ -75189,6 +77078,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumApplicationStatusFilter<$PrismaModel>
     _max?: NestedEnumApplicationStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumActorTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ActorType | EnumActorTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ActorType[] | ListEnumActorTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ActorType[] | ListEnumActorTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumActorTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.ActorType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumActorTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumActorTypeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumAdminActionTypeFilter<$PrismaModel = never> = {
@@ -80865,6 +82764,36 @@ export namespace Prisma {
     create: XOR<JobAttributesFulltimeCreateWithoutJobInput, JobAttributesFulltimeUncheckedCreateWithoutJobInput>
   }
 
+  export type InterviewSlotCreateWithoutJobInput = {
+    id?: bigint | number
+    startTime: Date | string
+    endTime: Date | string
+    isBooked?: boolean
+    location?: string | null
+    notes?: string | null
+    bookedApplication?: JobApplicationCreateNestedOneWithoutSelectedSlotInput
+  }
+
+  export type InterviewSlotUncheckedCreateWithoutJobInput = {
+    id?: bigint | number
+    startTime: Date | string
+    endTime: Date | string
+    isBooked?: boolean
+    location?: string | null
+    notes?: string | null
+    bookedApplication?: JobApplicationUncheckedCreateNestedOneWithoutSelectedSlotInput
+  }
+
+  export type InterviewSlotCreateOrConnectWithoutJobInput = {
+    where: InterviewSlotWhereUniqueInput
+    create: XOR<InterviewSlotCreateWithoutJobInput, InterviewSlotUncheckedCreateWithoutJobInput>
+  }
+
+  export type InterviewSlotCreateManyJobInputEnvelope = {
+    data: InterviewSlotCreateManyJobInput | InterviewSlotCreateManyJobInput[]
+    skipDuplicates?: boolean
+  }
+
   export type JobApplicationCreateWithoutJobInput = {
     id?: bigint | number
     applicantId: string
@@ -80872,6 +82801,8 @@ export namespace Prisma {
     status?: $Enums.ApplicationStatus
     coverLetter?: string | null
     resumeSnapshot?: string | null
+    proposedBy?: $Enums.ActorType | null
+    proposedTime?: Date | string | null
     selfReportedAt?: Date | string | null
     interviewDate?: Date | string | null
     interviewNote?: string | null
@@ -80879,6 +82810,7 @@ export namespace Prisma {
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    selectedSlot?: InterviewSlotCreateNestedOneWithoutBookedApplicationInput
   }
 
   export type JobApplicationUncheckedCreateWithoutJobInput = {
@@ -80888,6 +82820,9 @@ export namespace Prisma {
     status?: $Enums.ApplicationStatus
     coverLetter?: string | null
     resumeSnapshot?: string | null
+    selectedSlotId?: bigint | number | null
+    proposedBy?: $Enums.ActorType | null
+    proposedTime?: Date | string | null
     selfReportedAt?: Date | string | null
     interviewDate?: Date | string | null
     interviewNote?: string | null
@@ -80981,6 +82916,35 @@ export namespace Prisma {
     educationLevel?: StringFieldUpdateOperationsInput | string
   }
 
+  export type InterviewSlotUpsertWithWhereUniqueWithoutJobInput = {
+    where: InterviewSlotWhereUniqueInput
+    update: XOR<InterviewSlotUpdateWithoutJobInput, InterviewSlotUncheckedUpdateWithoutJobInput>
+    create: XOR<InterviewSlotCreateWithoutJobInput, InterviewSlotUncheckedCreateWithoutJobInput>
+  }
+
+  export type InterviewSlotUpdateWithWhereUniqueWithoutJobInput = {
+    where: InterviewSlotWhereUniqueInput
+    data: XOR<InterviewSlotUpdateWithoutJobInput, InterviewSlotUncheckedUpdateWithoutJobInput>
+  }
+
+  export type InterviewSlotUpdateManyWithWhereWithoutJobInput = {
+    where: InterviewSlotScalarWhereInput
+    data: XOR<InterviewSlotUpdateManyMutationInput, InterviewSlotUncheckedUpdateManyWithoutJobInput>
+  }
+
+  export type InterviewSlotScalarWhereInput = {
+    AND?: InterviewSlotScalarWhereInput | InterviewSlotScalarWhereInput[]
+    OR?: InterviewSlotScalarWhereInput[]
+    NOT?: InterviewSlotScalarWhereInput | InterviewSlotScalarWhereInput[]
+    id?: BigIntFilter<"InterviewSlot"> | bigint | number
+    jobId?: BigIntFilter<"InterviewSlot"> | bigint | number
+    startTime?: DateTimeFilter<"InterviewSlot"> | Date | string
+    endTime?: DateTimeFilter<"InterviewSlot"> | Date | string
+    isBooked?: BoolFilter<"InterviewSlot"> | boolean
+    location?: StringNullableFilter<"InterviewSlot"> | string | null
+    notes?: StringNullableFilter<"InterviewSlot"> | string | null
+  }
+
   export type JobApplicationUpsertWithWhereUniqueWithoutJobInput = {
     where: JobApplicationWhereUniqueInput
     update: XOR<JobApplicationUpdateWithoutJobInput, JobApplicationUncheckedUpdateWithoutJobInput>
@@ -81008,6 +82972,9 @@ export namespace Prisma {
     status?: EnumApplicationStatusFilter<"JobApplication"> | $Enums.ApplicationStatus
     coverLetter?: StringNullableFilter<"JobApplication"> | string | null
     resumeSnapshot?: StringNullableFilter<"JobApplication"> | string | null
+    selectedSlotId?: BigIntNullableFilter<"JobApplication"> | bigint | number | null
+    proposedBy?: EnumActorTypeNullableFilter<"JobApplication"> | $Enums.ActorType | null
+    proposedTime?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     selfReportedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     interviewDate?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     interviewNote?: StringNullableFilter<"JobApplication"> | string | null
@@ -81083,7 +83050,12 @@ export namespace Prisma {
     suspendedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isPremium?: boolean
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     fulltimeAttributes?: JobAttributesFulltimeCreateNestedOneWithoutJobInput
+    interviewSlots?: InterviewSlotCreateNestedManyWithoutJobInput
     applications?: JobApplicationCreateNestedManyWithoutJobInput
     scraps?: JobScrapCreateNestedManyWithoutJobInput
   }
@@ -81128,7 +83100,12 @@ export namespace Prisma {
     suspendedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isPremium?: boolean
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     fulltimeAttributes?: JobAttributesFulltimeUncheckedCreateNestedOneWithoutJobInput
+    interviewSlots?: InterviewSlotUncheckedCreateNestedManyWithoutJobInput
     applications?: JobApplicationUncheckedCreateNestedManyWithoutJobInput
     scraps?: JobScrapUncheckedCreateNestedManyWithoutJobInput
   }
@@ -81189,7 +83166,12 @@ export namespace Prisma {
     suspendedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     fulltimeAttributes?: JobAttributesFulltimeUpdateOneWithoutJobNestedInput
+    interviewSlots?: InterviewSlotUpdateManyWithoutJobNestedInput
     applications?: JobApplicationUpdateManyWithoutJobNestedInput
     scraps?: JobScrapUpdateManyWithoutJobNestedInput
   }
@@ -81234,7 +83216,12 @@ export namespace Prisma {
     suspendedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     fulltimeAttributes?: JobAttributesFulltimeUncheckedUpdateOneWithoutJobNestedInput
+    interviewSlots?: InterviewSlotUncheckedUpdateManyWithoutJobNestedInput
     applications?: JobApplicationUncheckedUpdateManyWithoutJobNestedInput
     scraps?: JobScrapUncheckedUpdateManyWithoutJobNestedInput
   }
@@ -81279,7 +83266,12 @@ export namespace Prisma {
     suspendedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isPremium?: boolean
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaCreateNestedOneWithoutJobInput
+    interviewSlots?: InterviewSlotCreateNestedManyWithoutJobInput
     applications?: JobApplicationCreateNestedManyWithoutJobInput
     scraps?: JobScrapCreateNestedManyWithoutJobInput
   }
@@ -81324,7 +83316,12 @@ export namespace Prisma {
     suspendedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isPremium?: boolean
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedCreateNestedOneWithoutJobInput
+    interviewSlots?: InterviewSlotUncheckedCreateNestedManyWithoutJobInput
     applications?: JobApplicationUncheckedCreateNestedManyWithoutJobInput
     scraps?: JobScrapUncheckedCreateNestedManyWithoutJobInput
   }
@@ -81385,7 +83382,12 @@ export namespace Prisma {
     suspendedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUpdateOneWithoutJobNestedInput
+    interviewSlots?: InterviewSlotUpdateManyWithoutJobNestedInput
     applications?: JobApplicationUpdateManyWithoutJobNestedInput
     scraps?: JobScrapUpdateManyWithoutJobNestedInput
   }
@@ -81430,7 +83432,12 @@ export namespace Prisma {
     suspendedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedUpdateOneWithoutJobNestedInput
+    interviewSlots?: InterviewSlotUncheckedUpdateManyWithoutJobNestedInput
     applications?: JobApplicationUncheckedUpdateManyWithoutJobNestedInput
     scraps?: JobScrapUncheckedUpdateManyWithoutJobNestedInput
   }
@@ -81475,8 +83482,13 @@ export namespace Prisma {
     suspendedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isPremium?: boolean
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeCreateNestedOneWithoutJobInput
+    interviewSlots?: InterviewSlotCreateNestedManyWithoutJobInput
     scraps?: JobScrapCreateNestedManyWithoutJobInput
   }
 
@@ -81520,14 +83532,44 @@ export namespace Prisma {
     suspendedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isPremium?: boolean
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedCreateNestedOneWithoutJobInput
+    interviewSlots?: InterviewSlotUncheckedCreateNestedManyWithoutJobInput
     scraps?: JobScrapUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobPostingCreateOrConnectWithoutApplicationsInput = {
     where: JobPostingWhereUniqueInput
     create: XOR<JobPostingCreateWithoutApplicationsInput, JobPostingUncheckedCreateWithoutApplicationsInput>
+  }
+
+  export type InterviewSlotCreateWithoutBookedApplicationInput = {
+    id?: bigint | number
+    startTime: Date | string
+    endTime: Date | string
+    isBooked?: boolean
+    location?: string | null
+    notes?: string | null
+    job: JobPostingCreateNestedOneWithoutInterviewSlotsInput
+  }
+
+  export type InterviewSlotUncheckedCreateWithoutBookedApplicationInput = {
+    id?: bigint | number
+    jobId: bigint | number
+    startTime: Date | string
+    endTime: Date | string
+    isBooked?: boolean
+    location?: string | null
+    notes?: string | null
+  }
+
+  export type InterviewSlotCreateOrConnectWithoutBookedApplicationInput = {
+    where: InterviewSlotWhereUniqueInput
+    create: XOR<InterviewSlotCreateWithoutBookedApplicationInput, InterviewSlotUncheckedCreateWithoutBookedApplicationInput>
   }
 
   export type JobPostingUpsertWithoutApplicationsInput = {
@@ -81581,8 +83623,13 @@ export namespace Prisma {
     suspendedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUpdateOneWithoutJobNestedInput
+    interviewSlots?: InterviewSlotUpdateManyWithoutJobNestedInput
     scraps?: JobScrapUpdateManyWithoutJobNestedInput
   }
 
@@ -81626,9 +83673,353 @@ export namespace Prisma {
     suspendedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedUpdateOneWithoutJobNestedInput
+    interviewSlots?: InterviewSlotUncheckedUpdateManyWithoutJobNestedInput
     scraps?: JobScrapUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type InterviewSlotUpsertWithoutBookedApplicationInput = {
+    update: XOR<InterviewSlotUpdateWithoutBookedApplicationInput, InterviewSlotUncheckedUpdateWithoutBookedApplicationInput>
+    create: XOR<InterviewSlotCreateWithoutBookedApplicationInput, InterviewSlotUncheckedCreateWithoutBookedApplicationInput>
+    where?: InterviewSlotWhereInput
+  }
+
+  export type InterviewSlotUpdateToOneWithWhereWithoutBookedApplicationInput = {
+    where?: InterviewSlotWhereInput
+    data: XOR<InterviewSlotUpdateWithoutBookedApplicationInput, InterviewSlotUncheckedUpdateWithoutBookedApplicationInput>
+  }
+
+  export type InterviewSlotUpdateWithoutBookedApplicationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isBooked?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    job?: JobPostingUpdateOneRequiredWithoutInterviewSlotsNestedInput
+  }
+
+  export type InterviewSlotUncheckedUpdateWithoutBookedApplicationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    jobId?: BigIntFieldUpdateOperationsInput | bigint | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isBooked?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type JobPostingCreateWithoutInterviewSlotsInput = {
+    id?: bigint | number
+    corporateId: bigint | number
+    orderId?: bigint | number | null
+    boardType: $Enums.BoardType
+    tierType?: $Enums.TierType
+    title: string
+    description: string
+    workContentImg?: string | null
+    status?: $Enums.PostStatus
+    closingDate?: Date | string | null
+    allowedVisas: string
+    minKoreanLevel?: number
+    displayAddress: string
+    actualAddress: string
+    workIntensity?: $Enums.Intensity
+    benefits?: string | null
+    contactName: string
+    contactPhone: string
+    contactEmail?: string | null
+    applicationMethod?: $Enums.ApplicationMethod
+    externalUrl?: string | null
+    externalEmail?: string | null
+    interviewMethod?: $Enums.InterviewType
+    interviewPlace?: string | null
+    employmentSubType?: $Enums.EmploymentSubType | null
+    expiresAt?: Date | string | null
+    bumpedAt?: Date | string | null
+    isUrgent?: boolean
+    isFeatured?: boolean
+    featuredUntil?: Date | string | null
+    upgradedAt?: Date | string | null
+    viewCount?: number
+    scrapCount?: number
+    applyCount?: number
+    suspendedAt?: Date | string | null
+    suspendReason?: string | null
+    suspendedBy?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isPremium?: boolean
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
+    albaAttributes?: JobAttributesAlbaCreateNestedOneWithoutJobInput
+    fulltimeAttributes?: JobAttributesFulltimeCreateNestedOneWithoutJobInput
+    applications?: JobApplicationCreateNestedManyWithoutJobInput
+    scraps?: JobScrapCreateNestedManyWithoutJobInput
+  }
+
+  export type JobPostingUncheckedCreateWithoutInterviewSlotsInput = {
+    id?: bigint | number
+    corporateId: bigint | number
+    orderId?: bigint | number | null
+    boardType: $Enums.BoardType
+    tierType?: $Enums.TierType
+    title: string
+    description: string
+    workContentImg?: string | null
+    status?: $Enums.PostStatus
+    closingDate?: Date | string | null
+    allowedVisas: string
+    minKoreanLevel?: number
+    displayAddress: string
+    actualAddress: string
+    workIntensity?: $Enums.Intensity
+    benefits?: string | null
+    contactName: string
+    contactPhone: string
+    contactEmail?: string | null
+    applicationMethod?: $Enums.ApplicationMethod
+    externalUrl?: string | null
+    externalEmail?: string | null
+    interviewMethod?: $Enums.InterviewType
+    interviewPlace?: string | null
+    employmentSubType?: $Enums.EmploymentSubType | null
+    expiresAt?: Date | string | null
+    bumpedAt?: Date | string | null
+    isUrgent?: boolean
+    isFeatured?: boolean
+    featuredUntil?: Date | string | null
+    upgradedAt?: Date | string | null
+    viewCount?: number
+    scrapCount?: number
+    applyCount?: number
+    suspendedAt?: Date | string | null
+    suspendReason?: string | null
+    suspendedBy?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    isPremium?: boolean
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
+    albaAttributes?: JobAttributesAlbaUncheckedCreateNestedOneWithoutJobInput
+    fulltimeAttributes?: JobAttributesFulltimeUncheckedCreateNestedOneWithoutJobInput
+    applications?: JobApplicationUncheckedCreateNestedManyWithoutJobInput
+    scraps?: JobScrapUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobPostingCreateOrConnectWithoutInterviewSlotsInput = {
+    where: JobPostingWhereUniqueInput
+    create: XOR<JobPostingCreateWithoutInterviewSlotsInput, JobPostingUncheckedCreateWithoutInterviewSlotsInput>
+  }
+
+  export type JobApplicationCreateWithoutSelectedSlotInput = {
+    id?: bigint | number
+    applicantId: string
+    applicationMethod: $Enums.ApplicationMethod
+    status?: $Enums.ApplicationStatus
+    coverLetter?: string | null
+    resumeSnapshot?: string | null
+    proposedBy?: $Enums.ActorType | null
+    proposedTime?: Date | string | null
+    selfReportedAt?: Date | string | null
+    interviewDate?: Date | string | null
+    interviewNote?: string | null
+    rejectionReason?: string | null
+    resultNotifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobPostingCreateNestedOneWithoutApplicationsInput
+  }
+
+  export type JobApplicationUncheckedCreateWithoutSelectedSlotInput = {
+    id?: bigint | number
+    jobId: bigint | number
+    applicantId: string
+    applicationMethod: $Enums.ApplicationMethod
+    status?: $Enums.ApplicationStatus
+    coverLetter?: string | null
+    resumeSnapshot?: string | null
+    proposedBy?: $Enums.ActorType | null
+    proposedTime?: Date | string | null
+    selfReportedAt?: Date | string | null
+    interviewDate?: Date | string | null
+    interviewNote?: string | null
+    rejectionReason?: string | null
+    resultNotifiedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobApplicationCreateOrConnectWithoutSelectedSlotInput = {
+    where: JobApplicationWhereUniqueInput
+    create: XOR<JobApplicationCreateWithoutSelectedSlotInput, JobApplicationUncheckedCreateWithoutSelectedSlotInput>
+  }
+
+  export type JobPostingUpsertWithoutInterviewSlotsInput = {
+    update: XOR<JobPostingUpdateWithoutInterviewSlotsInput, JobPostingUncheckedUpdateWithoutInterviewSlotsInput>
+    create: XOR<JobPostingCreateWithoutInterviewSlotsInput, JobPostingUncheckedCreateWithoutInterviewSlotsInput>
+    where?: JobPostingWhereInput
+  }
+
+  export type JobPostingUpdateToOneWithWhereWithoutInterviewSlotsInput = {
+    where?: JobPostingWhereInput
+    data: XOR<JobPostingUpdateWithoutInterviewSlotsInput, JobPostingUncheckedUpdateWithoutInterviewSlotsInput>
+  }
+
+  export type JobPostingUpdateWithoutInterviewSlotsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    corporateId?: BigIntFieldUpdateOperationsInput | bigint | number
+    orderId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    boardType?: EnumBoardTypeFieldUpdateOperationsInput | $Enums.BoardType
+    tierType?: EnumTierTypeFieldUpdateOperationsInput | $Enums.TierType
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    workContentImg?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+    closingDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allowedVisas?: StringFieldUpdateOperationsInput | string
+    minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    displayAddress?: StringFieldUpdateOperationsInput | string
+    actualAddress?: StringFieldUpdateOperationsInput | string
+    workIntensity?: EnumIntensityFieldUpdateOperationsInput | $Enums.Intensity
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
+    contactName?: StringFieldUpdateOperationsInput | string
+    contactPhone?: StringFieldUpdateOperationsInput | string
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationMethod?: EnumApplicationMethodFieldUpdateOperationsInput | $Enums.ApplicationMethod
+    externalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
+    interviewPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    employmentSubType?: NullableEnumEmploymentSubTypeFieldUpdateOperationsInput | $Enums.EmploymentSubType | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bumpedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isUrgent?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    featuredUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    upgradedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    viewCount?: IntFieldUpdateOperationsInput | number
+    scrapCount?: IntFieldUpdateOperationsInput | number
+    applyCount?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendReason?: NullableStringFieldUpdateOperationsInput | string | null
+    suspendedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
+    albaAttributes?: JobAttributesAlbaUpdateOneWithoutJobNestedInput
+    fulltimeAttributes?: JobAttributesFulltimeUpdateOneWithoutJobNestedInput
+    applications?: JobApplicationUpdateManyWithoutJobNestedInput
+    scraps?: JobScrapUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobPostingUncheckedUpdateWithoutInterviewSlotsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    corporateId?: BigIntFieldUpdateOperationsInput | bigint | number
+    orderId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    boardType?: EnumBoardTypeFieldUpdateOperationsInput | $Enums.BoardType
+    tierType?: EnumTierTypeFieldUpdateOperationsInput | $Enums.TierType
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    workContentImg?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+    closingDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allowedVisas?: StringFieldUpdateOperationsInput | string
+    minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    displayAddress?: StringFieldUpdateOperationsInput | string
+    actualAddress?: StringFieldUpdateOperationsInput | string
+    workIntensity?: EnumIntensityFieldUpdateOperationsInput | $Enums.Intensity
+    benefits?: NullableStringFieldUpdateOperationsInput | string | null
+    contactName?: StringFieldUpdateOperationsInput | string
+    contactPhone?: StringFieldUpdateOperationsInput | string
+    contactEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    applicationMethod?: EnumApplicationMethodFieldUpdateOperationsInput | $Enums.ApplicationMethod
+    externalUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    externalEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
+    interviewPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    employmentSubType?: NullableEnumEmploymentSubTypeFieldUpdateOperationsInput | $Enums.EmploymentSubType | null
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    bumpedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isUrgent?: BoolFieldUpdateOperationsInput | boolean
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    featuredUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    upgradedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    viewCount?: IntFieldUpdateOperationsInput | number
+    scrapCount?: IntFieldUpdateOperationsInput | number
+    applyCount?: IntFieldUpdateOperationsInput | number
+    suspendedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    suspendReason?: NullableStringFieldUpdateOperationsInput | string | null
+    suspendedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
+    albaAttributes?: JobAttributesAlbaUncheckedUpdateOneWithoutJobNestedInput
+    fulltimeAttributes?: JobAttributesFulltimeUncheckedUpdateOneWithoutJobNestedInput
+    applications?: JobApplicationUncheckedUpdateManyWithoutJobNestedInput
+    scraps?: JobScrapUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobApplicationUpsertWithoutSelectedSlotInput = {
+    update: XOR<JobApplicationUpdateWithoutSelectedSlotInput, JobApplicationUncheckedUpdateWithoutSelectedSlotInput>
+    create: XOR<JobApplicationCreateWithoutSelectedSlotInput, JobApplicationUncheckedCreateWithoutSelectedSlotInput>
+    where?: JobApplicationWhereInput
+  }
+
+  export type JobApplicationUpdateToOneWithWhereWithoutSelectedSlotInput = {
+    where?: JobApplicationWhereInput
+    data: XOR<JobApplicationUpdateWithoutSelectedSlotInput, JobApplicationUncheckedUpdateWithoutSelectedSlotInput>
+  }
+
+  export type JobApplicationUpdateWithoutSelectedSlotInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    applicantId?: StringFieldUpdateOperationsInput | string
+    applicationMethod?: EnumApplicationMethodFieldUpdateOperationsInput | $Enums.ApplicationMethod
+    status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    coverLetter?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobPostingUpdateOneRequiredWithoutApplicationsNestedInput
+  }
+
+  export type JobApplicationUncheckedUpdateWithoutSelectedSlotInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    jobId?: BigIntFieldUpdateOperationsInput | bigint | number
+    applicantId?: StringFieldUpdateOperationsInput | string
+    applicationMethod?: EnumApplicationMethodFieldUpdateOperationsInput | $Enums.ApplicationMethod
+    status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    coverLetter?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobPostingCreateWithoutScrapsInput = {
@@ -81671,8 +84062,13 @@ export namespace Prisma {
     suspendedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isPremium?: boolean
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeCreateNestedOneWithoutJobInput
+    interviewSlots?: InterviewSlotCreateNestedManyWithoutJobInput
     applications?: JobApplicationCreateNestedManyWithoutJobInput
   }
 
@@ -81716,8 +84112,13 @@ export namespace Prisma {
     suspendedBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isPremium?: boolean
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedCreateNestedOneWithoutJobInput
+    interviewSlots?: InterviewSlotUncheckedCreateNestedManyWithoutJobInput
     applications?: JobApplicationUncheckedCreateNestedManyWithoutJobInput
   }
 
@@ -81777,8 +84178,13 @@ export namespace Prisma {
     suspendedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUpdateOneWithoutJobNestedInput
+    interviewSlots?: InterviewSlotUpdateManyWithoutJobNestedInput
     applications?: JobApplicationUpdateManyWithoutJobNestedInput
   }
 
@@ -81822,8 +84228,13 @@ export namespace Prisma {
     suspendedBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedUpdateOneWithoutJobNestedInput
+    interviewSlots?: InterviewSlotUncheckedUpdateManyWithoutJobNestedInput
     applications?: JobApplicationUncheckedUpdateManyWithoutJobNestedInput
   }
 
@@ -83585,6 +85996,15 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type InterviewSlotCreateManyJobInput = {
+    id?: bigint | number
+    startTime: Date | string
+    endTime: Date | string
+    isBooked?: boolean
+    location?: string | null
+    notes?: string | null
+  }
+
   export type JobApplicationCreateManyJobInput = {
     id?: bigint | number
     applicantId: string
@@ -83592,6 +86012,9 @@ export namespace Prisma {
     status?: $Enums.ApplicationStatus
     coverLetter?: string | null
     resumeSnapshot?: string | null
+    selectedSlotId?: bigint | number | null
+    proposedBy?: $Enums.ActorType | null
+    proposedTime?: Date | string | null
     selfReportedAt?: Date | string | null
     interviewDate?: Date | string | null
     interviewNote?: string | null
@@ -83607,6 +86030,35 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type InterviewSlotUpdateWithoutJobInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isBooked?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    bookedApplication?: JobApplicationUpdateOneWithoutSelectedSlotNestedInput
+  }
+
+  export type InterviewSlotUncheckedUpdateWithoutJobInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isBooked?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    bookedApplication?: JobApplicationUncheckedUpdateOneWithoutSelectedSlotNestedInput
+  }
+
+  export type InterviewSlotUncheckedUpdateManyWithoutJobInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    startTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    isBooked?: BoolFieldUpdateOperationsInput | boolean
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type JobApplicationUpdateWithoutJobInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     applicantId?: StringFieldUpdateOperationsInput | string
@@ -83614,6 +86066,8 @@ export namespace Prisma {
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
     coverLetter?: NullableStringFieldUpdateOperationsInput | string | null
     resumeSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -83621,6 +86075,7 @@ export namespace Prisma {
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    selectedSlot?: InterviewSlotUpdateOneWithoutBookedApplicationNestedInput
   }
 
   export type JobApplicationUncheckedUpdateWithoutJobInput = {
@@ -83630,6 +86085,9 @@ export namespace Prisma {
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
     coverLetter?: NullableStringFieldUpdateOperationsInput | string | null
     resumeSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    selectedSlotId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
@@ -83646,6 +86104,9 @@ export namespace Prisma {
     status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
     coverLetter?: NullableStringFieldUpdateOperationsInput | string | null
     resumeSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    selectedSlotId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null

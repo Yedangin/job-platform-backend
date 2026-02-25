@@ -5,13 +5,18 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 
+// BigInt JSON serialization safety net
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     rawBody: true, // 웹훅 서명 검증용 / For webhook signature verification
   });
 
   app.use(helmet());
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.use(cookieParser());
 
   const clientUrl = (process.env.CLIENT_URL || 'http://localhost:3000').replace(
@@ -59,6 +64,8 @@ async function bootstrap() {
       '법령 변경 관리 / Law amendment management',
     )
     .addTag('Policy Monitoring', '정책 모니터링 / Policy change monitoring')
+    .addTag('Applications', '지원 관리 / Application & Interview management')
+    .addTag('Job Payments', '공고 결제 / Job posting payment & premium upgrade')
     .addTag('Payments', '결제 / Payment system')
     .addTag('Logs', '시스템 로그 / System logs')
     .setVersion('1.0')

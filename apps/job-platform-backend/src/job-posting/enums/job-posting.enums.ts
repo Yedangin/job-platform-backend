@@ -43,3 +43,49 @@ export enum InterviewType {
   OFFLINE = 'OFFLINE',
   ONLINE = 'ONLINE',
 }
+
+// ── Application & Interview ──────────────────────────────────────────
+
+/** Mirrors prisma/job/job.schema.prisma → ApplicationStatus */
+export enum ApplicationStatus {
+  PENDING = 'PENDING',
+  INTERVIEW_REQUESTED = 'INTERVIEW_REQUESTED',
+  COORDINATION_NEEDED = 'COORDINATION_NEEDED',
+  CONFIRMED = 'CONFIRMED',
+  REJECTED = 'REJECTED',
+  CANCELLED = 'CANCELLED',
+}
+
+/** Mirrors prisma/job/job.schema.prisma → ActorType */
+export enum ActorType {
+  EMPLOYER = 'EMPLOYER',
+  APPLICANT = 'APPLICANT',
+}
+
+// ── Payment ──────────────────────────────────────────────────────────
+
+/** Mirrors prisma/payment/payment.schema.prisma → PaymentStatus */
+export enum PaymentStatus {
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+  FAILED = 'FAILED',
+  CANCELLED = 'CANCELLED',
+}
+
+// ── Admin ────────────────────────────────────────────────────────────
+
+/** Admin moderation actions on job postings */
+export enum AdminActionType {
+  SUSPEND = 'SUSPEND',
+  UNSUSPEND = 'UNSUSPEND',
+  FEATURE = 'FEATURE',
+  UNFEATURE = 'UNFEATURE',
+}
+
+// ── Notifications ────────────────────────────────────────────────────
+
+/** Result type sent in pass/fail notifications to applicants */
+export enum NotificationResultType {
+  PASS = 'PASS',
+  FAIL = 'FAIL',
+}

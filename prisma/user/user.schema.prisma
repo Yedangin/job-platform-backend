@@ -1156,8 +1156,17 @@ model JobPosting {
   createdAt        DateTime          @default(now()) @map("created_at")
   updatedAt        DateTime          @updatedAt @map("updated_at")
 
+  // 프리미엄 상태 / Premium status
+  isPremium        Boolean           @default(false) @map("is_premium")
+  premiumStartAt   DateTime?         @map("premium_start_at")
+  premiumEndAt     DateTime?         @map("premium_end_at")
+
+  // 비자 매칭 결과 캐시 / Visa matching result cache
+  fulltimeVisaResult Json?           @map("fulltime_visa_result")
+
   albaAttributes     JobAttributesAlba?
   fulltimeAttributes JobAttributesFulltime?
+  interviewSlots     InterviewSlot[]
   applications       JobApplication[]
   scraps             JobScrap[]
 
@@ -1242,6 +1251,12 @@ model JobApplication {
   coverLetter     String?           @db.Text @map("cover_letter")
   resumeSnapshot  String?           @db.Text @map("resume_snapshot")
 
+  // 면접 슬롯 선택 / Interview slot selection
+  selectedSlotId  BigInt?           @unique @map("selected_slot_id")
+  selectedSlot    InterviewSlot?    @relation("BookedSlot", fields: [selectedSlotId], references: [id])
+  proposedBy      ActorType?        @map("proposed_by")
+  proposedTime    DateTime?         @map("proposed_time")
+
   selfReportedAt  DateTime?         @map("self_reported_at")
 
   interviewDate   DateTime?         @map("interview_date")
@@ -1259,13 +1274,41 @@ model JobApplication {
   @@map("job_applications")
 }
 
+// ========================================
+// [면접 슬롯] 면접 시간대 관리
+// Interview time slot management
+// ========================================
+model InterviewSlot {
+  id           BigInt          @id @default(autoincrement()) @map("slot_id")
+  jobId        BigInt          @map("job_id")
+  job          JobPosting      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  startTime    DateTime        @map("start_time")
+  endTime      DateTime        @map("end_time")
+  isBooked     Boolean         @default(false) @map("is_booked")
+  location     String?
+  notes        String?         @db.Text
+
+  bookedApplication JobApplication? @relation("BookedSlot")
+
+  @@index([jobId])
+  @@map("interview_slots")
+}
+
 enum ApplicationStatus {
   PENDING
   REVIEWING
+  INTERVIEW_REQUESTED
   INTERVIEW_SCHEDULED
+  COORDINATION_NEEDED
+  CONFIRMED
   ACCEPTED
   REJECTED
   CANCELLED
+}
+
+enum ActorType {
+  EMPLOYER
+  APPLICANT
 }
 
 // ========================================
