@@ -12,6 +12,7 @@ import {
   Res,
   UnauthorizedException,
   UploadedFile,
+  Logger,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -152,7 +153,7 @@ export class AuthController {
       path: '/',
     });
 
-    console.log('[Login] 쿠키 설정 완료:', {
+    Logger.log('[Login] 쿠키 설정 완료:', {
       sessionId: sessionId.substring(0, 20) + '...',
       httpOnly: true,
       secure: isProduction,
@@ -169,24 +170,24 @@ export class AuthController {
     description: 'User profile retrieved successfully.',
   })
   async getProfile(@Session() sessionId: string, @Request() req: any) {
-    console.log('[getProfile] === 프로필 조회 요청 ===');
-    console.log(
+    Logger.log('[getProfile] === 프로필 조회 요청 ===');
+    Logger.log(
       '[getProfile] cookies.sessionId:',
       req.cookies?.sessionId ? 'EXISTS' : 'NONE',
     );
-    console.log(
+    Logger.log(
       '[getProfile] Authorization header:',
       req.headers?.authorization
         ? req.headers.authorization.substring(0, 30) + '...'
         : 'NONE',
     );
-    console.log(
+    Logger.log(
       '[getProfile] Extracted sessionId:',
       sessionId ? sessionId.substring(0, 30) + '...' : 'NULL',
     );
 
     if (!sessionId) {
-      console.log('[getProfile] FAIL: sessionId가 null/undefined');
+      Logger.log('[getProfile] FAIL: sessionId가 null/undefined');
       throw new UnauthorizedException('No session provided');
     }
     return await this.authService.getProfile(sessionId);
@@ -405,6 +406,8 @@ export class AuthController {
   }
 
   // --- 18. 사업자등록번호 진위확인 + 휴폐업 상태조회 ---
+  // 인증 필수 (비인증 사용자의 무분별한 조회 방지)
+  // Auth required (prevent unauthenticated mass lookups)
   @Post('verify-business-number')
   @ApiOperation({
     summary:
@@ -421,6 +424,7 @@ export class AuthController {
     },
   })
   async verifyBusinessNumber(
+    @Session() sessionId: string,
     @Body()
     body: {
       bizRegNumber: string;
@@ -429,6 +433,12 @@ export class AuthController {
       openDate: string;
     },
   ) {
+    if (!sessionId) {
+      throw new UnauthorizedException(
+        '인증이 필요합니다 / Authentication required',
+      );
+    }
+    await this.authService.getProfile(sessionId);
     return await this.authService.verifyBusinessNumber(body);
   }
 
@@ -776,7 +786,7 @@ export class AuthController {
       // 쿼리 파라미터 fallback (프록시 경유 시)
       const queryUserType = req.query?.userType || null;
       const requestedUserType = cookieUserType || queryUserType || null;
-      console.log('[소셜 로그인 콜백]', {
+      Logger.log('[소셜 로그인 콜백]', {
         provider,
         cookieUserType,
         queryUserType,
@@ -801,7 +811,7 @@ export class AuthController {
         requestedUserType,
       );
 
-      console.log('[소셜 로그인 성공]', {
+      Logger.log('[소셜 로그인 성공]', {
         sessionId: result.sessionId,
         message: result.message,
       });
@@ -818,21 +828,29 @@ export class AuthController {
       // pending_user_type 쿠키 삭제
       res.clearCookie('pending_user_type', { path: '/' });
 
-      // 메인 페이지로 리다이렉트 (sessionId를 URL 파라미터로 전달)
+      // 메인 페이지로 리다이렉트 (쿠키 기반, URL에 sessionId 노출 금지)
+      // Redirect to main page (cookie-based, never expose sessionId in URL)
       const baseUrl =
         process.env.NODE_ENV === 'production'
           ? 'http://jobchaja.com'
           : 'http://localhost:3000';
-      const redirectUrl = `${baseUrl}?sessionId=${encodeURIComponent(result.sessionId)}`;
 
-      console.log('[소셜 로그인] 리다이렉트 URL:', baseUrl);
-      return res.redirect(redirectUrl);
+      // 프론트엔드에서 읽을 수 있도록 짧은 수명의 세션 초기화 쿠키 설정
+      // Set short-lived session init cookie readable by frontend JS
+      res.cookie('session_init', result.sessionId, {
+        httpOnly: false,
+        secure: isProduction,
+        sameSite: isProduction ? 'strict' : 'lax',
+        maxAge: 60 * 1000, // 1분 후 자동 만료 / Expires in 1 minute
+        path: '/',
+      });
+
+      return res.redirect(baseUrl);
     } catch (error) {
-      console.error('[소셜 로그인 에러]', {
+      Logger.error('[소셜 로그인 에러 / Social login error]', {
         provider,
         email: req.user?.email,
         error: error.message,
-        stack: error.stack,
       });
       throw error;
     }

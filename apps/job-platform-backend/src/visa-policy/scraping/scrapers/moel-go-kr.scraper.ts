@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as cheerio from 'cheerio';
 import { BaseScraper, ScrapedItem } from './base.scraper';
 
@@ -66,7 +66,7 @@ export class MoelGoKrScraper extends BaseScraper {
         } catch {}
       });
     } catch (error) {
-      console.error('[MoelGoKr] 스크래핑 실패:', (error as Error).message);
+      Logger.error('[MoelGoKr] 스크래핑 실패:', (error as Error).message);
     }
 
     return items.slice(0, 20);

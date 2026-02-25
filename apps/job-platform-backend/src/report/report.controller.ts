@@ -9,6 +9,7 @@ import {
   Inject,
   UseGuards,
   HttpException,
+  Logger,
   Query,
 } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
@@ -123,7 +124,7 @@ export class ReportController {
 
       return response;
     } catch (error: any) {
-      console.error('the error : ', error);
+      Logger.error('the error : ', error);
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
         grpcToHttpStatus(error.code ?? 2),
@@ -181,7 +182,7 @@ export class ReportController {
     @Body() updateReportDto: UpdateReportDto,
   ): Promise<ReportResponse> {
     try {
-      console.log('Updating report with ID:', id);
+      Logger.log('Updating report with ID:', id);
       const result = await firstValueFrom(
         this.reportService.updateReport({
           reportId: id,
@@ -191,7 +192,7 @@ export class ReportController {
         }),
       );
 
-      console.log('Update result:', result);
+      Logger.log('Update result:', result);
 
       // Invalidate specific report and all reports cache
       await this.cacheManager.del(`report:${id}`);
@@ -199,7 +200,7 @@ export class ReportController {
 
       return result as unknown as ReportResponse;
     } catch (error: any) {
-      console.error('the error : ', error);
+      Logger.error('the error : ', error);
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
         grpcToHttpStatus(error.code ?? 2),
@@ -252,7 +253,7 @@ export class ReportController {
       const newVersion = `v${Date.now()}`;
       await this.cacheManager.set('reports:version', newVersion, 0); // No expiry
     } catch (error) {
-      console.error('Error invalidating cache:', error);
+      Logger.error('Error invalidating cache:', error);
     }
   }
 }

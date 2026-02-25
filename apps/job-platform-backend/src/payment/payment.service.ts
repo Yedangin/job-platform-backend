@@ -4,6 +4,7 @@ import {
   BadRequestException,
   NotFoundException,
   ConflictException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PaymentPrismaService } from 'libs/common/src';
 import { AuthPrismaService } from 'libs/common/src';
@@ -119,7 +120,7 @@ export class PaymentService {
   // ================================================
   // 2. 결제 확인 / Confirm payment
   // ================================================
-  async confirmPayment(orderId: number, portonePaymentId: string) {
+  async confirmPayment(orderId: number, portonePaymentId: string, userId?: string) {
     // 주문 조회 / Get order
     const order = await this.paymentPrisma.order.findUnique({
       where: { id: orderId },
@@ -129,6 +130,13 @@ export class PaymentService {
     if (!order) {
       throw new NotFoundException(
         `주문을 찾을 수 없습니다 / Order not found: ${orderId}`,
+      );
+    }
+
+    // 소유권 검증 (IDOR 방지) / Ownership check (prevent IDOR)
+    if (userId && order.userId !== userId) {
+      throw new UnauthorizedException(
+        '본인의 주문만 확인할 수 있습니다 / Can only confirm your own orders',
       );
     }
 
@@ -259,107 +267,105 @@ export class PaymentService {
         }
       }
     } else
+      switch (product.code) {
+        case 'JOB_EXTENSION': {
+          // 공고 연장 / Job posting extension
+          if (!order.targetJobId) break;
+          const jobId = Number(order.targetJobId);
 
-    switch (product.code) {
+          const job = await this.authPrisma.jobPosting.findUnique({
+            where: { id: BigInt(jobId) },
+          });
+          if (!job) break;
 
-      case 'JOB_EXTENSION': {
-        // 공고 연장 / Job posting extension
-        if (!order.targetJobId) break;
-        const jobId = Number(order.targetJobId);
+          const isPartTime = job.boardType === 'PART_TIME';
+          const isPremium = job.tierType === 'PREMIUM';
+          const extensionKey = isPremium ? 'premium' : 'standard';
+          const dayKey = isPartTime ? 'partTime' : 'fullTime';
+          const extensionDays =
+            metadata.extensionDays?.[extensionKey]?.[dayKey] || 30;
 
-        const job = await this.authPrisma.jobPosting.findUnique({
-          where: { id: BigInt(jobId) },
-        });
-        if (!job) break;
+          const baseDate =
+            job.expiresAt && job.expiresAt > new Date()
+              ? job.expiresAt
+              : new Date();
+          const newExpiresAt = new Date(baseDate);
+          newExpiresAt.setDate(newExpiresAt.getDate() + extensionDays);
 
-        const isPartTime = job.boardType === 'PART_TIME';
-        const isPremium = job.tierType === 'PREMIUM';
-        const extensionKey = isPremium ? 'premium' : 'standard';
-        const dayKey = isPartTime ? 'partTime' : 'fullTime';
-        const extensionDays =
-          metadata.extensionDays?.[extensionKey]?.[dayKey] || 30;
+          await this.authPrisma.jobPosting.update({
+            where: { id: BigInt(jobId) },
+            data: {
+              expiresAt: newExpiresAt,
+              status: 'ACTIVE',
+            },
+          });
 
-        const baseDate =
-          job.expiresAt && job.expiresAt > new Date()
-            ? job.expiresAt
-            : new Date();
-        const newExpiresAt = new Date(baseDate);
-        newExpiresAt.setDate(newExpiresAt.getDate() + extensionDays);
+          this.logger.log(
+            `[Payment] 공고 연장: jobId=${jobId}, +${extensionDays}일, expiresAt=${newExpiresAt.toISOString()}`,
+          );
+          break;
+        }
 
-        await this.authPrisma.jobPosting.update({
-          where: { id: BigInt(jobId) },
-          data: {
-            expiresAt: newExpiresAt,
-            status: 'ACTIVE',
-          },
-        });
+        case 'VIEW_1':
+        case 'VIEW_10':
+        case 'VIEW_30':
+        case 'VIEW_100': {
+          // 인재 열람권 생성 / Create viewing credits
+          const credits =
+            metadata.credits || parseInt(product.code.replace('VIEW_', ''));
+          const validDays = metadata.validDays || 30;
 
-        this.logger.log(
-          `[Payment] 공고 연장: jobId=${jobId}, +${extensionDays}일, expiresAt=${newExpiresAt.toISOString()}`,
-        );
-        break;
+          await this.viewingCreditService.grantCredits(
+            order.userId,
+            credits,
+            product.code,
+            validDays,
+          );
+          break;
+        }
+
+        case 'BUMP_UP': {
+          // 끌어올리기 / Bump up
+          if (!order.targetJobId) break;
+          await this.authPrisma.jobPosting.update({
+            where: { id: BigInt(Number(order.targetJobId)) },
+            data: { bumpedAt: new Date() },
+          });
+          this.logger.log(`[Payment] 끌어올리기: jobId=${order.targetJobId}`);
+          break;
+        }
+
+        case 'URGENT_BADGE': {
+          // 긴급 채용 배지 / Urgent badge
+          if (!order.targetJobId) break;
+          await this.authPrisma.jobPosting.update({
+            where: { id: BigInt(Number(order.targetJobId)) },
+            data: { isUrgent: true },
+          });
+          this.logger.log(`[Payment] 긴급 배지: jobId=${order.targetJobId}`);
+          break;
+        }
+
+        case 'FEATURED': {
+          // 홈 추천 / Featured posting
+          if (!order.targetJobId) break;
+          const durationDays = metadata.durationDays || 7;
+          const featuredUntil = new Date();
+          featuredUntil.setDate(featuredUntil.getDate() + durationDays);
+
+          await this.authPrisma.jobPosting.update({
+            where: { id: BigInt(Number(order.targetJobId)) },
+            data: { isFeatured: true, featuredUntil },
+          });
+          this.logger.log(
+            `[Payment] 홈 추천: jobId=${order.targetJobId}, until=${featuredUntil.toISOString()}`,
+          );
+          break;
+        }
+
+        default:
+          this.logger.warn(`[Payment] 알 수 없는 상품 코드: ${product.code}`);
       }
-
-      case 'VIEW_1':
-      case 'VIEW_10':
-      case 'VIEW_30':
-      case 'VIEW_100': {
-        // 인재 열람권 생성 / Create viewing credits
-        const credits =
-          metadata.credits || parseInt(product.code.replace('VIEW_', ''));
-        const validDays = metadata.validDays || 30;
-
-        await this.viewingCreditService.grantCredits(
-          order.userId,
-          credits,
-          product.code,
-          validDays,
-        );
-        break;
-      }
-
-      case 'BUMP_UP': {
-        // 끌어올리기 / Bump up
-        if (!order.targetJobId) break;
-        await this.authPrisma.jobPosting.update({
-          where: { id: BigInt(Number(order.targetJobId)) },
-          data: { bumpedAt: new Date() },
-        });
-        this.logger.log(`[Payment] 끌어올리기: jobId=${order.targetJobId}`);
-        break;
-      }
-
-      case 'URGENT_BADGE': {
-        // 긴급 채용 배지 / Urgent badge
-        if (!order.targetJobId) break;
-        await this.authPrisma.jobPosting.update({
-          where: { id: BigInt(Number(order.targetJobId)) },
-          data: { isUrgent: true },
-        });
-        this.logger.log(`[Payment] 긴급 배지: jobId=${order.targetJobId}`);
-        break;
-      }
-
-      case 'FEATURED': {
-        // 홈 추천 / Featured posting
-        if (!order.targetJobId) break;
-        const durationDays = metadata.durationDays || 7;
-        const featuredUntil = new Date();
-        featuredUntil.setDate(featuredUntil.getDate() + durationDays);
-
-        await this.authPrisma.jobPosting.update({
-          where: { id: BigInt(Number(order.targetJobId)) },
-          data: { isFeatured: true, featuredUntil },
-        });
-        this.logger.log(
-          `[Payment] 홈 추천: jobId=${order.targetJobId}, until=${featuredUntil.toISOString()}`,
-        );
-        break;
-      }
-
-      default:
-        this.logger.warn(`[Payment] 알 수 없는 상품 코드: ${product.code}`);
-    }
   }
 
   // ================================================
@@ -512,7 +518,12 @@ export class PaymentService {
     // 상위노출(프리미엄) 상품 환불 계산 / Premium listing refund calculation
     if (isPremiumProduct(product.code)) {
       if (!order.targetJobId) {
-        return { canRefund: true, refundAmount: paidAmount, usedValue: 0, usedDescription: '' };
+        return {
+          canRefund: true,
+          refundAmount: paidAmount,
+          usedValue: 0,
+          usedDescription: '',
+        };
       }
 
       const job = await this.authPrisma.jobPosting.findUnique({
@@ -520,24 +531,37 @@ export class PaymentService {
       });
 
       if (!job || !job.upgradedAt) {
-        return { canRefund: true, refundAmount: paidAmount, usedValue: 0, usedDescription: '' };
+        return {
+          canRefund: true,
+          refundAmount: paidAmount,
+          usedValue: 0,
+          usedDescription: '',
+        };
       }
 
-      const hoursUsed = (Date.now() - job.upgradedAt.getTime()) / (1000 * 60 * 60);
+      const hoursUsed =
+        (Date.now() - job.upgradedAt.getTime()) / (1000 * 60 * 60);
 
       if (hoursUsed <= 24) {
-        return { canRefund: true, refundAmount: paidAmount, usedValue: 0, usedDescription: '' };
+        return {
+          canRefund: true,
+          refundAmount: paidAmount,
+          usedValue: 0,
+          usedDescription: '',
+        };
       }
 
       const metadata = product.metadata ? JSON.parse(product.metadata) : {};
-      const totalDays = metadata.durationDays ?? metadata.premiumDays?.fullTime ?? 60;
+      const totalDays =
+        metadata.durationDays ?? metadata.premiumDays?.fullTime ?? 60;
       const daysUsed = hoursUsed / 24;
       const daysRemaining = Math.max(0, totalDays - daysUsed);
 
       if (daysRemaining < 1) {
         return {
           canRefund: false,
-          reason: '상위노출 기간이 모두 소진되어 환불이 불가합니다. / Premium listing period fully used',
+          reason:
+            '상위노출 기간이 모두 소진되어 환불이 불가합니다. / Premium listing period fully used',
           refundAmount: 0,
           usedValue: paidAmount,
           usedDescription: `상위노출 ${Math.floor(daysUsed)}일 사용`,
@@ -821,13 +845,19 @@ export class PaymentService {
   // ================================================
 
   /** 주문 상세 / Order detail */
-  async getOrder(orderId: number) {
+  async getOrder(orderId: number, userId?: string) {
     const order = await this.paymentPrisma.order.findUnique({
       where: { id: orderId },
       include: { product: true, payment: true, coupon: true },
     });
     if (!order) {
       throw new NotFoundException(`주문을 찾을 수 없습니다 / Order not found`);
+    }
+    // 소유권 검증 (IDOR 방지) / Ownership check (prevent IDOR)
+    if (userId && order.userId !== userId) {
+      throw new UnauthorizedException(
+        '본인의 주문만 조회할 수 있습니다 / Can only view your own orders',
+      );
     }
     return order;
   }

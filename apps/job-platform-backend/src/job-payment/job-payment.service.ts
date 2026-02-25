@@ -85,7 +85,11 @@ export class JobPaymentService {
 
     // 주문번호 생성 / Generate order number
     const orderNo = this.generateOrderNo();
-    const merchantUid = `merchant_${Date.now()}_${Math.floor(Math.random() * 99999).toString().padStart(5, '0')}`;
+    const merchantUid = `merchant_${Date.now()}_${Math.floor(
+      Math.random() * 99999,
+    )
+      .toString()
+      .padStart(5, '0')}`;
 
     const order = await this.prisma.jobOrder.create({
       data: {
@@ -303,10 +307,7 @@ export class JobPaymentService {
   // ========================================
   // 프리미엄 업그레이드 요청 / Upgrade to Premium
   // ========================================
-  async upgradeToPremium(
-    userId: string,
-    data: { jobPostingId: string },
-  ) {
+  async upgradeToPremium(userId: string, data: { jobPostingId: string }) {
     // 1. 기업 소유 공고 검증 / Validate corporate owns the posting
     const job = await this.getOwnedJobPosting(userId, data.jobPostingId);
 
@@ -338,7 +339,11 @@ export class JobPaymentService {
 
     // 4. 주문 생성 / Create order for premium upgrade
     const orderNo = this.generateOrderNo();
-    const merchantUid = `merchant_${Date.now()}_${Math.floor(Math.random() * 99999).toString().padStart(5, '0')}`;
+    const merchantUid = `merchant_${Date.now()}_${Math.floor(
+      Math.random() * 99999,
+    )
+      .toString()
+      .padStart(5, '0')}`;
 
     const corp = await this.prisma.corporateProfile.findUnique({
       where: { authId: userId },
@@ -713,10 +718,11 @@ export class JobPaymentService {
     const apiSecret = process.env.IAMPORT_API_SECRET;
 
     if (!apiKey || !apiSecret) {
-      // 개발 환경에서 키가 없으면 스킵 (테스트용)
-      // Skip verification in dev environment if keys not set (for testing)
-      this.logger.warn('[Payment] IAMPORT keys not set, skipping verification');
-      return { amount: 0, status: 'paid' };
+      // 결제 검증 키 미설정 시 에러 (fake success 반환 금지)
+      // Throw error when keys not configured (never return fake success)
+      throw new BadRequestException(
+        '결제 검증 키가 설정되지 않았습니다 / Payment verification keys not configured (IAMPORT_API_KEY, IAMPORT_API_SECRET)',
+      );
     }
 
     // 1. 토큰 발급 / Get access token

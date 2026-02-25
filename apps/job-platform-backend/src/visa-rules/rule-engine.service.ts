@@ -1,4 +1,4 @@
-import { Injectable, Optional } from '@nestjs/common';
+import { Injectable, Logger, Optional } from '@nestjs/common';
 import { AuthPrismaService, RedisService } from 'libs/common/src';
 import { EvaluatorRegistryService } from './evaluators/evaluator-registry.service';
 import { LoggingService } from '../logging/logging.service';
@@ -87,6 +87,7 @@ export interface EvaluationResult {
 
 @Injectable()
 export class RuleEngineService {
+  private readonly logger = new Logger(RuleEngineService.name);
   private readonly CACHE_KEY = 'visa_rules:active';
   private readonly CACHE_TTL = 300; // 5분
 
@@ -193,7 +194,7 @@ export class RuleEngineService {
           this.applyActions(actions, result);
         }
       } catch (e) {
-        console.error(`[RuleEngine] 규칙 평가 오류 (ruleId=${rule.id}):`, e);
+        this.logger.error(`[RuleEngine] 규칙 평가 오류 (ruleId=${rule.id}):`, e);
       }
     }
 
@@ -279,7 +280,7 @@ export class RuleEngineService {
           },
         });
       } catch (e) {
-        console.error('[RuleEngine] 평가 로그 기록 실패:', e);
+        this.logger.error('[RuleEngine] 평가 로그 기록 실패:', e);
       }
 
       // 매칭 로그 (MongoDB) / Matching log to MongoDB
@@ -416,7 +417,7 @@ export class RuleEngineService {
         return Number(fieldValue) <= threshold;
       }
       default:
-        console.warn(`[RuleEngine] 알 수 없는 연산자: ${clause.op}`);
+        this.logger.warn(`[RuleEngine] 알 수 없는 연산자: ${clause.op}`);
         return false;
     }
   }

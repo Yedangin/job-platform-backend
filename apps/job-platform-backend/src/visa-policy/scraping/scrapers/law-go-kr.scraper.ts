@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { BaseScraper, ScrapedItem } from './base.scraper';
 
 /**
@@ -34,7 +34,7 @@ export class LawGoKrScraper extends BaseScraper {
         const lawItems = this.parseXmlResponse(xml, lawName);
         items.push(...lawItems);
       } catch (error) {
-        console.error(
+        Logger.error(
           `[LawGoKr] '${lawName}' 스크래핑 실패:`,
           (error as Error).message,
         );

@@ -118,8 +118,9 @@ export class PaymentController {
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: ConfirmPaymentDto,
   ) {
-    await this.getUserId(sessionId); // 인증 확인 / Auth check
-    return this.paymentService.confirmPayment(id, dto.portonePaymentId);
+    const userId = await this.getUserId(sessionId);
+    // 소유권 검증 포함 확인 / Confirm with ownership validation
+    return this.paymentService.confirmPayment(id, dto.portonePaymentId, userId);
   }
 
   // ================================================
@@ -132,8 +133,9 @@ export class PaymentController {
     @Session() sessionId: string,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    await this.getUserId(sessionId);
-    return this.paymentService.getOrder(id);
+    const userId = await this.getUserId(sessionId);
+    // 소유권 검증 포함 조회 / Get order with ownership validation
+    return this.paymentService.getOrder(id, userId);
   }
 
   // ================================================

@@ -9,6 +9,7 @@ import {
   Inject,
   UseGuards,
   HttpException,
+  Logger,
   Query,
 } from '@nestjs/common';
 import { CreateApplyDto } from './dto/create-apply.dto';
@@ -180,7 +181,7 @@ export class ApplyController {
     @Body() updateApplyDto: UpdateApplyDto,
   ): Promise<ApplyResponse> {
     try {
-      console.log('Updating apply with ID:', id);
+      Logger.log('Updating apply with ID:', id);
       const result = await firstValueFrom(
         this.applyService.updateApply({
           applyId: id,
@@ -190,7 +191,7 @@ export class ApplyController {
         }),
       );
 
-      console.log('Update result:', result);
+      Logger.log('Update result:', result);
 
       // Invalidate specific apply and all applies cache
       await this.cacheManager.del(`apply:${id}`);
@@ -198,7 +199,7 @@ export class ApplyController {
 
       return result as unknown as ApplyResponse;
     } catch (error: any) {
-      console.error('the error : ', error);
+      Logger.error('the error : ', error);
       throw new HttpException(
         error.details ?? error.message ?? 'Internal server error',
         grpcToHttpStatus(error.code ?? 2),
@@ -251,7 +252,7 @@ export class ApplyController {
       const newVersion = `v${Date.now()}`;
       await this.cacheManager.set('applies:version', newVersion, 0); // No expiry
     } catch (error) {
-      console.error('Error invalidating cache:', error);
+      Logger.error('Error invalidating cache:', error);
     }
   }
 }

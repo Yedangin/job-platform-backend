@@ -63,8 +63,16 @@ import { NotificationModule } from './notification/notification.module';
     ThrottlerModule.forRoot({
       throttlers: [
         {
+          // 단기 버스트 제한 (10초 5회) / Short burst limit (5 req per 10s)
+          name: 'short',
+          ttl: 10000,
+          limit: 5,
+        },
+        {
+          // 분당 제한 (60초 30회) / Per-minute limit (30 req per 60s)
+          name: 'medium',
           ttl: 60000,
-          limit: 10,
+          limit: 30,
         },
       ],
     }),
@@ -73,8 +81,14 @@ import { NotificationModule } from './notification/notification.module';
     }),
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_SECRET || 'thisismyJwtSecretKey',
-      signOptions: { expiresIn: process.env.JWT_SECRET_EXPIRES_IN },
+      // JWT_SECRET 미설정 시 서버 시작 실패 (하드코딩 폴백 금지)
+      // Server fails to start if JWT_SECRET is not set (no hardcoded fallback)
+      secret: (() => {
+        const s = process.env.JWT_SECRET;
+        if (!s) throw new Error('JWT_SECRET 환경변수가 설정되지 않았습니다 / JWT_SECRET env var is required');
+        return s;
+      })(),
+      signOptions: { expiresIn: process.env.JWT_SECRET_EXPIRES_IN || '2h' },
     }),
     AuthModule,
     MemberVerificationModule,

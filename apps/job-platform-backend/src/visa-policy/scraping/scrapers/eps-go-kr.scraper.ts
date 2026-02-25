@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as cheerio from 'cheerio';
 import { BaseScraper, ScrapedItem } from './base.scraper';
 
@@ -68,14 +68,14 @@ export class EpsGoKrScraper extends BaseScraper {
             } catch {}
           });
         } catch (error) {
-          console.error(
+          Logger.error(
             `[EpsGoKr] ${listUrl} 스크래핑 실패:`,
             (error as Error).message,
           );
         }
       }
     } catch (error) {
-      console.error('[EpsGoKr] 스크래핑 실패:', (error as Error).message);
+      Logger.error('[EpsGoKr] 스크래핑 실패:', (error as Error).message);
     }
 
     return items.slice(0, 20);

@@ -70,54 +70,61 @@ export class ViewingCreditService {
     userId: string,
     resumeId: number,
   ): Promise<{ success: boolean; remainingCredits: number }> {
-    // 이미 열람한 이력서인지 확인 / Check if already viewed
-    const existing = await this.paymentPrisma.viewingLog.findFirst({
-      where: { userId, resumeId: BigInt(resumeId) },
-    });
-    if (existing) {
-      this.logger.log(
-        `[ViewingCredit] 이미 열람한 이력서: userId=${userId}, resumeId=${resumeId}`,
-      );
-      const remaining = await this.getRemainingCredits(userId);
-      return { success: true, remainingCredits: remaining }; // 중복 차감 방지 / Prevent double deduction
-    }
+    // 인터랙티브 트랜잭션으로 전체 로직을 감싸서 race condition 방지
+    // Wrap entire logic in interactive transaction to prevent race condition
+    const result = await this.paymentPrisma.$transaction(async (tx) => {
+      // 이미 열람한 이력서인지 확인 (트랜잭션 내부)
+      // Check if already viewed (inside transaction)
+      const existing = await tx.viewingLog.findFirst({
+        where: { userId, resumeId: BigInt(resumeId) },
+      });
+      if (existing) {
+        return { alreadyViewed: true };
+      }
 
-    // 유효한 크레딧 조회 (만료되지 않은 것, 먼저 만료되는 순)
-    // Get valid credits (not expired, earliest-expiring first)
-    const credits = await this.paymentPrisma.viewingCredit.findMany({
-      where: {
-        userId,
-        expiresAt: { gt: new Date() },
-      },
-      orderBy: { expiresAt: 'asc' },
-    });
+      // 유효한 크레딧 조회 (만료되지 않은 것, 먼저 만료되는 순)
+      // Get valid credits (not expired, earliest-expiring first)
+      const credits = await tx.viewingCredit.findMany({
+        where: {
+          userId,
+          expiresAt: { gt: new Date() },
+        },
+        orderBy: { expiresAt: 'asc' },
+      });
 
-    const availableCredit = credits.find((c) => c.usedCredits < c.totalCredits);
+      const availableCredit = credits.find((c) => c.usedCredits < c.totalCredits);
 
-    if (!availableCredit) {
-      throw new BadRequestException(
-        '열람권이 부족합니다 / Insufficient viewing credits',
-      );
-    }
+      if (!availableCredit) {
+        throw new BadRequestException(
+          '열람권이 부족합니다 / Insufficient viewing credits',
+        );
+      }
 
-    // 트랜잭션으로 차감 + 기록 / Deduct and log in transaction
-    await this.paymentPrisma.$transaction([
-      this.paymentPrisma.viewingCredit.update({
+      // 차감 + 기록 (같은 트랜잭션 내) / Deduct and log (within same transaction)
+      await tx.viewingCredit.update({
         where: { id: availableCredit.id },
         data: { usedCredits: { increment: 1 } },
-      }),
-      this.paymentPrisma.viewingLog.create({
+      });
+      await tx.viewingLog.create({
         data: {
           userId,
           resumeId: BigInt(resumeId),
           creditId: availableCredit.id,
         },
-      }),
-    ]);
+      });
 
-    this.logger.log(
-      `[ViewingCredit] 열람권 차감: userId=${userId}, resumeId=${resumeId}, creditId=${availableCredit.id}`,
-    );
+      return { alreadyViewed: false, creditId: availableCredit.id };
+    });
+
+    if (result.alreadyViewed) {
+      this.logger.log(
+        `[ViewingCredit] 이미 열람한 이력서: userId=${userId}, resumeId=${resumeId}`,
+      );
+    } else {
+      this.logger.log(
+        `[ViewingCredit] 열람권 차감: userId=${userId}, resumeId=${resumeId}, creditId=${result.creditId}`,
+      );
+    }
 
     const remaining = await this.getRemainingCredits(userId);
     return { success: true, remainingCredits: remaining };
@@ -281,7 +288,9 @@ export class ViewingCreditService {
 
     if (credit.usedCredits === 0) {
       // 전혀 사용 안 했으면 레코드 삭제 / No usage → delete record
-      await this.paymentPrisma.viewingCredit.delete({ where: { id: creditId } });
+      await this.paymentPrisma.viewingCredit.delete({
+        where: { id: creditId },
+      });
     } else {
       // 일부 사용 → totalCredits를 usedCredits로 줄임 (이미 사용한 만큼만 남김)
       // Partially used → shrink totalCredits to usedCredits (keep only used amount)

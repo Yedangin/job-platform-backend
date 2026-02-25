@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { AuthPrismaService, RedisService, SessionData } from 'libs/common/src';
 
 @Injectable()
 export class ProfileService {
+  private readonly logger = new Logger(ProfileService.name);
+
   constructor(
     private readonly authPrisma: AuthPrismaService,
     private readonly redisService: RedisService,
@@ -36,7 +38,7 @@ export class ProfileService {
         });
       }
     } catch (error) {
-      console.error('[ProfileService] Resume views 조회 실패:', error);
+      this.logger.error('[ProfileService] Resume views 조회 실패:', error);
     }
 
     // Job DB는 현재 미연결 - 추후 연동 시 구현

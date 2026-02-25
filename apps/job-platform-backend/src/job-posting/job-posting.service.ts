@@ -296,6 +296,14 @@ export class JobPostingService {
       throw new BadRequestException('Only DRAFT postings can be activated');
     }
 
+    // 비자 매칭 결과 존재 여부 확인 (비자 매칭 없이 공고 게시 금지)
+    // Ensure visa matching has been performed before activation
+    if (!job.fulltimeVisaResult) {
+      throw new BadRequestException(
+        '비자 매칭이 완료되지 않았습니다. 공고 게시 전 비자 매칭을 먼저 실행하세요 / Visa matching not completed. Run visa evaluation before publishing.',
+      );
+    }
+
     const updateData: any = { status: 'ACTIVE' };
     if (orderId) {
       updateData.orderId = BigInt(orderId);
@@ -587,9 +595,7 @@ export class JobPostingService {
     const job = await this.getOwnedJob(userId, jobId);
 
     if (job.status !== 'ACTIVE') {
-      throw new BadRequestException(
-        'Only ACTIVE postings can toggle urgent',
-      );
+      throw new BadRequestException('Only ACTIVE postings can toggle urgent');
     }
 
     await this.prisma.jobPosting.update({

@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Logger,
   OnModuleInit,
   UnauthorizedException,
   ConflictException,
@@ -37,6 +38,7 @@ import { CouponService } from '../payment/coupon.service';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
+  private readonly logger = new Logger(AuthService.name);
   private sesClient: SESClient;
   private dnsResolver: Resolver;
 
@@ -71,7 +73,7 @@ export class AuthService implements OnModuleInit {
       const adminPassword = process.env.ADMIN_PASSWORD;
 
       if (!adminEmail || !adminPassword) {
-        console.warn(
+        this.logger.warn(
           '[Admin] ⚠️ ADMIN_EMAIL 또는 ADMIN_PASSWORD 환경 변수가 설정되지 않았습니다. 관리자 계정 생성을 건너뜁니다.',
         );
         return;
@@ -92,12 +94,12 @@ export class AuthService implements OnModuleInit {
             isActive: true,
           },
         });
-        console.log('[Admin] ✅ 관리자 계정이 생성되었습니다.');
+        this.logger.log('[Admin] ✅ 관리자 계정이 생성되었습니다.');
       } else {
-        console.log('[Admin] ✅ 관리자 계정이 이미 존재합니다.');
+        this.logger.log('[Admin] ✅ 관리자 계정이 이미 존재합니다.');
       }
     } catch (error) {
-      console.error('[Admin] ❌ 관리자 계정 생성 실패:', error);
+      this.logger.error('[Admin] ❌ 관리자 계정 생성 실패:', error);
     }
   }
 
@@ -165,7 +167,7 @@ export class AuthService implements OnModuleInit {
       if (!mxRecords || mxRecords.length === 0) {
         throw new BadRequestException('존재하지 않는 이메일 도메인입니다.');
       }
-      console.log(
+      this.logger.log(
         `[MX 검증 성공] ${domain}:`,
         mxRecords.map((r) => r.exchange).join(', '),
       );
@@ -173,7 +175,7 @@ export class AuthService implements OnModuleInit {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      console.error(`[MX 검증 실패] ${domain}:`, error.code);
+      this.logger.error(`[MX 검증 실패] ${domain}:`, error.code);
       throw new BadRequestException(
         '유효하지 않은 이메일 주소입니다. 도메인을 확인해주세요.',
       );
@@ -213,9 +215,9 @@ export class AuthService implements OnModuleInit {
 
       try {
         await this.sesClient.send(command);
-        console.log(`[AWS SES 전송 성공] To: ${email}, OTP: ${otp}`);
+        this.logger.log(`[AWS SES 전송 성공 / SES sent successfully] To: ${email}`);
       } catch (error) {
-        console.error('[AWS SES 전송 실패] 백그라운드 발송 에러:', error);
+        this.logger.error('[AWS SES 전송 실패 / SES send failed]', error?.message);
       }
     });
 
@@ -369,7 +371,7 @@ export class AuthService implements OnModuleInit {
 
       return { success: true, message: 'User registered successfully' };
     } catch (error) {
-      console.error('[회원가입 트랜잭션 실패]', error);
+      this.logger.error('[회원가입 트랜잭션 실패]', error);
       throw new InternalServerErrorException(
         '회원가입 처리 중 오류가 발생했습니다.',
       );
@@ -434,24 +436,24 @@ export class AuthService implements OnModuleInit {
   // --- 5. 프로필 조회 ---
   async getProfile(sessionId: string): Promise<UserResponse> {
     const redisKey = `session:${sessionId}`;
-    console.log(
+    this.logger.log(
       '[getProfile Service] Redis key:',
       redisKey.substring(0, 40) + '...',
     );
 
     const sessionDataStr = await this.redisService.get(redisKey);
-    console.log(
+    this.logger.log(
       '[getProfile Service] Redis result:',
       sessionDataStr ? 'FOUND' : 'NOT_FOUND',
     );
 
     if (!sessionDataStr) {
-      console.log('[getProfile Service] FAIL: Redis에서 세션 데이터 없음');
+      this.logger.log('[getProfile Service] FAIL: Redis에서 세션 데이터 없음');
       throw new UnauthorizedException('Invalid or expired session');
     }
 
     const sessionData = JSON.parse(sessionDataStr) as SessionData;
-    console.log(
+    this.logger.log(
       '[getProfile Service] Session userId:',
       sessionData.userId,
       'role:',
@@ -467,7 +469,7 @@ export class AuthService implements OnModuleInit {
 
     if (!user) throw new NotFoundException('User not found');
 
-    console.log(
+    this.logger.log(
       '[getProfile Service] SUCCESS: user found, type:',
       user.userType,
     );
@@ -602,7 +604,7 @@ export class AuthService implements OnModuleInit {
       ? UserType.CORPORATE
       : UserType.INDIVIDUAL;
 
-    console.log('[소셜 로그인] 신규 회원가입:', {
+    this.logger.log('[소셜 로그인] 신규 회원가입:', {
       email,
       finalUserType,
       requestedUserType,
@@ -676,7 +678,7 @@ export class AuthService implements OnModuleInit {
         user: this.mapPrismaUserToProto(newUser),
       };
     } catch (error) {
-      console.error('[소셜 로그인 회원가입 실패]', error);
+      this.logger.error('[소셜 로그인 회원가입 실패]', error);
       throw new InternalServerErrorException(
         '소셜 로그인 처리 중 오류가 발생했습니다.',
       );
@@ -719,9 +721,9 @@ export class AuthService implements OnModuleInit {
 
       try {
         await this.sesClient.send(command);
-        console.log(`[AWS SES 전송 성공] Password reset email to: ${email}`);
+        this.logger.log(`[AWS SES 전송 성공] Password reset email to: ${email}`);
       } catch (error) {
-        console.error('[AWS SES 전송 실패] Password reset email:', error);
+        this.logger.error('[AWS SES 전송 실패] Password reset email:', error);
       }
     });
 
@@ -772,7 +774,8 @@ export class AuthService implements OnModuleInit {
 
     return {
       success: true,
-      message: '비밀번호가 재설정되었습니다. 모든 기기에서 다시 로그인해주세요.',
+      message:
+        '비밀번호가 재설정되었습니다. 모든 기기에서 다시 로그인해주세요.',
     };
   }
 
@@ -1025,7 +1028,8 @@ export class AuthService implements OnModuleInit {
     );
     return {
       success: true,
-      message: '비밀번호가 변경되었습니다. 다른 기기에서의 로그인이 해제되었습니다.',
+      message:
+        '비밀번호가 변경되었습니다. 다른 기기에서의 로그인이 해제되었습니다.',
     };
   }
 
@@ -1416,7 +1420,7 @@ export class AuthService implements OnModuleInit {
         },
       });
     } catch (error) {
-      console.error('[ActivityLog] 로그 기록 실패:', error);
+      this.logger.error('[ActivityLog] 로그 기록 실패:', error);
     }
   }
 
@@ -1474,7 +1478,7 @@ export class AuthService implements OnModuleInit {
 
       if (!validateResponse.ok) {
         const errorText = await validateResponse.text();
-        console.error(
+        this.logger.error(
           '[NTS Validate API] HTTP 에러:',
           validateResponse.status,
           errorText,
@@ -1485,7 +1489,7 @@ export class AuthService implements OnModuleInit {
       }
 
       const validateResult = await validateResponse.json();
-      console.log(
+      this.logger.log(
         '[NTS Validate API] 응답:',
         JSON.stringify(validateResult, null, 2),
       );
@@ -1525,7 +1529,7 @@ export class AuthService implements OnModuleInit {
 
       if (!statusResponse.ok) {
         const errorText = await statusResponse.text();
-        console.error(
+        this.logger.error(
           '[NTS Status API] HTTP 에러:',
           statusResponse.status,
           errorText,
@@ -1536,7 +1540,7 @@ export class AuthService implements OnModuleInit {
       }
 
       const statusResult = await statusResponse.json();
-      console.log(
+      this.logger.log(
         '[NTS Status API] 응답:',
         JSON.stringify(statusResult, null, 2),
       );
@@ -1576,7 +1580,7 @@ export class AuthService implements OnModuleInit {
       ) {
         throw error;
       }
-      console.error('[NTS API] 네트워크 에러:', error);
+      this.logger.error('[NTS API] 네트워크 에러:', error);
       throw new InternalServerErrorException(
         '국세청 API 연동 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
       );
@@ -1642,7 +1646,7 @@ export class AuthService implements OnModuleInit {
     const ext = path.extname(filePath).toLowerCase();
     // PDF는 OCR 불가 → 스킵
     if (ext === '.pdf') {
-      console.log('[OCR] PDF 파일은 OCR 스킵:', filePath);
+      this.logger.log('[OCR] PDF 파일은 OCR 스킵:', filePath);
       return null;
     }
 
@@ -1651,7 +1655,7 @@ export class AuthService implements OnModuleInit {
       : path.join(process.cwd(), filePath);
 
     if (!fs.existsSync(absolutePath)) {
-      console.error('[OCR] 파일이 존재하지 않음:', absolutePath);
+      this.logger.error('[OCR] 파일이 존재하지 않음:', absolutePath);
       return null;
     }
 
@@ -1663,7 +1667,7 @@ export class AuthService implements OnModuleInit {
           '0123456789-가나다라마바사아자차카타파하등록번호사업자법인 \n',
       } as any);
       const text = result.data.text;
-      console.log('[OCR] 추출된 전체 텍스트:', text);
+      this.logger.log('[OCR] 추출된 전체 텍스트:', text);
 
       // 줄 단위로 분석하여 사업자등록번호 찾기
       const lines = text.split('\n');
@@ -1686,14 +1690,14 @@ export class AuthService implements OnModuleInit {
           );
           if (dashMatch) {
             bizNumber = dashMatch[1] + dashMatch[2] + dashMatch[3];
-            console.log('[OCR] 등록번호 키워드 + 대시 패턴 매칭:', bizNumber);
+            this.logger.log('[OCR] 등록번호 키워드 + 대시 패턴 매칭:', bizNumber);
             break;
           }
           // 같은 줄에 10자리 숫자
           const plainMatch = line.match(/(\d{3})\s*(\d{2})\s*(\d{5})/);
           if (plainMatch) {
             bizNumber = plainMatch[1] + plainMatch[2] + plainMatch[3];
-            console.log('[OCR] 등록번호 키워드 + 연속숫자 매칭:', bizNumber);
+            this.logger.log('[OCR] 등록번호 키워드 + 연속숫자 매칭:', bizNumber);
             break;
           }
           // 다음 줄에서 번호 찾기 (등록번호: \n 485-86-03274 형태)
@@ -1702,7 +1706,7 @@ export class AuthService implements OnModuleInit {
           );
           if (nextDashMatch) {
             bizNumber = nextDashMatch[1] + nextDashMatch[2] + nextDashMatch[3];
-            console.log(
+            this.logger.log(
               '[OCR] 등록번호 키워드(다음줄) + 대시 패턴 매칭:',
               bizNumber,
             );
@@ -1712,7 +1716,7 @@ export class AuthService implements OnModuleInit {
           if (nextPlainMatch) {
             bizNumber =
               nextPlainMatch[1] + nextPlainMatch[2] + nextPlainMatch[3];
-            console.log(
+            this.logger.log(
               '[OCR] 등록번호 키워드(다음줄) + 연속숫자 매칭:',
               bizNumber,
             );
@@ -1736,7 +1740,7 @@ export class AuthService implements OnModuleInit {
           );
           if (!/법인/.test(preceding)) {
             bizNumber = m[1] + m[2] + m[3];
-            console.log(
+            this.logger.log(
               '[OCR] 전체텍스트 대시 패턴 매칭 (법인 제외):',
               bizNumber,
             );
@@ -1755,18 +1759,18 @@ export class AuthService implements OnModuleInit {
           const pm = tl.match(/(\d{10})/);
           if (pm) {
             bizNumber = pm[1];
-            console.log('[OCR] 상단 10자리 연속숫자 매칭:', bizNumber);
+            this.logger.log('[OCR] 상단 10자리 연속숫자 매칭:', bizNumber);
             break;
           }
         }
       }
 
       if (!bizNumber) {
-        console.log('[OCR] 사업자등록번호 패턴을 찾지 못함');
+        this.logger.log('[OCR] 사업자등록번호 패턴을 찾지 못함');
       }
       return bizNumber;
     } catch (error) {
-      console.error('[OCR] 텍스트 추출 실패:', error);
+      this.logger.error('[OCR] 텍스트 추출 실패:', error);
       return null;
     }
   }
@@ -1863,7 +1867,7 @@ export class AuthService implements OnModuleInit {
       if (ocrExtractedBizNo) {
         const cleanInputBizNo = data.bizRegNumber.replace(/[^0-9]/g, '');
         ocrVerified = ocrExtractedBizNo === cleanInputBizNo;
-        console.log('[OCR 검증]', {
+        this.logger.log('[OCR 검증]', {
           extracted: ocrExtractedBizNo,
           input: cleanInputBizNo,
           match: ocrVerified,
