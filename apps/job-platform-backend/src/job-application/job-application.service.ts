@@ -4,18 +4,78 @@ import {
   BadRequestException,
   ForbiddenException,
   ConflictException,
+  Logger,
+  Inject,
+  OnModuleInit,
 } from '@nestjs/common';
+import { ClientGrpc } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 import { AuthPrismaService, RedisService } from 'libs/common/src';
+import {
+  NOTIFICATION_PACKAGE_NAME,
+  NotificationServiceClient,
+  NOTIFICATION_SERVICE_NAME,
+  NotificationType,
+  NotificationChannel,
+} from 'types/notification/notification';
 
 @Injectable()
-export class JobApplicationService {
+export class JobApplicationService implements OnModuleInit {
+  // NestJS Logger 인스턴스 (console.log 사용 금지)
+  // NestJS Logger instance (no console.log)
+  private readonly logger = new Logger(JobApplicationService.name);
+
+  // gRPC 알림 서비스 클라이언트
+  // gRPC notification service client
+  private notificationService: NotificationServiceClient;
+
   constructor(
     private readonly prisma: AuthPrismaService,
     private readonly redis: RedisService,
+    @Inject(NOTIFICATION_PACKAGE_NAME) private readonly grpcClient: ClientGrpc,
   ) {}
+
+  // 모듈 초기화 시 gRPC 서비스 클라이언트 획득
+  // Obtain gRPC service client on module initialization
+  onModuleInit() {
+    this.notificationService =
+      this.grpcClient.getService<NotificationServiceClient>(
+        NOTIFICATION_SERVICE_NAME,
+      );
+  }
+
+  // ========================================
+  // [내부] 알림 발송 헬퍼 — 실패해도 메인 흐름 중단 없음
+  // [Internal] Notification send helper — never blocks main flow on failure
+  // ========================================
+  private async sendNotificationSafe(
+    userId: string,
+    subject: string,
+    content: string,
+    notificationType: NotificationType,
+  ): Promise<void> {
+    try {
+      await firstValueFrom(
+        this.notificationService.sendNotification({
+          userId,
+          subject,
+          content,
+          notificationType,
+          channel: NotificationChannel.BOTH,
+        }),
+      );
+    } catch (err) {
+      // 알림 발송 실패는 경고로만 기록하고 예외를 상위로 전파하지 않음
+      // Log notification failure as warning only — do not re-throw
+      this.logger.warn(
+        `알림 발송 실패 / Notification send failed for userId=${userId}: ${err}`,
+      );
+    }
+  }
 
   // ========================================
   // 지원하기
+  // Apply to a job posting
   // ========================================
   async applyToJob(
     userId: string,
@@ -33,7 +93,7 @@ export class JobApplicationService {
       throw new BadRequestException('This job posting is not active');
     }
 
-    // 중복 지원 확인
+    // 중복 지원 확인 / Check duplicate application
     const existing = await this.prisma.jobApplication.findUnique({
       where: {
         jobId_applicantId: {
@@ -48,7 +108,7 @@ export class JobApplicationService {
 
     let resumeSnapshot: string | null = null;
     if (method === 'PLATFORM') {
-      // 이력서 스냅샷 생성
+      // 이력서 스냅샷 생성 / Create resume snapshot
       const profile = await this.prisma.individualProfile.findUnique({
         where: { authId: userId },
         include: {
@@ -97,11 +157,38 @@ export class JobApplicationService {
       },
     });
 
-    // 지원수 증가
+    // 지원수 증가 / Increment application count
     await this.prisma.jobPosting.update({
       where: { id: BigInt(data.jobId) },
       data: { applyCount: { increment: 1 } },
     });
+
+    // ============================================================
+    // [알림] 기업회원에게 새 지원자 도착 알림 발송
+    // [Notification] Notify company of new applicant
+    // ============================================================
+    // 지원자 이름 및 기업 authId 조회
+    // Fetch applicant's name and company authId
+    const [applicantProfile, companyProfile] = await Promise.all([
+      this.prisma.individualProfile.findUnique({
+        where: { authId: userId },
+        select: { realName: true },
+      }),
+      this.prisma.corporateProfile.findUnique({
+        where: { companyId: job.corporateId },
+        select: { authId: true },
+      }),
+    ]);
+
+    if (companyProfile?.authId) {
+      const workerName = applicantProfile?.realName ?? '지원자';
+      await this.sendNotificationSafe(
+        companyProfile.authId,
+        '새 지원자가 있습니다',
+        `${workerName}님이 '${job.title}' 공고에 지원했습니다.`,
+        NotificationType.APPLICATION_ALERT,
+      );
+    }
 
     return {
       applicationId: application.id.toString(),
@@ -112,6 +199,7 @@ export class JobApplicationService {
 
   // ========================================
   // 내 지원 목록 (구직자)
+  // My applications list (worker/job-seeker)
   // ========================================
   async getMyApplications(
     userId: string,
@@ -119,7 +207,7 @@ export class JobApplicationService {
   ) {
     const page = query.page || 1;
     const limit = query.limit || 20;
-    const where: any = { applicantId: userId };
+    const where: Record<string, unknown> = { applicantId: userId };
     if (query.status) where.status = query.status;
 
     const [items, total] = await Promise.all([
@@ -133,7 +221,7 @@ export class JobApplicationService {
       this.prisma.jobApplication.count({ where }),
     ]);
 
-    // 기업 정보 조회
+    // 기업 정보 조회 / Fetch company information
     const corpIds = [...new Set(items.map((i) => i.job.corporateId))];
     const corporates = await this.prisma.corporateProfile.findMany({
       where: { companyId: { in: corpIds } },
@@ -176,13 +264,14 @@ export class JobApplicationService {
 
   // ========================================
   // 공고별 지원자 목록 (기업회원)
+  // Applications list per job posting (company)
   // ========================================
   async getJobApplications(
     userId: string,
     jobId: string,
     query: { page?: number; limit?: number },
   ) {
-    // 소유권 확인
+    // 소유권 확인 / Verify ownership
     const corp = await this.prisma.corporateProfile.findUnique({
       where: { authId: userId },
     });
@@ -210,7 +299,7 @@ export class JobApplicationService {
       this.prisma.jobApplication.count({ where }),
     ]);
 
-    // 지원자 프로필 조회
+    // 지원자 프로필 조회 / Fetch applicant profiles
     const applicantIds = items.map((i) => i.applicantId);
     const profiles = await this.prisma.individualProfile.findMany({
       where: { authId: { in: applicantIds } },
@@ -254,6 +343,7 @@ export class JobApplicationService {
 
   // ========================================
   // 지원 상태 변경 (기업회원)
+  // Update application status (company)
   // ========================================
   async updateApplicationStatus(
     userId: string,
@@ -278,7 +368,7 @@ export class JobApplicationService {
       throw new ForbiddenException('Not the owner');
     }
 
-    const updateData: any = { status: data.status };
+    const updateData: Record<string, unknown> = { status: data.status };
     if (data.interviewDate)
       updateData.interviewDate = new Date(data.interviewDate);
     if (data.interviewNote) updateData.interviewNote = data.interviewNote;
@@ -292,11 +382,45 @@ export class JobApplicationService {
       data: updateData,
     });
 
+    // ============================================================
+    // [알림] 상태 변경에 따라 구직자에게 알림 발송
+    // [Notification] Notify worker based on new application status
+    // ============================================================
+    const jobTitle = app.job.title;
+    const workerUserId = app.applicantId;
+
+    if (data.status === 'INTERVIEW_SCHEDULED') {
+      // 면접 일정 확정 알림 / Interview scheduled notification
+      await this.sendNotificationSafe(
+        workerUserId,
+        '면접 일정이 확정되었습니다',
+        `'${jobTitle}' 공고의 면접 일정이 확정되었습니다.`,
+        NotificationType.INTERVIEW_UPDATE,
+      );
+    } else if (data.status === 'ACCEPTED') {
+      // 합격 알림 / Acceptance notification
+      await this.sendNotificationSafe(
+        workerUserId,
+        '합격을 축하드립니다!',
+        `'${jobTitle}' 공고에 최종 합격하셨습니다.`,
+        NotificationType.STATUS_ALERT,
+      );
+    } else if (data.status === 'REJECTED') {
+      // 불합격 알림 / Rejection notification
+      await this.sendNotificationSafe(
+        workerUserId,
+        '지원 결과 안내',
+        `'${jobTitle}' 공고에 아쉽게도 합격하지 못했습니다.`,
+        NotificationType.STATUS_ALERT,
+      );
+    }
+
     return { success: true, status: data.status };
   }
 
   // ========================================
   // 외부 지원 자가체크 (구직자)
+  // Self-report external application (worker)
   // ========================================
   async selfReportApplication(userId: string, applicationId: string) {
     const app = await this.prisma.jobApplication.findUnique({
@@ -317,6 +441,7 @@ export class JobApplicationService {
 
   // ========================================
   // 스크랩 토글
+  // Toggle job scrap/bookmark
   // ========================================
   async toggleScrap(userId: string, jobId: string) {
     const existing = await this.prisma.jobScrap.findUnique({
@@ -354,6 +479,7 @@ export class JobApplicationService {
 
   // ========================================
   // 내 스크랩 목록
+  // My scrapped/bookmarked jobs list
   // ========================================
   async getMyScraps(userId: string, query: { page?: number; limit?: number }) {
     const page = query.page || 1;
@@ -418,6 +544,7 @@ export class JobApplicationService {
 
   // ========================================
   // 스크랩 여부 확인
+  // Check if a job is scrapped
   // ========================================
   async checkScrap(userId: string, jobId: string) {
     const scrap = await this.prisma.jobScrap.findUnique({

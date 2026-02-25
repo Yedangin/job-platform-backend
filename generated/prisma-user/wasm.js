@@ -675,6 +675,8 @@ exports.Prisma.JobPostingScalarFieldEnum = {
   isFeatured: 'isFeatured',
   featuredUntil: 'featuredUntil',
   upgradedAt: 'upgradedAt',
+  premiumStartAt: 'premiumStartAt',
+  premiumEndAt: 'premiumEndAt',
   viewCount: 'viewCount',
   scrapCount: 'scrapCount',
   applyCount: 'applyCount',

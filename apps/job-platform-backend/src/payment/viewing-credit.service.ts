@@ -190,6 +190,13 @@ export class ViewingCreditService {
     return { totalRemaining, credits };
   }
 
+  /**
+   * @deprecated 전액 삭제 방식으로 부분 사용 시 환불 과다 지급됨.
+   * 새 코드는 calculateCreditRefund + executeRefund 조합을 사용할 것.
+   *
+   * @deprecated Full-delete approach causes over-refund when credits are partially used.
+   * New code should use calculateCreditRefund + executeRefund combination instead.
+   */
   async rollbackCredits(userId: string, source: string) {
     const credit = await this.paymentPrisma.viewingCredit.findFirst({
       where: { userId, source },
@@ -200,8 +207,92 @@ export class ViewingCreditService {
         where: { id: credit.id },
       });
       this.logger.log(
-        `[ViewingCredit] 열람권 롤백: userId=${userId}, source=${source}`,
+        `[ViewingCredit] 열람권 롤백(구버전): userId=${userId}, source=${source}`,
       );
     }
+  }
+
+  /**
+   * 열람권 환불 계산 (부분 취소 지원)
+   * Calculate refund for viewing credits (supports partial cancellation)
+   *
+   * 반환값 / Return values:
+   * - creditId: ViewingCredit 레코드 ID (0이면 레코드 없음)
+   * - totalCredits: 구매 시 총 열람권 건수
+   * - usedCredits: 이미 사용한 건수 (환불 불가)
+   * - refundableCredits: 환불 가능한 건수 (미사용 건수)
+   * - canFullRefund: 전액 환불 가능 여부 (한 건도 사용 안 했을 때 true)
+   */
+  async calculateCreditRefund(
+    userId: string,
+    source: string,
+  ): Promise<{
+    creditId: number;
+    totalCredits: number;
+    usedCredits: number;
+    refundableCredits: number;
+    canFullRefund: boolean;
+  }> {
+    const credit = await this.paymentPrisma.viewingCredit.findFirst({
+      where: { userId, source },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!credit) {
+      // 레코드 없음: 환불할 것이 없으므로 전액 환불 가능으로 간주
+      // No record: treat as fully refundable (nothing to deduct)
+      return {
+        creditId: 0,
+        totalCredits: 0,
+        usedCredits: 0,
+        refundableCredits: 0,
+        canFullRefund: true,
+      };
+    }
+
+    const refundableCredits = credit.totalCredits - credit.usedCredits;
+
+    return {
+      creditId: credit.id,
+      totalCredits: credit.totalCredits,
+      usedCredits: credit.usedCredits,
+      refundableCredits,
+      canFullRefund: credit.usedCredits === 0,
+    };
+  }
+
+  /**
+   * 열람권 환불 실행 (미사용분만 제거)
+   * Execute credit refund (remove only unused credits)
+   *
+   * - 전혀 사용 안 한 경우: 레코드 삭제 / No usage → delete record
+   * - 일부 사용한 경우: totalCredits를 usedCredits로 축소 (이미 사용한 만큼만 유지)
+   *   Partially used → shrink totalCredits to usedCredits (keep only what was used)
+   */
+  async executeRefund(
+    creditId: number,
+    refundableCredits: number,
+  ): Promise<void> {
+    const credit = await this.paymentPrisma.viewingCredit.findUnique({
+      where: { id: creditId },
+    });
+
+    if (!credit) return;
+
+    if (credit.usedCredits === 0) {
+      // 전혀 사용 안 했으면 레코드 삭제 / No usage → delete record
+      await this.paymentPrisma.viewingCredit.delete({ where: { id: creditId } });
+    } else {
+      // 일부 사용 → totalCredits를 usedCredits로 줄임 (이미 사용한 만큼만 남김)
+      // Partially used → shrink totalCredits to usedCredits (keep only used amount)
+      await this.paymentPrisma.viewingCredit.update({
+        where: { id: creditId },
+        data: { totalCredits: credit.usedCredits },
+      });
+    }
+
+    this.logger.log(
+      `[ViewingCredit] 환불 실행: creditId=${creditId}, refunded=${refundableCredits}건, kept=${credit.usedCredits}건`,
+    );
   }
 }

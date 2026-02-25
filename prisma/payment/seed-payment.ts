@@ -12,18 +12,109 @@ async function main() {
   // ==========================================================
   const products = [
     // 공고 관련 상품 / Job posting products
+
+    // 레거시 단일 프리미엄 (비활성) / Legacy single premium (inactive)
     {
       code: 'JOB_PREMIUM',
-      name: '프리미엄 공고',
-      nameEn: 'Premium Job Posting',
+      name: '프리미엄 공고 (레거시)',
+      nameEn: 'Premium Job Posting (Legacy)',
       category: 'JOB_POSTING' as const,
       price: 50000,
-      description: '상단 노출 + 추천 배지 + 노출 기간 2배',
-      isActive: true,
+      description: '상단 노출 + 추천 배지 + 노출 기간 2배 (레거시 상품)',
+      isActive: false,
       metadata: JSON.stringify({
         standardDays: { partTime: 14, fullTime: 30 },
         premiumDays: { partTime: 30, fullTime: 60 },
       }),
+    },
+    // 레거시 기간별 (비활성) / Legacy duration-based (inactive)
+    { code: 'PREMIUM_7D', name: '상위노출 7일 (레거시)', nameEn: 'Premium 7D (Legacy)', category: 'JOB_POSTING' as const, price: 19000, description: '레거시', isActive: false, metadata: null },
+    { code: 'PREMIUM_14D', name: '상위노출 14일 (레거시)', nameEn: 'Premium 14D (Legacy)', category: 'JOB_POSTING' as const, price: 29000, description: '레거시', isActive: false, metadata: null },
+    { code: 'PREMIUM_30D', name: '상위노출 30일 (레거시)', nameEn: 'Premium 30D (Legacy)', category: 'JOB_POSTING' as const, price: 50000, description: '레거시', isActive: false, metadata: null },
+    { code: 'PREMIUM_60D', name: '상위노출 60일 (레거시)', nameEn: 'Premium 60D (Legacy)', category: 'JOB_POSTING' as const, price: 79000, description: '레거시', isActive: false, metadata: null },
+
+    // ── 알바채용관 상위노출 (런칭 특가) / Part-time board premium listing ──
+    {
+      code: 'ALBA_PREMIUM_7D',
+      name: '알바채용관 상위노출 7일',
+      nameEn: 'Part-time Premium 7 Days',
+      category: 'JOB_POSTING' as const,
+      price: 19000,
+      description: '알바채용관 상위 영역 7일 노출',
+      isActive: true,
+      metadata: JSON.stringify({ durationDays: 7, boardType: 'PART_TIME', originalPrice: 49000, launchPrice: 19000 }),
+    },
+    {
+      code: 'ALBA_PREMIUM_14D',
+      name: '알바채용관 상위노출 14일',
+      nameEn: 'Part-time Premium 14 Days',
+      category: 'JOB_POSTING' as const,
+      price: 29000,
+      description: '알바채용관 상위 영역 14일 노출',
+      isActive: true,
+      metadata: JSON.stringify({ durationDays: 14, boardType: 'PART_TIME', originalPrice: 79000, launchPrice: 29000 }),
+    },
+    {
+      code: 'ALBA_PREMIUM_30D',
+      name: '알바채용관 상위노출 30일',
+      nameEn: 'Part-time Premium 30 Days',
+      category: 'JOB_POSTING' as const,
+      price: 50000,
+      description: '알바채용관 상위 영역 30일 노출',
+      isActive: true,
+      metadata: JSON.stringify({ durationDays: 30, boardType: 'PART_TIME', originalPrice: 130000, launchPrice: 50000 }),
+    },
+    {
+      code: 'ALBA_PREMIUM_60D',
+      name: '알바채용관 상위노출 60일',
+      nameEn: 'Part-time Premium 60 Days',
+      category: 'JOB_POSTING' as const,
+      price: 79000,
+      description: '알바채용관 상위 영역 60일 노출',
+      isActive: true,
+      metadata: JSON.stringify({ durationDays: 60, boardType: 'PART_TIME', originalPrice: 199000, launchPrice: 79000 }),
+    },
+
+    // ── 정규채용관 상위노출 (런칭 특가) / Full-time board premium listing ──
+    {
+      code: 'FULL_PREMIUM_7D',
+      name: '정규채용관 상위노출 7일',
+      nameEn: 'Full-time Premium 7 Days',
+      category: 'JOB_POSTING' as const,
+      price: 19000,
+      description: '정규채용관 상위 영역 7일 노출',
+      isActive: true,
+      metadata: JSON.stringify({ durationDays: 7, boardType: 'FULL_TIME', originalPrice: 49000, launchPrice: 19000 }),
+    },
+    {
+      code: 'FULL_PREMIUM_14D',
+      name: '정규채용관 상위노출 14일',
+      nameEn: 'Full-time Premium 14 Days',
+      category: 'JOB_POSTING' as const,
+      price: 29000,
+      description: '정규채용관 상위 영역 14일 노출',
+      isActive: true,
+      metadata: JSON.stringify({ durationDays: 14, boardType: 'FULL_TIME', originalPrice: 79000, launchPrice: 29000 }),
+    },
+    {
+      code: 'FULL_PREMIUM_30D',
+      name: '정규채용관 상위노출 30일',
+      nameEn: 'Full-time Premium 30 Days',
+      category: 'JOB_POSTING' as const,
+      price: 50000,
+      description: '정규채용관 상위 영역 30일 노출',
+      isActive: true,
+      metadata: JSON.stringify({ durationDays: 30, boardType: 'FULL_TIME', originalPrice: 130000, launchPrice: 50000 }),
+    },
+    {
+      code: 'FULL_PREMIUM_60D',
+      name: '정규채용관 상위노출 60일',
+      nameEn: 'Full-time Premium 60 Days',
+      category: 'JOB_POSTING' as const,
+      price: 79000,
+      description: '정규채용관 상위 영역 60일 노출',
+      isActive: true,
+      metadata: JSON.stringify({ durationDays: 60, boardType: 'FULL_TIME', originalPrice: 199000, launchPrice: 79000 }),
     },
     {
       code: 'JOB_EXTENSION',

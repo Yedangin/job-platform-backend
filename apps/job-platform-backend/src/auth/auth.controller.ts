@@ -288,11 +288,18 @@ export class AuthController {
 
   // --- 12. 알림 설정 변경 / Update notification settings ---
   @Put('my/notification-settings')
-  @ApiOperation({ summary: 'Update notification settings (SMS, email, kakao, marketing)' })
-  @ApiBody({ schema: { example: { sms: true, email: true, kakao: false, marketing: false } } })
+  @ApiOperation({
+    summary: 'Update notification settings (SMS, email, kakao, marketing)',
+  })
+  @ApiBody({
+    schema: {
+      example: { sms: true, email: true, kakao: false, marketing: false },
+    },
+  })
   async updateNotificationSettings(
     @Session() sessionId: string,
-    @Body() body: { sms: boolean; email: boolean; kakao: boolean; marketing?: boolean },
+    @Body()
+    body: { sms: boolean; email: boolean; kakao: boolean; marketing?: boolean },
   ) {
     if (!sessionId) throw new UnauthorizedException('No session provided');
     return await this.authService.updateNotificationSettings(
@@ -306,7 +313,9 @@ export class AuthController {
 
   // --- 12-b. 비밀번호 확인 (보안 재인증) / Verify current password ---
   @Post('verify-password')
-  @ApiOperation({ summary: 'Verify current password for security re-authentication' })
+  @ApiOperation({
+    summary: 'Verify current password for security re-authentication',
+  })
   @ApiBody({ schema: { example: { password: 'currentPassword123' } } })
   async verifyPassword(
     @Session() sessionId: string,

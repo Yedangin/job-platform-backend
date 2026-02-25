@@ -1135,12 +1135,14 @@ model JobPosting {
   employmentSubType EmploymentSubType? @map("employment_sub_type")
 
   // 프리미엄/노출 관련 / Premium & exposure fields
-  expiresAt     DateTime? @map("expires_at")
-  bumpedAt      DateTime? @map("bumped_at")
-  isUrgent      Boolean   @default(false) @map("is_urgent")
-  isFeatured    Boolean   @default(false) @map("is_featured")
-  featuredUntil DateTime? @map("featured_until")
-  upgradedAt    DateTime? @map("upgraded_at")
+  expiresAt      DateTime? @map("expires_at")
+  bumpedAt       DateTime? @map("bumped_at")
+  isUrgent       Boolean   @default(false) @map("is_urgent")
+  isFeatured     Boolean   @default(false) @map("is_featured")
+  featuredUntil  DateTime? @map("featured_until")
+  upgradedAt     DateTime? @map("upgraded_at")
+  premiumStartAt DateTime? @map("premium_start_at")
+  premiumEndAt   DateTime? @map("premium_end_at")
 
   // 통계
   viewCount  Int @default(0) @map("view_count")

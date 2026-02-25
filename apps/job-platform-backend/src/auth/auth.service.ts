@@ -122,13 +122,35 @@ export class AuthService implements OnModuleInit {
       );
     }
 
-    // 2-1. 이미 가입된 이메일인지 확인
-    const existingUser = await this.prisma.user.findFirst({ where: { email } });
+    // 2-1. 이미 가입된 이메일인지 확인 (활성 계정만 체크)
+    // Check for existing active account with this email
+    const existingUser = await this.prisma.user.findFirst({
+      where: { email, deletedAt: null },
+    });
     if (existingUser) {
       const userTypeKorean =
         existingUser.userType === 'INDIVIDUAL' ? '개인' : '기업';
       throw new ConflictException(
         `이미 ${userTypeKorean} 회원으로 가입된 이메일입니다.`,
+      );
+    }
+
+    // 2-2. 탈퇴 후 90일 유예 기간 중인 이메일 OTP 발송 차단
+    // Block OTP for emails in the 90-day post-deletion cooldown period
+    const deletedUser = await this.prisma.user.findFirst({
+      where: {
+        email,
+        deletedAt: { not: null },
+        deleteScheduledAt: { gt: new Date() },
+      },
+    });
+    if (deletedUser) {
+      const remainingDays = Math.ceil(
+        ((deletedUser.deleteScheduledAt?.getTime() ?? 0) - Date.now()) /
+          (1000 * 60 * 60 * 24),
+      );
+      throw new ConflictException(
+        `탈퇴한 계정의 이메일입니다. ${remainingDays}일 후 재가입 가능합니다.`,
       );
     }
 
@@ -244,13 +266,36 @@ export class AuthService implements OnModuleInit {
       throw new BadRequestException('이메일 인증이 완료되지 않았습니다.');
     }
 
-    // 2. One Account Policy: 이메일 중복 체크
-    const existingUser = await this.prisma.user.findFirst({ where: { email } });
+    // 2. One Account Policy: 이메일 중복 체크 (활성 계정)
+    // One Account Policy: check for active account with same email
+    const existingUser = await this.prisma.user.findFirst({
+      where: { email, deletedAt: null },
+    });
     if (existingUser) {
       const userTypeKorean =
         existingUser.userType === 'INDIVIDUAL' ? '개인' : '기업';
       throw new ConflictException(
         `이미 ${userTypeKorean} 회원으로 가입된 이메일입니다.`,
+      );
+    }
+
+    // 2-1. 탈퇴한 계정 이메일 중복 확인 (90일 유예 기간)
+    // Check if email belongs to a recently deleted account (90-day re-registration block)
+    const deletedUser = await this.prisma.user.findFirst({
+      where: {
+        email,
+        deletedAt: { not: null },
+        deleteScheduledAt: { gt: new Date() }, // 아직 완전 삭제 안 된 계정 / not yet permanently deleted
+      },
+    });
+    if (deletedUser) {
+      const remainingDays = Math.ceil(
+        ((deletedUser.deleteScheduledAt?.getTime() ?? 0) - Date.now()) /
+          (1000 * 60 * 60 * 24),
+      );
+      throw new ConflictException(
+        `탈퇴한 계정의 이메일입니다. ${remainingDays}일 후 재가입 가능합니다.` +
+          ` (Email belongs to a recently deleted account. Re-registration available in ${remainingDays} days.)`,
       );
     }
 
@@ -709,8 +754,12 @@ export class AuthService implements OnModuleInit {
       data: { password: hashedPassword },
     });
 
-    // Delete the used token
+    // 사용한 재설정 토큰 삭제 / Delete the used reset token
     await this.redisService.del(`pw_reset:${token}`);
+
+    // 비밀번호 초기화 시 모든 기기 세션 무효화 (토큰 재설정이므로 유지할 세션 없음)
+    // On password reset, invalidate ALL sessions across all devices (no session to preserve)
+    await this.invalidateAllUserSessions(userId);
 
     await this.logActivity(
       user.id,
@@ -718,10 +767,13 @@ export class AuthService implements OnModuleInit {
       null,
       null,
       'PASSWORD_RESET',
-      '비밀번호 재설정 완료',
+      '비밀번호 재설정 완료 (전체 세션 무효화 포함 / All sessions invalidated)',
     );
 
-    return { success: true, message: '비밀번호가 재설정되었습니다.' };
+    return {
+      success: true,
+      message: '비밀번호가 재설정되었습니다. 모든 기기에서 다시 로그인해주세요.',
+    };
   }
 
   private getPasswordResetEmailTemplate(resetUrl: string): string {
@@ -885,6 +937,7 @@ export class AuthService implements OnModuleInit {
   }
 
   // 인증된 사용자 ID를 세션에서 직접 추출하는 헬퍼
+  // Helper to extract userId from Redis session directly
   private async getSessionUserId(sessionId: string): Promise<string> {
     const sessionDataStr = await this.redisService.get(`session:${sessionId}`);
     if (!sessionDataStr)
@@ -893,7 +946,44 @@ export class AuthService implements OnModuleInit {
     return sessionData.userId;
   }
 
+  // 특정 사용자의 모든 세션을 Redis에서 무효화 (현재 세션 제외 가능)
+  // Invalidate all Redis sessions for a given user, optionally keeping the current session
+  private async invalidateAllUserSessions(
+    userId: string,
+    keepSessionId?: string,
+  ): Promise<void> {
+    // session:* 키를 SCAN으로 순회하여 해당 userId의 세션만 삭제
+    // SCAN all session:* keys and delete those belonging to the target userId
+    const sessionKeys = await this.redisService.keys('session:*');
+
+    const deletePromises: Promise<void>[] = [];
+
+    for (const key of sessionKeys) {
+      // 현재 세션은 유지 (비밀번호 변경 본인 세션 보호)
+      // Skip the current session so the user isn't logged out on their own device
+      const rawSessionId = key.replace(/^session:/, '');
+      if (keepSessionId && rawSessionId === keepSessionId) {
+        continue;
+      }
+
+      const dataStr = await this.redisService.get(key);
+      if (!dataStr) continue;
+
+      try {
+        const data = JSON.parse(dataStr) as SessionData;
+        if (data.userId === userId) {
+          deletePromises.push(this.redisService.del(key));
+        }
+      } catch {
+        // 파싱 불가 세션은 무시 / Ignore unparsable session entries
+      }
+    }
+
+    await Promise.all(deletePromises);
+  }
+
   // --- 10. 비밀번호 변경 (이메일 계정만) ---
+  // Change password (email accounts only). Invalidates all other active sessions.
   async changePassword(
     sessionId: string,
     oldPassword: string,
@@ -921,15 +1011,22 @@ export class AuthService implements OnModuleInit {
       data: { password: hashedPassword },
     });
 
+    // 다른 기기의 모든 세션 무효화 (현재 세션 제외) — 보안 강화
+    // Invalidate all other sessions (keep current session) — security hardening
+    await this.invalidateAllUserSessions(userId, sessionId);
+
     await this.logActivity(
       user.id,
       user.email,
       null,
       null,
       'PASSWORD_CHANGE',
-      '비밀번호 변경',
+      '비밀번호 변경 (다른 기기 세션 무효화 포함 / Other device sessions invalidated)',
     );
-    return { success: true, message: '비밀번호가 변경되었습니다.' };
+    return {
+      success: true,
+      message: '비밀번호가 변경되었습니다. 다른 기기에서의 로그인이 해제되었습니다.',
+    };
   }
 
   // --- 11. 프로필 상세 조회 ---
@@ -992,10 +1089,13 @@ export class AuthService implements OnModuleInit {
     if (user.userType === 'INDIVIDUAL') {
       // 개인회원: individualProfile.realName, profileImageUrl 업데이트
       // Individual: update realName and profileImageUrl in individualProfile
-      if (!user.individual) throw new NotFoundException('Individual profile not found');
+      if (!user.individual)
+        throw new NotFoundException('Individual profile not found');
       const updateData: Record<string, unknown> = {};
-      if (data.fullName !== undefined) updateData['realName'] = data.fullName.trim();
-      if (data.profileImageUrl !== undefined) updateData['profileImageUrl'] = data.profileImageUrl;
+      if (data.fullName !== undefined)
+        updateData['realName'] = data.fullName.trim();
+      if (data.profileImageUrl !== undefined)
+        updateData['profileImageUrl'] = data.profileImageUrl;
       await this.prisma.individualProfile.update({
         where: { authId: userId },
         data: updateData,
@@ -1003,10 +1103,13 @@ export class AuthService implements OnModuleInit {
     } else if (user.userType === 'CORPORATE') {
       // 기업회원: corporateProfile.managerName 업데이트
       // Corporate: update managerName in corporateProfile
-      if (!user.corporate) throw new NotFoundException('Corporate profile not found');
+      if (!user.corporate)
+        throw new NotFoundException('Corporate profile not found');
       const updateData: Record<string, unknown> = {};
-      if (data.fullName !== undefined) updateData['managerName'] = data.fullName.trim();
-      if (data.profileImageUrl !== undefined) updateData['logoImageUrl'] = data.profileImageUrl;
+      if (data.fullName !== undefined)
+        updateData['managerName'] = data.fullName.trim();
+      if (data.profileImageUrl !== undefined)
+        updateData['logoImageUrl'] = data.profileImageUrl;
       await this.prisma.corporateProfile.update({
         where: { authId: userId },
         data: updateData,
@@ -1065,11 +1168,14 @@ export class AuthService implements OnModuleInit {
       notifEnabledAt: user.notifEnabledAt?.toISOString() || null,
       // 채널별 동의 일시 / Per-channel consent timestamps
       notifSmsEnabledAt: (user as any).notifSmsEnabledAt?.toISOString() || null,
-      notifEmailEnabledAt: (user as any).notifEmailEnabledAt?.toISOString() || null,
-      notifKakaoEnabledAt: (user as any).notifKakaoEnabledAt?.toISOString() || null,
+      notifEmailEnabledAt:
+        (user as any).notifEmailEnabledAt?.toISOString() || null,
+      notifKakaoEnabledAt:
+        (user as any).notifKakaoEnabledAt?.toISOString() || null,
       // 마케팅 수신 동의 / Marketing consent
       marketingConsent: (user as any).marketingConsent ?? false,
-      marketingConsentAt: (user as any).marketingConsentAt?.toISOString() || null,
+      marketingConsentAt:
+        (user as any).marketingConsentAt?.toISOString() || null,
     };
   }
 
@@ -1102,13 +1208,29 @@ export class AuthService implements OnModuleInit {
         notifKakao: kakao,
         notifEnabledAt: hasAnyEnabled ? now : null,
         // 채널별 타임스탬프: ON으로 바뀌면 현재 시각, OFF로 바뀌면 null
-        notifSmsEnabledAt: sms ? (!prevSms ? now : (user as any).notifSmsEnabledAt ?? now) : null,
-        notifEmailEnabledAt: email ? (!prevEmail ? now : (user as any).notifEmailEnabledAt ?? now) : null,
-        notifKakaoEnabledAt: kakao ? (!prevKakao ? now : (user as any).notifKakaoEnabledAt ?? now) : null,
+        notifSmsEnabledAt: sms
+          ? !prevSms
+            ? now
+            : ((user as any).notifSmsEnabledAt ?? now)
+          : null,
+        notifEmailEnabledAt: email
+          ? !prevEmail
+            ? now
+            : ((user as any).notifEmailEnabledAt ?? now)
+          : null,
+        notifKakaoEnabledAt: kakao
+          ? !prevKakao
+            ? now
+            : ((user as any).notifKakaoEnabledAt ?? now)
+          : null,
         // 마케팅 동의 / Marketing consent
         ...(marketing !== undefined && {
           marketingConsent: marketing,
-          marketingConsentAt: marketing ? (!prevMarketing ? now : (user as any).marketingConsentAt ?? now) : null,
+          marketingConsentAt: marketing
+            ? !prevMarketing
+              ? now
+              : ((user as any).marketingConsentAt ?? now)
+            : null,
         }),
       } as any,
     });
@@ -1136,7 +1258,8 @@ export class AuthService implements OnModuleInit {
       throw new BadRequestException('비밀번호가 설정되지 않은 계정입니다.');
     }
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) throw new BadRequestException('비밀번호가 일치하지 않습니다.');
+    if (!isValid)
+      throw new BadRequestException('비밀번호가 일치하지 않습니다.');
     return { valid: true };
   }
 

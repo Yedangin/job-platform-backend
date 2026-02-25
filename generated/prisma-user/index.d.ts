@@ -44842,6 +44842,8 @@ export namespace Prisma {
     isFeatured: boolean | null
     featuredUntil: Date | null
     upgradedAt: Date | null
+    premiumStartAt: Date | null
+    premiumEndAt: Date | null
     viewCount: number | null
     scrapCount: number | null
     applyCount: number | null
@@ -44884,6 +44886,8 @@ export namespace Prisma {
     isFeatured: boolean | null
     featuredUntil: Date | null
     upgradedAt: Date | null
+    premiumStartAt: Date | null
+    premiumEndAt: Date | null
     viewCount: number | null
     scrapCount: number | null
     applyCount: number | null
@@ -44926,6 +44930,8 @@ export namespace Prisma {
     isFeatured: number
     featuredUntil: number
     upgradedAt: number
+    premiumStartAt: number
+    premiumEndAt: number
     viewCount: number
     scrapCount: number
     applyCount: number
@@ -44990,6 +44996,8 @@ export namespace Prisma {
     isFeatured?: true
     featuredUntil?: true
     upgradedAt?: true
+    premiumStartAt?: true
+    premiumEndAt?: true
     viewCount?: true
     scrapCount?: true
     applyCount?: true
@@ -45032,6 +45040,8 @@ export namespace Prisma {
     isFeatured?: true
     featuredUntil?: true
     upgradedAt?: true
+    premiumStartAt?: true
+    premiumEndAt?: true
     viewCount?: true
     scrapCount?: true
     applyCount?: true
@@ -45074,6 +45084,8 @@ export namespace Prisma {
     isFeatured?: true
     featuredUntil?: true
     upgradedAt?: true
+    premiumStartAt?: true
+    premiumEndAt?: true
     viewCount?: true
     scrapCount?: true
     applyCount?: true
@@ -45203,6 +45215,8 @@ export namespace Prisma {
     isFeatured: boolean
     featuredUntil: Date | null
     upgradedAt: Date | null
+    premiumStartAt: Date | null
+    premiumEndAt: Date | null
     viewCount: number
     scrapCount: number
     applyCount: number
@@ -45264,6 +45278,8 @@ export namespace Prisma {
     isFeatured?: boolean
     featuredUntil?: boolean
     upgradedAt?: boolean
+    premiumStartAt?: boolean
+    premiumEndAt?: boolean
     viewCount?: boolean
     scrapCount?: boolean
     applyCount?: boolean
@@ -45311,6 +45327,8 @@ export namespace Prisma {
     isFeatured?: boolean
     featuredUntil?: boolean
     upgradedAt?: boolean
+    premiumStartAt?: boolean
+    premiumEndAt?: boolean
     viewCount?: boolean
     scrapCount?: boolean
     applyCount?: boolean
@@ -45353,6 +45371,8 @@ export namespace Prisma {
     isFeatured?: boolean
     featuredUntil?: boolean
     upgradedAt?: boolean
+    premiumStartAt?: boolean
+    premiumEndAt?: boolean
     viewCount?: boolean
     scrapCount?: boolean
     applyCount?: boolean
@@ -45395,6 +45415,8 @@ export namespace Prisma {
     isFeatured?: boolean
     featuredUntil?: boolean
     upgradedAt?: boolean
+    premiumStartAt?: boolean
+    premiumEndAt?: boolean
     viewCount?: boolean
     scrapCount?: boolean
     applyCount?: boolean
@@ -45405,7 +45427,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type JobPostingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "corporateId" | "orderId" | "boardType" | "tierType" | "title" | "description" | "workContentImg" | "status" | "closingDate" | "allowedVisas" | "minKoreanLevel" | "displayAddress" | "actualAddress" | "workIntensity" | "benefits" | "contactName" | "contactPhone" | "contactEmail" | "applicationMethod" | "externalUrl" | "externalEmail" | "interviewMethod" | "interviewPlace" | "employmentSubType" | "expiresAt" | "bumpedAt" | "isUrgent" | "isFeatured" | "featuredUntil" | "upgradedAt" | "viewCount" | "scrapCount" | "applyCount" | "suspendedAt" | "suspendReason" | "suspendedBy" | "createdAt" | "updatedAt", ExtArgs["result"]["jobPosting"]>
+  export type JobPostingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "corporateId" | "orderId" | "boardType" | "tierType" | "title" | "description" | "workContentImg" | "status" | "closingDate" | "allowedVisas" | "minKoreanLevel" | "displayAddress" | "actualAddress" | "workIntensity" | "benefits" | "contactName" | "contactPhone" | "contactEmail" | "applicationMethod" | "externalUrl" | "externalEmail" | "interviewMethod" | "interviewPlace" | "employmentSubType" | "expiresAt" | "bumpedAt" | "isUrgent" | "isFeatured" | "featuredUntil" | "upgradedAt" | "premiumStartAt" | "premiumEndAt" | "viewCount" | "scrapCount" | "applyCount" | "suspendedAt" | "suspendReason" | "suspendedBy" | "createdAt" | "updatedAt", ExtArgs["result"]["jobPosting"]>
   export type JobPostingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     albaAttributes?: boolean | JobPosting$albaAttributesArgs<ExtArgs>
     fulltimeAttributes?: boolean | JobPosting$fulltimeAttributesArgs<ExtArgs>
@@ -45456,6 +45478,8 @@ export namespace Prisma {
       isFeatured: boolean
       featuredUntil: Date | null
       upgradedAt: Date | null
+      premiumStartAt: Date | null
+      premiumEndAt: Date | null
       viewCount: number
       scrapCount: number
       applyCount: number
@@ -45922,6 +45946,8 @@ export namespace Prisma {
     readonly isFeatured: FieldRef<"JobPosting", 'Boolean'>
     readonly featuredUntil: FieldRef<"JobPosting", 'DateTime'>
     readonly upgradedAt: FieldRef<"JobPosting", 'DateTime'>
+    readonly premiumStartAt: FieldRef<"JobPosting", 'DateTime'>
+    readonly premiumEndAt: FieldRef<"JobPosting", 'DateTime'>
     readonly viewCount: FieldRef<"JobPosting", 'Int'>
     readonly scrapCount: FieldRef<"JobPosting", 'Int'>
     readonly applyCount: FieldRef<"JobPosting", 'Int'>
@@ -58496,6 +58522,8 @@ export namespace Prisma {
     isFeatured: 'isFeatured',
     featuredUntil: 'featuredUntil',
     upgradedAt: 'upgradedAt',
+    premiumStartAt: 'premiumStartAt',
+    premiumEndAt: 'premiumEndAt',
     viewCount: 'viewCount',
     scrapCount: 'scrapCount',
     applyCount: 'applyCount',
@@ -62504,6 +62532,8 @@ export namespace Prisma {
     isFeatured?: BoolFilter<"JobPosting"> | boolean
     featuredUntil?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
     upgradedAt?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
+    premiumStartAt?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
+    premiumEndAt?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
     viewCount?: IntFilter<"JobPosting"> | number
     scrapCount?: IntFilter<"JobPosting"> | number
     applyCount?: IntFilter<"JobPosting"> | number
@@ -62550,6 +62580,8 @@ export namespace Prisma {
     isFeatured?: SortOrder
     featuredUntil?: SortOrderInput | SortOrder
     upgradedAt?: SortOrderInput | SortOrder
+    premiumStartAt?: SortOrderInput | SortOrder
+    premiumEndAt?: SortOrderInput | SortOrder
     viewCount?: SortOrder
     scrapCount?: SortOrder
     applyCount?: SortOrder
@@ -62599,6 +62631,8 @@ export namespace Prisma {
     isFeatured?: BoolFilter<"JobPosting"> | boolean
     featuredUntil?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
     upgradedAt?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
+    premiumStartAt?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
+    premiumEndAt?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
     viewCount?: IntFilter<"JobPosting"> | number
     scrapCount?: IntFilter<"JobPosting"> | number
     applyCount?: IntFilter<"JobPosting"> | number
@@ -62645,6 +62679,8 @@ export namespace Prisma {
     isFeatured?: SortOrder
     featuredUntil?: SortOrderInput | SortOrder
     upgradedAt?: SortOrderInput | SortOrder
+    premiumStartAt?: SortOrderInput | SortOrder
+    premiumEndAt?: SortOrderInput | SortOrder
     viewCount?: SortOrder
     scrapCount?: SortOrder
     applyCount?: SortOrder
@@ -62695,6 +62731,8 @@ export namespace Prisma {
     isFeatured?: BoolWithAggregatesFilter<"JobPosting"> | boolean
     featuredUntil?: DateTimeNullableWithAggregatesFilter<"JobPosting"> | Date | string | null
     upgradedAt?: DateTimeNullableWithAggregatesFilter<"JobPosting"> | Date | string | null
+    premiumStartAt?: DateTimeNullableWithAggregatesFilter<"JobPosting"> | Date | string | null
+    premiumEndAt?: DateTimeNullableWithAggregatesFilter<"JobPosting"> | Date | string | null
     viewCount?: IntWithAggregatesFilter<"JobPosting"> | number
     scrapCount?: IntWithAggregatesFilter<"JobPosting"> | number
     applyCount?: IntWithAggregatesFilter<"JobPosting"> | number
@@ -67264,6 +67302,8 @@ export namespace Prisma {
     isFeatured?: boolean
     featuredUntil?: Date | string | null
     upgradedAt?: Date | string | null
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
     viewCount?: number
     scrapCount?: number
     applyCount?: number
@@ -67310,6 +67350,8 @@ export namespace Prisma {
     isFeatured?: boolean
     featuredUntil?: Date | string | null
     upgradedAt?: Date | string | null
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
     viewCount?: number
     scrapCount?: number
     applyCount?: number
@@ -67356,6 +67398,8 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     featuredUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     upgradedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
     scrapCount?: IntFieldUpdateOperationsInput | number
     applyCount?: IntFieldUpdateOperationsInput | number
@@ -67402,6 +67446,8 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     featuredUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     upgradedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
     scrapCount?: IntFieldUpdateOperationsInput | number
     applyCount?: IntFieldUpdateOperationsInput | number
@@ -67448,6 +67494,8 @@ export namespace Prisma {
     isFeatured?: boolean
     featuredUntil?: Date | string | null
     upgradedAt?: Date | string | null
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
     viewCount?: number
     scrapCount?: number
     applyCount?: number
@@ -67490,6 +67538,8 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     featuredUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     upgradedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
     scrapCount?: IntFieldUpdateOperationsInput | number
     applyCount?: IntFieldUpdateOperationsInput | number
@@ -67532,6 +67582,8 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     featuredUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     upgradedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
     scrapCount?: IntFieldUpdateOperationsInput | number
     applyCount?: IntFieldUpdateOperationsInput | number
@@ -71553,6 +71605,8 @@ export namespace Prisma {
     isFeatured?: SortOrder
     featuredUntil?: SortOrder
     upgradedAt?: SortOrder
+    premiumStartAt?: SortOrder
+    premiumEndAt?: SortOrder
     viewCount?: SortOrder
     scrapCount?: SortOrder
     applyCount?: SortOrder
@@ -71605,6 +71659,8 @@ export namespace Prisma {
     isFeatured?: SortOrder
     featuredUntil?: SortOrder
     upgradedAt?: SortOrder
+    premiumStartAt?: SortOrder
+    premiumEndAt?: SortOrder
     viewCount?: SortOrder
     scrapCount?: SortOrder
     applyCount?: SortOrder
@@ -71647,6 +71703,8 @@ export namespace Prisma {
     isFeatured?: SortOrder
     featuredUntil?: SortOrder
     upgradedAt?: SortOrder
+    premiumStartAt?: SortOrder
+    premiumEndAt?: SortOrder
     viewCount?: SortOrder
     scrapCount?: SortOrder
     applyCount?: SortOrder
@@ -81075,6 +81133,8 @@ export namespace Prisma {
     isFeatured?: boolean
     featuredUntil?: Date | string | null
     upgradedAt?: Date | string | null
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
     viewCount?: number
     scrapCount?: number
     applyCount?: number
@@ -81120,6 +81180,8 @@ export namespace Prisma {
     isFeatured?: boolean
     featuredUntil?: Date | string | null
     upgradedAt?: Date | string | null
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
     viewCount?: number
     scrapCount?: number
     applyCount?: number
@@ -81181,6 +81243,8 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     featuredUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     upgradedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
     scrapCount?: IntFieldUpdateOperationsInput | number
     applyCount?: IntFieldUpdateOperationsInput | number
@@ -81226,6 +81290,8 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     featuredUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     upgradedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
     scrapCount?: IntFieldUpdateOperationsInput | number
     applyCount?: IntFieldUpdateOperationsInput | number
@@ -81271,6 +81337,8 @@ export namespace Prisma {
     isFeatured?: boolean
     featuredUntil?: Date | string | null
     upgradedAt?: Date | string | null
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
     viewCount?: number
     scrapCount?: number
     applyCount?: number
@@ -81316,6 +81384,8 @@ export namespace Prisma {
     isFeatured?: boolean
     featuredUntil?: Date | string | null
     upgradedAt?: Date | string | null
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
     viewCount?: number
     scrapCount?: number
     applyCount?: number
@@ -81377,6 +81447,8 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     featuredUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     upgradedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
     scrapCount?: IntFieldUpdateOperationsInput | number
     applyCount?: IntFieldUpdateOperationsInput | number
@@ -81422,6 +81494,8 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     featuredUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     upgradedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
     scrapCount?: IntFieldUpdateOperationsInput | number
     applyCount?: IntFieldUpdateOperationsInput | number
@@ -81467,6 +81541,8 @@ export namespace Prisma {
     isFeatured?: boolean
     featuredUntil?: Date | string | null
     upgradedAt?: Date | string | null
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
     viewCount?: number
     scrapCount?: number
     applyCount?: number
@@ -81512,6 +81588,8 @@ export namespace Prisma {
     isFeatured?: boolean
     featuredUntil?: Date | string | null
     upgradedAt?: Date | string | null
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
     viewCount?: number
     scrapCount?: number
     applyCount?: number
@@ -81573,6 +81651,8 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     featuredUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     upgradedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
     scrapCount?: IntFieldUpdateOperationsInput | number
     applyCount?: IntFieldUpdateOperationsInput | number
@@ -81618,6 +81698,8 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     featuredUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     upgradedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
     scrapCount?: IntFieldUpdateOperationsInput | number
     applyCount?: IntFieldUpdateOperationsInput | number
@@ -81663,6 +81745,8 @@ export namespace Prisma {
     isFeatured?: boolean
     featuredUntil?: Date | string | null
     upgradedAt?: Date | string | null
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
     viewCount?: number
     scrapCount?: number
     applyCount?: number
@@ -81708,6 +81792,8 @@ export namespace Prisma {
     isFeatured?: boolean
     featuredUntil?: Date | string | null
     upgradedAt?: Date | string | null
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
     viewCount?: number
     scrapCount?: number
     applyCount?: number
@@ -81769,6 +81855,8 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     featuredUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     upgradedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
     scrapCount?: IntFieldUpdateOperationsInput | number
     applyCount?: IntFieldUpdateOperationsInput | number
@@ -81814,6 +81902,8 @@ export namespace Prisma {
     isFeatured?: BoolFieldUpdateOperationsInput | boolean
     featuredUntil?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     upgradedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     viewCount?: IntFieldUpdateOperationsInput | number
     scrapCount?: IntFieldUpdateOperationsInput | number
     applyCount?: IntFieldUpdateOperationsInput | number

@@ -142,16 +142,32 @@ export class PortoneService {
   /**
    * 결제 취소 / Cancel payment
    * POST /payments/{paymentId}/cancel
+   *
+   * @param paymentId 포트원 결제 ID / PortOne payment ID
+   * @param reason 취소 사유 / Cancellation reason
+   * @param amount 부분 취소 금액 (undefined = 전액 취소) / Partial cancel amount (undefined = full cancel)
    */
   async cancelPayment(
     paymentId: string,
     reason: string,
+    amount?: number,
   ): Promise<{ status: string; cancelledAmount: number }> {
     const url = `${this.baseUrl}/payments/${encodeURIComponent(paymentId)}/cancel`;
-    this.logger.log(`[PortOne] POST ${url} — reason: ${reason}`);
+
+    // 부분 취소 여부 로깅 / Log whether this is a partial or full cancellation
+    const isPartial = amount !== undefined;
+    this.logger.log(
+      `[PortOne] POST ${url} — reason: ${reason}${isPartial ? `, partialAmount: ${amount}` : ' (전액취소/full)'}`,
+    );
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 60_000);
+
+    // 요청 바디 구성 (부분 취소 시 amount 포함) / Build request body (include amount for partial cancel)
+    const requestBody: { reason: string; amount?: number } = { reason };
+    if (isPartial && amount !== undefined) {
+      requestBody.amount = amount;
+    }
 
     try {
       const response = await fetch(url, {
@@ -160,7 +176,7 @@ export class PortoneService {
           Authorization: `PortOne ${this.apiSecret}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ reason }),
+        body: JSON.stringify(requestBody),
         signal: controller.signal,
       });
 
@@ -175,16 +191,23 @@ export class PortoneService {
       }
 
       const data = await response.json();
-      this.logger.log(`[PortOne] 결제 취소 성공: ${paymentId}`);
+      this.logger.log(
+        `[PortOne] 결제 취소 성공: ${paymentId}, 취소금액=${data.cancellation?.totalAmount}`,
+      );
       return {
         status: data.cancellation?.status || 'CANCELLED',
         cancelledAmount: data.cancellation?.totalAmount || 0,
       };
     } catch (error) {
       if (error instanceof InternalServerErrorException) throw error;
-      this.logger.error(`[PortOne] Cancel error: ${error.message}`);
+      if ((error as NodeJS.ErrnoException).name === 'AbortError') {
+        throw new InternalServerErrorException(
+          '포트원 API 타임아웃 / PortOne API timeout (60s)',
+        );
+      }
+      this.logger.error(`[PortOne] Cancel error: ${(error as Error).message}`);
       throw new InternalServerErrorException(
-        `포트원 취소 API 호출 실패 / PortOne cancel API failed: ${error.message}`,
+        `포트원 취소 API 호출 실패 / PortOne cancel API failed: ${(error as Error).message}`,
       );
     } finally {
       clearTimeout(timeout);
