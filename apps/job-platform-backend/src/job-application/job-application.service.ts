@@ -1,92 +1,54 @@
 import {
   Injectable,
+  Logger,
   NotFoundException,
   BadRequestException,
   ForbiddenException,
   ConflictException,
-  Logger,
-  Inject,
-  OnModuleInit,
 } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
-import { AuthPrismaService, RedisService } from 'libs/common/src';
 import {
-  NOTIFICATION_PACKAGE_NAME,
-  NotificationServiceClient,
-  NOTIFICATION_SERVICE_NAME,
-  NotificationType,
-  NotificationChannel,
-} from 'types/notification/notification';
+  AuthPrismaService,
+  NotificationPrismaService,
+  RedisService,
+} from 'libs/common/src';
+import { NotificationType } from 'generated/prisma-notification';
+import {
+  ApplyToJobDto,
+  GetMyApplicationsQueryDto,
+  GetJobApplicationsQueryDto,
+  UpdateApplicationStatusDto,
+  CreateInterviewSlotsDto,
+  SelectInterviewSlotDto,
+  ProposeNewTimeDto,
+  SendResultNotificationDto,
+} from './dto';
 
 @Injectable()
-export class JobApplicationService implements OnModuleInit {
-  // NestJS Logger 인스턴스 (console.log 사용 금지)
-  // NestJS Logger instance (no console.log)
+export class JobApplicationService {
   private readonly logger = new Logger(JobApplicationService.name);
-
-  // gRPC 알림 서비스 클라이언트
-  // gRPC notification service client
-  private notificationService: NotificationServiceClient;
 
   constructor(
     private readonly prisma: AuthPrismaService,
+    private readonly notificationPrisma: NotificationPrismaService,
     private readonly redis: RedisService,
-    @Inject(NOTIFICATION_PACKAGE_NAME) private readonly grpcClient: ClientGrpc,
   ) {}
 
-  // 모듈 초기화 시 gRPC 서비스 클라이언트 획득
-  // Obtain gRPC service client on module initialization
-  onModuleInit() {
-    this.notificationService =
-      this.grpcClient.getService<NotificationServiceClient>(
-        NOTIFICATION_SERVICE_NAME,
-      );
-  }
-
   // ========================================
-  // [내부] 알림 발송 헬퍼 — 실패해도 메인 흐름 중단 없음
-  // [Internal] Notification send helper — never blocks main flow on failure
+  // 1. 지원하기 (Apply to Job)
   // ========================================
-  private async sendNotificationSafe(
-    userId: string,
-    subject: string,
-    content: string,
-    notificationType: NotificationType,
-  ): Promise<void> {
-    try {
-      await firstValueFrom(
-        this.notificationService.sendNotification({
-          userId,
-          subject,
-          content,
-          notificationType,
-          channel: NotificationChannel.BOTH,
-        }),
-      );
-    } catch (err) {
-      // 알림 발송 실패는 경고로만 기록하고 예외를 상위로 전파하지 않음
-      // Log notification failure as warning only — do not re-throw
-      this.logger.warn(
-        `알림 발송 실패 / Notification send failed for userId=${userId}: ${err}`,
-      );
+  async applyToJob(userId: string, jobId: string, dto: ApplyToJobDto) {
+    // 개인회원 확인 / Validate INDIVIDUAL user
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) throw new NotFoundException('User not found');
+    if (user.userType !== 'INDIVIDUAL') {
+      throw new ForbiddenException('Only INDIVIDUAL users can apply to jobs');
     }
-  }
 
-  // ========================================
-  // 지원하기
-  // Apply to a job posting
-  // ========================================
-  async applyToJob(
-    userId: string,
-    data: {
-      jobId: string;
-      applicationMethod?: string;
-      coverLetter?: string;
-    },
-  ) {
+    // 공고 확인 / Validate job posting
     const job = await this.prisma.jobPosting.findUnique({
-      where: { id: BigInt(data.jobId) },
+      where: { id: BigInt(jobId) },
     });
     if (!job) throw new NotFoundException('Job posting not found');
     if (job.status !== 'ACTIVE') {
@@ -97,18 +59,18 @@ export class JobApplicationService implements OnModuleInit {
     const existing = await this.prisma.jobApplication.findUnique({
       where: {
         jobId_applicantId: {
-          jobId: BigInt(data.jobId),
+          jobId: BigInt(jobId),
           applicantId: userId,
         },
       },
     });
     if (existing) throw new ConflictException('Already applied to this job');
 
-    const method = data.applicationMethod || job.applicationMethod;
+    const method = dto.applicationMethod || job.applicationMethod;
 
+    // 이력서 스냅샷 생성 / Create resume snapshot for PLATFORM applications
     let resumeSnapshot: string | null = null;
     if (method === 'PLATFORM') {
-      // 이력서 스냅샷 생성 / Create resume snapshot
       const profile = await this.prisma.individualProfile.findUnique({
         where: { authId: userId },
         include: {
@@ -148,47 +110,20 @@ export class JobApplicationService implements OnModuleInit {
 
     const application = await this.prisma.jobApplication.create({
       data: {
-        jobId: BigInt(data.jobId),
+        jobId: BigInt(jobId),
         applicantId: userId,
         applicationMethod: method as any,
-        coverLetter: data.coverLetter,
+        coverLetter: dto.coverLetter,
         resumeSnapshot,
         selfReportedAt: method !== 'PLATFORM' ? new Date() : null,
       },
     });
 
-    // 지원수 증가 / Increment application count
+    // 지원수 증가 / Increment apply count
     await this.prisma.jobPosting.update({
-      where: { id: BigInt(data.jobId) },
+      where: { id: BigInt(jobId) },
       data: { applyCount: { increment: 1 } },
     });
-
-    // ============================================================
-    // [알림] 기업회원에게 새 지원자 도착 알림 발송
-    // [Notification] Notify company of new applicant
-    // ============================================================
-    // 지원자 이름 및 기업 authId 조회
-    // Fetch applicant's name and company authId
-    const [applicantProfile, companyProfile] = await Promise.all([
-      this.prisma.individualProfile.findUnique({
-        where: { authId: userId },
-        select: { realName: true },
-      }),
-      this.prisma.corporateProfile.findUnique({
-        where: { companyId: job.corporateId },
-        select: { authId: true },
-      }),
-    ]);
-
-    if (companyProfile?.authId) {
-      const workerName = applicantProfile?.realName ?? '지원자';
-      await this.sendNotificationSafe(
-        companyProfile.authId,
-        '새 지원자가 있습니다',
-        `${workerName}님이 '${job.title}' 공고에 지원했습니다.`,
-        NotificationType.APPLICATION_ALERT,
-      );
-    }
 
     return {
       applicationId: application.id.toString(),
@@ -198,16 +133,12 @@ export class JobApplicationService implements OnModuleInit {
   }
 
   // ========================================
-  // 내 지원 목록 (구직자)
-  // My applications list (worker/job-seeker)
+  // 2. 내 지원 목록 (My Applications - Job Seeker)
   // ========================================
-  async getMyApplications(
-    userId: string,
-    query: { status?: string; page?: number; limit?: number },
-  ) {
+  async getMyApplications(userId: string, query: GetMyApplicationsQueryDto) {
     const page = query.page || 1;
     const limit = query.limit || 20;
-    const where: Record<string, unknown> = { applicantId: userId };
+    const where: any = { applicantId: userId };
     if (query.status) where.status = query.status;
 
     const [items, total] = await Promise.all([
@@ -221,7 +152,7 @@ export class JobApplicationService implements OnModuleInit {
       this.prisma.jobApplication.count({ where }),
     ]);
 
-    // 기업 정보 조회 / Fetch company information
+    // 기업 정보 조회 / Fetch corporate profiles
     const corpIds = [...new Set(items.map((i) => i.job.corporateId))];
     const corporates = await this.prisma.corporateProfile.findMany({
       where: { companyId: { in: corpIds } },
@@ -263,15 +194,14 @@ export class JobApplicationService implements OnModuleInit {
   }
 
   // ========================================
-  // 공고별 지원자 목록 (기업회원)
-  // Applications list per job posting (company)
+  // 3. 공고별 지원자 목록 (Job Applications - Corporate)
   // ========================================
   async getJobApplications(
     userId: string,
     jobId: string,
-    query: { page?: number; limit?: number },
+    query: GetJobApplicationsQueryDto,
   ) {
-    // 소유권 확인 / Verify ownership
+    // 소유권 확인 / Validate ownership
     const corp = await this.prisma.corporateProfile.findUnique({
       where: { authId: userId },
     });
@@ -287,7 +217,8 @@ export class JobApplicationService implements OnModuleInit {
 
     const page = query.page || 1;
     const limit = query.limit || 20;
-    const where = { jobId: BigInt(jobId) };
+    const where: any = { jobId: BigInt(jobId) };
+    if (query.status) where.status = query.status;
 
     const [items, total] = await Promise.all([
       this.prisma.jobApplication.findMany({
@@ -322,6 +253,7 @@ export class JobApplicationService implements OnModuleInit {
           interviewDate: app.interviewDate,
           interviewNote: app.interviewNote,
           rejectionReason: app.rejectionReason,
+          resultNotifiedAt: app.resultNotifiedAt,
           createdAt: app.createdAt,
           applicant: profile
             ? {
@@ -342,18 +274,12 @@ export class JobApplicationService implements OnModuleInit {
   }
 
   // ========================================
-  // 지원 상태 변경 (기업회원)
-  // Update application status (company)
+  // 4. 지원 상태 변경 (Update Application Status - Corporate)
   // ========================================
   async updateApplicationStatus(
     userId: string,
     applicationId: string,
-    data: {
-      status: string;
-      interviewDate?: string;
-      interviewNote?: string;
-      rejectionReason?: string;
-    },
+    dto: UpdateApplicationStatusDto,
   ) {
     const app = await this.prisma.jobApplication.findUnique({
       where: { id: BigInt(applicationId) },
@@ -361,6 +287,7 @@ export class JobApplicationService implements OnModuleInit {
     });
     if (!app) throw new NotFoundException('Application not found');
 
+    // 소유권 확인 / Validate ownership
     const corp = await this.prisma.corporateProfile.findUnique({
       where: { authId: userId },
     });
@@ -368,13 +295,470 @@ export class JobApplicationService implements OnModuleInit {
       throw new ForbiddenException('Not the owner');
     }
 
-    const updateData: Record<string, unknown> = { status: data.status };
-    if (data.interviewDate)
-      updateData.interviewDate = new Date(data.interviewDate);
-    if (data.interviewNote) updateData.interviewNote = data.interviewNote;
-    if (data.rejectionReason) updateData.rejectionReason = data.rejectionReason;
-    if (data.status === 'ACCEPTED' || data.status === 'REJECTED') {
+    // 상태 전이 검증 / Validate status transition
+    const validTransitions: Record<string, string[]> = {
+      PENDING: ['REVIEWING', 'INTERVIEW_SCHEDULED', 'REJECTED'],
+      REVIEWING: ['INTERVIEW_SCHEDULED', 'ACCEPTED', 'REJECTED'],
+      INTERVIEW_SCHEDULED: ['ACCEPTED', 'REJECTED'],
+    };
+    const allowed = validTransitions[app.status] || [];
+    if (!allowed.includes(dto.status)) {
+      throw new BadRequestException(
+        `Cannot transition from ${app.status} to ${dto.status}`,
+      );
+    }
+
+    const updateData: any = { status: dto.status };
+    if (dto.interviewDate) {
+      updateData.interviewDate = new Date(dto.interviewDate);
+    }
+    if (dto.interviewNote) {
+      updateData.interviewNote = dto.interviewNote;
+    }
+    if (dto.rejectionReason) {
+      updateData.rejectionReason = dto.rejectionReason;
+    }
+    if (dto.status === 'REJECTED') {
       updateData.resultNotifiedAt = new Date();
+    }
+
+    const updated = await this.prisma.jobApplication.update({
+      where: { id: BigInt(applicationId) },
+      data: updateData,
+    });
+
+    // INTERVIEW_SCHEDULED로 변경 시 면접 초대 발송 / Send interview invitation
+    if (dto.status === 'INTERVIEW_SCHEDULED') {
+      setImmediate(() => {
+        this.sendInterviewInvitation(userId, applicationId).catch((err) => {
+          this.logger.error(
+            `Failed to send interview invitation for app ${applicationId}:`,
+            err,
+          );
+        });
+      });
+    }
+
+    return { success: true, status: updated.status };
+  }
+
+  // ========================================
+  // 5. 면접 슬롯 생성 (Create Interview Slots - Corporate)
+  // ========================================
+  async createInterviewSlots(
+    userId: string,
+    jobId: string,
+    dto: CreateInterviewSlotsDto,
+  ) {
+    // 소유권 확인 / Validate ownership
+    const corp = await this.prisma.corporateProfile.findUnique({
+      where: { authId: userId },
+    });
+    if (!corp) throw new ForbiddenException('Corporate profile required');
+
+    const job = await this.prisma.jobPosting.findUnique({
+      where: { id: BigInt(jobId) },
+    });
+    if (!job) throw new NotFoundException('Job posting not found');
+    if (job.corporateId !== corp.companyId) {
+      throw new ForbiddenException('Not the owner of this posting');
+    }
+
+    if (!dto.slots || dto.slots.length === 0) {
+      throw new BadRequestException('At least one slot is required');
+    }
+
+    // 슬롯 유효성 검증 / Validate slot times
+    const now = new Date();
+    for (const slot of dto.slots) {
+      const start = new Date(slot.startTime);
+      const end = new Date(slot.endTime);
+      if (start >= end) {
+        throw new BadRequestException(
+          'Slot startTime must be before endTime',
+        );
+      }
+      if (start <= now) {
+        throw new BadRequestException('Slot startTime must be in the future');
+      }
+    }
+
+    // 슬롯 일괄 생성 / Bulk create slots
+    const created = await Promise.all(
+      dto.slots.map((slot) =>
+        this.prisma.interviewSlot.create({
+          data: {
+            jobId: BigInt(jobId),
+            startTime: new Date(slot.startTime),
+            endTime: new Date(slot.endTime),
+            isBooked: false,
+          },
+        }),
+      ),
+    );
+
+    return {
+      success: true,
+      slotsCreated: created.length,
+      slots: created.map((s) => ({
+        slotId: s.id.toString(),
+        startTime: s.startTime,
+        endTime: s.endTime,
+        isBooked: s.isBooked,
+      })),
+    };
+  }
+
+  // ========================================
+  // 6. 면접 슬롯 조회 (Get Interview Slots)
+  // ========================================
+  async getInterviewSlots(userId: string, jobId: string) {
+    const job = await this.prisma.jobPosting.findUnique({
+      where: { id: BigInt(jobId) },
+    });
+    if (!job) throw new NotFoundException('Job posting not found');
+
+    // 기업회원 여부 확인 / Check if user is corporate owner
+    const corp = await this.prisma.corporateProfile.findUnique({
+      where: { authId: userId },
+    });
+    const isCorporateOwner =
+      corp && job.corporateId === corp.companyId;
+
+    // 지원자 여부 확인 / Check if user is an applicant
+    const application = await this.prisma.jobApplication.findUnique({
+      where: {
+        jobId_applicantId: {
+          jobId: BigInt(jobId),
+          applicantId: userId,
+        },
+      },
+    });
+    const isApplicant = !!application;
+
+    if (!isCorporateOwner && !isApplicant) {
+      throw new ForbiddenException(
+        'Only the job owner or applicants can view interview slots',
+      );
+    }
+
+    // 슬롯 조회 / Fetch slots
+    let where: any = { jobId: BigInt(jobId) };
+
+    // 지원자는 예약 가능한 슬롯만 조회 / Applicants see only available slots
+    if (!isCorporateOwner) {
+      where = {
+        ...where,
+        OR: [
+          { isBooked: false },
+          // 본인이 선택한 슬롯도 포함 / Include slot selected by this applicant
+          ...(application?.interviewDate
+            ? [{ startTime: application.interviewDate }]
+            : []),
+        ],
+      };
+    }
+
+    const slots = await this.prisma.interviewSlot.findMany({
+      where,
+      orderBy: { startTime: 'asc' },
+    });
+
+    return {
+      jobId: jobId,
+      slots: slots.map((s) => ({
+        slotId: s.id.toString(),
+        startTime: s.startTime,
+        endTime: s.endTime,
+        isBooked: s.isBooked,
+      })),
+    };
+  }
+
+  // ========================================
+  // 7. 면접 슬롯 선택 (Select Interview Slot - Applicant)
+  // ========================================
+  async selectInterviewSlot(
+    userId: string,
+    applicationId: string,
+    dto: SelectInterviewSlotDto,
+  ) {
+    // 지원서 확인 / Find application
+    const app = await this.prisma.jobApplication.findUnique({
+      where: { id: BigInt(applicationId) },
+      include: { job: true },
+    });
+    if (!app) throw new NotFoundException('Application not found');
+    if (app.applicantId !== userId) {
+      throw new ForbiddenException('Not the applicant');
+    }
+
+    // INTERVIEW_SCHEDULED 상태에서만 슬롯 선택 가능 / Only when interview is scheduled
+    if (
+      app.status !== 'INTERVIEW_SCHEDULED' &&
+      app.status !== 'REVIEWING'
+    ) {
+      throw new BadRequestException(
+        'Application must be in INTERVIEW_SCHEDULED or REVIEWING status to select a slot',
+      );
+    }
+
+    // 슬롯 확인 / Validate slot
+    const slot = await this.prisma.interviewSlot.findUnique({
+      where: { id: BigInt(dto.slotId) },
+    });
+    if (!slot) throw new NotFoundException('Interview slot not found');
+    if (slot.jobId !== app.jobId) {
+      throw new BadRequestException(
+        'This slot does not belong to the same job posting',
+      );
+    }
+    if (slot.isBooked) {
+      throw new ConflictException('This interview slot is already booked');
+    }
+
+    // 트랜잭션으로 슬롯 예약 + 지원서 업데이트 / Transaction: book slot + update application
+    await this.prisma.$transaction(async (tx) => {
+      await tx.interviewSlot.update({
+        where: { id: BigInt(dto.slotId) },
+        data: { isBooked: true },
+      });
+
+      await tx.jobApplication.update({
+        where: { id: BigInt(applicationId) },
+        data: {
+          status: 'INTERVIEW_SCHEDULED',
+          interviewDate: slot.startTime,
+          interviewNote: `Slot confirmed: ${slot.startTime.toISOString()} - ${slot.endTime.toISOString()}`,
+        },
+      });
+    });
+
+    // 기업에게 알림 / Notify corporate owner
+    const corp = await this.prisma.corporateProfile.findUnique({
+      where: { companyId: app.job.corporateId },
+    });
+    if (corp) {
+      const corpEmail = await this.getApplicantEmail(corp.authId);
+      if (corpEmail) {
+        setImmediate(() => {
+          this.createInAppNotification(
+            corp.authId,
+            'INTERVIEW_UPDATE',
+            `지원자가 면접 시간을 선택했습니다. / An applicant has selected an interview slot.`,
+            {
+              applicationId: applicationId,
+              slotId: dto.slotId,
+              interviewTime: slot.startTime.toISOString(),
+            },
+          ).catch((err) =>
+            this.logger.error('Failed to create in-app notification:', err),
+          );
+        });
+      }
+    }
+
+    return {
+      success: true,
+      status: 'INTERVIEW_SCHEDULED',
+      interviewDate: slot.startTime,
+      slotId: dto.slotId,
+    };
+  }
+
+  // ========================================
+  // 8. 새 시간 제안 (Propose New Time - Applicant/Employer)
+  // ========================================
+  async proposeNewTime(
+    userId: string,
+    applicationId: string,
+    dto: ProposeNewTimeDto,
+  ) {
+    const app = await this.prisma.jobApplication.findUnique({
+      where: { id: BigInt(applicationId) },
+      include: { job: true },
+    });
+    if (!app) throw new NotFoundException('Application not found');
+
+    // 권한 확인 / Validate permission
+    const corp = await this.prisma.corporateProfile.findUnique({
+      where: { authId: userId },
+    });
+    const isCorporateOwner =
+      corp && app.job.corporateId === corp.companyId;
+    const isApplicant = app.applicantId === userId;
+
+    if (!isCorporateOwner && !isApplicant) {
+      throw new ForbiddenException(
+        'Only the job owner or applicant can propose a new time',
+      );
+    }
+
+    // 제안 가능한 상태 확인 / Validate status for proposing
+    const allowedStatuses = [
+      'INTERVIEW_SCHEDULED',
+      'REVIEWING',
+      'PENDING',
+    ];
+    if (!allowedStatuses.includes(app.status)) {
+      throw new BadRequestException(
+        `Cannot propose new time when status is ${app.status}`,
+      );
+    }
+
+    const proposedTime = new Date(dto.proposedTime);
+    if (proposedTime <= new Date()) {
+      throw new BadRequestException('Proposed time must be in the future');
+    }
+
+    const proposedBy = isCorporateOwner ? 'EMPLOYER' : 'APPLICANT';
+
+    await this.prisma.jobApplication.update({
+      where: { id: BigInt(applicationId) },
+      data: {
+        interviewDate: proposedTime,
+        interviewNote: dto.note
+          ? `[${proposedBy} proposed] ${dto.note}`
+          : `[${proposedBy} proposed] New time: ${proposedTime.toISOString()}`,
+        status: 'REVIEWING',
+      },
+    });
+
+    // 상대방에게 알림 / Notify the other party
+    const notifyUserId = isCorporateOwner ? app.applicantId : corp ? corp.authId : null;
+    if (notifyUserId) {
+      setImmediate(() => {
+        this.createInAppNotification(
+          notifyUserId,
+          'INTERVIEW_UPDATE',
+          `면접 시간 변경이 제안되었습니다. / A new interview time has been proposed.`,
+          {
+            applicationId: applicationId,
+            proposedBy,
+            proposedTime: proposedTime.toISOString(),
+          },
+        ).catch((err) =>
+          this.logger.error('Failed to create in-app notification:', err),
+        );
+      });
+    }
+
+    return {
+      success: true,
+      status: 'REVIEWING',
+      proposedBy,
+      proposedTime,
+    };
+  }
+
+  // ========================================
+  // 9. 지원 취소 (Cancel Application - Applicant)
+  // ========================================
+  async cancelApplication(userId: string, applicationId: string) {
+    const app = await this.prisma.jobApplication.findUnique({
+      where: { id: BigInt(applicationId) },
+      include: { job: true },
+    });
+    if (!app) throw new NotFoundException('Application not found');
+    if (app.applicantId !== userId) {
+      throw new ForbiddenException('Not the applicant');
+    }
+
+    // 이미 취소/합격/불합격 상태면 취소 불가 / Cannot cancel if already finalized
+    if (['CANCELLED', 'ACCEPTED', 'REJECTED'].includes(app.status)) {
+      throw new BadRequestException(
+        `Cannot cancel application with status ${app.status}`,
+      );
+    }
+
+    // 예약된 슬롯 해제 / Release booked slot if exists
+    if (app.interviewDate) {
+      const bookedSlot = await this.prisma.interviewSlot.findFirst({
+        where: {
+          jobId: app.jobId,
+          startTime: app.interviewDate,
+          isBooked: true,
+        },
+      });
+      if (bookedSlot) {
+        await this.prisma.interviewSlot.update({
+          where: { id: bookedSlot.id },
+          data: { isBooked: false },
+        });
+      }
+    }
+
+    await this.prisma.jobApplication.update({
+      where: { id: BigInt(applicationId) },
+      data: { status: 'CANCELLED' },
+    });
+
+    // 지원수 감소 / Decrement apply count
+    await this.prisma.jobPosting.update({
+      where: { id: app.jobId },
+      data: { applyCount: { decrement: 1 } },
+    });
+
+    // 기업에게 알림 / Notify corporate owner
+    const corp = await this.prisma.corporateProfile.findUnique({
+      where: { companyId: app.job.corporateId },
+    });
+    if (corp) {
+      setImmediate(() => {
+        this.createInAppNotification(
+          corp.authId,
+          'APPLICATION_ALERT',
+          `지원자가 지원을 취소했습니다. / An applicant has cancelled their application.`,
+          {
+            applicationId: applicationId,
+            jobId: app.jobId.toString(),
+          },
+        ).catch((err) =>
+          this.logger.error('Failed to create in-app notification:', err),
+        );
+      });
+    }
+
+    return { success: true, status: 'CANCELLED' };
+  }
+
+  // ========================================
+  // 10. 결과 알림 발송 (Send Result Notification - Corporate)
+  // ========================================
+  async sendResultNotification(
+    userId: string,
+    applicationId: string,
+    dto: SendResultNotificationDto,
+  ) {
+    const app = await this.prisma.jobApplication.findUnique({
+      where: { id: BigInt(applicationId) },
+      include: { job: true },
+    });
+    if (!app) throw new NotFoundException('Application not found');
+
+    // 소유권 확인 / Validate ownership
+    const corp = await this.prisma.corporateProfile.findUnique({
+      where: { authId: userId },
+    });
+    if (!corp || app.job.corporateId !== corp.companyId) {
+      throw new ForbiddenException('Not the owner');
+    }
+
+    // 상태 검증 / Validate current status
+    if (['CANCELLED', 'ACCEPTED', 'REJECTED'].includes(app.status)) {
+      throw new BadRequestException(
+        `Cannot send result notification for status ${app.status}`,
+      );
+    }
+
+    // 지원서 상태 업데이트 / Update application status
+    const newStatus = dto.result;
+    const updateData: any = {
+      status: newStatus,
+      resultNotifiedAt: new Date(),
+    };
+    if (dto.rejectionReason) {
+      updateData.rejectionReason = dto.rejectionReason;
     }
 
     await this.prisma.jobApplication.update({
@@ -382,45 +766,148 @@ export class JobApplicationService implements OnModuleInit {
       data: updateData,
     });
 
-    // ============================================================
-    // [알림] 상태 변경에 따라 구직자에게 알림 발송
-    // [Notification] Notify worker based on new application status
-    // ============================================================
-    const jobTitle = app.job.title;
-    const workerUserId = app.applicantId;
+    // 지원자 이메일 조회 / Get applicant email
+    const applicantEmail = await this.getApplicantEmail(app.applicantId);
 
-    if (data.status === 'INTERVIEW_SCHEDULED') {
-      // 면접 일정 확정 알림 / Interview scheduled notification
-      await this.sendNotificationSafe(
-        workerUserId,
-        '면접 일정이 확정되었습니다',
-        `'${jobTitle}' 공고의 면접 일정이 확정되었습니다.`,
-        NotificationType.INTERVIEW_UPDATE,
-      );
-    } else if (data.status === 'ACCEPTED') {
-      // 합격 알림 / Acceptance notification
-      await this.sendNotificationSafe(
-        workerUserId,
-        '합격을 축하드립니다!',
-        `'${jobTitle}' 공고에 최종 합격하셨습니다.`,
-        NotificationType.STATUS_ALERT,
-      );
-    } else if (data.status === 'REJECTED') {
-      // 불합격 알림 / Rejection notification
-      await this.sendNotificationSafe(
-        workerUserId,
-        '지원 결과 안내',
-        `'${jobTitle}' 공고에 아쉽게도 합격하지 못했습니다.`,
-        NotificationType.STATUS_ALERT,
-      );
+    const companyName = corp.companyNameOfficial || 'Unknown Company';
+    const jobTitle = app.job.title;
+
+    // 이메일 발송 / Send email notification
+    if (applicantEmail) {
+      const isAccepted = dto.result === 'ACCEPTED';
+      const subject = isAccepted
+        ? `[JobChaja] 축하합니다! ${companyName} 지원 결과 안내 / Congratulations! Application Result`
+        : `[JobChaja] ${companyName} 지원 결과 안내 / Application Result Notification`;
+
+      const html = this.getResultEmailTemplate({
+        companyName,
+        jobTitle,
+        isAccepted,
+        message: dto.message,
+        rejectionReason: dto.rejectionReason,
+      });
+
+      setImmediate(() => {
+        this.sendEmailNotification(applicantEmail, subject, html).catch(
+          (err) =>
+            this.logger.error(
+              `Failed to send result email to ${applicantEmail}:`,
+              err,
+            ),
+        );
+      });
     }
 
-    return { success: true, status: data.status };
+    // 인앱 알림 생성 / Create in-app notification
+    const isAccepted = dto.result === 'ACCEPTED';
+    const notifContent = isAccepted
+      ? `${companyName}에서 합격 통보를 보냈습니다. / You have been accepted by ${companyName}.`
+      : `${companyName}에서 지원 결과를 안내드립니다. / Application result from ${companyName}.`;
+
+    setImmediate(() => {
+      this.createInAppNotification(
+        app.applicantId,
+        'APPLICATION_ALERT',
+        notifContent,
+        {
+          applicationId: applicationId,
+          jobId: app.jobId.toString(),
+          result: dto.result,
+        },
+      ).catch((err) =>
+        this.logger.error('Failed to create in-app notification:', err),
+      );
+    });
+
+    return {
+      success: true,
+      status: newStatus,
+      resultNotifiedAt: new Date(),
+    };
   }
 
   // ========================================
-  // 외부 지원 자가체크 (구직자)
-  // Self-report external application (worker)
+  // 11. 면접 초대 발송 (Send Interview Invitation)
+  // ========================================
+  async sendInterviewInvitation(userId: string, applicationId: string) {
+    const app = await this.prisma.jobApplication.findUnique({
+      where: { id: BigInt(applicationId) },
+      include: { job: true },
+    });
+    if (!app) throw new NotFoundException('Application not found');
+
+    // 소유권 확인 / Validate ownership
+    const corp = await this.prisma.corporateProfile.findUnique({
+      where: { authId: userId },
+    });
+    if (!corp || app.job.corporateId !== corp.companyId) {
+      throw new ForbiddenException('Not the owner');
+    }
+
+    // 지원자 이메일 조회 / Get applicant email
+    const applicantEmail = await this.getApplicantEmail(app.applicantId);
+
+    const companyName = corp.companyNameOfficial || 'Unknown Company';
+    const jobTitle = app.job.title;
+
+    // 면접 슬롯 조회 / Get available interview slots
+    const slots = await this.prisma.interviewSlot.findMany({
+      where: {
+        jobId: app.jobId,
+        isBooked: false,
+      },
+      orderBy: { startTime: 'asc' },
+    });
+
+    const slotSelectionUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/applications/${applicationId}/select-slot`;
+
+    // 이메일 발송 / Send email
+    if (applicantEmail) {
+      const subject = `[JobChaja] ${companyName} 면접 초대 / Interview Invitation from ${companyName}`;
+      const html = this.getInterviewInvitationEmailTemplate({
+        companyName,
+        jobTitle,
+        slotSelectionUrl,
+        interviewDate: app.interviewDate,
+        interviewNote: app.interviewNote,
+        availableSlots: slots.map((s) => ({
+          startTime: s.startTime,
+          endTime: s.endTime,
+        })),
+      });
+
+      setImmediate(() => {
+        this.sendEmailNotification(applicantEmail, subject, html).catch(
+          (err) =>
+            this.logger.error(
+              `Failed to send interview invitation to ${applicantEmail}:`,
+              err,
+            ),
+        );
+      });
+    }
+
+    // 인앱 알림 생성 / Create in-app notification
+    setImmediate(() => {
+      this.createInAppNotification(
+        app.applicantId,
+        'INTERVIEW_UPDATE',
+        `${companyName}에서 면접을 요청했습니다. 면접 시간을 선택해주세요. / ${companyName} has requested an interview. Please select a time slot.`,
+        {
+          applicationId: applicationId,
+          jobId: app.jobId.toString(),
+          slotSelectionUrl,
+        },
+      ).catch((err) =>
+        this.logger.error('Failed to create in-app notification:', err),
+      );
+    });
+
+    return { success: true, message: 'Interview invitation sent' };
+  }
+
+  // ========================================
+  // 외부 지원 자가체크 (Self Report - Job Seeker)
   // ========================================
   async selfReportApplication(userId: string, applicationId: string) {
     const app = await this.prisma.jobApplication.findUnique({
@@ -440,8 +927,7 @@ export class JobApplicationService implements OnModuleInit {
   }
 
   // ========================================
-  // 스크랩 토글
-  // Toggle job scrap/bookmark
+  // 스크랩 토글 (Toggle Scrap)
   // ========================================
   async toggleScrap(userId: string, jobId: string) {
     const existing = await this.prisma.jobScrap.findUnique({
@@ -478,8 +964,7 @@ export class JobApplicationService implements OnModuleInit {
   }
 
   // ========================================
-  // 내 스크랩 목록
-  // My scrapped/bookmarked jobs list
+  // 내 스크랩 목록 (My Scraps)
   // ========================================
   async getMyScraps(userId: string, query: { page?: number; limit?: number }) {
     const page = query.page || 1;
@@ -543,8 +1028,7 @@ export class JobApplicationService implements OnModuleInit {
   }
 
   // ========================================
-  // 스크랩 여부 확인
-  // Check if a job is scrapped
+  // 스크랩 여부 확인 (Check Scrap)
   // ========================================
   async checkScrap(userId: string, jobId: string) {
     const scrap = await this.prisma.jobScrap.findUnique({
@@ -556,5 +1040,216 @@ export class JobApplicationService implements OnModuleInit {
       },
     });
     return { scrapped: !!scrap };
+  }
+
+  // ========================================
+  // Private Helpers
+  // ========================================
+
+  /**
+   * 지원자 이메일 조회 / Lookup email from User table
+   */
+  private async getApplicantEmail(
+    applicantId: string,
+  ): Promise<string | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: applicantId },
+      select: { email: true },
+    });
+    return user?.email ?? null;
+  }
+
+  /**
+   * 이메일 발송 (로거로 대체, 추후 EmailService DI 연결)
+   * Email notification (logger placeholder, connect EmailService via DI later)
+   */
+  private async sendEmailNotification(
+    to: string,
+    subject: string,
+    html: string,
+  ): Promise<void> {
+    // TODO: EmailService DI 주입 후 실제 발송으로 교체
+    // TODO: Replace with actual EmailService DI injection
+    this.logger.log(`[Email] Would send to: ${to}, subject: ${subject}`);
+  }
+
+  /**
+   * 인앱 알림 생성 / Create in-app notification record
+   */
+  private async createInAppNotification(
+    userId: string,
+    type: string,
+    content: string,
+    metadata?: object,
+  ): Promise<void> {
+    try {
+      await this.notificationPrisma.notification.create({
+        data: {
+          userId,
+          content,
+          notificationType: type as NotificationType,
+          status: 'PENDING',
+          channel: 'PUSH',
+          isRead: false,
+          metadata: metadata ? JSON.stringify(metadata) : null,
+        },
+      });
+      this.logger.log(
+        `[Notification] In-app notification created for user: ${userId}, type: ${type}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `[Notification] Failed to create in-app notification for user: ${userId}`,
+        error,
+      );
+    }
+  }
+
+  // ========================================
+  // Email Templates
+  // ========================================
+
+  /**
+   * 합격/불합격 결과 이메일 템플릿 / Result notification email template
+   */
+  private getResultEmailTemplate(params: {
+    companyName: string;
+    jobTitle: string;
+    isAccepted: boolean;
+    message?: string;
+    rejectionReason?: string;
+  }): string {
+    const { companyName, jobTitle, isAccepted, message, rejectionReason } =
+      params;
+
+    const resultTitle = isAccepted
+      ? '합격을 축하드립니다! / Congratulations!'
+      : '지원 결과 안내 / Application Result';
+
+    const resultMessage = isAccepted
+      ? `<p style="font-size: 16px; color: #28a745; font-weight: bold;">
+           ${companyName}에서 귀하의 지원을 합격 처리하였습니다.<br>
+           Your application to ${companyName} has been accepted.
+         </p>`
+      : `<p style="font-size: 16px; color: #333;">
+           ${companyName}에서 지원 결과를 안내드립니다.<br>
+           We would like to inform you of the application result from ${companyName}.
+         </p>
+         ${rejectionReason ? `<p style="font-size: 14px; color: #666;">사유 / Reason: ${rejectionReason}</p>` : ''}`;
+
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head><meta charset="utf-8"><title>${resultTitle}</title></head>
+      <body style="font-family: 'Pretendard', sans-serif; background-color: #f4f5f7; margin: 0; padding: 0;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 40px; border-radius: 8px; margin-top: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #007bff; margin: 0; font-size: 28px; font-weight: 800;">JobChaja</h1>
+            <p style="color: #888; font-size: 14px; margin-top: 5px;">Global Job Platform for Foreigners</p>
+          </div>
+          <div style="border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 30px 0;">
+            <h2 style="text-align: center; color: #333;">${resultTitle}</h2>
+            <p style="font-size: 14px; color: #666; text-align: center;">
+              공고 / Job: <strong>${jobTitle}</strong><br>
+              기업 / Company: <strong>${companyName}</strong>
+            </p>
+            <div style="margin: 20px 0; text-align: center;">
+              ${resultMessage}
+            </div>
+            ${message ? `<p style="font-size: 14px; color: #555; text-align: center; margin-top: 15px; background-color: #f8f9fa; padding: 15px; border-radius: 6px;">${message}</p>` : ''}
+          </div>
+          <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #999;">
+            <p>본 메일은 발신 전용입니다.<br>&copy; 2026 JobChaja. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+  }
+
+  /**
+   * 면접 초대 이메일 템플릿 / Interview invitation email template
+   */
+  private getInterviewInvitationEmailTemplate(params: {
+    companyName: string;
+    jobTitle: string;
+    slotSelectionUrl: string;
+    interviewDate?: Date | null;
+    interviewNote?: string | null;
+    availableSlots: { startTime: Date; endTime: Date }[];
+  }): string {
+    const {
+      companyName,
+      jobTitle,
+      slotSelectionUrl,
+      interviewDate,
+      interviewNote,
+      availableSlots,
+    } = params;
+
+    const slotsHtml =
+      availableSlots.length > 0
+        ? `<div style="margin: 20px 0;">
+             <p style="font-size: 14px; color: #333; font-weight: bold;">
+               선택 가능한 면접 시간 / Available Interview Times:
+             </p>
+             <ul style="list-style: none; padding: 0;">
+               ${availableSlots
+                 .map(
+                   (s) =>
+                     `<li style="padding: 8px 12px; margin: 4px 0; background-color: #f0f7ff; border-radius: 4px; font-size: 14px;">
+                       ${s.startTime.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })} ~ ${s.endTime.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}
+                     </li>`,
+                 )
+                 .join('')}
+             </ul>
+           </div>`
+        : '';
+
+    const directDateHtml =
+      interviewDate && availableSlots.length === 0
+        ? `<p style="font-size: 14px; color: #333;">
+             면접 일시 / Interview Date: <strong>${interviewDate.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}</strong>
+           </p>`
+        : '';
+
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head><meta charset="utf-8"><title>면접 초대 / Interview Invitation</title></head>
+      <body style="font-family: 'Pretendard', sans-serif; background-color: #f4f5f7; margin: 0; padding: 0;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 40px; border-radius: 8px; margin-top: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #007bff; margin: 0; font-size: 28px; font-weight: 800;">JobChaja</h1>
+            <p style="color: #888; font-size: 14px; margin-top: 5px;">Global Job Platform for Foreigners</p>
+          </div>
+          <div style="border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 30px 0;">
+            <h2 style="text-align: center; color: #333;">면접 초대 / Interview Invitation</h2>
+            <p style="font-size: 14px; color: #666; text-align: center;">
+              공고 / Job: <strong>${jobTitle}</strong><br>
+              기업 / Company: <strong>${companyName}</strong>
+            </p>
+            <div style="margin: 20px 0; text-align: center;">
+              <p style="font-size: 16px; color: #333;">
+                ${companyName}에서 면접을 요청했습니다.<br>
+                ${companyName} has invited you for an interview.
+              </p>
+            </div>
+            ${directDateHtml}
+            ${slotsHtml}
+            ${interviewNote ? `<p style="font-size: 13px; color: #666; background-color: #f8f9fa; padding: 12px; border-radius: 6px;">메모 / Note: ${interviewNote}</p>` : ''}
+            <div style="text-align: center; margin-top: 25px;">
+              <a href="${slotSelectionUrl}" style="display: inline-block; background-color: #007bff; color: #ffffff; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-size: 16px; font-weight: bold;">
+                면접 시간 선택하기 / Select Interview Time
+              </a>
+            </div>
+          </div>
+          <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #999;">
+            <p>본 메일은 발신 전용입니다.<br>&copy; 2026 JobChaja. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
   }
 }

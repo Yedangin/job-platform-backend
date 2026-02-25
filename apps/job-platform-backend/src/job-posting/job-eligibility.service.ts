@@ -14,7 +14,7 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
-import { AuthPrismaService, RedisService, SessionData } from 'libs/common/src';
+import { AuthPrismaService } from 'libs/common/src';
 import { RuleEngineService } from '../visa-rules/rule-engine.service';
 import { EvaluateVisaInput } from '../visa-rules/evaluators/evaluator.interface';
 
@@ -56,25 +56,8 @@ export class JobEligibilityService {
 
   constructor(
     private readonly prisma: AuthPrismaService,
-    private readonly redisService: RedisService,
     private readonly ruleEngine: RuleEngineService,
   ) {}
-
-  /**
-   * 세션에서 userId 추출
-   * Extract userId from Redis session
-   */
-  private async getUserIdFromSession(sessionId: string): Promise<string> {
-    const raw = await this.redisService.get(`session:${sessionId}`);
-    if (!raw)
-      throw new NotFoundException(
-        '세션을 찾을 수 없습니다 / Session not found',
-      );
-    const session = JSON.parse(raw) as SessionData;
-    if (!session.userId)
-      throw new NotFoundException('사용자 ID가 없습니다 / User ID not found');
-    return session.userId;
-  }
 
   /**
    * 사용자 비자 프로필 로드 (VisaVerification + Resume)
@@ -225,7 +208,7 @@ export class JobEligibilityService {
    * Get job listings filtered by user's visa eligibility
    */
   async getVisaFilteredListings(
-    sessionId: string,
+    userId: string,
     query: {
       boardType?: string;
       keyword?: string;
@@ -234,7 +217,6 @@ export class JobEligibilityService {
       limit?: number;
     },
   ) {
-    const userId = await this.getUserIdFromSession(sessionId);
 
     // 1. 사용자 비자 프로필 로드
     // 1. Load user's visa profile
@@ -377,7 +359,7 @@ export class JobEligibilityService {
    * Check detailed eligibility for a specific job posting
    */
   async checkJobEligibility(
-    sessionId: string,
+    userId: string,
     jobId: string,
   ): Promise<{
     eligible: boolean;
@@ -394,7 +376,6 @@ export class JobEligibilityService {
     requiredScore?: number;
     scoreBreakdown?: any[];
   }> {
-    const userId = await this.getUserIdFromSession(sessionId);
 
     // 1. 사용자 비자 프로필 로드
     // 1. Load user's visa profile

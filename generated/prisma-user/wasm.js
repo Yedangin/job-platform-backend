@@ -675,8 +675,6 @@ exports.Prisma.JobPostingScalarFieldEnum = {
   isFeatured: 'isFeatured',
   featuredUntil: 'featuredUntil',
   upgradedAt: 'upgradedAt',
-  premiumStartAt: 'premiumStartAt',
-  premiumEndAt: 'premiumEndAt',
   viewCount: 'viewCount',
   scrapCount: 'scrapCount',
   applyCount: 'applyCount',
@@ -684,7 +682,11 @@ exports.Prisma.JobPostingScalarFieldEnum = {
   suspendReason: 'suspendReason',
   suspendedBy: 'suspendedBy',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  isPremium: 'isPremium',
+  premiumStartAt: 'premiumStartAt',
+  premiumEndAt: 'premiumEndAt',
+  fulltimeVisaResult: 'fulltimeVisaResult'
 };
 
 exports.Prisma.JobAttributesAlbaScalarFieldEnum = {
@@ -712,6 +714,9 @@ exports.Prisma.JobApplicationScalarFieldEnum = {
   status: 'status',
   coverLetter: 'coverLetter',
   resumeSnapshot: 'resumeSnapshot',
+  selectedSlotId: 'selectedSlotId',
+  proposedBy: 'proposedBy',
+  proposedTime: 'proposedTime',
   selfReportedAt: 'selfReportedAt',
   interviewDate: 'interviewDate',
   interviewNote: 'interviewNote',
@@ -719,6 +724,16 @@ exports.Prisma.JobApplicationScalarFieldEnum = {
   resultNotifiedAt: 'resultNotifiedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.InterviewSlotScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  isBooked: 'isBooked',
+  location: 'location',
+  notes: 'notes'
 };
 
 exports.Prisma.JobScrapScalarFieldEnum = {
@@ -1017,10 +1032,18 @@ exports.EmploymentSubType = exports.$Enums.EmploymentSubType = {
 exports.ApplicationStatus = exports.$Enums.ApplicationStatus = {
   PENDING: 'PENDING',
   REVIEWING: 'REVIEWING',
+  INTERVIEW_REQUESTED: 'INTERVIEW_REQUESTED',
   INTERVIEW_SCHEDULED: 'INTERVIEW_SCHEDULED',
+  COORDINATION_NEEDED: 'COORDINATION_NEEDED',
+  CONFIRMED: 'CONFIRMED',
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
   CANCELLED: 'CANCELLED'
+};
+
+exports.ActorType = exports.$Enums.ActorType = {
+  EMPLOYER: 'EMPLOYER',
+  APPLICANT: 'APPLICANT'
 };
 
 exports.AdminActionType = exports.$Enums.AdminActionType = {
@@ -1079,6 +1102,7 @@ exports.Prisma.ModelName = {
   JobAttributesAlba: 'JobAttributesAlba',
   JobAttributesFulltime: 'JobAttributesFulltime',
   JobApplication: 'JobApplication',
+  InterviewSlot: 'InterviewSlot',
   JobScrap: 'JobScrap',
   AdminJobAction: 'AdminJobAction',
   Resume: 'Resume',

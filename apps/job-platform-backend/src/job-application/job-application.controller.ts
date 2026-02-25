@@ -6,146 +6,216 @@ import {
   Body,
   Param,
   Query,
-  UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
-import { Public } from 'libs/common/src/common/decorator/public.decorator';
-import { Session } from 'libs/common/src/common/decorator/session.decorator';
-import { RedisService } from 'libs/common/src';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+} from '@nestjs/swagger';
+import {
+  SessionAuthGuard,
+  RolesGuard,
+  CurrentSession,
+  Roles,
+  SessionData,
+} from 'libs/common/src';
 import { JobApplicationService } from './job-application.service';
+import {
+  ApplyToJobDto,
+  GetMyApplicationsQueryDto,
+  GetJobApplicationsQueryDto,
+  UpdateApplicationStatusDto,
+  CreateInterviewSlotsDto,
+  SelectInterviewSlotDto,
+  ProposeNewTimeDto,
+  SendResultNotificationDto,
+} from './dto';
 
-interface SessionData {
-  userId: string;
-  role: string;
-}
-
-@Controller()
+@ApiTags('Applications')
+@ApiBearerAuth()
+@UseGuards(SessionAuthGuard, RolesGuard)
+@Controller('applications')
 export class JobApplicationController {
   constructor(
     private readonly jobApplicationService: JobApplicationService,
-    private readonly redisService: RedisService,
   ) {}
 
-  private async requireAuth(sessionId: string): Promise<SessionData> {
-    if (!sessionId) throw new UnauthorizedException('No session provided');
-    const sd = await this.redisService.get(`session:${sessionId}`);
-    if (!sd) throw new UnauthorizedException('Invalid session');
-    return JSON.parse(sd);
-  }
-
-  private async requireIndividual(sessionId: string): Promise<string> {
-    const session = await this.requireAuth(sessionId);
-    if (session.role !== 'INDIVIDUAL' && session.role !== 'ADMIN') {
-      throw new UnauthorizedException('Individual access required');
-    }
-    return session.userId;
-  }
-
-  private async requireCorporate(sessionId: string): Promise<string> {
-    const session = await this.requireAuth(sessionId);
-    if (session.role !== 'CORPORATE' && session.role !== 'ADMIN') {
-      throw new UnauthorizedException('Corporate access required');
-    }
-    return session.userId;
-  }
-
   // ========================================
-  // Applications
+  // Applicant (INDIVIDUAL) endpoints
   // ========================================
-  @Post('applications/apply')
+
+  @Post('jobs/:jobId/apply')
+  @Roles('INDIVIDUAL')
+  @ApiOperation({ summary: '공고 지원하기 / Apply to a job posting' })
+  @ApiParam({ name: 'jobId', description: 'Job posting ID' })
+  @ApiResponse({ status: 201, description: 'Application submitted successfully' })
+  @ApiResponse({ status: 400, description: 'Job posting is not active' })
+  @ApiResponse({ status: 409, description: 'Already applied to this job' })
   async applyToJob(
-    @Session() sessionId: string,
-    @Body()
-    body: { jobId: string; applicationMethod?: string; coverLetter?: string },
+    @CurrentSession() session: SessionData,
+    @Param('jobId') jobId: string,
+    @Body() dto: ApplyToJobDto,
   ) {
-    const userId = await this.requireIndividual(sessionId);
-    return this.jobApplicationService.applyToJob(userId, body);
+    return this.jobApplicationService.applyToJob(session.userId, jobId, dto);
   }
 
-  @Get('applications/my')
+  @Get('my')
+  @Roles('INDIVIDUAL')
+  @ApiOperation({ summary: '내 지원 목록 / Get my applications (paginated)' })
+  @ApiResponse({ status: 200, description: 'Paginated list of my applications' })
   async getMyApplications(
-    @Session() sessionId: string,
-    @Query('status') status?: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+    @CurrentSession() session: SessionData,
+    @Query() query: GetMyApplicationsQueryDto,
   ) {
-    const userId = await this.requireIndividual(sessionId);
-    return this.jobApplicationService.getMyApplications(userId, {
-      status,
-      page: page ? parseInt(page) : 1,
-      limit: limit ? parseInt(limit) : 20,
-    });
+    return this.jobApplicationService.getMyApplications(session.userId, query);
   }
 
-  @Get('applications/job/:jobId')
-  async getJobApplications(
-    @Session() sessionId: string,
+  @Post(':id/cancel')
+  @Roles('INDIVIDUAL')
+  @ApiOperation({ summary: '지원 취소 / Cancel my application' })
+  @ApiParam({ name: 'id', description: 'Application ID' })
+  @ApiResponse({ status: 200, description: 'Application cancelled successfully' })
+  @ApiResponse({ status: 404, description: 'Application not found' })
+  async cancelApplication(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+  ) {
+    return this.jobApplicationService.cancelApplication(session.userId, id);
+  }
+
+  @Post(':id/select-slot')
+  @Roles('INDIVIDUAL')
+  @ApiOperation({ summary: '면접 시간 선택 / Select an interview time slot' })
+  @ApiParam({ name: 'id', description: 'Application ID' })
+  @ApiResponse({ status: 200, description: 'Interview slot selected successfully' })
+  @ApiResponse({ status: 400, description: 'Slot is no longer available' })
+  async selectInterviewSlot(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+    @Body() dto: SelectInterviewSlotDto,
+  ) {
+    return this.jobApplicationService.selectInterviewSlot(
+      session.userId,
+      id,
+      dto,
+    );
+  }
+
+  @Post(':id/propose-time')
+  @Roles('INDIVIDUAL', 'CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '면접 시간 제안 / Propose an alternative interview time' })
+  @ApiParam({ name: 'id', description: 'Application ID' })
+  @ApiResponse({ status: 200, description: 'Alternative time proposed successfully' })
+  async proposeNewTime(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+    @Body() dto: ProposeNewTimeDto,
+  ) {
+    return this.jobApplicationService.proposeNewTime(session.userId, id, dto);
+  }
+
+  // ========================================
+  // Employer (CORPORATE) endpoints
+  // ========================================
+
+  @Get('jobs/:jobId/applicants')
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '공고별 지원자 목록 / List applicants for a job posting' })
+  @ApiParam({ name: 'jobId', description: 'Job posting ID' })
+  @ApiResponse({ status: 200, description: 'Paginated list of applicants' })
+  async getJobApplicants(
+    @CurrentSession() session: SessionData,
     @Param('jobId') jobId: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+    @Query() query: GetJobApplicationsQueryDto,
   ) {
-    const userId = await this.requireCorporate(sessionId);
-    return this.jobApplicationService.getJobApplications(userId, jobId, {
-      page: page ? parseInt(page) : 1,
-      limit: limit ? parseInt(limit) : 20,
-    });
+    return this.jobApplicationService.getJobApplications(
+      session.userId,
+      jobId,
+      query,
+    );
   }
 
-  @Put('applications/:id/status')
+  @Put(':id/status')
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '지원 상태 변경 / Update application status (pass/fail/interview)' })
+  @ApiParam({ name: 'id', description: 'Application ID' })
+  @ApiResponse({ status: 200, description: 'Application status updated' })
   async updateApplicationStatus(
-    @Session() sessionId: string,
+    @CurrentSession() session: SessionData,
     @Param('id') id: string,
-    @Body()
-    body: {
-      status: string;
-      interviewDate?: string;
-      interviewNote?: string;
-      rejectionReason?: string;
-    },
+    @Body() dto: UpdateApplicationStatusDto,
   ) {
-    const userId = await this.requireCorporate(sessionId);
-    return this.jobApplicationService.updateApplicationStatus(userId, id, body);
+    return this.jobApplicationService.updateApplicationStatus(
+      session.userId,
+      id,
+      dto,
+    );
   }
 
-  @Post('applications/:id/self-report')
-  async selfReportApplication(
-    @Session() sessionId: string,
-    @Param('id') id: string,
+  @Post('jobs/:jobId/interview-slots')
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '면접 시간 슬롯 생성 / Create interview time slots for a job' })
+  @ApiParam({ name: 'jobId', description: 'Job posting ID' })
+  @ApiResponse({ status: 201, description: 'Interview slots created successfully' })
+  async createInterviewSlots(
+    @CurrentSession() session: SessionData,
+    @Param('jobId') jobId: string,
+    @Body() dto: CreateInterviewSlotsDto,
   ) {
-    const userId = await this.requireIndividual(sessionId);
-    return this.jobApplicationService.selfReportApplication(userId, id);
+    return this.jobApplicationService.createInterviewSlots(
+      session.userId,
+      jobId,
+      dto,
+    );
   }
 
-  // ========================================
-  // Scraps
-  // ========================================
-  @Post('scraps/:jobId')
-  async toggleScrap(
-    @Session() sessionId: string,
+  @Get('jobs/:jobId/interview-slots')
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '공고별 면접 슬롯 조회 / View interview slots for a job posting' })
+  @ApiParam({ name: 'jobId', description: 'Job posting ID' })
+  @ApiResponse({ status: 200, description: 'List of interview slots' })
+  async getInterviewSlotsForJob(
+    @CurrentSession() session: SessionData,
     @Param('jobId') jobId: string,
   ) {
-    const userId = await this.requireIndividual(sessionId);
-    return this.jobApplicationService.toggleScrap(userId, jobId);
+    return this.jobApplicationService.getInterviewSlots(
+      session.userId,
+      jobId,
+    );
   }
 
-  @Get('scraps/my')
-  async getMyScraps(
-    @Session() sessionId: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+  @Post(':id/send-result')
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '합격/불합격 통보 / Send pass/fail notification to applicant' })
+  @ApiParam({ name: 'id', description: 'Application ID' })
+  @ApiResponse({ status: 200, description: 'Result notification sent' })
+  async sendResultNotification(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+    @Body() dto: SendResultNotificationDto,
   ) {
-    const userId = await this.requireIndividual(sessionId);
-    return this.jobApplicationService.getMyScraps(userId, {
-      page: page ? parseInt(page) : 1,
-      limit: limit ? parseInt(limit) : 20,
-    });
+    return this.jobApplicationService.sendResultNotification(
+      session.userId,
+      id,
+      dto,
+    );
   }
 
-  @Get('scraps/check/:jobId')
-  async checkScrap(
-    @Session() sessionId: string,
-    @Param('jobId') jobId: string,
+  @Post(':id/send-interview-invite')
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '면접 초대 이메일 발송 / Send interview invitation email' })
+  @ApiParam({ name: 'id', description: 'Application ID' })
+  @ApiResponse({ status: 200, description: 'Interview invitation email sent' })
+  async sendInterviewInvite(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
   ) {
-    const userId = await this.requireIndividual(sessionId);
-    return this.jobApplicationService.checkScrap(userId, jobId);
+    return this.jobApplicationService.sendInterviewInvitation(
+      session.userId,
+      id,
+    );
   }
 }

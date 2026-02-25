@@ -3,114 +3,100 @@ import {
   Get,
   Post,
   Put,
+  Delete,
   Body,
   Param,
   Query,
   Req,
-  UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
-import { Public } from 'libs/common/src/common/decorator/public.decorator';
-import { Session } from 'libs/common/src/common/decorator/session.decorator';
-import { RedisService } from 'libs/common/src';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+} from '@nestjs/swagger';
+import {
+  Public,
+  CurrentSession,
+  Roles,
+  SessionAuthGuard,
+  RolesGuard,
+  SessionData,
+} from 'libs/common/src';
 import { JobPostingService } from './job-posting.service';
 import { JobEligibilityService } from './job-eligibility.service';
+import { JobScrapService } from './job-scrap.service';
+import {
+  CreateJobPostingDto,
+  UpdateJobPostingDto,
+  ActivateJobPostingDto,
+  SuspendJobPostingDto,
+  GetJobListingsQueryDto,
+  GetMyJobPostingsQueryDto,
+  GetAdminJobPostingsQueryDto,
+  GetEligibleListingsQueryDto,
+} from './dto';
 
-interface SessionData {
-  userId: string;
-  role: string;
-  email?: string;
-}
-
+@ApiTags('Jobs')
+@ApiBearerAuth()
+@UseGuards(SessionAuthGuard, RolesGuard)
 @Controller('jobs')
 export class JobPostingController {
   constructor(
     private readonly jobPostingService: JobPostingService,
     private readonly jobEligibilityService: JobEligibilityService,
-    private readonly redisService: RedisService,
+    private readonly jobScrapService: JobScrapService,
   ) {}
-
-  // ========================================
-  // Auth helpers
-  // ========================================
-  private async requireAuth(sessionId: string): Promise<SessionData> {
-    if (!sessionId) throw new UnauthorizedException('No session provided');
-    const sd = await this.redisService.get(`session:${sessionId}`);
-    if (!sd) throw new UnauthorizedException('Invalid session');
-    return JSON.parse(sd);
-  }
-
-  private async requireCorporate(sessionId: string): Promise<string> {
-    const session = await this.requireAuth(sessionId);
-    if (session.role !== 'CORPORATE' && session.role !== 'ADMIN') {
-      throw new UnauthorizedException('Corporate access required');
-    }
-    return session.userId;
-  }
-
-  private async requireAdmin(sessionId: string): Promise<string> {
-    const session = await this.requireAuth(sessionId);
-    if (session.role !== 'ADMIN') {
-      throw new UnauthorizedException('Admin access required');
-    }
-    return session.userId;
-  }
 
   // ========================================
   // Public endpoints (specific routes FIRST)
   // ========================================
-  /**
-   * 공고 목록 조회 (공개 + 비자 필터 옵션)
-   * Job listings (public + optional visa filter)
-   *
-   * visaFilter=true: 로그인 사용자의 비자 기반 적격성 필터링 (Goal B)
-   * visaFilter=true: Filter by logged-in user's visa eligibility (Goal B)
-   */
+
   @Public()
   @Get('listing')
+  @ApiOperation({ summary: '공고 목록 조회 / Job listings (public + optional visa filter)' })
+  @ApiResponse({ status: 200, description: 'Paginated job listings' })
   async getJobListings(
-    @Session() sessionId: string,
-    @Query('boardType') boardType?: string,
-    @Query('tierType') tierType?: string,
-    @Query('visa') visa?: string,
-    @Query('keyword') keyword?: string,
-    @Query('employmentSubType') employmentSubType?: string,
-    @Query('visaFilter') visaFilter?: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+    @CurrentSession() session: SessionData | undefined,
+    @Query() query: GetJobListingsQueryDto,
   ) {
-    // visaFilter=true이고 세션이 있으면 비자 기반 필터링
-    // If visaFilter=true and session exists, apply visa-based filtering
-    if (visaFilter === 'true' && sessionId) {
+    const page = query.page || 1;
+    const limit = query.limit || 20;
+
+    if (query.visaFilter === 'true' && session?.userId) {
       try {
         return await this.jobEligibilityService.getVisaFilteredListings(
-          sessionId,
+          session.userId,
           {
-            boardType,
-            keyword,
-            employmentSubType,
-            page: page ? parseInt(page) : 1,
-            limit: limit ? parseInt(limit) : 20,
+            boardType: query.boardType,
+            keyword: query.keyword,
+            employmentSubType: query.employmentSubType,
+            page,
+            limit,
           },
         );
       } catch {
         // 비자 인증이 없으면 기본 목록으로 fallback
-        // If no visa verification, fallback to default listing
       }
     }
 
     return this.jobPostingService.getJobListings({
-      boardType,
-      tierType,
-      visa,
-      keyword,
-      employmentSubType,
-      page: page ? parseInt(page) : 1,
-      limit: limit ? parseInt(limit) : 20,
+      boardType: query.boardType,
+      tierType: query.tierType,
+      visa: query.visa,
+      keyword: query.keyword,
+      employmentSubType: query.employmentSubType,
+      page,
+      limit,
     });
   }
 
   @Public()
   @Get('visa-types')
+  @ApiOperation({ summary: '비자 유형 목록 / Available visa types' })
+  @ApiResponse({ status: 200, description: 'List of active visa types' })
   async getVisaTypes() {
     return this.jobPostingService.getVisaTypes();
   }
@@ -118,146 +104,257 @@ export class JobPostingController {
   // ========================================
   // Corporate endpoints (specific routes before :id)
   // ========================================
+
   @Get('my/list')
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '내 공고 목록 / My job postings' })
+  @ApiResponse({ status: 200, description: 'Paginated corporate job postings' })
   async getMyJobPostings(
-    @Session() sessionId: string,
-    @Query('status') status?: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+    @CurrentSession() session: SessionData,
+    @Query() query: GetMyJobPostingsQueryDto,
   ) {
-    const userId = await this.requireCorporate(sessionId);
-    return this.jobPostingService.getMyJobPostings(userId, {
-      status,
-      page: page ? parseInt(page) : 1,
-      limit: limit ? parseInt(limit) : 20,
+    return this.jobPostingService.getMyJobPostings(session.userId, {
+      status: query.status,
+      page: query.page || 1,
+      limit: query.limit || 20,
     });
   }
 
+  @Get('my/scraps')
+  @Roles('INDIVIDUAL', 'ADMIN')
+  @ApiOperation({ summary: '스크랩 목록 / My scrapped jobs' })
+  @ApiResponse({ status: 200, description: 'Paginated scrapped jobs' })
+  async getMyScraps(
+    @CurrentSession() session: SessionData,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    return this.jobScrapService.getMyScraps(
+      session.userId,
+      page || 1,
+      limit || 20,
+    );
+  }
+
   @Get('visa-suggest/for-company')
-  async suggestVisas(@Session() sessionId: string) {
-    const userId = await this.requireCorporate(sessionId);
-    return this.jobPostingService.suggestVisas(userId);
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '비자 추천 / Visa suggestions for company' })
+  @ApiResponse({ status: 200, description: 'Visa suggestions with company info' })
+  async suggestVisas(@CurrentSession() session: SessionData) {
+    return this.jobPostingService.suggestVisas(session.userId);
   }
 
   // ========================================
-  // Admin endpoints (specific routes before :id)
+  // Visa-filtered listings (authenticated)
   // ========================================
-  @Get('admin/all')
-  async getAllJobPostings(
-    @Session() sessionId: string,
-    @Query('status') status?: string,
-    @Query('boardType') boardType?: string,
-    @Query('search') search?: string,
-    @Query('corporateId') corporateId?: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+
+  @Get('eligible')
+  @ApiOperation({ summary: '비자 필터링 공고 / Visa-filtered listings' })
+  @ApiResponse({ status: 200, description: 'Visa-eligible job listings' })
+  async getVisaFilteredListings(
+    @CurrentSession() session: SessionData,
+    @Query() query: GetEligibleListingsQueryDto,
   ) {
-    await this.requireAdmin(sessionId);
+    return this.jobEligibilityService.getVisaFilteredListings(
+      session.userId,
+      {
+        boardType: query.boardType,
+        keyword: query.keyword,
+        employmentSubType: query.employmentSubType,
+        page: query.page || 1,
+        limit: query.limit || 20,
+      },
+    );
+  }
+
+  // ========================================
+  // Admin endpoints
+  // ========================================
+
+  @Get('admin/all')
+  @Roles('ADMIN')
+  @ApiOperation({ summary: '전체 공고 관리 / Admin: all postings' })
+  @ApiResponse({ status: 200, description: 'Paginated admin job postings' })
+  async getAllJobPostings(@Query() query: GetAdminJobPostingsQueryDto) {
     return this.jobPostingService.getAllJobPostings({
-      status,
-      boardType,
-      search,
-      corporateId,
-      page: page ? parseInt(page) : 1,
-      limit: limit ? parseInt(limit) : 20,
+      status: query.status,
+      boardType: query.boardType,
+      search: query.search,
+      corporateId: query.corporateId,
+      page: query.page || 1,
+      limit: query.limit || 20,
     });
   }
 
   @Post('admin/:id/suspend')
+  @Roles('ADMIN')
+  @ApiOperation({ summary: '공고 중지 / Admin: suspend posting' })
+  @ApiParam({ name: 'id', description: 'Job posting ID' })
+  @ApiResponse({ status: 200, description: 'Posting suspended' })
   async suspendJobPosting(
-    @Session() sessionId: string,
+    @CurrentSession() session: SessionData,
     @Param('id') id: string,
-    @Body() body: { reason: string },
+    @Body() dto: SuspendJobPostingDto,
   ) {
-    const adminId = await this.requireAdmin(sessionId);
-    return this.jobPostingService.suspendJobPosting(adminId, id, body.reason);
+    return this.jobPostingService.suspendJobPosting(
+      session.userId,
+      id,
+      dto.reason,
+    );
   }
 
   @Post('admin/:id/unsuspend')
+  @Roles('ADMIN')
+  @ApiOperation({ summary: '공고 중지 해제 / Admin: unsuspend posting' })
+  @ApiParam({ name: 'id', description: 'Job posting ID' })
+  @ApiResponse({ status: 200, description: 'Posting unsuspended' })
   async unsuspendJobPosting(
-    @Session() sessionId: string,
+    @CurrentSession() session: SessionData,
     @Param('id') id: string,
   ) {
-    const adminId = await this.requireAdmin(sessionId);
-    return this.jobPostingService.unsuspendJobPosting(adminId, id);
+    return this.jobPostingService.unsuspendJobPosting(session.userId, id);
   }
 
   // ========================================
-  // 비자 필터링 — 구직자 비자 기반 공고 목록 (Goal B)
-  // Visa filtering — job listings filtered by seeker's visa (Goal B)
+  // Create
   // ========================================
-  @Get('eligible')
-  async getVisaFilteredListings(
-    @Session() sessionId: string,
-    @Query('boardType') boardType?: string,
-    @Query('keyword') keyword?: string,
-    @Query('employmentSubType') employmentSubType?: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-  ) {
-    return this.jobEligibilityService.getVisaFilteredListings(sessionId, {
-      boardType,
-      keyword,
-      employmentSubType,
-      page: page ? parseInt(page) : 1,
-      limit: limit ? parseInt(limit) : 20,
-    });
-  }
 
-  // ========================================
-  // Create (POST /jobs/create)
-  // ========================================
   @Post('create')
-  async createJobPosting(@Session() sessionId: string, @Body() body: any) {
-    const userId = await this.requireCorporate(sessionId);
-    return this.jobPostingService.createJobPosting(userId, body);
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '공고 생성 / Create job posting' })
+  @ApiResponse({ status: 201, description: 'Job posting created (DRAFT)' })
+  async createJobPosting(
+    @CurrentSession() session: SessionData,
+    @Body() dto: CreateJobPostingDto,
+  ) {
+    return this.jobPostingService.createJobPosting(session.userId, dto);
   }
 
   // ========================================
-  // Parametric routes LAST (to avoid matching specific routes)
+  // Parametric routes LAST
   // ========================================
+
   @Public()
   @Get(':id')
+  @ApiOperation({ summary: '공고 상세 / Job detail' })
+  @ApiParam({ name: 'id', description: 'Job posting ID' })
+  @ApiResponse({ status: 200, description: 'Job posting detail' })
   async getJobDetail(@Param('id') id: string, @Req() req: any) {
     const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
     return this.jobPostingService.getJobDetail(id, ip);
   }
 
-  /**
-   * 특정 공고에 대한 지원 가능 여부 상세 (Goal B)
-   * Detailed eligibility check for a specific job posting (Goal B)
-   */
   @Get(':id/eligibility')
+  @ApiOperation({ summary: '적격성 확인 / Eligibility check' })
+  @ApiParam({ name: 'id', description: 'Job posting ID' })
+  @ApiResponse({ status: 200, description: 'Eligibility result' })
   async checkJobEligibility(
-    @Session() sessionId: string,
+    @CurrentSession() session: SessionData,
     @Param('id') id: string,
   ) {
-    return this.jobEligibilityService.checkJobEligibility(sessionId, id);
+    return this.jobEligibilityService.checkJobEligibility(
+      session.userId,
+      id,
+    );
   }
 
   @Put(':id')
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '공고 수정 / Update job posting' })
+  @ApiParam({ name: 'id', description: 'Job posting ID' })
+  @ApiResponse({ status: 200, description: 'Job posting updated' })
   async updateJobPosting(
-    @Session() sessionId: string,
+    @CurrentSession() session: SessionData,
     @Param('id') id: string,
-    @Body() body: any,
+    @Body() dto: UpdateJobPostingDto,
   ) {
-    const userId = await this.requireCorporate(sessionId);
-    return this.jobPostingService.updateJobPosting(userId, id, body);
+    return this.jobPostingService.updateJobPosting(session.userId, id, dto);
+  }
+
+  @Delete(':id')
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '공고 삭제 / Delete job posting' })
+  @ApiParam({ name: 'id', description: 'Job posting ID' })
+  @ApiResponse({ status: 200, description: 'Job posting deleted or closed' })
+  async deleteJobPosting(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+  ) {
+    return this.jobPostingService.deleteJobPosting(session.userId, id);
   }
 
   @Post(':id/activate')
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '공고 활성화 / Activate job posting' })
+  @ApiParam({ name: 'id', description: 'Job posting ID' })
+  @ApiResponse({ status: 200, description: 'Job posting activated' })
   async activateJobPosting(
-    @Session() sessionId: string,
+    @CurrentSession() session: SessionData,
     @Param('id') id: string,
-    @Body() body: { orderId?: string },
+    @Body() dto: ActivateJobPostingDto,
   ) {
-    const userId = await this.requireCorporate(sessionId);
-    return this.jobPostingService.activateJobPosting(userId, id, body?.orderId);
+    return this.jobPostingService.activateJobPosting(
+      session.userId,
+      id,
+      dto.orderId,
+    );
   }
 
   @Post(':id/close')
-  async closeJobPosting(@Session() sessionId: string, @Param('id') id: string) {
-    const userId = await this.requireCorporate(sessionId);
-    return this.jobPostingService.closeJobPosting(userId, id);
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '공고 마감 / Close job posting' })
+  @ApiParam({ name: 'id', description: 'Job posting ID' })
+  @ApiResponse({ status: 200, description: 'Job posting closed' })
+  async closeJobPosting(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+  ) {
+    return this.jobPostingService.closeJobPosting(session.userId, id);
+  }
+
+  @Post(':id/bump')
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '공고 끌어올리기 / Bump job posting' })
+  @ApiParam({ name: 'id', description: 'Job posting ID' })
+  @ApiResponse({ status: 200, description: 'Job posting bumped' })
+  async bumpJobPosting(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+  ) {
+    return this.jobPostingService.bumpJobPosting(session.userId, id);
+  }
+
+  @Post(':id/toggle-urgent')
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({ summary: '긴급 공고 토글 / Toggle urgent' })
+  @ApiParam({ name: 'id', description: 'Job posting ID' })
+  @ApiResponse({ status: 200, description: 'Urgent flag toggled' })
+  async toggleUrgent(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+  ) {
+    return this.jobPostingService.toggleUrgent(session.userId, id);
+  }
+
+  @Post(':id/scrap')
+  @ApiOperation({ summary: '공고 스크랩 / Scrap job' })
+  @ApiParam({ name: 'id', description: 'Job posting ID' })
+  @ApiResponse({ status: 200, description: 'Job scrapped' })
+  async scrapJob(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+  ) {
+    return this.jobScrapService.scrapJob(session.userId, id);
+  }
+
+  @Delete(':id/scrap')
+  @ApiOperation({ summary: '스크랩 취소 / Unscrap job' })
+  @ApiParam({ name: 'id', description: 'Job posting ID' })
+  @ApiResponse({ status: 200, description: 'Scrap removed' })
+  async unscrapJob(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+  ) {
+    return this.jobScrapService.unscrapJob(session.userId, id);
   }
 }
