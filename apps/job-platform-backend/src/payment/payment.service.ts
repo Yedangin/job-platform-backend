@@ -120,7 +120,11 @@ export class PaymentService {
   // ================================================
   // 2. 결제 확인 / Confirm payment
   // ================================================
-  async confirmPayment(orderId: number, portonePaymentId: string, userId?: string) {
+  async confirmPayment(
+    orderId: number,
+    portonePaymentId: string,
+    userId?: string,
+  ) {
     // 주문 조회 / Get order
     const order = await this.paymentPrisma.order.findUnique({
       where: { id: orderId },

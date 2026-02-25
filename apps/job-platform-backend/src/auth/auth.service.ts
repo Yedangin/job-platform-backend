@@ -215,9 +215,14 @@ export class AuthService implements OnModuleInit {
 
       try {
         await this.sesClient.send(command);
-        this.logger.log(`[AWS SES 전송 성공 / SES sent successfully] To: ${email}`);
+        this.logger.log(
+          `[AWS SES 전송 성공 / SES sent successfully] To: ${email}`,
+        );
       } catch (error) {
-        this.logger.error('[AWS SES 전송 실패 / SES send failed]', error?.message);
+        this.logger.error(
+          '[AWS SES 전송 실패 / SES send failed]',
+          error?.message,
+        );
       }
     });
 
@@ -721,7 +726,9 @@ export class AuthService implements OnModuleInit {
 
       try {
         await this.sesClient.send(command);
-        this.logger.log(`[AWS SES 전송 성공] Password reset email to: ${email}`);
+        this.logger.log(
+          `[AWS SES 전송 성공] Password reset email to: ${email}`,
+        );
       } catch (error) {
         this.logger.error('[AWS SES 전송 실패] Password reset email:', error);
       }
@@ -1690,14 +1697,20 @@ export class AuthService implements OnModuleInit {
           );
           if (dashMatch) {
             bizNumber = dashMatch[1] + dashMatch[2] + dashMatch[3];
-            this.logger.log('[OCR] 등록번호 키워드 + 대시 패턴 매칭:', bizNumber);
+            this.logger.log(
+              '[OCR] 등록번호 키워드 + 대시 패턴 매칭:',
+              bizNumber,
+            );
             break;
           }
           // 같은 줄에 10자리 숫자
           const plainMatch = line.match(/(\d{3})\s*(\d{2})\s*(\d{5})/);
           if (plainMatch) {
             bizNumber = plainMatch[1] + plainMatch[2] + plainMatch[3];
-            this.logger.log('[OCR] 등록번호 키워드 + 연속숫자 매칭:', bizNumber);
+            this.logger.log(
+              '[OCR] 등록번호 키워드 + 연속숫자 매칭:',
+              bizNumber,
+            );
             break;
           }
           // 다음 줄에서 번호 찾기 (등록번호: \n 485-86-03274 형태)

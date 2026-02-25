@@ -156,16 +156,24 @@ export class JobPaymentController {
   @Post('upgrade-to-premium')
   @Roles('CORPORATE', 'ADMIN')
   @ApiOperation({
-    summary:
-      '프리미엄 업그레이드 시작 / Start premium upgrade for a posting',
+    summary: '프리미엄 업그레이드 시작 / Start premium upgrade for a posting',
   })
   @ApiResponse({
     status: 201,
     description: 'Premium upgrade order created (PENDING payment)',
   })
-  @ApiResponse({ status: 400, description: 'Posting not ACTIVE or already PREMIUM' })
-  @ApiResponse({ status: 403, description: 'Corporate profile required or not the owner' })
-  @ApiResponse({ status: 404, description: 'Job posting or premium product not found' })
+  @ApiResponse({
+    status: 400,
+    description: 'Posting not ACTIVE or already PREMIUM',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Corporate profile required or not the owner',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Job posting or premium product not found',
+  })
   async upgradeToPremium(
     @CurrentSession() session: SessionData,
     @Body() dto: UpgradeToPremiumDto,
@@ -178,8 +186,7 @@ export class JobPaymentController {
   @Post('upgrade-to-premium/:orderNo/confirm')
   @Roles('CORPORATE', 'ADMIN')
   @ApiOperation({
-    summary:
-      '프리미엄 업그레이드 확정 / Confirm premium upgrade after payment',
+    summary: '프리미엄 업그레이드 확정 / Confirm premium upgrade after payment',
   })
   @ApiParam({
     name: 'orderNo',
@@ -238,8 +245,7 @@ export class JobPaymentController {
   @Post('admin/grant-premium/:jobId')
   @Roles('ADMIN')
   @ApiOperation({
-    summary:
-      '프리미엄 수동 부여 / Admin: manually grant premium to a posting',
+    summary: '프리미엄 수동 부여 / Admin: manually grant premium to a posting',
   })
   @ApiParam({ name: 'jobId', description: 'Job posting ID' })
   @ApiResponse({ status: 200, description: 'Premium granted to posting' })

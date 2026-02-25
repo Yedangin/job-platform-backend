@@ -4,7 +4,10 @@ import { Type } from 'class-transformer';
 import { PostStatus } from '../enums';
 
 export class GetMyJobPostingsQueryDto {
-  @ApiPropertyOptional({ enum: PostStatus, description: '상태 필터 / Status filter' })
+  @ApiPropertyOptional({
+    enum: PostStatus,
+    description: '상태 필터 / Status filter',
+  })
   @IsOptional()
   @IsEnum(PostStatus)
   status?: PostStatus;

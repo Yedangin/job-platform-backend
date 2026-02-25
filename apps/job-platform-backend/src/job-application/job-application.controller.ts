@@ -39,9 +39,7 @@ import {
 @UseGuards(SessionAuthGuard, RolesGuard)
 @Controller('applications')
 export class JobApplicationController {
-  constructor(
-    private readonly jobApplicationService: JobApplicationService,
-  ) {}
+  constructor(private readonly jobApplicationService: JobApplicationService) {}
 
   // ========================================
   // Applicant (INDIVIDUAL) endpoints
@@ -51,7 +49,10 @@ export class JobApplicationController {
   @Roles('INDIVIDUAL')
   @ApiOperation({ summary: '공고 지원하기 / Apply to a job posting' })
   @ApiParam({ name: 'jobId', description: 'Job posting ID' })
-  @ApiResponse({ status: 201, description: 'Application submitted successfully' })
+  @ApiResponse({
+    status: 201,
+    description: 'Application submitted successfully',
+  })
   @ApiResponse({ status: 400, description: 'Job posting is not active' })
   @ApiResponse({ status: 409, description: 'Already applied to this job' })
   async applyToJob(
@@ -65,7 +66,10 @@ export class JobApplicationController {
   @Get('my')
   @Roles('INDIVIDUAL')
   @ApiOperation({ summary: '내 지원 목록 / Get my applications (paginated)' })
-  @ApiResponse({ status: 200, description: 'Paginated list of my applications' })
+  @ApiResponse({
+    status: 200,
+    description: 'Paginated list of my applications',
+  })
   async getMyApplications(
     @CurrentSession() session: SessionData,
     @Query() query: GetMyApplicationsQueryDto,
@@ -77,7 +81,10 @@ export class JobApplicationController {
   @Roles('INDIVIDUAL')
   @ApiOperation({ summary: '지원 취소 / Cancel my application' })
   @ApiParam({ name: 'id', description: 'Application ID' })
-  @ApiResponse({ status: 200, description: 'Application cancelled successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Application cancelled successfully',
+  })
   @ApiResponse({ status: 404, description: 'Application not found' })
   async cancelApplication(
     @CurrentSession() session: SessionData,
@@ -90,7 +97,10 @@ export class JobApplicationController {
   @Roles('INDIVIDUAL')
   @ApiOperation({ summary: '면접 시간 선택 / Select an interview time slot' })
   @ApiParam({ name: 'id', description: 'Application ID' })
-  @ApiResponse({ status: 200, description: 'Interview slot selected successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Interview slot selected successfully',
+  })
   @ApiResponse({ status: 400, description: 'Slot is no longer available' })
   async selectInterviewSlot(
     @CurrentSession() session: SessionData,
@@ -106,9 +116,14 @@ export class JobApplicationController {
 
   @Post(':id/propose-time')
   @Roles('INDIVIDUAL', 'CORPORATE', 'ADMIN')
-  @ApiOperation({ summary: '면접 시간 제안 / Propose an alternative interview time' })
+  @ApiOperation({
+    summary: '면접 시간 제안 / Propose an alternative interview time',
+  })
   @ApiParam({ name: 'id', description: 'Application ID' })
-  @ApiResponse({ status: 200, description: 'Alternative time proposed successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Alternative time proposed successfully',
+  })
   async proposeNewTime(
     @CurrentSession() session: SessionData,
     @Param('id') id: string,
@@ -123,7 +138,9 @@ export class JobApplicationController {
 
   @Get('jobs/:jobId/applicants')
   @Roles('CORPORATE', 'ADMIN')
-  @ApiOperation({ summary: '공고별 지원자 목록 / List applicants for a job posting' })
+  @ApiOperation({
+    summary: '공고별 지원자 목록 / List applicants for a job posting',
+  })
   @ApiParam({ name: 'jobId', description: 'Job posting ID' })
   @ApiResponse({ status: 200, description: 'Paginated list of applicants' })
   async getJobApplicants(
@@ -140,7 +157,9 @@ export class JobApplicationController {
 
   @Put(':id/status')
   @Roles('CORPORATE', 'ADMIN')
-  @ApiOperation({ summary: '지원 상태 변경 / Update application status (pass/fail/interview)' })
+  @ApiOperation({
+    summary: '지원 상태 변경 / Update application status (pass/fail/interview)',
+  })
   @ApiParam({ name: 'id', description: 'Application ID' })
   @ApiResponse({ status: 200, description: 'Application status updated' })
   async updateApplicationStatus(
@@ -157,9 +176,14 @@ export class JobApplicationController {
 
   @Post('jobs/:jobId/interview-slots')
   @Roles('CORPORATE', 'ADMIN')
-  @ApiOperation({ summary: '면접 시간 슬롯 생성 / Create interview time slots for a job' })
+  @ApiOperation({
+    summary: '면접 시간 슬롯 생성 / Create interview time slots for a job',
+  })
   @ApiParam({ name: 'jobId', description: 'Job posting ID' })
-  @ApiResponse({ status: 201, description: 'Interview slots created successfully' })
+  @ApiResponse({
+    status: 201,
+    description: 'Interview slots created successfully',
+  })
   async createInterviewSlots(
     @CurrentSession() session: SessionData,
     @Param('jobId') jobId: string,
@@ -174,22 +198,23 @@ export class JobApplicationController {
 
   @Get('jobs/:jobId/interview-slots')
   @Roles('CORPORATE', 'ADMIN')
-  @ApiOperation({ summary: '공고별 면접 슬롯 조회 / View interview slots for a job posting' })
+  @ApiOperation({
+    summary: '공고별 면접 슬롯 조회 / View interview slots for a job posting',
+  })
   @ApiParam({ name: 'jobId', description: 'Job posting ID' })
   @ApiResponse({ status: 200, description: 'List of interview slots' })
   async getInterviewSlotsForJob(
     @CurrentSession() session: SessionData,
     @Param('jobId') jobId: string,
   ) {
-    return this.jobApplicationService.getInterviewSlots(
-      session.userId,
-      jobId,
-    );
+    return this.jobApplicationService.getInterviewSlots(session.userId, jobId);
   }
 
   @Post(':id/send-result')
   @Roles('CORPORATE', 'ADMIN')
-  @ApiOperation({ summary: '합격/불합격 통보 / Send pass/fail notification to applicant' })
+  @ApiOperation({
+    summary: '합격/불합격 통보 / Send pass/fail notification to applicant',
+  })
   @ApiParam({ name: 'id', description: 'Application ID' })
   @ApiResponse({ status: 200, description: 'Result notification sent' })
   async sendResultNotification(
@@ -206,7 +231,9 @@ export class JobApplicationController {
 
   @Post(':id/send-interview-invite')
   @Roles('CORPORATE', 'ADMIN')
-  @ApiOperation({ summary: '면접 초대 이메일 발송 / Send interview invitation email' })
+  @ApiOperation({
+    summary: '면접 초대 이메일 발송 / Send interview invitation email',
+  })
   @ApiParam({ name: 'id', description: 'Application ID' })
   @ApiResponse({ status: 200, description: 'Interview invitation email sent' })
   async sendInterviewInvite(

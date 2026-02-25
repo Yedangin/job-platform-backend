@@ -374,9 +374,7 @@ export class JobApplicationService {
       const start = new Date(slot.startTime);
       const end = new Date(slot.endTime);
       if (start >= end) {
-        throw new BadRequestException(
-          'Slot startTime must be before endTime',
-        );
+        throw new BadRequestException('Slot startTime must be before endTime');
       }
       if (start <= now) {
         throw new BadRequestException('Slot startTime must be in the future');
@@ -422,8 +420,7 @@ export class JobApplicationService {
     const corp = await this.prisma.corporateProfile.findUnique({
       where: { authId: userId },
     });
-    const isCorporateOwner =
-      corp && job.corporateId === corp.companyId;
+    const isCorporateOwner = corp && job.corporateId === corp.companyId;
 
     // 지원자 여부 확인 / Check if user is an applicant
     const application = await this.prisma.jobApplication.findUnique({
@@ -494,10 +491,7 @@ export class JobApplicationService {
     }
 
     // INTERVIEW_SCHEDULED 상태에서만 슬롯 선택 가능 / Only when interview is scheduled
-    if (
-      app.status !== 'INTERVIEW_SCHEDULED' &&
-      app.status !== 'REVIEWING'
-    ) {
+    if (app.status !== 'INTERVIEW_SCHEDULED' && app.status !== 'REVIEWING') {
       throw new BadRequestException(
         'Application must be in INTERVIEW_SCHEDULED or REVIEWING status to select a slot',
       );
@@ -584,8 +578,7 @@ export class JobApplicationService {
     const corp = await this.prisma.corporateProfile.findUnique({
       where: { authId: userId },
     });
-    const isCorporateOwner =
-      corp && app.job.corporateId === corp.companyId;
+    const isCorporateOwner = corp && app.job.corporateId === corp.companyId;
     const isApplicant = app.applicantId === userId;
 
     if (!isCorporateOwner && !isApplicant) {
@@ -595,11 +588,7 @@ export class JobApplicationService {
     }
 
     // 제안 가능한 상태 확인 / Validate status for proposing
-    const allowedStatuses = [
-      'INTERVIEW_SCHEDULED',
-      'REVIEWING',
-      'PENDING',
-    ];
+    const allowedStatuses = ['INTERVIEW_SCHEDULED', 'REVIEWING', 'PENDING'];
     if (!allowedStatuses.includes(app.status)) {
       throw new BadRequestException(
         `Cannot propose new time when status is ${app.status}`,
@@ -625,7 +614,11 @@ export class JobApplicationService {
     });
 
     // 상대방에게 알림 / Notify the other party
-    const notifyUserId = isCorporateOwner ? app.applicantId : corp ? corp.authId : null;
+    const notifyUserId = isCorporateOwner
+      ? app.applicantId
+      : corp
+        ? corp.authId
+        : null;
     if (notifyUserId) {
       setImmediate(() => {
         this.createInAppNotification(
@@ -788,12 +781,11 @@ export class JobApplicationService {
       });
 
       setImmediate(() => {
-        this.sendEmailNotification(applicantEmail, subject, html).catch(
-          (err) =>
-            this.logger.error(
-              `Failed to send result email to ${applicantEmail}:`,
-              err,
-            ),
+        this.sendEmailNotification(applicantEmail, subject, html).catch((err) =>
+          this.logger.error(
+            `Failed to send result email to ${applicantEmail}:`,
+            err,
+          ),
         );
       });
     }
@@ -877,12 +869,11 @@ export class JobApplicationService {
       });
 
       setImmediate(() => {
-        this.sendEmailNotification(applicantEmail, subject, html).catch(
-          (err) =>
-            this.logger.error(
-              `Failed to send interview invitation to ${applicantEmail}:`,
-              err,
-            ),
+        this.sendEmailNotification(applicantEmail, subject, html).catch((err) =>
+          this.logger.error(
+            `Failed to send interview invitation to ${applicantEmail}:`,
+            err,
+          ),
         );
       });
     }
@@ -1049,9 +1040,7 @@ export class JobApplicationService {
   /**
    * 지원자 이메일 조회 / Lookup email from User table
    */
-  private async getApplicantEmail(
-    applicantId: string,
-  ): Promise<string | null> {
+  private async getApplicantEmail(applicantId: string): Promise<string | null> {
     const user = await this.prisma.user.findUnique({
       where: { id: applicantId },
       select: { email: true },

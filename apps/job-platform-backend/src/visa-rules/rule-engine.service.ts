@@ -194,7 +194,10 @@ export class RuleEngineService {
           this.applyActions(actions, result);
         }
       } catch (e) {
-        this.logger.error(`[RuleEngine] 규칙 평가 오류 (ruleId=${rule.id}):`, e);
+        this.logger.error(
+          `[RuleEngine] 규칙 평가 오류 (ruleId=${rule.id}):`,
+          e,
+        );
       }
     }
 

@@ -20,7 +20,8 @@ export class SendResultNotificationDto {
 
   @ApiPropertyOptional({
     description: '불합격 사유 / Rejection reason (when result is REJECTED)',
-    example: 'Unfortunately, we decided to move forward with another candidate.',
+    example:
+      'Unfortunately, we decided to move forward with another candidate.',
   })
   @IsOptional()
   @IsString()

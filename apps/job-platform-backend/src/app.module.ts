@@ -85,7 +85,10 @@ import { NotificationModule } from './notification/notification.module';
       // Server fails to start if JWT_SECRET is not set (no hardcoded fallback)
       secret: (() => {
         const s = process.env.JWT_SECRET;
-        if (!s) throw new Error('JWT_SECRET 환경변수가 설정되지 않았습니다 / JWT_SECRET env var is required');
+        if (!s)
+          throw new Error(
+            'JWT_SECRET 환경변수가 설정되지 않았습니다 / JWT_SECRET env var is required',
+          );
         return s;
       })(),
       signOptions: { expiresIn: process.env.JWT_SECRET_EXPIRES_IN || '2h' },

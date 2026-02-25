@@ -14,7 +14,9 @@ export class GetAdminJobPostingsQueryDto {
   @IsEnum(BoardType)
   boardType?: BoardType;
 
-  @ApiPropertyOptional({ description: '제목/회사명 검색 / Search title/company' })
+  @ApiPropertyOptional({
+    description: '제목/회사명 검색 / Search title/company',
+  })
   @IsOptional()
   @IsString()
   search?: string;

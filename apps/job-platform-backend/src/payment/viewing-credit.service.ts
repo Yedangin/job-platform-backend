@@ -92,7 +92,9 @@ export class ViewingCreditService {
         orderBy: { expiresAt: 'asc' },
       });
 
-      const availableCredit = credits.find((c) => c.usedCredits < c.totalCredits);
+      const availableCredit = credits.find(
+        (c) => c.usedCredits < c.totalCredits,
+      );
 
       if (!availableCredit) {
         throw new BadRequestException(

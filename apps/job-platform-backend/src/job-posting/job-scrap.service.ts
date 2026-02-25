@@ -71,15 +71,11 @@ export class JobScrapService {
     ]);
 
     // Batch load corporate profiles
-    const corporateIds = [
-      ...new Set(items.map((s) => s.job.corporateId)),
-    ];
+    const corporateIds = [...new Set(items.map((s) => s.job.corporateId))];
     const corporates = await this.prisma.corporateProfile.findMany({
       where: { companyId: { in: corporateIds } },
     });
-    const corpMap = new Map(
-      corporates.map((c) => [c.companyId.toString(), c]),
-    );
+    const corpMap = new Map(corporates.map((c) => [c.companyId.toString(), c]));
 
     return {
       items: items.map((s) => {

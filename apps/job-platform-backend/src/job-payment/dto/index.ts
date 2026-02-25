@@ -1,11 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-  IsString,
-  IsOptional,
-  IsNotEmpty,
-  IsInt,
-  Min,
-} from 'class-validator';
+import { IsString, IsOptional, IsNotEmpty, IsInt, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 // ========================================
@@ -13,7 +7,8 @@ import { Type } from 'class-transformer';
 // ========================================
 export class CreateOrderDto {
   @ApiProperty({
-    description: '상품 코드 / Product code (e.g. STANDARD_ALBA, PREMIUM_FULLTIME)',
+    description:
+      '상품 코드 / Product code (e.g. STANDARD_ALBA, PREMIUM_FULLTIME)',
     example: 'PREMIUM_FULLTIME',
   })
   @IsString()

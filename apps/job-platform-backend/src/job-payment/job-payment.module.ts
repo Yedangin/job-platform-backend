@@ -9,11 +9,7 @@ import { AuthPrismaService, RedisService } from 'libs/common/src';
 
 @Module({
   controllers: [JobPaymentController],
-  providers: [
-    JobPaymentService,
-    AuthPrismaService,
-    RedisService,
-  ],
+  providers: [JobPaymentService, AuthPrismaService, RedisService],
   exports: [JobPaymentService],
 })
 export class JobPaymentModule {}

@@ -217,7 +217,6 @@ export class JobEligibilityService {
       limit?: number;
     },
   ) {
-
     // 1. 사용자 비자 프로필 로드
     // 1. Load user's visa profile
     const userProfile = await this.getUserVisaProfile(userId);
@@ -376,7 +375,6 @@ export class JobEligibilityService {
     requiredScore?: number;
     scoreBreakdown?: any[];
   }> {
-
     // 1. 사용자 비자 프로필 로드
     // 1. Load user's visa profile
     const userProfile = await this.getUserVisaProfile(userId);

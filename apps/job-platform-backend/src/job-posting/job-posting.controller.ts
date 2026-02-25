@@ -56,7 +56,9 @@ export class JobPostingController {
 
   @Public()
   @Get('listing')
-  @ApiOperation({ summary: '공고 목록 조회 / Job listings (public + optional visa filter)' })
+  @ApiOperation({
+    summary: '공고 목록 조회 / Job listings (public + optional visa filter)',
+  })
   @ApiResponse({ status: 200, description: 'Paginated job listings' })
   async getJobListings(
     @CurrentSession() session: SessionData | undefined,
@@ -139,7 +141,10 @@ export class JobPostingController {
   @Get('visa-suggest/for-company')
   @Roles('CORPORATE', 'ADMIN')
   @ApiOperation({ summary: '비자 추천 / Visa suggestions for company' })
-  @ApiResponse({ status: 200, description: 'Visa suggestions with company info' })
+  @ApiResponse({
+    status: 200,
+    description: 'Visa suggestions with company info',
+  })
   async suggestVisas(@CurrentSession() session: SessionData) {
     return this.jobPostingService.suggestVisas(session.userId);
   }
@@ -155,16 +160,13 @@ export class JobPostingController {
     @CurrentSession() session: SessionData,
     @Query() query: GetEligibleListingsQueryDto,
   ) {
-    return this.jobEligibilityService.getVisaFilteredListings(
-      session.userId,
-      {
-        boardType: query.boardType,
-        keyword: query.keyword,
-        employmentSubType: query.employmentSubType,
-        page: query.page || 1,
-        limit: query.limit || 20,
-      },
-    );
+    return this.jobEligibilityService.getVisaFilteredListings(session.userId, {
+      boardType: query.boardType,
+      keyword: query.keyword,
+      employmentSubType: query.employmentSubType,
+      page: query.page || 1,
+      limit: query.limit || 20,
+    });
   }
 
   // ========================================
@@ -252,10 +254,7 @@ export class JobPostingController {
     @CurrentSession() session: SessionData,
     @Param('id') id: string,
   ) {
-    return this.jobEligibilityService.checkJobEligibility(
-      session.userId,
-      id,
-    );
+    return this.jobEligibilityService.checkJobEligibility(session.userId, id);
   }
 
   @Put(':id')

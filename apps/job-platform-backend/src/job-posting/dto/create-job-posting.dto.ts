@@ -35,7 +35,10 @@ export class CreateJobPostingDto {
   @IsEnum(TierType)
   tierType?: TierType;
 
-  @ApiProperty({ description: '공고 제목 / Job title', example: '주방보조 구합니다' })
+  @ApiProperty({
+    description: '공고 제목 / Job title',
+    example: '주방보조 구합니다',
+  })
   @IsString()
   title: string;
 
@@ -43,7 +46,9 @@ export class CreateJobPostingDto {
   @IsString()
   description: string;
 
-  @ApiPropertyOptional({ description: '업무 내용 이미지 URL / Work content image URL' })
+  @ApiPropertyOptional({
+    description: '업무 내용 이미지 URL / Work content image URL',
+  })
   @IsOptional()
   @IsString()
   workContentImg?: string;
@@ -143,13 +148,17 @@ export class CreateJobPostingDto {
   @IsEnum(EmploymentSubType)
   employmentSubType?: EmploymentSubType;
 
-  @ApiPropertyOptional({ description: '마감일 / Closing date', example: '2026-03-31' })
+  @ApiPropertyOptional({
+    description: '마감일 / Closing date',
+    example: '2026-03-31',
+  })
   @IsOptional()
   @IsDateString()
   closingDate?: string;
 
   @ApiPropertyOptional({
-    description: '알바 속성 (PART_TIME일 때) / Alba attributes (when PART_TIME)',
+    description:
+      '알바 속성 (PART_TIME일 때) / Alba attributes (when PART_TIME)',
     type: AlbaAttributesDto,
   })
   @IsOptional()
@@ -158,7 +167,8 @@ export class CreateJobPostingDto {
   albaAttributes?: AlbaAttributesDto;
 
   @ApiPropertyOptional({
-    description: '정규직 속성 (FULL_TIME일 때) / Fulltime attributes (when FULL_TIME)',
+    description:
+      '정규직 속성 (FULL_TIME일 때) / Fulltime attributes (when FULL_TIME)',
     type: FulltimeAttributesDto,
   })
   @IsOptional()
