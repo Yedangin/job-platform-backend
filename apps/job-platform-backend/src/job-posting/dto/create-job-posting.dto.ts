@@ -175,4 +175,19 @@ export class CreateJobPostingDto {
   @ValidateNested()
   @Type(() => FulltimeAttributesDto)
   fulltimeAttributes?: FulltimeAttributesDto;
+
+  @ApiPropertyOptional({
+    description:
+      '정규직 비자 매칭 결과 (JSON) / Fulltime visa matching result (JSON)',
+  })
+  @IsOptional()
+  fulltimeVisaResult?: Record<string, unknown>;
+
+  @ApiPropertyOptional({
+    description: '모집 인원 / Headcount',
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  headcount?: number;
 }

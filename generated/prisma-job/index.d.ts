@@ -2539,6 +2539,7 @@ export namespace Prisma {
     benefits: number
     allowedVisas: number
     minKoreanLevel: number
+    fulltimeVisaResult: number
     contactName: number
     contactPhone: number
     interviewMethod: number
@@ -2626,6 +2627,7 @@ export namespace Prisma {
     benefits?: true
     allowedVisas?: true
     minKoreanLevel?: true
+    fulltimeVisaResult?: true
     contactName?: true
     contactPhone?: true
     interviewMethod?: true
@@ -2738,6 +2740,7 @@ export namespace Prisma {
     benefits: JsonValue | null
     allowedVisas: string
     minKoreanLevel: number
+    fulltimeVisaResult: JsonValue | null
     contactName: string
     contactPhone: string
     interviewMethod: $Enums.InterviewType
@@ -2782,6 +2785,7 @@ export namespace Prisma {
     benefits?: boolean
     allowedVisas?: boolean
     minKoreanLevel?: boolean
+    fulltimeVisaResult?: boolean
     contactName?: boolean
     contactPhone?: boolean
     interviewMethod?: boolean
@@ -2812,6 +2816,7 @@ export namespace Prisma {
     benefits?: boolean
     allowedVisas?: boolean
     minKoreanLevel?: boolean
+    fulltimeVisaResult?: boolean
     contactName?: boolean
     contactPhone?: boolean
     interviewMethod?: boolean
@@ -2837,6 +2842,7 @@ export namespace Prisma {
     benefits?: boolean
     allowedVisas?: boolean
     minKoreanLevel?: boolean
+    fulltimeVisaResult?: boolean
     contactName?: boolean
     contactPhone?: boolean
     interviewMethod?: boolean
@@ -2862,13 +2868,14 @@ export namespace Prisma {
     benefits?: boolean
     allowedVisas?: boolean
     minKoreanLevel?: boolean
+    fulltimeVisaResult?: boolean
     contactName?: boolean
     contactPhone?: boolean
     interviewMethod?: boolean
     interviewPlace?: boolean
   }
 
-  export type JobPostingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"jobId" | "corporateId" | "boardType" | "title" | "description" | "workContentImg" | "status" | "isPremium" | "premiumStartAt" | "premiumEndAt" | "closingDate" | "isRecruitmentEnd" | "displayAddress" | "actualAddress" | "workIntensity" | "benefits" | "allowedVisas" | "minKoreanLevel" | "contactName" | "contactPhone" | "interviewMethod" | "interviewPlace", ExtArgs["result"]["jobPosting"]>
+  export type JobPostingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"jobId" | "corporateId" | "boardType" | "title" | "description" | "workContentImg" | "status" | "isPremium" | "premiumStartAt" | "premiumEndAt" | "closingDate" | "isRecruitmentEnd" | "displayAddress" | "actualAddress" | "workIntensity" | "benefits" | "allowedVisas" | "minKoreanLevel" | "fulltimeVisaResult" | "contactName" | "contactPhone" | "interviewMethod" | "interviewPlace", ExtArgs["result"]["jobPosting"]>
   export type JobPostingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     albaAttributes?: boolean | JobPosting$albaAttributesArgs<ExtArgs>
     fulltimeAttributes?: boolean | JobPosting$fulltimeAttributesArgs<ExtArgs>
@@ -2906,6 +2913,7 @@ export namespace Prisma {
       benefits: Prisma.JsonValue | null
       allowedVisas: string
       minKoreanLevel: number
+      fulltimeVisaResult: Prisma.JsonValue | null
       contactName: string
       contactPhone: string
       interviewMethod: $Enums.InterviewType
@@ -3355,6 +3363,7 @@ export namespace Prisma {
     readonly benefits: FieldRef<"JobPosting", 'Json'>
     readonly allowedVisas: FieldRef<"JobPosting", 'String'>
     readonly minKoreanLevel: FieldRef<"JobPosting", 'Int'>
+    readonly fulltimeVisaResult: FieldRef<"JobPosting", 'Json'>
     readonly contactName: FieldRef<"JobPosting", 'String'>
     readonly contactPhone: FieldRef<"JobPosting", 'String'>
     readonly interviewMethod: FieldRef<"JobPosting", 'InterviewType'>
@@ -4990,6 +4999,8 @@ export namespace Prisma {
     salaryMax: number | null
     experienceLevel: string | null
     educationLevel: string | null
+    occupationCode: string | null
+    overseasHireWilling: boolean | null
   }
 
   export type JobAttributesFulltimeMaxAggregateOutputType = {
@@ -4998,6 +5009,8 @@ export namespace Prisma {
     salaryMax: number | null
     experienceLevel: string | null
     educationLevel: string | null
+    occupationCode: string | null
+    overseasHireWilling: boolean | null
   }
 
   export type JobAttributesFulltimeCountAggregateOutputType = {
@@ -5006,6 +5019,9 @@ export namespace Prisma {
     salaryMax: number
     experienceLevel: number
     educationLevel: number
+    occupationCode: number
+    preferredMajors: number
+    overseasHireWilling: number
     _all: number
   }
 
@@ -5028,6 +5044,8 @@ export namespace Prisma {
     salaryMax?: true
     experienceLevel?: true
     educationLevel?: true
+    occupationCode?: true
+    overseasHireWilling?: true
   }
 
   export type JobAttributesFulltimeMaxAggregateInputType = {
@@ -5036,6 +5054,8 @@ export namespace Prisma {
     salaryMax?: true
     experienceLevel?: true
     educationLevel?: true
+    occupationCode?: true
+    overseasHireWilling?: true
   }
 
   export type JobAttributesFulltimeCountAggregateInputType = {
@@ -5044,6 +5064,9 @@ export namespace Prisma {
     salaryMax?: true
     experienceLevel?: true
     educationLevel?: true
+    occupationCode?: true
+    preferredMajors?: true
+    overseasHireWilling?: true
     _all?: true
   }
 
@@ -5139,6 +5162,9 @@ export namespace Prisma {
     salaryMax: number | null
     experienceLevel: string
     educationLevel: string
+    occupationCode: string
+    preferredMajors: JsonValue | null
+    overseasHireWilling: boolean
     _count: JobAttributesFulltimeCountAggregateOutputType | null
     _avg: JobAttributesFulltimeAvgAggregateOutputType | null
     _sum: JobAttributesFulltimeSumAggregateOutputType | null
@@ -5166,6 +5192,9 @@ export namespace Prisma {
     salaryMax?: boolean
     experienceLevel?: boolean
     educationLevel?: boolean
+    occupationCode?: boolean
+    preferredMajors?: boolean
+    overseasHireWilling?: boolean
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobAttributesFulltime"]>
 
@@ -5175,6 +5204,9 @@ export namespace Prisma {
     salaryMax?: boolean
     experienceLevel?: boolean
     educationLevel?: boolean
+    occupationCode?: boolean
+    preferredMajors?: boolean
+    overseasHireWilling?: boolean
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobAttributesFulltime"]>
 
@@ -5184,6 +5216,9 @@ export namespace Prisma {
     salaryMax?: boolean
     experienceLevel?: boolean
     educationLevel?: boolean
+    occupationCode?: boolean
+    preferredMajors?: boolean
+    overseasHireWilling?: boolean
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobAttributesFulltime"]>
 
@@ -5193,9 +5228,12 @@ export namespace Prisma {
     salaryMax?: boolean
     experienceLevel?: boolean
     educationLevel?: boolean
+    occupationCode?: boolean
+    preferredMajors?: boolean
+    overseasHireWilling?: boolean
   }
 
-  export type JobAttributesFulltimeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"jobId" | "salaryMin" | "salaryMax" | "experienceLevel" | "educationLevel", ExtArgs["result"]["jobAttributesFulltime"]>
+  export type JobAttributesFulltimeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"jobId" | "salaryMin" | "salaryMax" | "experienceLevel" | "educationLevel" | "occupationCode" | "preferredMajors" | "overseasHireWilling", ExtArgs["result"]["jobAttributesFulltime"]>
   export type JobAttributesFulltimeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
   }
@@ -5217,6 +5255,9 @@ export namespace Prisma {
       salaryMax: number | null
       experienceLevel: string
       educationLevel: string
+      occupationCode: string
+      preferredMajors: Prisma.JsonValue | null
+      overseasHireWilling: boolean
     }, ExtArgs["result"]["jobAttributesFulltime"]>
     composites: {}
   }
@@ -5646,6 +5687,9 @@ export namespace Prisma {
     readonly salaryMax: FieldRef<"JobAttributesFulltime", 'Int'>
     readonly experienceLevel: FieldRef<"JobAttributesFulltime", 'String'>
     readonly educationLevel: FieldRef<"JobAttributesFulltime", 'String'>
+    readonly occupationCode: FieldRef<"JobAttributesFulltime", 'String'>
+    readonly preferredMajors: FieldRef<"JobAttributesFulltime", 'Json'>
+    readonly overseasHireWilling: FieldRef<"JobAttributesFulltime", 'Boolean'>
   }
     
 
@@ -8367,6 +8411,7 @@ export namespace Prisma {
     benefits: 'benefits',
     allowedVisas: 'allowedVisas',
     minKoreanLevel: 'minKoreanLevel',
+    fulltimeVisaResult: 'fulltimeVisaResult',
     contactName: 'contactName',
     contactPhone: 'contactPhone',
     interviewMethod: 'interviewMethod',
@@ -8393,7 +8438,10 @@ export namespace Prisma {
     salaryMin: 'salaryMin',
     salaryMax: 'salaryMax',
     experienceLevel: 'experienceLevel',
-    educationLevel: 'educationLevel'
+    educationLevel: 'educationLevel',
+    occupationCode: 'occupationCode',
+    preferredMajors: 'preferredMajors',
+    overseasHireWilling: 'overseasHireWilling'
   };
 
   export type JobAttributesFulltimeScalarFieldEnum = (typeof JobAttributesFulltimeScalarFieldEnum)[keyof typeof JobAttributesFulltimeScalarFieldEnum]
@@ -8717,6 +8765,7 @@ export namespace Prisma {
     benefits?: JsonNullableFilter<"JobPosting">
     allowedVisas?: StringFilter<"JobPosting"> | string
     minKoreanLevel?: IntFilter<"JobPosting"> | number
+    fulltimeVisaResult?: JsonNullableFilter<"JobPosting">
     contactName?: StringFilter<"JobPosting"> | string
     contactPhone?: StringFilter<"JobPosting"> | string
     interviewMethod?: EnumInterviewTypeFilter<"JobPosting"> | $Enums.InterviewType
@@ -8746,6 +8795,7 @@ export namespace Prisma {
     benefits?: SortOrderInput | SortOrder
     allowedVisas?: SortOrder
     minKoreanLevel?: SortOrder
+    fulltimeVisaResult?: SortOrderInput | SortOrder
     contactName?: SortOrder
     contactPhone?: SortOrder
     interviewMethod?: SortOrder
@@ -8778,6 +8828,7 @@ export namespace Prisma {
     benefits?: JsonNullableFilter<"JobPosting">
     allowedVisas?: StringFilter<"JobPosting"> | string
     minKoreanLevel?: IntFilter<"JobPosting"> | number
+    fulltimeVisaResult?: JsonNullableFilter<"JobPosting">
     contactName?: StringFilter<"JobPosting"> | string
     contactPhone?: StringFilter<"JobPosting"> | string
     interviewMethod?: EnumInterviewTypeFilter<"JobPosting"> | $Enums.InterviewType
@@ -8807,6 +8858,7 @@ export namespace Prisma {
     benefits?: SortOrderInput | SortOrder
     allowedVisas?: SortOrder
     minKoreanLevel?: SortOrder
+    fulltimeVisaResult?: SortOrderInput | SortOrder
     contactName?: SortOrder
     contactPhone?: SortOrder
     interviewMethod?: SortOrder
@@ -8840,6 +8892,7 @@ export namespace Prisma {
     benefits?: JsonNullableWithAggregatesFilter<"JobPosting">
     allowedVisas?: StringWithAggregatesFilter<"JobPosting"> | string
     minKoreanLevel?: IntWithAggregatesFilter<"JobPosting"> | number
+    fulltimeVisaResult?: JsonNullableWithAggregatesFilter<"JobPosting">
     contactName?: StringWithAggregatesFilter<"JobPosting"> | string
     contactPhone?: StringWithAggregatesFilter<"JobPosting"> | string
     interviewMethod?: EnumInterviewTypeWithAggregatesFilter<"JobPosting"> | $Enums.InterviewType
@@ -8917,6 +8970,9 @@ export namespace Prisma {
     salaryMax?: IntNullableFilter<"JobAttributesFulltime"> | number | null
     experienceLevel?: StringFilter<"JobAttributesFulltime"> | string
     educationLevel?: StringFilter<"JobAttributesFulltime"> | string
+    occupationCode?: StringFilter<"JobAttributesFulltime"> | string
+    preferredMajors?: JsonNullableFilter<"JobAttributesFulltime">
+    overseasHireWilling?: BoolFilter<"JobAttributesFulltime"> | boolean
     job?: XOR<JobPostingScalarRelationFilter, JobPostingWhereInput>
   }
 
@@ -8926,6 +8982,9 @@ export namespace Prisma {
     salaryMax?: SortOrderInput | SortOrder
     experienceLevel?: SortOrder
     educationLevel?: SortOrder
+    occupationCode?: SortOrder
+    preferredMajors?: SortOrderInput | SortOrder
+    overseasHireWilling?: SortOrder
     job?: JobPostingOrderByWithRelationInput
   }
 
@@ -8938,6 +8997,9 @@ export namespace Prisma {
     salaryMax?: IntNullableFilter<"JobAttributesFulltime"> | number | null
     experienceLevel?: StringFilter<"JobAttributesFulltime"> | string
     educationLevel?: StringFilter<"JobAttributesFulltime"> | string
+    occupationCode?: StringFilter<"JobAttributesFulltime"> | string
+    preferredMajors?: JsonNullableFilter<"JobAttributesFulltime">
+    overseasHireWilling?: BoolFilter<"JobAttributesFulltime"> | boolean
     job?: XOR<JobPostingScalarRelationFilter, JobPostingWhereInput>
   }, "jobId">
 
@@ -8947,6 +9009,9 @@ export namespace Prisma {
     salaryMax?: SortOrderInput | SortOrder
     experienceLevel?: SortOrder
     educationLevel?: SortOrder
+    occupationCode?: SortOrder
+    preferredMajors?: SortOrderInput | SortOrder
+    overseasHireWilling?: SortOrder
     _count?: JobAttributesFulltimeCountOrderByAggregateInput
     _avg?: JobAttributesFulltimeAvgOrderByAggregateInput
     _max?: JobAttributesFulltimeMaxOrderByAggregateInput
@@ -8963,6 +9028,9 @@ export namespace Prisma {
     salaryMax?: IntNullableWithAggregatesFilter<"JobAttributesFulltime"> | number | null
     experienceLevel?: StringWithAggregatesFilter<"JobAttributesFulltime"> | string
     educationLevel?: StringWithAggregatesFilter<"JobAttributesFulltime"> | string
+    occupationCode?: StringWithAggregatesFilter<"JobAttributesFulltime"> | string
+    preferredMajors?: JsonNullableWithAggregatesFilter<"JobAttributesFulltime">
+    overseasHireWilling?: BoolWithAggregatesFilter<"JobAttributesFulltime"> | boolean
   }
 
   export type InterviewSlotWhereInput = {
@@ -9162,6 +9230,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas: string
     minKoreanLevel?: number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName: string
     contactPhone: string
     interviewMethod?: $Enums.InterviewType
@@ -9191,6 +9260,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas: string
     minKoreanLevel?: number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName: string
     contactPhone: string
     interviewMethod?: $Enums.InterviewType
@@ -9220,6 +9290,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas?: StringFieldUpdateOperationsInput | string
     minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName?: StringFieldUpdateOperationsInput | string
     contactPhone?: StringFieldUpdateOperationsInput | string
     interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
@@ -9249,6 +9320,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas?: StringFieldUpdateOperationsInput | string
     minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName?: StringFieldUpdateOperationsInput | string
     contactPhone?: StringFieldUpdateOperationsInput | string
     interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
@@ -9278,6 +9350,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas: string
     minKoreanLevel?: number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName: string
     contactPhone: string
     interviewMethod?: $Enums.InterviewType
@@ -9303,6 +9376,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas?: StringFieldUpdateOperationsInput | string
     minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName?: StringFieldUpdateOperationsInput | string
     contactPhone?: StringFieldUpdateOperationsInput | string
     interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
@@ -9328,6 +9402,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas?: StringFieldUpdateOperationsInput | string
     minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName?: StringFieldUpdateOperationsInput | string
     contactPhone?: StringFieldUpdateOperationsInput | string
     interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
@@ -9401,6 +9476,9 @@ export namespace Prisma {
     salaryMax?: number | null
     experienceLevel: string
     educationLevel: string
+    occupationCode: string
+    preferredMajors?: NullableJsonNullValueInput | InputJsonValue
+    overseasHireWilling?: boolean
     job: JobPostingCreateNestedOneWithoutFulltimeAttributesInput
   }
 
@@ -9410,6 +9488,9 @@ export namespace Prisma {
     salaryMax?: number | null
     experienceLevel: string
     educationLevel: string
+    occupationCode: string
+    preferredMajors?: NullableJsonNullValueInput | InputJsonValue
+    overseasHireWilling?: boolean
   }
 
   export type JobAttributesFulltimeUpdateInput = {
@@ -9417,6 +9498,9 @@ export namespace Prisma {
     salaryMax?: NullableIntFieldUpdateOperationsInput | number | null
     experienceLevel?: StringFieldUpdateOperationsInput | string
     educationLevel?: StringFieldUpdateOperationsInput | string
+    occupationCode?: StringFieldUpdateOperationsInput | string
+    preferredMajors?: NullableJsonNullValueInput | InputJsonValue
+    overseasHireWilling?: BoolFieldUpdateOperationsInput | boolean
     job?: JobPostingUpdateOneRequiredWithoutFulltimeAttributesNestedInput
   }
 
@@ -9426,6 +9510,9 @@ export namespace Prisma {
     salaryMax?: NullableIntFieldUpdateOperationsInput | number | null
     experienceLevel?: StringFieldUpdateOperationsInput | string
     educationLevel?: StringFieldUpdateOperationsInput | string
+    occupationCode?: StringFieldUpdateOperationsInput | string
+    preferredMajors?: NullableJsonNullValueInput | InputJsonValue
+    overseasHireWilling?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type JobAttributesFulltimeCreateManyInput = {
@@ -9434,6 +9521,9 @@ export namespace Prisma {
     salaryMax?: number | null
     experienceLevel: string
     educationLevel: string
+    occupationCode: string
+    preferredMajors?: NullableJsonNullValueInput | InputJsonValue
+    overseasHireWilling?: boolean
   }
 
   export type JobAttributesFulltimeUpdateManyMutationInput = {
@@ -9441,6 +9531,9 @@ export namespace Prisma {
     salaryMax?: NullableIntFieldUpdateOperationsInput | number | null
     experienceLevel?: StringFieldUpdateOperationsInput | string
     educationLevel?: StringFieldUpdateOperationsInput | string
+    occupationCode?: StringFieldUpdateOperationsInput | string
+    preferredMajors?: NullableJsonNullValueInput | InputJsonValue
+    overseasHireWilling?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type JobAttributesFulltimeUncheckedUpdateManyInput = {
@@ -9449,6 +9542,9 @@ export namespace Prisma {
     salaryMax?: NullableIntFieldUpdateOperationsInput | number | null
     experienceLevel?: StringFieldUpdateOperationsInput | string
     educationLevel?: StringFieldUpdateOperationsInput | string
+    occupationCode?: StringFieldUpdateOperationsInput | string
+    preferredMajors?: NullableJsonNullValueInput | InputJsonValue
+    overseasHireWilling?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type InterviewSlotCreateInput = {
@@ -9834,6 +9930,7 @@ export namespace Prisma {
     benefits?: SortOrder
     allowedVisas?: SortOrder
     minKoreanLevel?: SortOrder
+    fulltimeVisaResult?: SortOrder
     contactName?: SortOrder
     contactPhone?: SortOrder
     interviewMethod?: SortOrder
@@ -10081,6 +10178,9 @@ export namespace Prisma {
     salaryMax?: SortOrder
     experienceLevel?: SortOrder
     educationLevel?: SortOrder
+    occupationCode?: SortOrder
+    preferredMajors?: SortOrder
+    overseasHireWilling?: SortOrder
   }
 
   export type JobAttributesFulltimeAvgOrderByAggregateInput = {
@@ -10095,6 +10195,8 @@ export namespace Prisma {
     salaryMax?: SortOrder
     experienceLevel?: SortOrder
     educationLevel?: SortOrder
+    occupationCode?: SortOrder
+    overseasHireWilling?: SortOrder
   }
 
   export type JobAttributesFulltimeMinOrderByAggregateInput = {
@@ -10103,6 +10205,8 @@ export namespace Prisma {
     salaryMax?: SortOrder
     experienceLevel?: SortOrder
     educationLevel?: SortOrder
+    occupationCode?: SortOrder
+    overseasHireWilling?: SortOrder
   }
 
   export type JobAttributesFulltimeSumOrderByAggregateInput = {
@@ -10986,6 +11090,9 @@ export namespace Prisma {
     salaryMax?: number | null
     experienceLevel: string
     educationLevel: string
+    occupationCode: string
+    preferredMajors?: NullableJsonNullValueInput | InputJsonValue
+    overseasHireWilling?: boolean
   }
 
   export type JobAttributesFulltimeUncheckedCreateWithoutJobInput = {
@@ -10993,6 +11100,9 @@ export namespace Prisma {
     salaryMax?: number | null
     experienceLevel: string
     educationLevel: string
+    occupationCode: string
+    preferredMajors?: NullableJsonNullValueInput | InputJsonValue
+    overseasHireWilling?: boolean
   }
 
   export type JobAttributesFulltimeCreateOrConnectWithoutJobInput = {
@@ -11101,6 +11211,9 @@ export namespace Prisma {
     salaryMax?: NullableIntFieldUpdateOperationsInput | number | null
     experienceLevel?: StringFieldUpdateOperationsInput | string
     educationLevel?: StringFieldUpdateOperationsInput | string
+    occupationCode?: StringFieldUpdateOperationsInput | string
+    preferredMajors?: NullableJsonNullValueInput | InputJsonValue
+    overseasHireWilling?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type JobAttributesFulltimeUncheckedUpdateWithoutJobInput = {
@@ -11108,6 +11221,9 @@ export namespace Prisma {
     salaryMax?: NullableIntFieldUpdateOperationsInput | number | null
     experienceLevel?: StringFieldUpdateOperationsInput | string
     educationLevel?: StringFieldUpdateOperationsInput | string
+    occupationCode?: StringFieldUpdateOperationsInput | string
+    preferredMajors?: NullableJsonNullValueInput | InputJsonValue
+    overseasHireWilling?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type InterviewSlotUpsertWithWhereUniqueWithoutJobInput = {
@@ -11188,6 +11304,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas: string
     minKoreanLevel?: number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName: string
     contactPhone: string
     interviewMethod?: $Enums.InterviewType
@@ -11216,6 +11333,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas: string
     minKoreanLevel?: number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName: string
     contactPhone: string
     interviewMethod?: $Enums.InterviewType
@@ -11260,6 +11378,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas?: StringFieldUpdateOperationsInput | string
     minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName?: StringFieldUpdateOperationsInput | string
     contactPhone?: StringFieldUpdateOperationsInput | string
     interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
@@ -11288,6 +11407,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas?: StringFieldUpdateOperationsInput | string
     minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName?: StringFieldUpdateOperationsInput | string
     contactPhone?: StringFieldUpdateOperationsInput | string
     interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
@@ -11316,6 +11436,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas: string
     minKoreanLevel?: number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName: string
     contactPhone: string
     interviewMethod?: $Enums.InterviewType
@@ -11344,6 +11465,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas: string
     minKoreanLevel?: number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName: string
     contactPhone: string
     interviewMethod?: $Enums.InterviewType
@@ -11388,6 +11510,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas?: StringFieldUpdateOperationsInput | string
     minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName?: StringFieldUpdateOperationsInput | string
     contactPhone?: StringFieldUpdateOperationsInput | string
     interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
@@ -11416,6 +11539,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas?: StringFieldUpdateOperationsInput | string
     minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName?: StringFieldUpdateOperationsInput | string
     contactPhone?: StringFieldUpdateOperationsInput | string
     interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
@@ -11444,6 +11568,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas: string
     minKoreanLevel?: number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName: string
     contactPhone: string
     interviewMethod?: $Enums.InterviewType
@@ -11472,6 +11597,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas: string
     minKoreanLevel?: number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName: string
     contactPhone: string
     interviewMethod?: $Enums.InterviewType
@@ -11516,6 +11642,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas?: StringFieldUpdateOperationsInput | string
     minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName?: StringFieldUpdateOperationsInput | string
     contactPhone?: StringFieldUpdateOperationsInput | string
     interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
@@ -11544,6 +11671,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas?: StringFieldUpdateOperationsInput | string
     minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName?: StringFieldUpdateOperationsInput | string
     contactPhone?: StringFieldUpdateOperationsInput | string
     interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
@@ -11572,6 +11700,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas: string
     minKoreanLevel?: number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName: string
     contactPhone: string
     interviewMethod?: $Enums.InterviewType
@@ -11600,6 +11729,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas: string
     minKoreanLevel?: number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName: string
     contactPhone: string
     interviewMethod?: $Enums.InterviewType
@@ -11644,6 +11774,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas?: StringFieldUpdateOperationsInput | string
     minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName?: StringFieldUpdateOperationsInput | string
     contactPhone?: StringFieldUpdateOperationsInput | string
     interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
@@ -11672,6 +11803,7 @@ export namespace Prisma {
     benefits?: NullableJsonNullValueInput | InputJsonValue
     allowedVisas?: StringFieldUpdateOperationsInput | string
     minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     contactName?: StringFieldUpdateOperationsInput | string
     contactPhone?: StringFieldUpdateOperationsInput | string
     interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType

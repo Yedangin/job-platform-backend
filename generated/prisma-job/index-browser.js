@@ -145,6 +145,7 @@ exports.Prisma.JobPostingScalarFieldEnum = {
   benefits: 'benefits',
   allowedVisas: 'allowedVisas',
   minKoreanLevel: 'minKoreanLevel',
+  fulltimeVisaResult: 'fulltimeVisaResult',
   contactName: 'contactName',
   contactPhone: 'contactPhone',
   interviewMethod: 'interviewMethod',
@@ -165,7 +166,10 @@ exports.Prisma.JobAttributesFulltimeScalarFieldEnum = {
   salaryMin: 'salaryMin',
   salaryMax: 'salaryMax',
   experienceLevel: 'experienceLevel',
-  educationLevel: 'educationLevel'
+  educationLevel: 'educationLevel',
+  occupationCode: 'occupationCode',
+  preferredMajors: 'preferredMajors',
+  overseasHireWilling: 'overseasHireWilling'
 };
 
 exports.Prisma.InterviewSlotScalarFieldEnum = {

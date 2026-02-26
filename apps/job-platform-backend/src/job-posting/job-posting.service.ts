@@ -171,6 +171,10 @@ export class JobPostingService {
       employmentSubType: data.employmentSubType,
       closingDate: data.closingDate ? new Date(data.closingDate) : null,
       status: 'DRAFT',
+      // 정규직 비자 매칭 결과 저장 / Save fulltime visa matching result
+      ...(data.fulltimeVisaResult
+        ? { fulltimeVisaResult: data.fulltimeVisaResult }
+        : {}),
     };
 
     const job = await this.prisma.jobPosting.create({
@@ -296,9 +300,9 @@ export class JobPostingService {
       throw new BadRequestException('Only DRAFT postings can be activated');
     }
 
-    // 비자 매칭 결과 존재 여부 확인 (비자 매칭 없이 공고 게시 금지)
-    // Ensure visa matching has been performed before activation
-    if (!job.fulltimeVisaResult) {
+    // 정규직(FULL_TIME)인 경우만 비자 매칭 결과 확인 (알바는 정적 비자 목록 사용)
+    // Only check visa matching for FULL_TIME (PART_TIME uses static visa list)
+    if (job.boardType === 'FULL_TIME' && !job.fulltimeVisaResult) {
       throw new BadRequestException(
         '비자 매칭이 완료되지 않았습니다. 공고 게시 전 비자 매칭을 먼저 실행하세요 / Visa matching not completed. Run visa evaluation before publishing.',
       );
