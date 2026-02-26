@@ -992,10 +992,13 @@ export class AuthService implements OnModuleInit {
     if (user.userType === 'INDIVIDUAL') {
       // 개인회원: individualProfile.realName, profileImageUrl 업데이트
       // Individual: update realName and profileImageUrl in individualProfile
-      if (!user.individual) throw new NotFoundException('Individual profile not found');
+      if (!user.individual)
+        throw new NotFoundException('Individual profile not found');
       const updateData: Record<string, unknown> = {};
-      if (data.fullName !== undefined) updateData['realName'] = data.fullName.trim();
-      if (data.profileImageUrl !== undefined) updateData['profileImageUrl'] = data.profileImageUrl;
+      if (data.fullName !== undefined)
+        updateData['realName'] = data.fullName.trim();
+      if (data.profileImageUrl !== undefined)
+        updateData['profileImageUrl'] = data.profileImageUrl;
       await this.prisma.individualProfile.update({
         where: { authId: userId },
         data: updateData,
@@ -1003,10 +1006,13 @@ export class AuthService implements OnModuleInit {
     } else if (user.userType === 'CORPORATE') {
       // 기업회원: corporateProfile.managerName 업데이트
       // Corporate: update managerName in corporateProfile
-      if (!user.corporate) throw new NotFoundException('Corporate profile not found');
+      if (!user.corporate)
+        throw new NotFoundException('Corporate profile not found');
       const updateData: Record<string, unknown> = {};
-      if (data.fullName !== undefined) updateData['managerName'] = data.fullName.trim();
-      if (data.profileImageUrl !== undefined) updateData['logoImageUrl'] = data.profileImageUrl;
+      if (data.fullName !== undefined)
+        updateData['managerName'] = data.fullName.trim();
+      if (data.profileImageUrl !== undefined)
+        updateData['logoImageUrl'] = data.profileImageUrl;
       await this.prisma.corporateProfile.update({
         where: { authId: userId },
         data: updateData,
@@ -1065,11 +1071,14 @@ export class AuthService implements OnModuleInit {
       notifEnabledAt: user.notifEnabledAt?.toISOString() || null,
       // 채널별 동의 일시 / Per-channel consent timestamps
       notifSmsEnabledAt: (user as any).notifSmsEnabledAt?.toISOString() || null,
-      notifEmailEnabledAt: (user as any).notifEmailEnabledAt?.toISOString() || null,
-      notifKakaoEnabledAt: (user as any).notifKakaoEnabledAt?.toISOString() || null,
+      notifEmailEnabledAt:
+        (user as any).notifEmailEnabledAt?.toISOString() || null,
+      notifKakaoEnabledAt:
+        (user as any).notifKakaoEnabledAt?.toISOString() || null,
       // 마케팅 수신 동의 / Marketing consent
       marketingConsent: (user as any).marketingConsent ?? false,
-      marketingConsentAt: (user as any).marketingConsentAt?.toISOString() || null,
+      marketingConsentAt:
+        (user as any).marketingConsentAt?.toISOString() || null,
     };
   }
 
@@ -1102,13 +1111,29 @@ export class AuthService implements OnModuleInit {
         notifKakao: kakao,
         notifEnabledAt: hasAnyEnabled ? now : null,
         // 채널별 타임스탬프: ON으로 바뀌면 현재 시각, OFF로 바뀌면 null
-        notifSmsEnabledAt: sms ? (!prevSms ? now : (user as any).notifSmsEnabledAt ?? now) : null,
-        notifEmailEnabledAt: email ? (!prevEmail ? now : (user as any).notifEmailEnabledAt ?? now) : null,
-        notifKakaoEnabledAt: kakao ? (!prevKakao ? now : (user as any).notifKakaoEnabledAt ?? now) : null,
+        notifSmsEnabledAt: sms
+          ? !prevSms
+            ? now
+            : ((user as any).notifSmsEnabledAt ?? now)
+          : null,
+        notifEmailEnabledAt: email
+          ? !prevEmail
+            ? now
+            : ((user as any).notifEmailEnabledAt ?? now)
+          : null,
+        notifKakaoEnabledAt: kakao
+          ? !prevKakao
+            ? now
+            : ((user as any).notifKakaoEnabledAt ?? now)
+          : null,
         // 마케팅 동의 / Marketing consent
         ...(marketing !== undefined && {
           marketingConsent: marketing,
-          marketingConsentAt: marketing ? (!prevMarketing ? now : (user as any).marketingConsentAt ?? now) : null,
+          marketingConsentAt: marketing
+            ? !prevMarketing
+              ? now
+              : ((user as any).marketingConsentAt ?? now)
+            : null,
         }),
       } as any,
     });
@@ -1136,7 +1161,8 @@ export class AuthService implements OnModuleInit {
       throw new BadRequestException('비밀번호가 설정되지 않은 계정입니다.');
     }
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) throw new BadRequestException('비밀번호가 일치하지 않습니다.');
+    if (!isValid)
+      throw new BadRequestException('비밀번호가 일치하지 않습니다.');
     return { valid: true };
   }
 
