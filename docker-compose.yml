@@ -24,8 +24,8 @@ services:
       - notification-service
       
     command: >
-             sh -c "npx prisma db push --schema=./prisma/user/user.schema.prisma && 
-             npx nest start auth-service & 
+             sh -c "npx prisma db push --accept-data-loss --schema=./prisma/user/user.schema.prisma &&
+             npx nest start auth-service &
              npx nest start job-platform-backend"
 
   postgres:
@@ -97,7 +97,7 @@ services:
       - notification-postgres
       - redis
     command: >
-             sh -c "npx prisma db push --schema=./prisma/notification/notification.schema.prisma &&
+             sh -c "npx prisma db push --accept-data-loss --schema=./prisma/notification/notification.schema.prisma &&
              npx nest start notification-service"
 
 volumes:
