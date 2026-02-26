@@ -6,9 +6,8 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Queue } from 'bullmq';
 
-import { Pagination } from '../../../../libs/common/src/common/decorator/get-pagination-data.decorator';
+import { Pagination } from '../../../../../libs/common/src/common/decorator/get-pagination-data.decorator';
 
 // import {} from './dto/job.dto';
 
@@ -18,16 +17,29 @@ import {
   PaginationService,
 } from 'libs/common/src';
 import { CreateJobDto, UpdateJobDto } from './dto/job.dto';
-import { Prisma } from '../../../../generated/prisma-job/index';
+import { Prisma } from '../../../../../generated/prisma-job/index';
 import { Multer } from 'multer';
 import { successResponse } from 'libs/common/src/common/interceptor/response';
+import { JobsOptions, Queue } from 'bullmq';
 
 @Injectable()
 export class JobServices {
   constructor(
     private prisma: JobPrismaService,
     private configService: ConfigService,
+    @InjectQueue('job-application-crud-queue')
+    private readonly jobApplicationCrudQueue: Queue,
   ) {}
+
+  private readonly queueConfig: JobsOptions = {
+    removeOnComplete: true,
+    removeOnFail: false,
+    attempts: 5,
+    backoff: {
+      type: 'exponential',
+      delay: 5000,
+    },
+  };
 
   async create(data: CreateJobDto & { fileUrl?: string }, res?: Response) {
     try {
@@ -90,6 +102,37 @@ export class JobServices {
         jobId: createJobPost.jobId.toString(),
         corporateId: createJobPost.corporateId.toString(),
       };
+
+      // if (images.length > 0) {
+      //   void this.bullLigtweightQue.add(
+      //     'product-create-file-upload',
+      //     {
+      //       id: createdData.id,
+      //       files: images,
+      //     },
+      //     this.queueConfig,    // if (images.length > 0) {
+      //   void this.bullLigtweightQue.add(
+      //     'product-create-file-upload',
+      //     {
+      //       id: createdData.id,
+      //       files: images,
+      //     },
+      //     this.queueConfig,
+      //   );
+      // }
+      //   );
+      // }
+
+      // void this.jobApplicationCrudQueue.add(
+      //   'job-application-create-update',
+      //   {
+      //     id: createJobPost?.id,
+      //     proposedBy,
+      //     selectedSlotId,
+      //     proposedTime,
+      //   },
+      //   this.queueConfig,
+      // );
 
       return successResponse({
         res,
@@ -274,29 +317,35 @@ export class JobServices {
     }
   }
 
-  // async updateStatus(id: string) {
-  //   try {
-  //     const existingJobPost = await this.prisma.jobPost.findFirst({
-  //       where: { id },
-  //     });
+  async updateStatus(id: string) {
+    try {
+      let jobId: bigint;
+      try {
+        jobId = BigInt(id);
+      } catch {
+        throw new HttpException('Invalid job ID', HttpStatus.BAD_REQUEST);
+      }
+      const existingJobPost = await this.prisma.jobPosting.findFirst({
+        where: { jobId },
+      });
 
-  //     if (!existingJobPost) {
-  //       throw new HttpException('Job Post Not Found', HttpStatus.NOT_FOUND);
-  //     }
-  //     await this.prisma.jobPost.update({
-  //       where: {
-  //         id,
-  //       },
-  //       data: {
-  //         status: !existingCategory.status,
-  //       },
-  //     });
-  //     return { message: 'Status Update Suceessfully' };
-  //   } catch (error) {
-  //     if (error instanceof HttpException) {
-  //       throw error;
-  //     }
-  //     throw new InternalServerErrorException('Internal server error');
-  //   }
-  // }
+      if (!existingJobPost) {
+        throw new HttpException('Job Post Not Found', HttpStatus.NOT_FOUND);
+      }
+      await this.prisma.jobPosting.update({
+        where: {
+          jobId,
+        },
+        data: {
+          isActive: !existingJobPost.isActive,
+        },
+      });
+      return { message: 'Status Update Suceessfully' };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Internal server error');
+    }
+  }
 }

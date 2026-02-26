@@ -43,8 +43,10 @@ model JobPosting {
 
   contactName      String        @map("contact_name")
   contactPhone     String        @map("contact_phone")
-  interviewMethod  InterviewType @default(OFFLINE) @map("interview_method")
+  intervieAPPLICANTwMethod  InterviewType @default(OFFLINE) @map("interview_method")
   interviewPlace   String?       @map("interview_place")
+
+  isActive           Boolean       @default(false)
 
   createdAt        DateTime      @default(now()) 
   updatedAt        DateTime      @updatedAt 
@@ -53,6 +55,7 @@ model JobPosting {
   fulltimeAttributes JobAttributesFulltime?
   interviewSlots     InterviewSlot[]
   applications       JobApplication[]
+  // applyJobs          ApplyJob[]
 
   @@map("job_postings")
 }
@@ -110,6 +113,27 @@ model JobApplication {
   @@map("job_applications")
 }
 
+model ApplyJob {
+  applyId          BigInt        @id @default(autoincrement()) @map("apply_id")
+  userId           BigInt        @map("user_id")
+  jobId            BigInt        @map("job_id")
+  // job              JobPosting        @relation(fields: [jobId], references: [jobId])
+  
+  interviewDate    DateTime?     @map("interview_date")
+  title            String
+  description      String        @db.Text
+  resumeFile       String?       @map("resume_file")
+
+  applyType        ApplyType?     @map("apply_type")
+  
+  status           Boolean       @default(false)
+
+  createdAt        DateTime      @default(now()) 
+  updatedAt        DateTime      @updatedAt 
+
+  @@map("apply_jobs")
+}
+
 enum BoardType { 
   PART_TIME
   FULL_TIME 
@@ -138,4 +162,8 @@ enum ApplicationStatus {
 enum ActorType { 
   EMPLOYER
   APPLICANT
+}
+enum ApplyType { 
+  APPROVED
+  REJECTED
  }

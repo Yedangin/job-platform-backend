@@ -7,6 +7,7 @@ service JobPostService {
   rpc GetAllJobPosts (GetAllJobPostsRequest) returns (JobPostListResponse);
   rpc GetAJobPost (GetAJobPostRequest) returns (JobPostResponse);
   rpc UpdateJobPosts (UpdateJobPostRequest) returns (JobPostResponse);
+  rpc UpdateJobPostsStatus (UpdateJobPostingStatusRequest) returns (JobPostResponse);
 }
 
 message CreateJobPostRequest {
@@ -20,6 +21,10 @@ message UpdateJobPostRequest {
   string title = 2;
   string corporateId = 3;
   string description = 4;
+}
+
+message UpdateJobPostingStatusRequest {
+  string id = 1;
 }
 
 message GetAllJobPostsRequest {

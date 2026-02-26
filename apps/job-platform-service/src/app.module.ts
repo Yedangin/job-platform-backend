@@ -1,14 +1,22 @@
 import { CacheModule } from '@nestjs/cache-manager';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { redisStore } from 'cache-manager-redis-yet';
-import { JobModule } from './job/job.module';
+import { JobModule } from './module/job/job.module';
 import { FileModule } from 'libs/common/src/common/file/file.module';
+import { QueueModule } from './bull-queue/queue.module';
+import { BullModule } from '@nestjs/bullmq';
+import { bullmqConfig } from './config/bullmq.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: bullmqConfig,
+      inject: [ConfigService],
     }),
     CacheModule.registerAsync({
       useFactory: async () => ({
@@ -23,6 +31,7 @@ import { FileModule } from 'libs/common/src/common/file/file.module';
     }),
     JobModule,
     FileModule,
+    QueueModule,
   ],
   controllers: [],
   providers: [],

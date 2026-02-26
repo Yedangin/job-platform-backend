@@ -147,8 +147,9 @@ exports.Prisma.JobPostingScalarFieldEnum = {
   minKoreanLevel: 'minKoreanLevel',
   contactName: 'contactName',
   contactPhone: 'contactPhone',
-  interviewMethod: 'interviewMethod',
+  intervieAPPLICANTwMethod: 'intervieAPPLICANTwMethod',
   interviewPlace: 'interviewPlace',
+  isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -187,6 +188,20 @@ exports.Prisma.JobApplicationScalarFieldEnum = {
   proposedBy: 'proposedBy',
   proposedTime: 'proposedTime',
   rejectionReason: 'rejectionReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ApplyJobScalarFieldEnum = {
+  applyId: 'applyId',
+  userId: 'userId',
+  jobId: 'jobId',
+  interviewDate: 'interviewDate',
+  title: 'title',
+  description: 'description',
+  resumeFile: 'resumeFile',
+  applyType: 'applyType',
+  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -251,13 +266,19 @@ exports.ActorType = exports.$Enums.ActorType = {
   APPLICANT: 'APPLICANT'
 };
 
+exports.ApplyType = exports.$Enums.ApplyType = {
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+};
+
 exports.Prisma.ModelName = {
   IndustryVisaRule: 'IndustryVisaRule',
   JobPosting: 'JobPosting',
   JobAttributesAlba: 'JobAttributesAlba',
   JobAttributesFulltime: 'JobAttributesFulltime',
   InterviewSlot: 'InterviewSlot',
-  JobApplication: 'JobApplication'
+  JobApplication: 'JobApplication',
+  ApplyJob: 'ApplyJob'
 };
 
 /**

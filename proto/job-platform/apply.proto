@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package job;
+
+service JobPostService {
+  rpc CreateApplyJob (CreateApplyJobRequest) returns (ApplyJobResponse);
+  rpc GetAllApplyJob (GetAllApplyJobRequest) returns (ApplyJobListResponse);
+  rpc GetAApplyJob (GetAApplyJobRequest) returns (ApplyJobResponse);
+  rpc UpdateApplyJob (UpdateApplyJobRequest) returns (ApplyJobResponse);
+}
+
+message CreateJobPostRequest {
+  string title = 1;
+  string userId = 2;
+  string jobId = 3;
+  string description = 4;
+}
+
+message UpdateJobPostRequest {
+  string id = 1;
+  string title = 2;
+  string userId = 3;
+  string jobId = 4;
+  string description = 5;
+}
+
+message GetAllJobPostsRequest {
+  string search = 1;
+  int32 page = 2;
+  int32 limit = 3;
+}
+
+message GetAJobPostRequest {
+  string id = 1;
+}
+
+message JobPost {
+  string id = 1;
+  string title = 2;
+  string userId = 3;
+  string jobId = 4;
+  string description = 5;
+}
+
+message JobPostResponse {
+  JobPost data = 1;
+  string message = 2;
+}
+
+message JobPostListResponse {
+  repeated JobPost data = 1;
+  int32 totalCount = 2;
+  int32 pageCount = 3;
+}

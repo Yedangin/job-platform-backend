@@ -72,10 +72,11 @@ export class JobController {
     return await this.jobService.findOne(id, res);
   }
 
-  // @Patch('status/:id')
-  // async updateCategoryStatus(@Param('id') id: string) {
-  //   return await this.jobService.updateStatus(id);
-  // }
+  @GrpcMethod('JobPostService', 'UpdateJobPostsStatus')
+  @Patch('/status/:id')
+  async updateJobPostingStatus(@Param('id') id: string) {
+    return await this.jobService.updateStatus(id);
+  }
 
   @GrpcMethod('JobPostService', 'UpdateJobPosts')
   @Patch('/update/:id')
