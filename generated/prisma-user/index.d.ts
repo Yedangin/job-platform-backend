@@ -5749,6 +5749,7 @@ export namespace Prisma {
     socialProviderId: string | null
     userType: $Enums.UserType | null
     isActive: boolean | null
+    preferredLanguage: string | null
     joinedAt: Date | null
     lastLoginAt: Date | null
     deletedAt: Date | null
@@ -5772,6 +5773,7 @@ export namespace Prisma {
     socialProviderId: string | null
     userType: $Enums.UserType | null
     isActive: boolean | null
+    preferredLanguage: string | null
     joinedAt: Date | null
     lastLoginAt: Date | null
     deletedAt: Date | null
@@ -5795,6 +5797,7 @@ export namespace Prisma {
     socialProviderId: number
     userType: number
     isActive: number
+    preferredLanguage: number
     joinedAt: number
     lastLoginAt: number
     deletedAt: number
@@ -5820,6 +5823,7 @@ export namespace Prisma {
     socialProviderId?: true
     userType?: true
     isActive?: true
+    preferredLanguage?: true
     joinedAt?: true
     lastLoginAt?: true
     deletedAt?: true
@@ -5843,6 +5847,7 @@ export namespace Prisma {
     socialProviderId?: true
     userType?: true
     isActive?: true
+    preferredLanguage?: true
     joinedAt?: true
     lastLoginAt?: true
     deletedAt?: true
@@ -5866,6 +5871,7 @@ export namespace Prisma {
     socialProviderId?: true
     userType?: true
     isActive?: true
+    preferredLanguage?: true
     joinedAt?: true
     lastLoginAt?: true
     deletedAt?: true
@@ -5962,6 +5968,7 @@ export namespace Prisma {
     socialProviderId: string | null
     userType: $Enums.UserType
     isActive: boolean
+    preferredLanguage: string
     joinedAt: Date
     lastLoginAt: Date | null
     deletedAt: Date | null
@@ -6002,6 +6009,7 @@ export namespace Prisma {
     socialProviderId?: boolean
     userType?: boolean
     isActive?: boolean
+    preferredLanguage?: boolean
     joinedAt?: boolean
     lastLoginAt?: boolean
     deletedAt?: boolean
@@ -6031,6 +6039,7 @@ export namespace Prisma {
     socialProviderId?: boolean
     userType?: boolean
     isActive?: boolean
+    preferredLanguage?: boolean
     joinedAt?: boolean
     lastLoginAt?: boolean
     deletedAt?: boolean
@@ -6054,6 +6063,7 @@ export namespace Prisma {
     socialProviderId?: boolean
     userType?: boolean
     isActive?: boolean
+    preferredLanguage?: boolean
     joinedAt?: boolean
     lastLoginAt?: boolean
     deletedAt?: boolean
@@ -6077,6 +6087,7 @@ export namespace Prisma {
     socialProviderId?: boolean
     userType?: boolean
     isActive?: boolean
+    preferredLanguage?: boolean
     joinedAt?: boolean
     lastLoginAt?: boolean
     deletedAt?: boolean
@@ -6092,7 +6103,7 @@ export namespace Prisma {
     marketingConsentAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "socialProvider" | "socialProviderId" | "userType" | "isActive" | "joinedAt" | "lastLoginAt" | "deletedAt" | "deleteScheduledAt" | "notifSms" | "notifEmail" | "notifKakao" | "notifEnabledAt" | "notifSmsEnabledAt" | "notifEmailEnabledAt" | "notifKakaoEnabledAt" | "marketingConsent" | "marketingConsentAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "socialProvider" | "socialProviderId" | "userType" | "isActive" | "preferredLanguage" | "joinedAt" | "lastLoginAt" | "deletedAt" | "deleteScheduledAt" | "notifSms" | "notifEmail" | "notifKakao" | "notifEnabledAt" | "notifSmsEnabledAt" | "notifEmailEnabledAt" | "notifKakaoEnabledAt" | "marketingConsent" | "marketingConsentAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     corporate?: boolean | User$corporateArgs<ExtArgs>
     individual?: boolean | User$individualArgs<ExtArgs>
@@ -6121,6 +6132,7 @@ export namespace Prisma {
       socialProviderId: string | null
       userType: $Enums.UserType
       isActive: boolean
+      preferredLanguage: string
       joinedAt: Date
       lastLoginAt: Date | null
       deletedAt: Date | null
@@ -6569,6 +6581,7 @@ export namespace Prisma {
     readonly socialProviderId: FieldRef<"User", 'String'>
     readonly userType: FieldRef<"User", 'UserType'>
     readonly isActive: FieldRef<"User", 'Boolean'>
+    readonly preferredLanguage: FieldRef<"User", 'String'>
     readonly joinedAt: FieldRef<"User", 'DateTime'>
     readonly lastLoginAt: FieldRef<"User", 'DateTime'>
     readonly deletedAt: FieldRef<"User", 'DateTime'>
@@ -48838,12 +48851,14 @@ export namespace Prisma {
     id: number | null
     jobId: number | null
     selectedSlotId: number | null
+    interviewRoundTrips: number | null
   }
 
   export type JobApplicationSumAggregateOutputType = {
     id: bigint | null
     jobId: bigint | null
     selectedSlotId: bigint | null
+    interviewRoundTrips: number | null
   }
 
   export type JobApplicationMinAggregateOutputType = {
@@ -48860,6 +48875,12 @@ export namespace Prisma {
     selfReportedAt: Date | null
     interviewDate: Date | null
     interviewNote: string | null
+    interviewMethod: $Enums.InterviewType | null
+    interviewFirstChoice: Date | null
+    interviewSecondChoice: Date | null
+    interviewLocation: string | null
+    interviewLink: string | null
+    interviewRoundTrips: number | null
     rejectionReason: string | null
     resultNotifiedAt: Date | null
     createdAt: Date | null
@@ -48880,6 +48901,12 @@ export namespace Prisma {
     selfReportedAt: Date | null
     interviewDate: Date | null
     interviewNote: string | null
+    interviewMethod: $Enums.InterviewType | null
+    interviewFirstChoice: Date | null
+    interviewSecondChoice: Date | null
+    interviewLocation: string | null
+    interviewLink: string | null
+    interviewRoundTrips: number | null
     rejectionReason: string | null
     resultNotifiedAt: Date | null
     createdAt: Date | null
@@ -48900,6 +48927,12 @@ export namespace Prisma {
     selfReportedAt: number
     interviewDate: number
     interviewNote: number
+    interviewMethod: number
+    interviewFirstChoice: number
+    interviewSecondChoice: number
+    interviewLocation: number
+    interviewLink: number
+    interviewRoundTrips: number
     rejectionReason: number
     resultNotifiedAt: number
     createdAt: number
@@ -48912,12 +48945,14 @@ export namespace Prisma {
     id?: true
     jobId?: true
     selectedSlotId?: true
+    interviewRoundTrips?: true
   }
 
   export type JobApplicationSumAggregateInputType = {
     id?: true
     jobId?: true
     selectedSlotId?: true
+    interviewRoundTrips?: true
   }
 
   export type JobApplicationMinAggregateInputType = {
@@ -48934,6 +48969,12 @@ export namespace Prisma {
     selfReportedAt?: true
     interviewDate?: true
     interviewNote?: true
+    interviewMethod?: true
+    interviewFirstChoice?: true
+    interviewSecondChoice?: true
+    interviewLocation?: true
+    interviewLink?: true
+    interviewRoundTrips?: true
     rejectionReason?: true
     resultNotifiedAt?: true
     createdAt?: true
@@ -48954,6 +48995,12 @@ export namespace Prisma {
     selfReportedAt?: true
     interviewDate?: true
     interviewNote?: true
+    interviewMethod?: true
+    interviewFirstChoice?: true
+    interviewSecondChoice?: true
+    interviewLocation?: true
+    interviewLink?: true
+    interviewRoundTrips?: true
     rejectionReason?: true
     resultNotifiedAt?: true
     createdAt?: true
@@ -48974,6 +49021,12 @@ export namespace Prisma {
     selfReportedAt?: true
     interviewDate?: true
     interviewNote?: true
+    interviewMethod?: true
+    interviewFirstChoice?: true
+    interviewSecondChoice?: true
+    interviewLocation?: true
+    interviewLink?: true
+    interviewRoundTrips?: true
     rejectionReason?: true
     resultNotifiedAt?: true
     createdAt?: true
@@ -49081,6 +49134,12 @@ export namespace Prisma {
     selfReportedAt: Date | null
     interviewDate: Date | null
     interviewNote: string | null
+    interviewMethod: $Enums.InterviewType | null
+    interviewFirstChoice: Date | null
+    interviewSecondChoice: Date | null
+    interviewLocation: string | null
+    interviewLink: string | null
+    interviewRoundTrips: number
     rejectionReason: string | null
     resultNotifiedAt: Date | null
     createdAt: Date
@@ -49120,6 +49179,12 @@ export namespace Prisma {
     selfReportedAt?: boolean
     interviewDate?: boolean
     interviewNote?: boolean
+    interviewMethod?: boolean
+    interviewFirstChoice?: boolean
+    interviewSecondChoice?: boolean
+    interviewLocation?: boolean
+    interviewLink?: boolean
+    interviewRoundTrips?: boolean
     rejectionReason?: boolean
     resultNotifiedAt?: boolean
     createdAt?: boolean
@@ -49142,6 +49207,12 @@ export namespace Prisma {
     selfReportedAt?: boolean
     interviewDate?: boolean
     interviewNote?: boolean
+    interviewMethod?: boolean
+    interviewFirstChoice?: boolean
+    interviewSecondChoice?: boolean
+    interviewLocation?: boolean
+    interviewLink?: boolean
+    interviewRoundTrips?: boolean
     rejectionReason?: boolean
     resultNotifiedAt?: boolean
     createdAt?: boolean
@@ -49164,6 +49235,12 @@ export namespace Prisma {
     selfReportedAt?: boolean
     interviewDate?: boolean
     interviewNote?: boolean
+    interviewMethod?: boolean
+    interviewFirstChoice?: boolean
+    interviewSecondChoice?: boolean
+    interviewLocation?: boolean
+    interviewLink?: boolean
+    interviewRoundTrips?: boolean
     rejectionReason?: boolean
     resultNotifiedAt?: boolean
     createdAt?: boolean
@@ -49186,13 +49263,19 @@ export namespace Prisma {
     selfReportedAt?: boolean
     interviewDate?: boolean
     interviewNote?: boolean
+    interviewMethod?: boolean
+    interviewFirstChoice?: boolean
+    interviewSecondChoice?: boolean
+    interviewLocation?: boolean
+    interviewLink?: boolean
+    interviewRoundTrips?: boolean
     rejectionReason?: boolean
     resultNotifiedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type JobApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "applicantId" | "applicationMethod" | "status" | "coverLetter" | "resumeSnapshot" | "selectedSlotId" | "proposedBy" | "proposedTime" | "selfReportedAt" | "interviewDate" | "interviewNote" | "rejectionReason" | "resultNotifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["jobApplication"]>
+  export type JobApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "applicantId" | "applicationMethod" | "status" | "coverLetter" | "resumeSnapshot" | "selectedSlotId" | "proposedBy" | "proposedTime" | "selfReportedAt" | "interviewDate" | "interviewNote" | "interviewMethod" | "interviewFirstChoice" | "interviewSecondChoice" | "interviewLocation" | "interviewLink" | "interviewRoundTrips" | "rejectionReason" | "resultNotifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["jobApplication"]>
   export type JobApplicationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
     selectedSlot?: boolean | JobApplication$selectedSlotArgs<ExtArgs>
@@ -49226,6 +49309,12 @@ export namespace Prisma {
       selfReportedAt: Date | null
       interviewDate: Date | null
       interviewNote: string | null
+      interviewMethod: $Enums.InterviewType | null
+      interviewFirstChoice: Date | null
+      interviewSecondChoice: Date | null
+      interviewLocation: string | null
+      interviewLink: string | null
+      interviewRoundTrips: number
       rejectionReason: string | null
       resultNotifiedAt: Date | null
       createdAt: Date
@@ -49668,6 +49757,12 @@ export namespace Prisma {
     readonly selfReportedAt: FieldRef<"JobApplication", 'DateTime'>
     readonly interviewDate: FieldRef<"JobApplication", 'DateTime'>
     readonly interviewNote: FieldRef<"JobApplication", 'String'>
+    readonly interviewMethod: FieldRef<"JobApplication", 'InterviewType'>
+    readonly interviewFirstChoice: FieldRef<"JobApplication", 'DateTime'>
+    readonly interviewSecondChoice: FieldRef<"JobApplication", 'DateTime'>
+    readonly interviewLocation: FieldRef<"JobApplication", 'String'>
+    readonly interviewLink: FieldRef<"JobApplication", 'String'>
+    readonly interviewRoundTrips: FieldRef<"JobApplication", 'Int'>
     readonly rejectionReason: FieldRef<"JobApplication", 'String'>
     readonly resultNotifiedAt: FieldRef<"JobApplication", 'DateTime'>
     readonly createdAt: FieldRef<"JobApplication", 'DateTime'>
@@ -59259,6 +59354,7 @@ export namespace Prisma {
     socialProviderId: 'socialProviderId',
     userType: 'userType',
     isActive: 'isActive',
+    preferredLanguage: 'preferredLanguage',
     joinedAt: 'joinedAt',
     lastLoginAt: 'lastLoginAt',
     deletedAt: 'deletedAt',
@@ -59956,6 +60052,12 @@ export namespace Prisma {
     selfReportedAt: 'selfReportedAt',
     interviewDate: 'interviewDate',
     interviewNote: 'interviewNote',
+    interviewMethod: 'interviewMethod',
+    interviewFirstChoice: 'interviewFirstChoice',
+    interviewSecondChoice: 'interviewSecondChoice',
+    interviewLocation: 'interviewLocation',
+    interviewLink: 'interviewLink',
+    interviewRoundTrips: 'interviewRoundTrips',
     rejectionReason: 'rejectionReason',
     resultNotifiedAt: 'resultNotifiedAt',
     createdAt: 'createdAt',
@@ -60693,6 +60795,7 @@ export namespace Prisma {
     socialProviderId?: StringNullableFilter<"User"> | string | null
     userType?: EnumUserTypeFilter<"User"> | $Enums.UserType
     isActive?: BoolFilter<"User"> | boolean
+    preferredLanguage?: StringFilter<"User"> | string
     joinedAt?: DateTimeFilter<"User"> | Date | string
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -60721,6 +60824,7 @@ export namespace Prisma {
     socialProviderId?: SortOrderInput | SortOrder
     userType?: SortOrder
     isActive?: SortOrder
+    preferredLanguage?: SortOrder
     joinedAt?: SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -60753,6 +60857,7 @@ export namespace Prisma {
     socialProviderId?: StringNullableFilter<"User"> | string | null
     userType?: EnumUserTypeFilter<"User"> | $Enums.UserType
     isActive?: BoolFilter<"User"> | boolean
+    preferredLanguage?: StringFilter<"User"> | string
     joinedAt?: DateTimeFilter<"User"> | Date | string
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     deletedAt?: DateTimeNullableFilter<"User"> | Date | string | null
@@ -60781,6 +60886,7 @@ export namespace Prisma {
     socialProviderId?: SortOrderInput | SortOrder
     userType?: SortOrder
     isActive?: SortOrder
+    preferredLanguage?: SortOrder
     joinedAt?: SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     deletedAt?: SortOrderInput | SortOrder
@@ -60810,6 +60916,7 @@ export namespace Prisma {
     socialProviderId?: StringNullableWithAggregatesFilter<"User"> | string | null
     userType?: EnumUserTypeWithAggregatesFilter<"User"> | $Enums.UserType
     isActive?: BoolWithAggregatesFilter<"User"> | boolean
+    preferredLanguage?: StringWithAggregatesFilter<"User"> | string
     joinedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     deletedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -64304,6 +64411,12 @@ export namespace Prisma {
     selfReportedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     interviewDate?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     interviewNote?: StringNullableFilter<"JobApplication"> | string | null
+    interviewMethod?: EnumInterviewTypeNullableFilter<"JobApplication"> | $Enums.InterviewType | null
+    interviewFirstChoice?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewSecondChoice?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewLocation?: StringNullableFilter<"JobApplication"> | string | null
+    interviewLink?: StringNullableFilter<"JobApplication"> | string | null
+    interviewRoundTrips?: IntFilter<"JobApplication"> | number
     rejectionReason?: StringNullableFilter<"JobApplication"> | string | null
     resultNotifiedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     createdAt?: DateTimeFilter<"JobApplication"> | Date | string
@@ -64326,6 +64439,12 @@ export namespace Prisma {
     selfReportedAt?: SortOrderInput | SortOrder
     interviewDate?: SortOrderInput | SortOrder
     interviewNote?: SortOrderInput | SortOrder
+    interviewMethod?: SortOrderInput | SortOrder
+    interviewFirstChoice?: SortOrderInput | SortOrder
+    interviewSecondChoice?: SortOrderInput | SortOrder
+    interviewLocation?: SortOrderInput | SortOrder
+    interviewLink?: SortOrderInput | SortOrder
+    interviewRoundTrips?: SortOrder
     rejectionReason?: SortOrderInput | SortOrder
     resultNotifiedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -64352,6 +64471,12 @@ export namespace Prisma {
     selfReportedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     interviewDate?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     interviewNote?: StringNullableFilter<"JobApplication"> | string | null
+    interviewMethod?: EnumInterviewTypeNullableFilter<"JobApplication"> | $Enums.InterviewType | null
+    interviewFirstChoice?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewSecondChoice?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewLocation?: StringNullableFilter<"JobApplication"> | string | null
+    interviewLink?: StringNullableFilter<"JobApplication"> | string | null
+    interviewRoundTrips?: IntFilter<"JobApplication"> | number
     rejectionReason?: StringNullableFilter<"JobApplication"> | string | null
     resultNotifiedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     createdAt?: DateTimeFilter<"JobApplication"> | Date | string
@@ -64374,6 +64499,12 @@ export namespace Prisma {
     selfReportedAt?: SortOrderInput | SortOrder
     interviewDate?: SortOrderInput | SortOrder
     interviewNote?: SortOrderInput | SortOrder
+    interviewMethod?: SortOrderInput | SortOrder
+    interviewFirstChoice?: SortOrderInput | SortOrder
+    interviewSecondChoice?: SortOrderInput | SortOrder
+    interviewLocation?: SortOrderInput | SortOrder
+    interviewLink?: SortOrderInput | SortOrder
+    interviewRoundTrips?: SortOrder
     rejectionReason?: SortOrderInput | SortOrder
     resultNotifiedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -64402,6 +64533,12 @@ export namespace Prisma {
     selfReportedAt?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
     interviewDate?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
     interviewNote?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
+    interviewMethod?: EnumInterviewTypeNullableWithAggregatesFilter<"JobApplication"> | $Enums.InterviewType | null
+    interviewFirstChoice?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
+    interviewSecondChoice?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
+    interviewLocation?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
+    interviewLink?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
+    interviewRoundTrips?: IntWithAggregatesFilter<"JobApplication"> | number
     rejectionReason?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
     resultNotifiedAt?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"JobApplication"> | Date | string
@@ -65043,6 +65180,7 @@ export namespace Prisma {
     socialProviderId?: string | null
     userType?: $Enums.UserType
     isActive?: boolean
+    preferredLanguage?: string
     joinedAt?: Date | string
     lastLoginAt?: Date | string | null
     deletedAt?: Date | string | null
@@ -65071,6 +65209,7 @@ export namespace Prisma {
     socialProviderId?: string | null
     userType?: $Enums.UserType
     isActive?: boolean
+    preferredLanguage?: string
     joinedAt?: Date | string
     lastLoginAt?: Date | string | null
     deletedAt?: Date | string | null
@@ -65099,6 +65238,7 @@ export namespace Prisma {
     socialProviderId?: NullableStringFieldUpdateOperationsInput | string | null
     userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -65127,6 +65267,7 @@ export namespace Prisma {
     socialProviderId?: NullableStringFieldUpdateOperationsInput | string | null
     userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -65155,6 +65296,7 @@ export namespace Prisma {
     socialProviderId?: string | null
     userType?: $Enums.UserType
     isActive?: boolean
+    preferredLanguage?: string
     joinedAt?: Date | string
     lastLoginAt?: Date | string | null
     deletedAt?: Date | string | null
@@ -65178,6 +65320,7 @@ export namespace Prisma {
     socialProviderId?: NullableStringFieldUpdateOperationsInput | string | null
     userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -65201,6 +65344,7 @@ export namespace Prisma {
     socialProviderId?: NullableStringFieldUpdateOperationsInput | string | null
     userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -69254,6 +69398,12 @@ export namespace Prisma {
     selfReportedAt?: Date | string | null
     interviewDate?: Date | string | null
     interviewNote?: string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -69276,6 +69426,12 @@ export namespace Prisma {
     selfReportedAt?: Date | string | null
     interviewDate?: Date | string | null
     interviewNote?: string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -69294,6 +69450,12 @@ export namespace Prisma {
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -69316,6 +69478,12 @@ export namespace Prisma {
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -69336,6 +69504,12 @@ export namespace Prisma {
     selfReportedAt?: Date | string | null
     interviewDate?: Date | string | null
     interviewNote?: string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -69354,6 +69528,12 @@ export namespace Prisma {
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -69374,6 +69554,12 @@ export namespace Prisma {
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -70187,6 +70373,7 @@ export namespace Prisma {
     socialProviderId?: SortOrder
     userType?: SortOrder
     isActive?: SortOrder
+    preferredLanguage?: SortOrder
     joinedAt?: SortOrder
     lastLoginAt?: SortOrder
     deletedAt?: SortOrder
@@ -70210,6 +70397,7 @@ export namespace Prisma {
     socialProviderId?: SortOrder
     userType?: SortOrder
     isActive?: SortOrder
+    preferredLanguage?: SortOrder
     joinedAt?: SortOrder
     lastLoginAt?: SortOrder
     deletedAt?: SortOrder
@@ -70233,6 +70421,7 @@ export namespace Prisma {
     socialProviderId?: SortOrder
     userType?: SortOrder
     isActive?: SortOrder
+    preferredLanguage?: SortOrder
     joinedAt?: SortOrder
     lastLoginAt?: SortOrder
     deletedAt?: SortOrder
@@ -73505,6 +73694,13 @@ export namespace Prisma {
     not?: NestedEnumActorTypeNullableFilter<$PrismaModel> | $Enums.ActorType | null
   }
 
+  export type EnumInterviewTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.InterviewType | EnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumInterviewTypeNullableFilter<$PrismaModel> | $Enums.InterviewType | null
+  }
+
   export type InterviewSlotNullableScalarRelationFilter = {
     is?: InterviewSlotWhereInput | null
     isNot?: InterviewSlotWhereInput | null
@@ -73529,6 +73725,12 @@ export namespace Prisma {
     selfReportedAt?: SortOrder
     interviewDate?: SortOrder
     interviewNote?: SortOrder
+    interviewMethod?: SortOrder
+    interviewFirstChoice?: SortOrder
+    interviewSecondChoice?: SortOrder
+    interviewLocation?: SortOrder
+    interviewLink?: SortOrder
+    interviewRoundTrips?: SortOrder
     rejectionReason?: SortOrder
     resultNotifiedAt?: SortOrder
     createdAt?: SortOrder
@@ -73539,6 +73741,7 @@ export namespace Prisma {
     id?: SortOrder
     jobId?: SortOrder
     selectedSlotId?: SortOrder
+    interviewRoundTrips?: SortOrder
   }
 
   export type JobApplicationMaxOrderByAggregateInput = {
@@ -73555,6 +73758,12 @@ export namespace Prisma {
     selfReportedAt?: SortOrder
     interviewDate?: SortOrder
     interviewNote?: SortOrder
+    interviewMethod?: SortOrder
+    interviewFirstChoice?: SortOrder
+    interviewSecondChoice?: SortOrder
+    interviewLocation?: SortOrder
+    interviewLink?: SortOrder
+    interviewRoundTrips?: SortOrder
     rejectionReason?: SortOrder
     resultNotifiedAt?: SortOrder
     createdAt?: SortOrder
@@ -73575,6 +73784,12 @@ export namespace Prisma {
     selfReportedAt?: SortOrder
     interviewDate?: SortOrder
     interviewNote?: SortOrder
+    interviewMethod?: SortOrder
+    interviewFirstChoice?: SortOrder
+    interviewSecondChoice?: SortOrder
+    interviewLocation?: SortOrder
+    interviewLink?: SortOrder
+    interviewRoundTrips?: SortOrder
     rejectionReason?: SortOrder
     resultNotifiedAt?: SortOrder
     createdAt?: SortOrder
@@ -73585,6 +73800,7 @@ export namespace Prisma {
     id?: SortOrder
     jobId?: SortOrder
     selectedSlotId?: SortOrder
+    interviewRoundTrips?: SortOrder
   }
 
   export type EnumApplicationStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -73605,6 +73821,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumActorTypeNullableFilter<$PrismaModel>
     _max?: NestedEnumActorTypeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumInterviewTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InterviewType | EnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumInterviewTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.InterviewType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumInterviewTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumInterviewTypeNullableFilter<$PrismaModel>
   }
 
   export type JobApplicationNullableScalarRelationFilter = {
@@ -76019,6 +76245,10 @@ export namespace Prisma {
     set?: $Enums.ActorType | null
   }
 
+  export type NullableEnumInterviewTypeFieldUpdateOperationsInput = {
+    set?: $Enums.InterviewType | null
+  }
+
   export type JobPostingUpdateOneRequiredWithoutApplicationsNestedInput = {
     create?: XOR<JobPostingCreateWithoutApplicationsInput, JobPostingUncheckedCreateWithoutApplicationsInput>
     connectOrCreate?: JobPostingCreateOrConnectWithoutApplicationsInput
@@ -77070,6 +77300,13 @@ export namespace Prisma {
     not?: NestedEnumActorTypeNullableFilter<$PrismaModel> | $Enums.ActorType | null
   }
 
+  export type NestedEnumInterviewTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.InterviewType | EnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumInterviewTypeNullableFilter<$PrismaModel> | $Enums.InterviewType | null
+  }
+
   export type NestedEnumApplicationStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ApplicationStatus | EnumApplicationStatusFieldRefInput<$PrismaModel>
     in?: $Enums.ApplicationStatus[] | ListEnumApplicationStatusFieldRefInput<$PrismaModel>
@@ -77088,6 +77325,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumActorTypeNullableFilter<$PrismaModel>
     _max?: NestedEnumActorTypeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumInterviewTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InterviewType | EnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumInterviewTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.InterviewType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumInterviewTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumInterviewTypeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumAdminActionTypeFilter<$PrismaModel = never> = {
@@ -77788,6 +78035,7 @@ export namespace Prisma {
     socialProviderId?: string | null
     userType?: $Enums.UserType
     isActive?: boolean
+    preferredLanguage?: string
     joinedAt?: Date | string
     lastLoginAt?: Date | string | null
     deletedAt?: Date | string | null
@@ -77815,6 +78063,7 @@ export namespace Prisma {
     socialProviderId?: string | null
     userType?: $Enums.UserType
     isActive?: boolean
+    preferredLanguage?: string
     joinedAt?: Date | string
     lastLoginAt?: Date | string | null
     deletedAt?: Date | string | null
@@ -77880,6 +78129,7 @@ export namespace Prisma {
     socialProviderId?: NullableStringFieldUpdateOperationsInput | string | null
     userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -77907,6 +78157,7 @@ export namespace Prisma {
     socialProviderId?: NullableStringFieldUpdateOperationsInput | string | null
     userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -77960,6 +78211,7 @@ export namespace Prisma {
     socialProviderId?: string | null
     userType?: $Enums.UserType
     isActive?: boolean
+    preferredLanguage?: string
     joinedAt?: Date | string
     lastLoginAt?: Date | string | null
     deletedAt?: Date | string | null
@@ -77987,6 +78239,7 @@ export namespace Prisma {
     socialProviderId?: string | null
     userType?: $Enums.UserType
     isActive?: boolean
+    preferredLanguage?: string
     joinedAt?: Date | string
     lastLoginAt?: Date | string | null
     deletedAt?: Date | string | null
@@ -78200,6 +78453,7 @@ export namespace Prisma {
     socialProviderId?: NullableStringFieldUpdateOperationsInput | string | null
     userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -78227,6 +78481,7 @@ export namespace Prisma {
     socialProviderId?: NullableStringFieldUpdateOperationsInput | string | null
     userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -79587,6 +79842,7 @@ export namespace Prisma {
     socialProviderId?: string | null
     userType?: $Enums.UserType
     isActive?: boolean
+    preferredLanguage?: string
     joinedAt?: Date | string
     lastLoginAt?: Date | string | null
     deletedAt?: Date | string | null
@@ -79614,6 +79870,7 @@ export namespace Prisma {
     socialProviderId?: string | null
     userType?: $Enums.UserType
     isActive?: boolean
+    preferredLanguage?: string
     joinedAt?: Date | string
     lastLoginAt?: Date | string | null
     deletedAt?: Date | string | null
@@ -79657,6 +79914,7 @@ export namespace Prisma {
     socialProviderId?: NullableStringFieldUpdateOperationsInput | string | null
     userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -79684,6 +79942,7 @@ export namespace Prisma {
     socialProviderId?: NullableStringFieldUpdateOperationsInput | string | null
     userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -82806,6 +83065,12 @@ export namespace Prisma {
     selfReportedAt?: Date | string | null
     interviewDate?: Date | string | null
     interviewNote?: string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -82826,6 +83091,12 @@ export namespace Prisma {
     selfReportedAt?: Date | string | null
     interviewDate?: Date | string | null
     interviewNote?: string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -82978,6 +83249,12 @@ export namespace Prisma {
     selfReportedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     interviewDate?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     interviewNote?: StringNullableFilter<"JobApplication"> | string | null
+    interviewMethod?: EnumInterviewTypeNullableFilter<"JobApplication"> | $Enums.InterviewType | null
+    interviewFirstChoice?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewSecondChoice?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewLocation?: StringNullableFilter<"JobApplication"> | string | null
+    interviewLink?: StringNullableFilter<"JobApplication"> | string | null
+    interviewRoundTrips?: IntFilter<"JobApplication"> | number
     rejectionReason?: StringNullableFilter<"JobApplication"> | string | null
     resultNotifiedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     createdAt?: DateTimeFilter<"JobApplication"> | Date | string
@@ -83831,6 +84108,12 @@ export namespace Prisma {
     selfReportedAt?: Date | string | null
     interviewDate?: Date | string | null
     interviewNote?: string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -83851,6 +84134,12 @@ export namespace Prisma {
     selfReportedAt?: Date | string | null
     interviewDate?: Date | string | null
     interviewNote?: string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -83996,6 +84285,12 @@ export namespace Prisma {
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -84016,6 +84311,12 @@ export namespace Prisma {
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -84246,6 +84547,7 @@ export namespace Prisma {
     socialProviderId?: string | null
     userType?: $Enums.UserType
     isActive?: boolean
+    preferredLanguage?: string
     joinedAt?: Date | string
     lastLoginAt?: Date | string | null
     deletedAt?: Date | string | null
@@ -84273,6 +84575,7 @@ export namespace Prisma {
     socialProviderId?: string | null
     userType?: $Enums.UserType
     isActive?: boolean
+    preferredLanguage?: string
     joinedAt?: Date | string
     lastLoginAt?: Date | string | null
     deletedAt?: Date | string | null
@@ -84316,6 +84619,7 @@ export namespace Prisma {
     socialProviderId?: NullableStringFieldUpdateOperationsInput | string | null
     userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -84343,6 +84647,7 @@ export namespace Prisma {
     socialProviderId?: NullableStringFieldUpdateOperationsInput | string | null
     userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -84370,6 +84675,7 @@ export namespace Prisma {
     socialProviderId?: string | null
     userType?: $Enums.UserType
     isActive?: boolean
+    preferredLanguage?: string
     joinedAt?: Date | string
     lastLoginAt?: Date | string | null
     deletedAt?: Date | string | null
@@ -84397,6 +84703,7 @@ export namespace Prisma {
     socialProviderId?: string | null
     userType?: $Enums.UserType
     isActive?: boolean
+    preferredLanguage?: string
     joinedAt?: Date | string
     lastLoginAt?: Date | string | null
     deletedAt?: Date | string | null
@@ -84440,6 +84747,7 @@ export namespace Prisma {
     socialProviderId?: NullableStringFieldUpdateOperationsInput | string | null
     userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -84467,6 +84775,7 @@ export namespace Prisma {
     socialProviderId?: NullableStringFieldUpdateOperationsInput | string | null
     userType?: EnumUserTypeFieldUpdateOperationsInput | $Enums.UserType
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    preferredLanguage?: StringFieldUpdateOperationsInput | string
     joinedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -86018,6 +86327,12 @@ export namespace Prisma {
     selfReportedAt?: Date | string | null
     interviewDate?: Date | string | null
     interviewNote?: string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -86071,6 +86386,12 @@ export namespace Prisma {
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -86091,6 +86412,12 @@ export namespace Prisma {
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -86110,6 +86437,12 @@ export namespace Prisma {
     selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

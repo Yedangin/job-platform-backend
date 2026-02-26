@@ -11,9 +11,10 @@ import { JobScrapService } from './job-scrap.service';
 import { VisaRulesModule } from '../visa-rules/visa-rules.module';
 import { AuthPrismaService, RedisService } from 'libs/common/src';
 import { PaymentModule } from '../payment/payment.module';
+import { TranslationModule } from '../translation/translation.module';
 
 @Module({
-  imports: [VisaRulesModule, PaymentModule],
+  imports: [VisaRulesModule, PaymentModule, TranslationModule],
   controllers: [JobPostingController],
   providers: [
     JobPostingService,

@@ -32,6 +32,8 @@ import {
   SelectInterviewSlotDto,
   ProposeNewTimeDto,
   SendResultNotificationDto,
+  ProposeInterviewDto,
+  AcceptInterviewDto,
 } from './dto';
 
 @ApiTags('Applications')
@@ -243,6 +245,61 @@ export class JobApplicationController {
     return this.jobApplicationService.sendInterviewInvitation(
       session.userId,
       id,
+    );
+  }
+
+  @Post(':id/propose-interview')
+  @Roles('CORPORATE')
+  @ApiOperation({
+    summary:
+      '면접 일정 제안 / Propose interview schedule (employer proposes times)',
+  })
+  @ApiParam({ name: 'id', description: 'Application ID' })
+  @ApiResponse({
+    status: 201,
+    description: 'Interview proposed successfully',
+  })
+  @ApiResponse({ status: 400, description: 'Invalid status or max round-trips reached' })
+  @ApiResponse({ status: 404, description: 'Application not found' })
+  async proposeInterview(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+    @Body() dto: ProposeInterviewDto,
+  ) {
+    return this.jobApplicationService.proposeInterview(
+      BigInt(id),
+      dto,
+      'EMPLOYER',
+      BigInt(session.userId),
+    );
+  }
+
+  // ========================================
+  // Applicant (INDIVIDUAL) - Interview endpoints
+  // ========================================
+
+  @Post(':id/accept-interview')
+  @Roles('INDIVIDUAL')
+  @ApiOperation({
+    summary:
+      '면접 수락 / Accept a proposed interview time (applicant selects choice)',
+  })
+  @ApiParam({ name: 'id', description: 'Application ID' })
+  @ApiResponse({
+    status: 201,
+    description: 'Interview accepted successfully',
+  })
+  @ApiResponse({ status: 400, description: 'Invalid status or choice not available' })
+  @ApiResponse({ status: 404, description: 'Application not found' })
+  async acceptInterview(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+    @Body() dto: AcceptInterviewDto,
+  ) {
+    return this.jobApplicationService.acceptInterview(
+      BigInt(id),
+      dto,
+      BigInt(session.userId),
     );
   }
 }

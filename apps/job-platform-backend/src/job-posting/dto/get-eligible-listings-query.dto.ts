@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { BoardType, EmploymentSubType } from '../enums';
 
@@ -19,13 +19,20 @@ export class GetEligibleListingsQueryDto {
   @IsEnum(EmploymentSubType)
   employmentSubType?: EmploymentSubType;
 
-  @ApiPropertyOptional({ default: 1 })
+  @ApiPropertyOptional({ description: '페이지 번호 / Page number', default: 1 })
   @IsOptional()
   @Type(() => Number)
+  @IsInt()
+  @Min(1)
   page?: number;
 
-  @ApiPropertyOptional({ default: 20 })
+  @ApiPropertyOptional({
+    description: '페이지 크기 / Items per page',
+    default: 20,
+  })
   @IsOptional()
   @Type(() => Number)
+  @IsInt()
+  @Min(1)
   limit?: number;
 }

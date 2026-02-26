@@ -188,7 +188,23 @@ exports.Prisma.JobApplicationScalarFieldEnum = {
   selectedSlotId: 'selectedSlotId',
   proposedBy: 'proposedBy',
   proposedTime: 'proposedTime',
+  interviewMethod: 'interviewMethod',
+  interviewFirstChoice: 'interviewFirstChoice',
+  interviewSecondChoice: 'interviewSecondChoice',
+  interviewLocation: 'interviewLocation',
+  interviewLink: 'interviewLink',
+  interviewRoundTrips: 'interviewRoundTrips',
   rejectionReason: 'rejectionReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.JobTranslationScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  languageCode: 'languageCode',
+  translatedTitle: 'translatedTitle',
+  translatedDesc: 'translatedDesc',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -259,7 +275,8 @@ exports.Prisma.ModelName = {
   JobAttributesAlba: 'JobAttributesAlba',
   JobAttributesFulltime: 'JobAttributesFulltime',
   InterviewSlot: 'InterviewSlot',
-  JobApplication: 'JobApplication'
+  JobApplication: 'JobApplication',
+  JobTranslation: 'JobTranslation'
 };
 
 /**

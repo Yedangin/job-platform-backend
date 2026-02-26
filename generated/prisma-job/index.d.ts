@@ -43,6 +43,11 @@ export type InterviewSlot = $Result.DefaultSelection<Prisma.$InterviewSlotPayloa
  * 
  */
 export type JobApplication = $Result.DefaultSelection<Prisma.$JobApplicationPayload>
+/**
+ * Model JobTranslation
+ * 
+ */
+export type JobTranslation = $Result.DefaultSelection<Prisma.$JobTranslationPayload>
 
 /**
  * Enums
@@ -310,6 +315,16 @@ export class PrismaClient<
     * ```
     */
   get jobApplication(): Prisma.JobApplicationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.jobTranslation`: Exposes CRUD operations for the **JobTranslation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more JobTranslations
+    * const jobTranslations = await prisma.jobTranslation.findMany()
+    * ```
+    */
+  get jobTranslation(): Prisma.JobTranslationDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -755,7 +770,8 @@ export namespace Prisma {
     JobAttributesAlba: 'JobAttributesAlba',
     JobAttributesFulltime: 'JobAttributesFulltime',
     InterviewSlot: 'InterviewSlot',
-    JobApplication: 'JobApplication'
+    JobApplication: 'JobApplication',
+    JobTranslation: 'JobTranslation'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -774,7 +790,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "industryVisaRule" | "jobPosting" | "jobAttributesAlba" | "jobAttributesFulltime" | "interviewSlot" | "jobApplication"
+      modelProps: "industryVisaRule" | "jobPosting" | "jobAttributesAlba" | "jobAttributesFulltime" | "interviewSlot" | "jobApplication" | "jobTranslation"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1222,6 +1238,80 @@ export namespace Prisma {
           }
         }
       }
+      JobTranslation: {
+        payload: Prisma.$JobTranslationPayload<ExtArgs>
+        fields: Prisma.JobTranslationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.JobTranslationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTranslationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.JobTranslationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTranslationPayload>
+          }
+          findFirst: {
+            args: Prisma.JobTranslationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTranslationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.JobTranslationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTranslationPayload>
+          }
+          findMany: {
+            args: Prisma.JobTranslationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTranslationPayload>[]
+          }
+          create: {
+            args: Prisma.JobTranslationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTranslationPayload>
+          }
+          createMany: {
+            args: Prisma.JobTranslationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.JobTranslationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTranslationPayload>[]
+          }
+          delete: {
+            args: Prisma.JobTranslationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTranslationPayload>
+          }
+          update: {
+            args: Prisma.JobTranslationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTranslationPayload>
+          }
+          deleteMany: {
+            args: Prisma.JobTranslationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.JobTranslationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.JobTranslationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTranslationPayload>[]
+          }
+          upsert: {
+            args: Prisma.JobTranslationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$JobTranslationPayload>
+          }
+          aggregate: {
+            args: Prisma.JobTranslationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateJobTranslation>
+          }
+          groupBy: {
+            args: Prisma.JobTranslationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<JobTranslationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.JobTranslationCountArgs<ExtArgs>
+            result: $Utils.Optional<JobTranslationCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1312,6 +1402,7 @@ export namespace Prisma {
     jobAttributesFulltime?: JobAttributesFulltimeOmit
     interviewSlot?: InterviewSlotOmit
     jobApplication?: JobApplicationOmit
+    jobTranslation?: JobTranslationOmit
   }
 
   /* Types for Logging */
@@ -1408,11 +1499,13 @@ export namespace Prisma {
   export type JobPostingCountOutputType = {
     interviewSlots: number
     applications: number
+    translations: number
   }
 
   export type JobPostingCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     interviewSlots?: boolean | JobPostingCountOutputTypeCountInterviewSlotsArgs
     applications?: boolean | JobPostingCountOutputTypeCountApplicationsArgs
+    translations?: boolean | JobPostingCountOutputTypeCountTranslationsArgs
   }
 
   // Custom InputTypes
@@ -1438,6 +1531,13 @@ export namespace Prisma {
    */
   export type JobPostingCountOutputTypeCountApplicationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobApplicationWhereInput
+  }
+
+  /**
+   * JobPostingCountOutputType without action
+   */
+  export type JobPostingCountOutputTypeCountTranslationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobTranslationWhereInput
   }
 
 
@@ -2794,6 +2894,7 @@ export namespace Prisma {
     fulltimeAttributes?: boolean | JobPosting$fulltimeAttributesArgs<ExtArgs>
     interviewSlots?: boolean | JobPosting$interviewSlotsArgs<ExtArgs>
     applications?: boolean | JobPosting$applicationsArgs<ExtArgs>
+    translations?: boolean | JobPosting$translationsArgs<ExtArgs>
     _count?: boolean | JobPostingCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobPosting"]>
 
@@ -2881,6 +2982,7 @@ export namespace Prisma {
     fulltimeAttributes?: boolean | JobPosting$fulltimeAttributesArgs<ExtArgs>
     interviewSlots?: boolean | JobPosting$interviewSlotsArgs<ExtArgs>
     applications?: boolean | JobPosting$applicationsArgs<ExtArgs>
+    translations?: boolean | JobPosting$translationsArgs<ExtArgs>
     _count?: boolean | JobPostingCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JobPostingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2893,6 +2995,7 @@ export namespace Prisma {
       fulltimeAttributes: Prisma.$JobAttributesFulltimePayload<ExtArgs> | null
       interviewSlots: Prisma.$InterviewSlotPayload<ExtArgs>[]
       applications: Prisma.$JobApplicationPayload<ExtArgs>[]
+      translations: Prisma.$JobTranslationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       jobId: bigint
@@ -3316,6 +3419,7 @@ export namespace Prisma {
     fulltimeAttributes<T extends JobPosting$fulltimeAttributesArgs<ExtArgs> = {}>(args?: Subset<T, JobPosting$fulltimeAttributesArgs<ExtArgs>>): Prisma__JobAttributesFulltimeClient<$Result.GetResult<Prisma.$JobAttributesFulltimePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     interviewSlots<T extends JobPosting$interviewSlotsArgs<ExtArgs> = {}>(args?: Subset<T, JobPosting$interviewSlotsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewSlotPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     applications<T extends JobPosting$applicationsArgs<ExtArgs> = {}>(args?: Subset<T, JobPosting$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    translations<T extends JobPosting$translationsArgs<ExtArgs> = {}>(args?: Subset<T, JobPosting$translationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobTranslationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3839,6 +3943,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JobApplicationScalarFieldEnum | JobApplicationScalarFieldEnum[]
+  }
+
+  /**
+   * JobPosting.translations
+   */
+  export type JobPosting$translationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTranslation
+     */
+    select?: JobTranslationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTranslation
+     */
+    omit?: JobTranslationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTranslationInclude<ExtArgs> | null
+    where?: JobTranslationWhereInput
+    orderBy?: JobTranslationOrderByWithRelationInput | JobTranslationOrderByWithRelationInput[]
+    cursor?: JobTranslationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: JobTranslationScalarFieldEnum | JobTranslationScalarFieldEnum[]
   }
 
   /**
@@ -7217,6 +7345,7 @@ export namespace Prisma {
     jobId: number | null
     applicantId: number | null
     selectedSlotId: number | null
+    interviewRoundTrips: number | null
   }
 
   export type JobApplicationSumAggregateOutputType = {
@@ -7224,6 +7353,7 @@ export namespace Prisma {
     jobId: bigint | null
     applicantId: bigint | null
     selectedSlotId: bigint | null
+    interviewRoundTrips: number | null
   }
 
   export type JobApplicationMinAggregateOutputType = {
@@ -7234,6 +7364,12 @@ export namespace Prisma {
     selectedSlotId: bigint | null
     proposedBy: $Enums.ActorType | null
     proposedTime: Date | null
+    interviewMethod: $Enums.InterviewType | null
+    interviewFirstChoice: Date | null
+    interviewSecondChoice: Date | null
+    interviewLocation: string | null
+    interviewLink: string | null
+    interviewRoundTrips: number | null
     rejectionReason: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -7247,6 +7383,12 @@ export namespace Prisma {
     selectedSlotId: bigint | null
     proposedBy: $Enums.ActorType | null
     proposedTime: Date | null
+    interviewMethod: $Enums.InterviewType | null
+    interviewFirstChoice: Date | null
+    interviewSecondChoice: Date | null
+    interviewLocation: string | null
+    interviewLink: string | null
+    interviewRoundTrips: number | null
     rejectionReason: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -7260,6 +7402,12 @@ export namespace Prisma {
     selectedSlotId: number
     proposedBy: number
     proposedTime: number
+    interviewMethod: number
+    interviewFirstChoice: number
+    interviewSecondChoice: number
+    interviewLocation: number
+    interviewLink: number
+    interviewRoundTrips: number
     rejectionReason: number
     createdAt: number
     updatedAt: number
@@ -7272,6 +7420,7 @@ export namespace Prisma {
     jobId?: true
     applicantId?: true
     selectedSlotId?: true
+    interviewRoundTrips?: true
   }
 
   export type JobApplicationSumAggregateInputType = {
@@ -7279,6 +7428,7 @@ export namespace Prisma {
     jobId?: true
     applicantId?: true
     selectedSlotId?: true
+    interviewRoundTrips?: true
   }
 
   export type JobApplicationMinAggregateInputType = {
@@ -7289,6 +7439,12 @@ export namespace Prisma {
     selectedSlotId?: true
     proposedBy?: true
     proposedTime?: true
+    interviewMethod?: true
+    interviewFirstChoice?: true
+    interviewSecondChoice?: true
+    interviewLocation?: true
+    interviewLink?: true
+    interviewRoundTrips?: true
     rejectionReason?: true
     createdAt?: true
     updatedAt?: true
@@ -7302,6 +7458,12 @@ export namespace Prisma {
     selectedSlotId?: true
     proposedBy?: true
     proposedTime?: true
+    interviewMethod?: true
+    interviewFirstChoice?: true
+    interviewSecondChoice?: true
+    interviewLocation?: true
+    interviewLink?: true
+    interviewRoundTrips?: true
     rejectionReason?: true
     createdAt?: true
     updatedAt?: true
@@ -7315,6 +7477,12 @@ export namespace Prisma {
     selectedSlotId?: true
     proposedBy?: true
     proposedTime?: true
+    interviewMethod?: true
+    interviewFirstChoice?: true
+    interviewSecondChoice?: true
+    interviewLocation?: true
+    interviewLink?: true
+    interviewRoundTrips?: true
     rejectionReason?: true
     createdAt?: true
     updatedAt?: true
@@ -7415,6 +7583,12 @@ export namespace Prisma {
     selectedSlotId: bigint | null
     proposedBy: $Enums.ActorType | null
     proposedTime: Date | null
+    interviewMethod: $Enums.InterviewType | null
+    interviewFirstChoice: Date | null
+    interviewSecondChoice: Date | null
+    interviewLocation: string | null
+    interviewLink: string | null
+    interviewRoundTrips: number
     rejectionReason: string | null
     createdAt: Date
     updatedAt: Date
@@ -7447,6 +7621,12 @@ export namespace Prisma {
     selectedSlotId?: boolean
     proposedBy?: boolean
     proposedTime?: boolean
+    interviewMethod?: boolean
+    interviewFirstChoice?: boolean
+    interviewSecondChoice?: boolean
+    interviewLocation?: boolean
+    interviewLink?: boolean
+    interviewRoundTrips?: boolean
     rejectionReason?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -7461,6 +7641,12 @@ export namespace Prisma {
     selectedSlotId?: boolean
     proposedBy?: boolean
     proposedTime?: boolean
+    interviewMethod?: boolean
+    interviewFirstChoice?: boolean
+    interviewSecondChoice?: boolean
+    interviewLocation?: boolean
+    interviewLink?: boolean
+    interviewRoundTrips?: boolean
     rejectionReason?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -7475,6 +7661,12 @@ export namespace Prisma {
     selectedSlotId?: boolean
     proposedBy?: boolean
     proposedTime?: boolean
+    interviewMethod?: boolean
+    interviewFirstChoice?: boolean
+    interviewSecondChoice?: boolean
+    interviewLocation?: boolean
+    interviewLink?: boolean
+    interviewRoundTrips?: boolean
     rejectionReason?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -7489,12 +7681,18 @@ export namespace Prisma {
     selectedSlotId?: boolean
     proposedBy?: boolean
     proposedTime?: boolean
+    interviewMethod?: boolean
+    interviewFirstChoice?: boolean
+    interviewSecondChoice?: boolean
+    interviewLocation?: boolean
+    interviewLink?: boolean
+    interviewRoundTrips?: boolean
     rejectionReason?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type JobApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"appId" | "jobId" | "applicantId" | "status" | "selectedSlotId" | "proposedBy" | "proposedTime" | "rejectionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["jobApplication"]>
+  export type JobApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"appId" | "jobId" | "applicantId" | "status" | "selectedSlotId" | "proposedBy" | "proposedTime" | "interviewMethod" | "interviewFirstChoice" | "interviewSecondChoice" | "interviewLocation" | "interviewLink" | "interviewRoundTrips" | "rejectionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["jobApplication"]>
   export type JobApplicationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
   }
@@ -7518,6 +7716,12 @@ export namespace Prisma {
       selectedSlotId: bigint | null
       proposedBy: $Enums.ActorType | null
       proposedTime: Date | null
+      interviewMethod: $Enums.InterviewType | null
+      interviewFirstChoice: Date | null
+      interviewSecondChoice: Date | null
+      interviewLocation: string | null
+      interviewLink: string | null
+      interviewRoundTrips: number
       rejectionReason: string | null
       createdAt: Date
       updatedAt: Date
@@ -7952,6 +8156,12 @@ export namespace Prisma {
     readonly selectedSlotId: FieldRef<"JobApplication", 'BigInt'>
     readonly proposedBy: FieldRef<"JobApplication", 'ActorType'>
     readonly proposedTime: FieldRef<"JobApplication", 'DateTime'>
+    readonly interviewMethod: FieldRef<"JobApplication", 'InterviewType'>
+    readonly interviewFirstChoice: FieldRef<"JobApplication", 'DateTime'>
+    readonly interviewSecondChoice: FieldRef<"JobApplication", 'DateTime'>
+    readonly interviewLocation: FieldRef<"JobApplication", 'String'>
+    readonly interviewLink: FieldRef<"JobApplication", 'String'>
+    readonly interviewRoundTrips: FieldRef<"JobApplication", 'Int'>
     readonly rejectionReason: FieldRef<"JobApplication", 'String'>
     readonly createdAt: FieldRef<"JobApplication", 'DateTime'>
     readonly updatedAt: FieldRef<"JobApplication", 'DateTime'>
@@ -8370,6 +8580,1128 @@ export namespace Prisma {
 
 
   /**
+   * Model JobTranslation
+   */
+
+  export type AggregateJobTranslation = {
+    _count: JobTranslationCountAggregateOutputType | null
+    _avg: JobTranslationAvgAggregateOutputType | null
+    _sum: JobTranslationSumAggregateOutputType | null
+    _min: JobTranslationMinAggregateOutputType | null
+    _max: JobTranslationMaxAggregateOutputType | null
+  }
+
+  export type JobTranslationAvgAggregateOutputType = {
+    id: number | null
+    jobId: number | null
+  }
+
+  export type JobTranslationSumAggregateOutputType = {
+    id: bigint | null
+    jobId: bigint | null
+  }
+
+  export type JobTranslationMinAggregateOutputType = {
+    id: bigint | null
+    jobId: bigint | null
+    languageCode: string | null
+    translatedTitle: string | null
+    translatedDesc: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type JobTranslationMaxAggregateOutputType = {
+    id: bigint | null
+    jobId: bigint | null
+    languageCode: string | null
+    translatedTitle: string | null
+    translatedDesc: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type JobTranslationCountAggregateOutputType = {
+    id: number
+    jobId: number
+    languageCode: number
+    translatedTitle: number
+    translatedDesc: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type JobTranslationAvgAggregateInputType = {
+    id?: true
+    jobId?: true
+  }
+
+  export type JobTranslationSumAggregateInputType = {
+    id?: true
+    jobId?: true
+  }
+
+  export type JobTranslationMinAggregateInputType = {
+    id?: true
+    jobId?: true
+    languageCode?: true
+    translatedTitle?: true
+    translatedDesc?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type JobTranslationMaxAggregateInputType = {
+    id?: true
+    jobId?: true
+    languageCode?: true
+    translatedTitle?: true
+    translatedDesc?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type JobTranslationCountAggregateInputType = {
+    id?: true
+    jobId?: true
+    languageCode?: true
+    translatedTitle?: true
+    translatedDesc?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type JobTranslationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JobTranslation to aggregate.
+     */
+    where?: JobTranslationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobTranslations to fetch.
+     */
+    orderBy?: JobTranslationOrderByWithRelationInput | JobTranslationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: JobTranslationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobTranslations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobTranslations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned JobTranslations
+    **/
+    _count?: true | JobTranslationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: JobTranslationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: JobTranslationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: JobTranslationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: JobTranslationMaxAggregateInputType
+  }
+
+  export type GetJobTranslationAggregateType<T extends JobTranslationAggregateArgs> = {
+        [P in keyof T & keyof AggregateJobTranslation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateJobTranslation[P]>
+      : GetScalarType<T[P], AggregateJobTranslation[P]>
+  }
+
+
+
+
+  export type JobTranslationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobTranslationWhereInput
+    orderBy?: JobTranslationOrderByWithAggregationInput | JobTranslationOrderByWithAggregationInput[]
+    by: JobTranslationScalarFieldEnum[] | JobTranslationScalarFieldEnum
+    having?: JobTranslationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: JobTranslationCountAggregateInputType | true
+    _avg?: JobTranslationAvgAggregateInputType
+    _sum?: JobTranslationSumAggregateInputType
+    _min?: JobTranslationMinAggregateInputType
+    _max?: JobTranslationMaxAggregateInputType
+  }
+
+  export type JobTranslationGroupByOutputType = {
+    id: bigint
+    jobId: bigint
+    languageCode: string
+    translatedTitle: string
+    translatedDesc: string
+    createdAt: Date
+    updatedAt: Date
+    _count: JobTranslationCountAggregateOutputType | null
+    _avg: JobTranslationAvgAggregateOutputType | null
+    _sum: JobTranslationSumAggregateOutputType | null
+    _min: JobTranslationMinAggregateOutputType | null
+    _max: JobTranslationMaxAggregateOutputType | null
+  }
+
+  type GetJobTranslationGroupByPayload<T extends JobTranslationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<JobTranslationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof JobTranslationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], JobTranslationGroupByOutputType[P]>
+            : GetScalarType<T[P], JobTranslationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type JobTranslationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    languageCode?: boolean
+    translatedTitle?: boolean
+    translatedDesc?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    job?: boolean | JobPostingDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jobTranslation"]>
+
+  export type JobTranslationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    languageCode?: boolean
+    translatedTitle?: boolean
+    translatedDesc?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    job?: boolean | JobPostingDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jobTranslation"]>
+
+  export type JobTranslationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    jobId?: boolean
+    languageCode?: boolean
+    translatedTitle?: boolean
+    translatedDesc?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    job?: boolean | JobPostingDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["jobTranslation"]>
+
+  export type JobTranslationSelectScalar = {
+    id?: boolean
+    jobId?: boolean
+    languageCode?: boolean
+    translatedTitle?: boolean
+    translatedDesc?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type JobTranslationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "languageCode" | "translatedTitle" | "translatedDesc" | "createdAt" | "updatedAt", ExtArgs["result"]["jobTranslation"]>
+  export type JobTranslationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobPostingDefaultArgs<ExtArgs>
+  }
+  export type JobTranslationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobPostingDefaultArgs<ExtArgs>
+  }
+  export type JobTranslationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    job?: boolean | JobPostingDefaultArgs<ExtArgs>
+  }
+
+  export type $JobTranslationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "JobTranslation"
+    objects: {
+      job: Prisma.$JobPostingPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      jobId: bigint
+      languageCode: string
+      translatedTitle: string
+      translatedDesc: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["jobTranslation"]>
+    composites: {}
+  }
+
+  type JobTranslationGetPayload<S extends boolean | null | undefined | JobTranslationDefaultArgs> = $Result.GetResult<Prisma.$JobTranslationPayload, S>
+
+  type JobTranslationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<JobTranslationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: JobTranslationCountAggregateInputType | true
+    }
+
+  export interface JobTranslationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['JobTranslation'], meta: { name: 'JobTranslation' } }
+    /**
+     * Find zero or one JobTranslation that matches the filter.
+     * @param {JobTranslationFindUniqueArgs} args - Arguments to find a JobTranslation
+     * @example
+     * // Get one JobTranslation
+     * const jobTranslation = await prisma.jobTranslation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends JobTranslationFindUniqueArgs>(args: SelectSubset<T, JobTranslationFindUniqueArgs<ExtArgs>>): Prisma__JobTranslationClient<$Result.GetResult<Prisma.$JobTranslationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one JobTranslation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {JobTranslationFindUniqueOrThrowArgs} args - Arguments to find a JobTranslation
+     * @example
+     * // Get one JobTranslation
+     * const jobTranslation = await prisma.jobTranslation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends JobTranslationFindUniqueOrThrowArgs>(args: SelectSubset<T, JobTranslationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__JobTranslationClient<$Result.GetResult<Prisma.$JobTranslationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JobTranslation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTranslationFindFirstArgs} args - Arguments to find a JobTranslation
+     * @example
+     * // Get one JobTranslation
+     * const jobTranslation = await prisma.jobTranslation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends JobTranslationFindFirstArgs>(args?: SelectSubset<T, JobTranslationFindFirstArgs<ExtArgs>>): Prisma__JobTranslationClient<$Result.GetResult<Prisma.$JobTranslationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first JobTranslation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTranslationFindFirstOrThrowArgs} args - Arguments to find a JobTranslation
+     * @example
+     * // Get one JobTranslation
+     * const jobTranslation = await prisma.jobTranslation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends JobTranslationFindFirstOrThrowArgs>(args?: SelectSubset<T, JobTranslationFindFirstOrThrowArgs<ExtArgs>>): Prisma__JobTranslationClient<$Result.GetResult<Prisma.$JobTranslationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more JobTranslations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTranslationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all JobTranslations
+     * const jobTranslations = await prisma.jobTranslation.findMany()
+     * 
+     * // Get first 10 JobTranslations
+     * const jobTranslations = await prisma.jobTranslation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const jobTranslationWithIdOnly = await prisma.jobTranslation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends JobTranslationFindManyArgs>(args?: SelectSubset<T, JobTranslationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobTranslationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a JobTranslation.
+     * @param {JobTranslationCreateArgs} args - Arguments to create a JobTranslation.
+     * @example
+     * // Create one JobTranslation
+     * const JobTranslation = await prisma.jobTranslation.create({
+     *   data: {
+     *     // ... data to create a JobTranslation
+     *   }
+     * })
+     * 
+     */
+    create<T extends JobTranslationCreateArgs>(args: SelectSubset<T, JobTranslationCreateArgs<ExtArgs>>): Prisma__JobTranslationClient<$Result.GetResult<Prisma.$JobTranslationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many JobTranslations.
+     * @param {JobTranslationCreateManyArgs} args - Arguments to create many JobTranslations.
+     * @example
+     * // Create many JobTranslations
+     * const jobTranslation = await prisma.jobTranslation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends JobTranslationCreateManyArgs>(args?: SelectSubset<T, JobTranslationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many JobTranslations and returns the data saved in the database.
+     * @param {JobTranslationCreateManyAndReturnArgs} args - Arguments to create many JobTranslations.
+     * @example
+     * // Create many JobTranslations
+     * const jobTranslation = await prisma.jobTranslation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many JobTranslations and only return the `id`
+     * const jobTranslationWithIdOnly = await prisma.jobTranslation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends JobTranslationCreateManyAndReturnArgs>(args?: SelectSubset<T, JobTranslationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobTranslationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a JobTranslation.
+     * @param {JobTranslationDeleteArgs} args - Arguments to delete one JobTranslation.
+     * @example
+     * // Delete one JobTranslation
+     * const JobTranslation = await prisma.jobTranslation.delete({
+     *   where: {
+     *     // ... filter to delete one JobTranslation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends JobTranslationDeleteArgs>(args: SelectSubset<T, JobTranslationDeleteArgs<ExtArgs>>): Prisma__JobTranslationClient<$Result.GetResult<Prisma.$JobTranslationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one JobTranslation.
+     * @param {JobTranslationUpdateArgs} args - Arguments to update one JobTranslation.
+     * @example
+     * // Update one JobTranslation
+     * const jobTranslation = await prisma.jobTranslation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends JobTranslationUpdateArgs>(args: SelectSubset<T, JobTranslationUpdateArgs<ExtArgs>>): Prisma__JobTranslationClient<$Result.GetResult<Prisma.$JobTranslationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more JobTranslations.
+     * @param {JobTranslationDeleteManyArgs} args - Arguments to filter JobTranslations to delete.
+     * @example
+     * // Delete a few JobTranslations
+     * const { count } = await prisma.jobTranslation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends JobTranslationDeleteManyArgs>(args?: SelectSubset<T, JobTranslationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JobTranslations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTranslationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many JobTranslations
+     * const jobTranslation = await prisma.jobTranslation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends JobTranslationUpdateManyArgs>(args: SelectSubset<T, JobTranslationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more JobTranslations and returns the data updated in the database.
+     * @param {JobTranslationUpdateManyAndReturnArgs} args - Arguments to update many JobTranslations.
+     * @example
+     * // Update many JobTranslations
+     * const jobTranslation = await prisma.jobTranslation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more JobTranslations and only return the `id`
+     * const jobTranslationWithIdOnly = await prisma.jobTranslation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends JobTranslationUpdateManyAndReturnArgs>(args: SelectSubset<T, JobTranslationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobTranslationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one JobTranslation.
+     * @param {JobTranslationUpsertArgs} args - Arguments to update or create a JobTranslation.
+     * @example
+     * // Update or create a JobTranslation
+     * const jobTranslation = await prisma.jobTranslation.upsert({
+     *   create: {
+     *     // ... data to create a JobTranslation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the JobTranslation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends JobTranslationUpsertArgs>(args: SelectSubset<T, JobTranslationUpsertArgs<ExtArgs>>): Prisma__JobTranslationClient<$Result.GetResult<Prisma.$JobTranslationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of JobTranslations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTranslationCountArgs} args - Arguments to filter JobTranslations to count.
+     * @example
+     * // Count the number of JobTranslations
+     * const count = await prisma.jobTranslation.count({
+     *   where: {
+     *     // ... the filter for the JobTranslations we want to count
+     *   }
+     * })
+    **/
+    count<T extends JobTranslationCountArgs>(
+      args?: Subset<T, JobTranslationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], JobTranslationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a JobTranslation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTranslationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends JobTranslationAggregateArgs>(args: Subset<T, JobTranslationAggregateArgs>): Prisma.PrismaPromise<GetJobTranslationAggregateType<T>>
+
+    /**
+     * Group by JobTranslation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {JobTranslationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends JobTranslationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: JobTranslationGroupByArgs['orderBy'] }
+        : { orderBy?: JobTranslationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, JobTranslationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetJobTranslationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the JobTranslation model
+   */
+  readonly fields: JobTranslationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for JobTranslation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__JobTranslationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    job<T extends JobPostingDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobPostingDefaultArgs<ExtArgs>>): Prisma__JobPostingClient<$Result.GetResult<Prisma.$JobPostingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the JobTranslation model
+   */
+  interface JobTranslationFieldRefs {
+    readonly id: FieldRef<"JobTranslation", 'BigInt'>
+    readonly jobId: FieldRef<"JobTranslation", 'BigInt'>
+    readonly languageCode: FieldRef<"JobTranslation", 'String'>
+    readonly translatedTitle: FieldRef<"JobTranslation", 'String'>
+    readonly translatedDesc: FieldRef<"JobTranslation", 'String'>
+    readonly createdAt: FieldRef<"JobTranslation", 'DateTime'>
+    readonly updatedAt: FieldRef<"JobTranslation", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * JobTranslation findUnique
+   */
+  export type JobTranslationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTranslation
+     */
+    select?: JobTranslationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTranslation
+     */
+    omit?: JobTranslationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTranslationInclude<ExtArgs> | null
+    /**
+     * Filter, which JobTranslation to fetch.
+     */
+    where: JobTranslationWhereUniqueInput
+  }
+
+  /**
+   * JobTranslation findUniqueOrThrow
+   */
+  export type JobTranslationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTranslation
+     */
+    select?: JobTranslationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTranslation
+     */
+    omit?: JobTranslationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTranslationInclude<ExtArgs> | null
+    /**
+     * Filter, which JobTranslation to fetch.
+     */
+    where: JobTranslationWhereUniqueInput
+  }
+
+  /**
+   * JobTranslation findFirst
+   */
+  export type JobTranslationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTranslation
+     */
+    select?: JobTranslationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTranslation
+     */
+    omit?: JobTranslationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTranslationInclude<ExtArgs> | null
+    /**
+     * Filter, which JobTranslation to fetch.
+     */
+    where?: JobTranslationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobTranslations to fetch.
+     */
+    orderBy?: JobTranslationOrderByWithRelationInput | JobTranslationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JobTranslations.
+     */
+    cursor?: JobTranslationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobTranslations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobTranslations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobTranslations.
+     */
+    distinct?: JobTranslationScalarFieldEnum | JobTranslationScalarFieldEnum[]
+  }
+
+  /**
+   * JobTranslation findFirstOrThrow
+   */
+  export type JobTranslationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTranslation
+     */
+    select?: JobTranslationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTranslation
+     */
+    omit?: JobTranslationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTranslationInclude<ExtArgs> | null
+    /**
+     * Filter, which JobTranslation to fetch.
+     */
+    where?: JobTranslationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobTranslations to fetch.
+     */
+    orderBy?: JobTranslationOrderByWithRelationInput | JobTranslationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for JobTranslations.
+     */
+    cursor?: JobTranslationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobTranslations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobTranslations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of JobTranslations.
+     */
+    distinct?: JobTranslationScalarFieldEnum | JobTranslationScalarFieldEnum[]
+  }
+
+  /**
+   * JobTranslation findMany
+   */
+  export type JobTranslationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTranslation
+     */
+    select?: JobTranslationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTranslation
+     */
+    omit?: JobTranslationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTranslationInclude<ExtArgs> | null
+    /**
+     * Filter, which JobTranslations to fetch.
+     */
+    where?: JobTranslationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of JobTranslations to fetch.
+     */
+    orderBy?: JobTranslationOrderByWithRelationInput | JobTranslationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing JobTranslations.
+     */
+    cursor?: JobTranslationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` JobTranslations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` JobTranslations.
+     */
+    skip?: number
+    distinct?: JobTranslationScalarFieldEnum | JobTranslationScalarFieldEnum[]
+  }
+
+  /**
+   * JobTranslation create
+   */
+  export type JobTranslationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTranslation
+     */
+    select?: JobTranslationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTranslation
+     */
+    omit?: JobTranslationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTranslationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a JobTranslation.
+     */
+    data: XOR<JobTranslationCreateInput, JobTranslationUncheckedCreateInput>
+  }
+
+  /**
+   * JobTranslation createMany
+   */
+  export type JobTranslationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many JobTranslations.
+     */
+    data: JobTranslationCreateManyInput | JobTranslationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * JobTranslation createManyAndReturn
+   */
+  export type JobTranslationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTranslation
+     */
+    select?: JobTranslationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTranslation
+     */
+    omit?: JobTranslationOmit<ExtArgs> | null
+    /**
+     * The data used to create many JobTranslations.
+     */
+    data: JobTranslationCreateManyInput | JobTranslationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTranslationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * JobTranslation update
+   */
+  export type JobTranslationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTranslation
+     */
+    select?: JobTranslationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTranslation
+     */
+    omit?: JobTranslationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTranslationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a JobTranslation.
+     */
+    data: XOR<JobTranslationUpdateInput, JobTranslationUncheckedUpdateInput>
+    /**
+     * Choose, which JobTranslation to update.
+     */
+    where: JobTranslationWhereUniqueInput
+  }
+
+  /**
+   * JobTranslation updateMany
+   */
+  export type JobTranslationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update JobTranslations.
+     */
+    data: XOR<JobTranslationUpdateManyMutationInput, JobTranslationUncheckedUpdateManyInput>
+    /**
+     * Filter which JobTranslations to update
+     */
+    where?: JobTranslationWhereInput
+    /**
+     * Limit how many JobTranslations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * JobTranslation updateManyAndReturn
+   */
+  export type JobTranslationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTranslation
+     */
+    select?: JobTranslationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTranslation
+     */
+    omit?: JobTranslationOmit<ExtArgs> | null
+    /**
+     * The data used to update JobTranslations.
+     */
+    data: XOR<JobTranslationUpdateManyMutationInput, JobTranslationUncheckedUpdateManyInput>
+    /**
+     * Filter which JobTranslations to update
+     */
+    where?: JobTranslationWhereInput
+    /**
+     * Limit how many JobTranslations to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTranslationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * JobTranslation upsert
+   */
+  export type JobTranslationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTranslation
+     */
+    select?: JobTranslationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTranslation
+     */
+    omit?: JobTranslationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTranslationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the JobTranslation to update in case it exists.
+     */
+    where: JobTranslationWhereUniqueInput
+    /**
+     * In case the JobTranslation found by the `where` argument doesn't exist, create a new JobTranslation with this data.
+     */
+    create: XOR<JobTranslationCreateInput, JobTranslationUncheckedCreateInput>
+    /**
+     * In case the JobTranslation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<JobTranslationUpdateInput, JobTranslationUncheckedUpdateInput>
+  }
+
+  /**
+   * JobTranslation delete
+   */
+  export type JobTranslationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTranslation
+     */
+    select?: JobTranslationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTranslation
+     */
+    omit?: JobTranslationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTranslationInclude<ExtArgs> | null
+    /**
+     * Filter which JobTranslation to delete.
+     */
+    where: JobTranslationWhereUniqueInput
+  }
+
+  /**
+   * JobTranslation deleteMany
+   */
+  export type JobTranslationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which JobTranslations to delete
+     */
+    where?: JobTranslationWhereInput
+    /**
+     * Limit how many JobTranslations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * JobTranslation without action
+   */
+  export type JobTranslationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobTranslation
+     */
+    select?: JobTranslationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the JobTranslation
+     */
+    omit?: JobTranslationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: JobTranslationInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -8466,12 +9798,31 @@ export namespace Prisma {
     selectedSlotId: 'selectedSlotId',
     proposedBy: 'proposedBy',
     proposedTime: 'proposedTime',
+    interviewMethod: 'interviewMethod',
+    interviewFirstChoice: 'interviewFirstChoice',
+    interviewSecondChoice: 'interviewSecondChoice',
+    interviewLocation: 'interviewLocation',
+    interviewLink: 'interviewLink',
+    interviewRoundTrips: 'interviewRoundTrips',
     rejectionReason: 'rejectionReason',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type JobApplicationScalarFieldEnum = (typeof JobApplicationScalarFieldEnum)[keyof typeof JobApplicationScalarFieldEnum]
+
+
+  export const JobTranslationScalarFieldEnum: {
+    id: 'id',
+    jobId: 'jobId',
+    languageCode: 'languageCode',
+    translatedTitle: 'translatedTitle',
+    translatedDesc: 'translatedDesc',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type JobTranslationScalarFieldEnum = (typeof JobTranslationScalarFieldEnum)[keyof typeof JobTranslationScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -8774,6 +10125,7 @@ export namespace Prisma {
     fulltimeAttributes?: XOR<JobAttributesFulltimeNullableScalarRelationFilter, JobAttributesFulltimeWhereInput> | null
     interviewSlots?: InterviewSlotListRelationFilter
     applications?: JobApplicationListRelationFilter
+    translations?: JobTranslationListRelationFilter
   }
 
   export type JobPostingOrderByWithRelationInput = {
@@ -8804,6 +10156,7 @@ export namespace Prisma {
     fulltimeAttributes?: JobAttributesFulltimeOrderByWithRelationInput
     interviewSlots?: InterviewSlotOrderByRelationAggregateInput
     applications?: JobApplicationOrderByRelationAggregateInput
+    translations?: JobTranslationOrderByRelationAggregateInput
   }
 
   export type JobPostingWhereUniqueInput = Prisma.AtLeast<{
@@ -8837,6 +10190,7 @@ export namespace Prisma {
     fulltimeAttributes?: XOR<JobAttributesFulltimeNullableScalarRelationFilter, JobAttributesFulltimeWhereInput> | null
     interviewSlots?: InterviewSlotListRelationFilter
     applications?: JobApplicationListRelationFilter
+    translations?: JobTranslationListRelationFilter
   }, "jobId">
 
   export type JobPostingOrderByWithAggregationInput = {
@@ -9101,6 +10455,12 @@ export namespace Prisma {
     selectedSlotId?: BigIntNullableFilter<"JobApplication"> | bigint | number | null
     proposedBy?: EnumActorTypeNullableFilter<"JobApplication"> | $Enums.ActorType | null
     proposedTime?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewMethod?: EnumInterviewTypeNullableFilter<"JobApplication"> | $Enums.InterviewType | null
+    interviewFirstChoice?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewSecondChoice?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewLocation?: StringNullableFilter<"JobApplication"> | string | null
+    interviewLink?: StringNullableFilter<"JobApplication"> | string | null
+    interviewRoundTrips?: IntFilter<"JobApplication"> | number
     rejectionReason?: StringNullableFilter<"JobApplication"> | string | null
     createdAt?: DateTimeFilter<"JobApplication"> | Date | string
     updatedAt?: DateTimeFilter<"JobApplication"> | Date | string
@@ -9115,6 +10475,12 @@ export namespace Prisma {
     selectedSlotId?: SortOrderInput | SortOrder
     proposedBy?: SortOrderInput | SortOrder
     proposedTime?: SortOrderInput | SortOrder
+    interviewMethod?: SortOrderInput | SortOrder
+    interviewFirstChoice?: SortOrderInput | SortOrder
+    interviewSecondChoice?: SortOrderInput | SortOrder
+    interviewLocation?: SortOrderInput | SortOrder
+    interviewLink?: SortOrderInput | SortOrder
+    interviewRoundTrips?: SortOrder
     rejectionReason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -9132,6 +10498,12 @@ export namespace Prisma {
     selectedSlotId?: BigIntNullableFilter<"JobApplication"> | bigint | number | null
     proposedBy?: EnumActorTypeNullableFilter<"JobApplication"> | $Enums.ActorType | null
     proposedTime?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewMethod?: EnumInterviewTypeNullableFilter<"JobApplication"> | $Enums.InterviewType | null
+    interviewFirstChoice?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewSecondChoice?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewLocation?: StringNullableFilter<"JobApplication"> | string | null
+    interviewLink?: StringNullableFilter<"JobApplication"> | string | null
+    interviewRoundTrips?: IntFilter<"JobApplication"> | number
     rejectionReason?: StringNullableFilter<"JobApplication"> | string | null
     createdAt?: DateTimeFilter<"JobApplication"> | Date | string
     updatedAt?: DateTimeFilter<"JobApplication"> | Date | string
@@ -9146,6 +10518,12 @@ export namespace Prisma {
     selectedSlotId?: SortOrderInput | SortOrder
     proposedBy?: SortOrderInput | SortOrder
     proposedTime?: SortOrderInput | SortOrder
+    interviewMethod?: SortOrderInput | SortOrder
+    interviewFirstChoice?: SortOrderInput | SortOrder
+    interviewSecondChoice?: SortOrderInput | SortOrder
+    interviewLocation?: SortOrderInput | SortOrder
+    interviewLink?: SortOrderInput | SortOrder
+    interviewRoundTrips?: SortOrder
     rejectionReason?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -9167,9 +10545,83 @@ export namespace Prisma {
     selectedSlotId?: BigIntNullableWithAggregatesFilter<"JobApplication"> | bigint | number | null
     proposedBy?: EnumActorTypeNullableWithAggregatesFilter<"JobApplication"> | $Enums.ActorType | null
     proposedTime?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
+    interviewMethod?: EnumInterviewTypeNullableWithAggregatesFilter<"JobApplication"> | $Enums.InterviewType | null
+    interviewFirstChoice?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
+    interviewSecondChoice?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
+    interviewLocation?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
+    interviewLink?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
+    interviewRoundTrips?: IntWithAggregatesFilter<"JobApplication"> | number
     rejectionReason?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"JobApplication"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"JobApplication"> | Date | string
+  }
+
+  export type JobTranslationWhereInput = {
+    AND?: JobTranslationWhereInput | JobTranslationWhereInput[]
+    OR?: JobTranslationWhereInput[]
+    NOT?: JobTranslationWhereInput | JobTranslationWhereInput[]
+    id?: BigIntFilter<"JobTranslation"> | bigint | number
+    jobId?: BigIntFilter<"JobTranslation"> | bigint | number
+    languageCode?: StringFilter<"JobTranslation"> | string
+    translatedTitle?: StringFilter<"JobTranslation"> | string
+    translatedDesc?: StringFilter<"JobTranslation"> | string
+    createdAt?: DateTimeFilter<"JobTranslation"> | Date | string
+    updatedAt?: DateTimeFilter<"JobTranslation"> | Date | string
+    job?: XOR<JobPostingScalarRelationFilter, JobPostingWhereInput>
+  }
+
+  export type JobTranslationOrderByWithRelationInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    languageCode?: SortOrder
+    translatedTitle?: SortOrder
+    translatedDesc?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    job?: JobPostingOrderByWithRelationInput
+  }
+
+  export type JobTranslationWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    jobId_languageCode?: JobTranslationJobIdLanguageCodeCompoundUniqueInput
+    AND?: JobTranslationWhereInput | JobTranslationWhereInput[]
+    OR?: JobTranslationWhereInput[]
+    NOT?: JobTranslationWhereInput | JobTranslationWhereInput[]
+    jobId?: BigIntFilter<"JobTranslation"> | bigint | number
+    languageCode?: StringFilter<"JobTranslation"> | string
+    translatedTitle?: StringFilter<"JobTranslation"> | string
+    translatedDesc?: StringFilter<"JobTranslation"> | string
+    createdAt?: DateTimeFilter<"JobTranslation"> | Date | string
+    updatedAt?: DateTimeFilter<"JobTranslation"> | Date | string
+    job?: XOR<JobPostingScalarRelationFilter, JobPostingWhereInput>
+  }, "id" | "jobId_languageCode">
+
+  export type JobTranslationOrderByWithAggregationInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    languageCode?: SortOrder
+    translatedTitle?: SortOrder
+    translatedDesc?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: JobTranslationCountOrderByAggregateInput
+    _avg?: JobTranslationAvgOrderByAggregateInput
+    _max?: JobTranslationMaxOrderByAggregateInput
+    _min?: JobTranslationMinOrderByAggregateInput
+    _sum?: JobTranslationSumOrderByAggregateInput
+  }
+
+  export type JobTranslationScalarWhereWithAggregatesInput = {
+    AND?: JobTranslationScalarWhereWithAggregatesInput | JobTranslationScalarWhereWithAggregatesInput[]
+    OR?: JobTranslationScalarWhereWithAggregatesInput[]
+    NOT?: JobTranslationScalarWhereWithAggregatesInput | JobTranslationScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"JobTranslation"> | bigint | number
+    jobId?: BigIntWithAggregatesFilter<"JobTranslation"> | bigint | number
+    languageCode?: StringWithAggregatesFilter<"JobTranslation"> | string
+    translatedTitle?: StringWithAggregatesFilter<"JobTranslation"> | string
+    translatedDesc?: StringWithAggregatesFilter<"JobTranslation"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"JobTranslation"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"JobTranslation"> | Date | string
   }
 
   export type IndustryVisaRuleCreateInput = {
@@ -9239,6 +10691,7 @@ export namespace Prisma {
     fulltimeAttributes?: JobAttributesFulltimeCreateNestedOneWithoutJobInput
     interviewSlots?: InterviewSlotCreateNestedManyWithoutJobInput
     applications?: JobApplicationCreateNestedManyWithoutJobInput
+    translations?: JobTranslationCreateNestedManyWithoutJobInput
   }
 
   export type JobPostingUncheckedCreateInput = {
@@ -9269,6 +10722,7 @@ export namespace Prisma {
     fulltimeAttributes?: JobAttributesFulltimeUncheckedCreateNestedOneWithoutJobInput
     interviewSlots?: InterviewSlotUncheckedCreateNestedManyWithoutJobInput
     applications?: JobApplicationUncheckedCreateNestedManyWithoutJobInput
+    translations?: JobTranslationUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobPostingUpdateInput = {
@@ -9299,6 +10753,7 @@ export namespace Prisma {
     fulltimeAttributes?: JobAttributesFulltimeUpdateOneWithoutJobNestedInput
     interviewSlots?: InterviewSlotUpdateManyWithoutJobNestedInput
     applications?: JobApplicationUpdateManyWithoutJobNestedInput
+    translations?: JobTranslationUpdateManyWithoutJobNestedInput
   }
 
   export type JobPostingUncheckedUpdateInput = {
@@ -9329,6 +10784,7 @@ export namespace Prisma {
     fulltimeAttributes?: JobAttributesFulltimeUncheckedUpdateOneWithoutJobNestedInput
     interviewSlots?: InterviewSlotUncheckedUpdateManyWithoutJobNestedInput
     applications?: JobApplicationUncheckedUpdateManyWithoutJobNestedInput
+    translations?: JobTranslationUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobPostingCreateManyInput = {
@@ -9609,6 +11065,12 @@ export namespace Prisma {
     selectedSlotId?: bigint | number | null
     proposedBy?: $Enums.ActorType | null
     proposedTime?: Date | string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
     rejectionReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9623,6 +11085,12 @@ export namespace Prisma {
     selectedSlotId?: bigint | number | null
     proposedBy?: $Enums.ActorType | null
     proposedTime?: Date | string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
     rejectionReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9635,6 +11103,12 @@ export namespace Prisma {
     selectedSlotId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
     proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9649,6 +11123,12 @@ export namespace Prisma {
     selectedSlotId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
     proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9662,6 +11142,12 @@ export namespace Prisma {
     selectedSlotId?: bigint | number | null
     proposedBy?: $Enums.ActorType | null
     proposedTime?: Date | string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
     rejectionReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9674,6 +11160,12 @@ export namespace Prisma {
     selectedSlotId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
     proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9687,7 +11179,82 @@ export namespace Prisma {
     selectedSlotId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
     proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTranslationCreateInput = {
+    id?: bigint | number
+    languageCode: string
+    translatedTitle: string
+    translatedDesc: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobPostingCreateNestedOneWithoutTranslationsInput
+  }
+
+  export type JobTranslationUncheckedCreateInput = {
+    id?: bigint | number
+    jobId: bigint | number
+    languageCode: string
+    translatedTitle: string
+    translatedDesc: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobTranslationUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    languageCode?: StringFieldUpdateOperationsInput | string
+    translatedTitle?: StringFieldUpdateOperationsInput | string
+    translatedDesc?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobPostingUpdateOneRequiredWithoutTranslationsNestedInput
+  }
+
+  export type JobTranslationUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    jobId?: BigIntFieldUpdateOperationsInput | bigint | number
+    languageCode?: StringFieldUpdateOperationsInput | string
+    translatedTitle?: StringFieldUpdateOperationsInput | string
+    translatedDesc?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTranslationCreateManyInput = {
+    id?: bigint | number
+    jobId: bigint | number
+    languageCode: string
+    translatedTitle: string
+    translatedDesc: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobTranslationUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    languageCode?: StringFieldUpdateOperationsInput | string
+    translatedTitle?: StringFieldUpdateOperationsInput | string
+    translatedDesc?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTranslationUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    jobId?: BigIntFieldUpdateOperationsInput | bigint | number
+    languageCode?: StringFieldUpdateOperationsInput | string
+    translatedTitle?: StringFieldUpdateOperationsInput | string
+    translatedDesc?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -9898,6 +11465,12 @@ export namespace Prisma {
     none?: JobApplicationWhereInput
   }
 
+  export type JobTranslationListRelationFilter = {
+    every?: JobTranslationWhereInput
+    some?: JobTranslationWhereInput
+    none?: JobTranslationWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -9908,6 +11481,10 @@ export namespace Prisma {
   }
 
   export type JobApplicationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type JobTranslationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -10315,6 +11892,13 @@ export namespace Prisma {
     not?: NestedEnumActorTypeNullableFilter<$PrismaModel> | $Enums.ActorType | null
   }
 
+  export type EnumInterviewTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.InterviewType | EnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumInterviewTypeNullableFilter<$PrismaModel> | $Enums.InterviewType | null
+  }
+
   export type JobApplicationCountOrderByAggregateInput = {
     appId?: SortOrder
     jobId?: SortOrder
@@ -10323,6 +11907,12 @@ export namespace Prisma {
     selectedSlotId?: SortOrder
     proposedBy?: SortOrder
     proposedTime?: SortOrder
+    interviewMethod?: SortOrder
+    interviewFirstChoice?: SortOrder
+    interviewSecondChoice?: SortOrder
+    interviewLocation?: SortOrder
+    interviewLink?: SortOrder
+    interviewRoundTrips?: SortOrder
     rejectionReason?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -10333,6 +11923,7 @@ export namespace Prisma {
     jobId?: SortOrder
     applicantId?: SortOrder
     selectedSlotId?: SortOrder
+    interviewRoundTrips?: SortOrder
   }
 
   export type JobApplicationMaxOrderByAggregateInput = {
@@ -10343,6 +11934,12 @@ export namespace Prisma {
     selectedSlotId?: SortOrder
     proposedBy?: SortOrder
     proposedTime?: SortOrder
+    interviewMethod?: SortOrder
+    interviewFirstChoice?: SortOrder
+    interviewSecondChoice?: SortOrder
+    interviewLocation?: SortOrder
+    interviewLink?: SortOrder
+    interviewRoundTrips?: SortOrder
     rejectionReason?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -10356,6 +11953,12 @@ export namespace Prisma {
     selectedSlotId?: SortOrder
     proposedBy?: SortOrder
     proposedTime?: SortOrder
+    interviewMethod?: SortOrder
+    interviewFirstChoice?: SortOrder
+    interviewSecondChoice?: SortOrder
+    interviewLocation?: SortOrder
+    interviewLink?: SortOrder
+    interviewRoundTrips?: SortOrder
     rejectionReason?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -10366,6 +11969,7 @@ export namespace Prisma {
     jobId?: SortOrder
     applicantId?: SortOrder
     selectedSlotId?: SortOrder
+    interviewRoundTrips?: SortOrder
   }
 
   export type EnumApplicationStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -10402,6 +12006,61 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumActorTypeNullableFilter<$PrismaModel>
     _max?: NestedEnumActorTypeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumInterviewTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InterviewType | EnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumInterviewTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.InterviewType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumInterviewTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumInterviewTypeNullableFilter<$PrismaModel>
+  }
+
+  export type JobTranslationJobIdLanguageCodeCompoundUniqueInput = {
+    jobId: bigint | number
+    languageCode: string
+  }
+
+  export type JobTranslationCountOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    languageCode?: SortOrder
+    translatedTitle?: SortOrder
+    translatedDesc?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type JobTranslationAvgOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+  }
+
+  export type JobTranslationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    languageCode?: SortOrder
+    translatedTitle?: SortOrder
+    translatedDesc?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type JobTranslationMinOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
+    languageCode?: SortOrder
+    translatedTitle?: SortOrder
+    translatedDesc?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type JobTranslationSumOrderByAggregateInput = {
+    id?: SortOrder
+    jobId?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -10442,6 +12101,13 @@ export namespace Prisma {
     connect?: JobApplicationWhereUniqueInput | JobApplicationWhereUniqueInput[]
   }
 
+  export type JobTranslationCreateNestedManyWithoutJobInput = {
+    create?: XOR<JobTranslationCreateWithoutJobInput, JobTranslationUncheckedCreateWithoutJobInput> | JobTranslationCreateWithoutJobInput[] | JobTranslationUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: JobTranslationCreateOrConnectWithoutJobInput | JobTranslationCreateOrConnectWithoutJobInput[]
+    createMany?: JobTranslationCreateManyJobInputEnvelope
+    connect?: JobTranslationWhereUniqueInput | JobTranslationWhereUniqueInput[]
+  }
+
   export type JobAttributesAlbaUncheckedCreateNestedOneWithoutJobInput = {
     create?: XOR<JobAttributesAlbaCreateWithoutJobInput, JobAttributesAlbaUncheckedCreateWithoutJobInput>
     connectOrCreate?: JobAttributesAlbaCreateOrConnectWithoutJobInput
@@ -10466,6 +12132,13 @@ export namespace Prisma {
     connectOrCreate?: JobApplicationCreateOrConnectWithoutJobInput | JobApplicationCreateOrConnectWithoutJobInput[]
     createMany?: JobApplicationCreateManyJobInputEnvelope
     connect?: JobApplicationWhereUniqueInput | JobApplicationWhereUniqueInput[]
+  }
+
+  export type JobTranslationUncheckedCreateNestedManyWithoutJobInput = {
+    create?: XOR<JobTranslationCreateWithoutJobInput, JobTranslationUncheckedCreateWithoutJobInput> | JobTranslationCreateWithoutJobInput[] | JobTranslationUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: JobTranslationCreateOrConnectWithoutJobInput | JobTranslationCreateOrConnectWithoutJobInput[]
+    createMany?: JobTranslationCreateManyJobInputEnvelope
+    connect?: JobTranslationWhereUniqueInput | JobTranslationWhereUniqueInput[]
   }
 
   export type BigIntFieldUpdateOperationsInput = {
@@ -10552,6 +12225,20 @@ export namespace Prisma {
     deleteMany?: JobApplicationScalarWhereInput | JobApplicationScalarWhereInput[]
   }
 
+  export type JobTranslationUpdateManyWithoutJobNestedInput = {
+    create?: XOR<JobTranslationCreateWithoutJobInput, JobTranslationUncheckedCreateWithoutJobInput> | JobTranslationCreateWithoutJobInput[] | JobTranslationUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: JobTranslationCreateOrConnectWithoutJobInput | JobTranslationCreateOrConnectWithoutJobInput[]
+    upsert?: JobTranslationUpsertWithWhereUniqueWithoutJobInput | JobTranslationUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: JobTranslationCreateManyJobInputEnvelope
+    set?: JobTranslationWhereUniqueInput | JobTranslationWhereUniqueInput[]
+    disconnect?: JobTranslationWhereUniqueInput | JobTranslationWhereUniqueInput[]
+    delete?: JobTranslationWhereUniqueInput | JobTranslationWhereUniqueInput[]
+    connect?: JobTranslationWhereUniqueInput | JobTranslationWhereUniqueInput[]
+    update?: JobTranslationUpdateWithWhereUniqueWithoutJobInput | JobTranslationUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: JobTranslationUpdateManyWithWhereWithoutJobInput | JobTranslationUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: JobTranslationScalarWhereInput | JobTranslationScalarWhereInput[]
+  }
+
   export type JobAttributesAlbaUncheckedUpdateOneWithoutJobNestedInput = {
     create?: XOR<JobAttributesAlbaCreateWithoutJobInput, JobAttributesAlbaUncheckedCreateWithoutJobInput>
     connectOrCreate?: JobAttributesAlbaCreateOrConnectWithoutJobInput
@@ -10598,6 +12285,20 @@ export namespace Prisma {
     update?: JobApplicationUpdateWithWhereUniqueWithoutJobInput | JobApplicationUpdateWithWhereUniqueWithoutJobInput[]
     updateMany?: JobApplicationUpdateManyWithWhereWithoutJobInput | JobApplicationUpdateManyWithWhereWithoutJobInput[]
     deleteMany?: JobApplicationScalarWhereInput | JobApplicationScalarWhereInput[]
+  }
+
+  export type JobTranslationUncheckedUpdateManyWithoutJobNestedInput = {
+    create?: XOR<JobTranslationCreateWithoutJobInput, JobTranslationUncheckedCreateWithoutJobInput> | JobTranslationCreateWithoutJobInput[] | JobTranslationUncheckedCreateWithoutJobInput[]
+    connectOrCreate?: JobTranslationCreateOrConnectWithoutJobInput | JobTranslationCreateOrConnectWithoutJobInput[]
+    upsert?: JobTranslationUpsertWithWhereUniqueWithoutJobInput | JobTranslationUpsertWithWhereUniqueWithoutJobInput[]
+    createMany?: JobTranslationCreateManyJobInputEnvelope
+    set?: JobTranslationWhereUniqueInput | JobTranslationWhereUniqueInput[]
+    disconnect?: JobTranslationWhereUniqueInput | JobTranslationWhereUniqueInput[]
+    delete?: JobTranslationWhereUniqueInput | JobTranslationWhereUniqueInput[]
+    connect?: JobTranslationWhereUniqueInput | JobTranslationWhereUniqueInput[]
+    update?: JobTranslationUpdateWithWhereUniqueWithoutJobInput | JobTranslationUpdateWithWhereUniqueWithoutJobInput[]
+    updateMany?: JobTranslationUpdateManyWithWhereWithoutJobInput | JobTranslationUpdateManyWithWhereWithoutJobInput[]
+    deleteMany?: JobTranslationScalarWhereInput | JobTranslationScalarWhereInput[]
   }
 
   export type JobPostingCreateNestedOneWithoutAlbaAttributesInput = {
@@ -10676,12 +12377,30 @@ export namespace Prisma {
     set?: $Enums.ActorType | null
   }
 
+  export type NullableEnumInterviewTypeFieldUpdateOperationsInput = {
+    set?: $Enums.InterviewType | null
+  }
+
   export type JobPostingUpdateOneRequiredWithoutApplicationsNestedInput = {
     create?: XOR<JobPostingCreateWithoutApplicationsInput, JobPostingUncheckedCreateWithoutApplicationsInput>
     connectOrCreate?: JobPostingCreateOrConnectWithoutApplicationsInput
     upsert?: JobPostingUpsertWithoutApplicationsInput
     connect?: JobPostingWhereUniqueInput
     update?: XOR<XOR<JobPostingUpdateToOneWithWhereWithoutApplicationsInput, JobPostingUpdateWithoutApplicationsInput>, JobPostingUncheckedUpdateWithoutApplicationsInput>
+  }
+
+  export type JobPostingCreateNestedOneWithoutTranslationsInput = {
+    create?: XOR<JobPostingCreateWithoutTranslationsInput, JobPostingUncheckedCreateWithoutTranslationsInput>
+    connectOrCreate?: JobPostingCreateOrConnectWithoutTranslationsInput
+    connect?: JobPostingWhereUniqueInput
+  }
+
+  export type JobPostingUpdateOneRequiredWithoutTranslationsNestedInput = {
+    create?: XOR<JobPostingCreateWithoutTranslationsInput, JobPostingUncheckedCreateWithoutTranslationsInput>
+    connectOrCreate?: JobPostingCreateOrConnectWithoutTranslationsInput
+    upsert?: JobPostingUpsertWithoutTranslationsInput
+    connect?: JobPostingWhereUniqueInput
+    update?: XOR<XOR<JobPostingUpdateToOneWithWhereWithoutTranslationsInput, JobPostingUpdateWithoutTranslationsInput>, JobPostingUncheckedUpdateWithoutTranslationsInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -11028,6 +12747,13 @@ export namespace Prisma {
     not?: NestedEnumActorTypeNullableFilter<$PrismaModel> | $Enums.ActorType | null
   }
 
+  export type NestedEnumInterviewTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.InterviewType | EnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumInterviewTypeNullableFilter<$PrismaModel> | $Enums.InterviewType | null
+  }
+
   export type NestedEnumApplicationStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ApplicationStatus | EnumApplicationStatusFieldRefInput<$PrismaModel>
     in?: $Enums.ApplicationStatus[] | ListEnumApplicationStatusFieldRefInput<$PrismaModel>
@@ -11062,6 +12788,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumActorTypeNullableFilter<$PrismaModel>
     _max?: NestedEnumActorTypeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumInterviewTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InterviewType | EnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.InterviewType[] | ListEnumInterviewTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumInterviewTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.InterviewType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumInterviewTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumInterviewTypeNullableFilter<$PrismaModel>
   }
 
   export type JobAttributesAlbaCreateWithoutJobInput = {
@@ -11141,6 +12877,12 @@ export namespace Prisma {
     selectedSlotId?: bigint | number | null
     proposedBy?: $Enums.ActorType | null
     proposedTime?: Date | string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
     rejectionReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11153,6 +12895,12 @@ export namespace Prisma {
     selectedSlotId?: bigint | number | null
     proposedBy?: $Enums.ActorType | null
     proposedTime?: Date | string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
     rejectionReason?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11165,6 +12913,34 @@ export namespace Prisma {
 
   export type JobApplicationCreateManyJobInputEnvelope = {
     data: JobApplicationCreateManyJobInput | JobApplicationCreateManyJobInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type JobTranslationCreateWithoutJobInput = {
+    id?: bigint | number
+    languageCode: string
+    translatedTitle: string
+    translatedDesc: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobTranslationUncheckedCreateWithoutJobInput = {
+    id?: bigint | number
+    languageCode: string
+    translatedTitle: string
+    translatedDesc: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobTranslationCreateOrConnectWithoutJobInput = {
+    where: JobTranslationWhereUniqueInput
+    create: XOR<JobTranslationCreateWithoutJobInput, JobTranslationUncheckedCreateWithoutJobInput>
+  }
+
+  export type JobTranslationCreateManyJobInputEnvelope = {
+    data: JobTranslationCreateManyJobInput | JobTranslationCreateManyJobInput[]
     skipDuplicates?: boolean
   }
 
@@ -11280,9 +13056,44 @@ export namespace Prisma {
     selectedSlotId?: BigIntNullableFilter<"JobApplication"> | bigint | number | null
     proposedBy?: EnumActorTypeNullableFilter<"JobApplication"> | $Enums.ActorType | null
     proposedTime?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewMethod?: EnumInterviewTypeNullableFilter<"JobApplication"> | $Enums.InterviewType | null
+    interviewFirstChoice?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewSecondChoice?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewLocation?: StringNullableFilter<"JobApplication"> | string | null
+    interviewLink?: StringNullableFilter<"JobApplication"> | string | null
+    interviewRoundTrips?: IntFilter<"JobApplication"> | number
     rejectionReason?: StringNullableFilter<"JobApplication"> | string | null
     createdAt?: DateTimeFilter<"JobApplication"> | Date | string
     updatedAt?: DateTimeFilter<"JobApplication"> | Date | string
+  }
+
+  export type JobTranslationUpsertWithWhereUniqueWithoutJobInput = {
+    where: JobTranslationWhereUniqueInput
+    update: XOR<JobTranslationUpdateWithoutJobInput, JobTranslationUncheckedUpdateWithoutJobInput>
+    create: XOR<JobTranslationCreateWithoutJobInput, JobTranslationUncheckedCreateWithoutJobInput>
+  }
+
+  export type JobTranslationUpdateWithWhereUniqueWithoutJobInput = {
+    where: JobTranslationWhereUniqueInput
+    data: XOR<JobTranslationUpdateWithoutJobInput, JobTranslationUncheckedUpdateWithoutJobInput>
+  }
+
+  export type JobTranslationUpdateManyWithWhereWithoutJobInput = {
+    where: JobTranslationScalarWhereInput
+    data: XOR<JobTranslationUpdateManyMutationInput, JobTranslationUncheckedUpdateManyWithoutJobInput>
+  }
+
+  export type JobTranslationScalarWhereInput = {
+    AND?: JobTranslationScalarWhereInput | JobTranslationScalarWhereInput[]
+    OR?: JobTranslationScalarWhereInput[]
+    NOT?: JobTranslationScalarWhereInput | JobTranslationScalarWhereInput[]
+    id?: BigIntFilter<"JobTranslation"> | bigint | number
+    jobId?: BigIntFilter<"JobTranslation"> | bigint | number
+    languageCode?: StringFilter<"JobTranslation"> | string
+    translatedTitle?: StringFilter<"JobTranslation"> | string
+    translatedDesc?: StringFilter<"JobTranslation"> | string
+    createdAt?: DateTimeFilter<"JobTranslation"> | Date | string
+    updatedAt?: DateTimeFilter<"JobTranslation"> | Date | string
   }
 
   export type JobPostingCreateWithoutAlbaAttributesInput = {
@@ -11312,6 +13123,7 @@ export namespace Prisma {
     fulltimeAttributes?: JobAttributesFulltimeCreateNestedOneWithoutJobInput
     interviewSlots?: InterviewSlotCreateNestedManyWithoutJobInput
     applications?: JobApplicationCreateNestedManyWithoutJobInput
+    translations?: JobTranslationCreateNestedManyWithoutJobInput
   }
 
   export type JobPostingUncheckedCreateWithoutAlbaAttributesInput = {
@@ -11341,6 +13153,7 @@ export namespace Prisma {
     fulltimeAttributes?: JobAttributesFulltimeUncheckedCreateNestedOneWithoutJobInput
     interviewSlots?: InterviewSlotUncheckedCreateNestedManyWithoutJobInput
     applications?: JobApplicationUncheckedCreateNestedManyWithoutJobInput
+    translations?: JobTranslationUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobPostingCreateOrConnectWithoutAlbaAttributesInput = {
@@ -11386,6 +13199,7 @@ export namespace Prisma {
     fulltimeAttributes?: JobAttributesFulltimeUpdateOneWithoutJobNestedInput
     interviewSlots?: InterviewSlotUpdateManyWithoutJobNestedInput
     applications?: JobApplicationUpdateManyWithoutJobNestedInput
+    translations?: JobTranslationUpdateManyWithoutJobNestedInput
   }
 
   export type JobPostingUncheckedUpdateWithoutAlbaAttributesInput = {
@@ -11415,6 +13229,7 @@ export namespace Prisma {
     fulltimeAttributes?: JobAttributesFulltimeUncheckedUpdateOneWithoutJobNestedInput
     interviewSlots?: InterviewSlotUncheckedUpdateManyWithoutJobNestedInput
     applications?: JobApplicationUncheckedUpdateManyWithoutJobNestedInput
+    translations?: JobTranslationUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobPostingCreateWithoutFulltimeAttributesInput = {
@@ -11444,6 +13259,7 @@ export namespace Prisma {
     albaAttributes?: JobAttributesAlbaCreateNestedOneWithoutJobInput
     interviewSlots?: InterviewSlotCreateNestedManyWithoutJobInput
     applications?: JobApplicationCreateNestedManyWithoutJobInput
+    translations?: JobTranslationCreateNestedManyWithoutJobInput
   }
 
   export type JobPostingUncheckedCreateWithoutFulltimeAttributesInput = {
@@ -11473,6 +13289,7 @@ export namespace Prisma {
     albaAttributes?: JobAttributesAlbaUncheckedCreateNestedOneWithoutJobInput
     interviewSlots?: InterviewSlotUncheckedCreateNestedManyWithoutJobInput
     applications?: JobApplicationUncheckedCreateNestedManyWithoutJobInput
+    translations?: JobTranslationUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobPostingCreateOrConnectWithoutFulltimeAttributesInput = {
@@ -11518,6 +13335,7 @@ export namespace Prisma {
     albaAttributes?: JobAttributesAlbaUpdateOneWithoutJobNestedInput
     interviewSlots?: InterviewSlotUpdateManyWithoutJobNestedInput
     applications?: JobApplicationUpdateManyWithoutJobNestedInput
+    translations?: JobTranslationUpdateManyWithoutJobNestedInput
   }
 
   export type JobPostingUncheckedUpdateWithoutFulltimeAttributesInput = {
@@ -11547,6 +13365,7 @@ export namespace Prisma {
     albaAttributes?: JobAttributesAlbaUncheckedUpdateOneWithoutJobNestedInput
     interviewSlots?: InterviewSlotUncheckedUpdateManyWithoutJobNestedInput
     applications?: JobApplicationUncheckedUpdateManyWithoutJobNestedInput
+    translations?: JobTranslationUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobPostingCreateWithoutInterviewSlotsInput = {
@@ -11576,6 +13395,7 @@ export namespace Prisma {
     albaAttributes?: JobAttributesAlbaCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeCreateNestedOneWithoutJobInput
     applications?: JobApplicationCreateNestedManyWithoutJobInput
+    translations?: JobTranslationCreateNestedManyWithoutJobInput
   }
 
   export type JobPostingUncheckedCreateWithoutInterviewSlotsInput = {
@@ -11605,6 +13425,7 @@ export namespace Prisma {
     albaAttributes?: JobAttributesAlbaUncheckedCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedCreateNestedOneWithoutJobInput
     applications?: JobApplicationUncheckedCreateNestedManyWithoutJobInput
+    translations?: JobTranslationUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobPostingCreateOrConnectWithoutInterviewSlotsInput = {
@@ -11650,6 +13471,7 @@ export namespace Prisma {
     albaAttributes?: JobAttributesAlbaUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUpdateOneWithoutJobNestedInput
     applications?: JobApplicationUpdateManyWithoutJobNestedInput
+    translations?: JobTranslationUpdateManyWithoutJobNestedInput
   }
 
   export type JobPostingUncheckedUpdateWithoutInterviewSlotsInput = {
@@ -11679,6 +13501,7 @@ export namespace Prisma {
     albaAttributes?: JobAttributesAlbaUncheckedUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedUpdateOneWithoutJobNestedInput
     applications?: JobApplicationUncheckedUpdateManyWithoutJobNestedInput
+    translations?: JobTranslationUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobPostingCreateWithoutApplicationsInput = {
@@ -11708,6 +13531,7 @@ export namespace Prisma {
     albaAttributes?: JobAttributesAlbaCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeCreateNestedOneWithoutJobInput
     interviewSlots?: InterviewSlotCreateNestedManyWithoutJobInput
+    translations?: JobTranslationCreateNestedManyWithoutJobInput
   }
 
   export type JobPostingUncheckedCreateWithoutApplicationsInput = {
@@ -11737,6 +13561,7 @@ export namespace Prisma {
     albaAttributes?: JobAttributesAlbaUncheckedCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedCreateNestedOneWithoutJobInput
     interviewSlots?: InterviewSlotUncheckedCreateNestedManyWithoutJobInput
+    translations?: JobTranslationUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobPostingCreateOrConnectWithoutApplicationsInput = {
@@ -11782,6 +13607,7 @@ export namespace Prisma {
     albaAttributes?: JobAttributesAlbaUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUpdateOneWithoutJobNestedInput
     interviewSlots?: InterviewSlotUpdateManyWithoutJobNestedInput
+    translations?: JobTranslationUpdateManyWithoutJobNestedInput
   }
 
   export type JobPostingUncheckedUpdateWithoutApplicationsInput = {
@@ -11811,6 +13637,143 @@ export namespace Prisma {
     albaAttributes?: JobAttributesAlbaUncheckedUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedUpdateOneWithoutJobNestedInput
     interviewSlots?: InterviewSlotUncheckedUpdateManyWithoutJobNestedInput
+    translations?: JobTranslationUncheckedUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobPostingCreateWithoutTranslationsInput = {
+    jobId?: bigint | number
+    corporateId: bigint | number
+    boardType: $Enums.BoardType
+    title: string
+    description: string
+    workContentImg?: string | null
+    status?: $Enums.PostStatus
+    isPremium?: boolean
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
+    closingDate?: Date | string | null
+    isRecruitmentEnd?: boolean
+    displayAddress: string
+    actualAddress: string
+    workIntensity?: $Enums.Intensity
+    benefits?: NullableJsonNullValueInput | InputJsonValue
+    allowedVisas: string
+    minKoreanLevel?: number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
+    contactName: string
+    contactPhone: string
+    interviewMethod?: $Enums.InterviewType
+    interviewPlace?: string | null
+    albaAttributes?: JobAttributesAlbaCreateNestedOneWithoutJobInput
+    fulltimeAttributes?: JobAttributesFulltimeCreateNestedOneWithoutJobInput
+    interviewSlots?: InterviewSlotCreateNestedManyWithoutJobInput
+    applications?: JobApplicationCreateNestedManyWithoutJobInput
+  }
+
+  export type JobPostingUncheckedCreateWithoutTranslationsInput = {
+    jobId?: bigint | number
+    corporateId: bigint | number
+    boardType: $Enums.BoardType
+    title: string
+    description: string
+    workContentImg?: string | null
+    status?: $Enums.PostStatus
+    isPremium?: boolean
+    premiumStartAt?: Date | string | null
+    premiumEndAt?: Date | string | null
+    closingDate?: Date | string | null
+    isRecruitmentEnd?: boolean
+    displayAddress: string
+    actualAddress: string
+    workIntensity?: $Enums.Intensity
+    benefits?: NullableJsonNullValueInput | InputJsonValue
+    allowedVisas: string
+    minKoreanLevel?: number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
+    contactName: string
+    contactPhone: string
+    interviewMethod?: $Enums.InterviewType
+    interviewPlace?: string | null
+    albaAttributes?: JobAttributesAlbaUncheckedCreateNestedOneWithoutJobInput
+    fulltimeAttributes?: JobAttributesFulltimeUncheckedCreateNestedOneWithoutJobInput
+    interviewSlots?: InterviewSlotUncheckedCreateNestedManyWithoutJobInput
+    applications?: JobApplicationUncheckedCreateNestedManyWithoutJobInput
+  }
+
+  export type JobPostingCreateOrConnectWithoutTranslationsInput = {
+    where: JobPostingWhereUniqueInput
+    create: XOR<JobPostingCreateWithoutTranslationsInput, JobPostingUncheckedCreateWithoutTranslationsInput>
+  }
+
+  export type JobPostingUpsertWithoutTranslationsInput = {
+    update: XOR<JobPostingUpdateWithoutTranslationsInput, JobPostingUncheckedUpdateWithoutTranslationsInput>
+    create: XOR<JobPostingCreateWithoutTranslationsInput, JobPostingUncheckedCreateWithoutTranslationsInput>
+    where?: JobPostingWhereInput
+  }
+
+  export type JobPostingUpdateToOneWithWhereWithoutTranslationsInput = {
+    where?: JobPostingWhereInput
+    data: XOR<JobPostingUpdateWithoutTranslationsInput, JobPostingUncheckedUpdateWithoutTranslationsInput>
+  }
+
+  export type JobPostingUpdateWithoutTranslationsInput = {
+    jobId?: BigIntFieldUpdateOperationsInput | bigint | number
+    corporateId?: BigIntFieldUpdateOperationsInput | bigint | number
+    boardType?: EnumBoardTypeFieldUpdateOperationsInput | $Enums.BoardType
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    workContentImg?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closingDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isRecruitmentEnd?: BoolFieldUpdateOperationsInput | boolean
+    displayAddress?: StringFieldUpdateOperationsInput | string
+    actualAddress?: StringFieldUpdateOperationsInput | string
+    workIntensity?: EnumIntensityFieldUpdateOperationsInput | $Enums.Intensity
+    benefits?: NullableJsonNullValueInput | InputJsonValue
+    allowedVisas?: StringFieldUpdateOperationsInput | string
+    minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
+    contactName?: StringFieldUpdateOperationsInput | string
+    contactPhone?: StringFieldUpdateOperationsInput | string
+    interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
+    interviewPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    albaAttributes?: JobAttributesAlbaUpdateOneWithoutJobNestedInput
+    fulltimeAttributes?: JobAttributesFulltimeUpdateOneWithoutJobNestedInput
+    interviewSlots?: InterviewSlotUpdateManyWithoutJobNestedInput
+    applications?: JobApplicationUpdateManyWithoutJobNestedInput
+  }
+
+  export type JobPostingUncheckedUpdateWithoutTranslationsInput = {
+    jobId?: BigIntFieldUpdateOperationsInput | bigint | number
+    corporateId?: BigIntFieldUpdateOperationsInput | bigint | number
+    boardType?: EnumBoardTypeFieldUpdateOperationsInput | $Enums.BoardType
+    title?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    workContentImg?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumPostStatusFieldUpdateOperationsInput | $Enums.PostStatus
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    closingDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isRecruitmentEnd?: BoolFieldUpdateOperationsInput | boolean
+    displayAddress?: StringFieldUpdateOperationsInput | string
+    actualAddress?: StringFieldUpdateOperationsInput | string
+    workIntensity?: EnumIntensityFieldUpdateOperationsInput | $Enums.Intensity
+    benefits?: NullableJsonNullValueInput | InputJsonValue
+    allowedVisas?: StringFieldUpdateOperationsInput | string
+    minKoreanLevel?: IntFieldUpdateOperationsInput | number
+    fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
+    contactName?: StringFieldUpdateOperationsInput | string
+    contactPhone?: StringFieldUpdateOperationsInput | string
+    interviewMethod?: EnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType
+    interviewPlace?: NullableStringFieldUpdateOperationsInput | string | null
+    albaAttributes?: JobAttributesAlbaUncheckedUpdateOneWithoutJobNestedInput
+    fulltimeAttributes?: JobAttributesFulltimeUncheckedUpdateOneWithoutJobNestedInput
+    interviewSlots?: InterviewSlotUncheckedUpdateManyWithoutJobNestedInput
+    applications?: JobApplicationUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type InterviewSlotCreateManyJobInput = {
@@ -11827,7 +13790,22 @@ export namespace Prisma {
     selectedSlotId?: bigint | number | null
     proposedBy?: $Enums.ActorType | null
     proposedTime?: Date | string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
     rejectionReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobTranslationCreateManyJobInput = {
+    id?: bigint | number
+    languageCode: string
+    translatedTitle: string
+    translatedDesc: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -11860,6 +13838,12 @@ export namespace Prisma {
     selectedSlotId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
     proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11872,6 +13856,12 @@ export namespace Prisma {
     selectedSlotId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
     proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11884,7 +13874,40 @@ export namespace Prisma {
     selectedSlotId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
     proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTranslationUpdateWithoutJobInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    languageCode?: StringFieldUpdateOperationsInput | string
+    translatedTitle?: StringFieldUpdateOperationsInput | string
+    translatedDesc?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTranslationUncheckedUpdateWithoutJobInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    languageCode?: StringFieldUpdateOperationsInput | string
+    translatedTitle?: StringFieldUpdateOperationsInput | string
+    translatedDesc?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type JobTranslationUncheckedUpdateManyWithoutJobInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    languageCode?: StringFieldUpdateOperationsInput | string
+    translatedTitle?: StringFieldUpdateOperationsInput | string
+    translatedDesc?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

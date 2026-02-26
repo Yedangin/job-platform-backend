@@ -1,18 +1,23 @@
 import {
   Injectable,
+  Logger,
   NotFoundException,
   BadRequestException,
   ForbiddenException,
 } from '@nestjs/common';
 import { AuthPrismaService, RedisService } from 'libs/common/src';
 import { CouponService } from '../payment/coupon.service';
+import { TranslationService } from '../translation/translation.service';
 
 @Injectable()
 export class JobPostingService {
+  private readonly logger = new Logger(JobPostingService.name);
+
   constructor(
     private readonly prisma: AuthPrismaService,
     private readonly redis: RedisService,
     private readonly couponService: CouponService,
+    private readonly translationService: TranslationService,
   ) {}
 
   // ========================================
@@ -95,7 +100,7 @@ export class JobPostingService {
   // ========================================
   // 공고 상세 (공개)
   // ========================================
-  async getJobDetail(jobId: string, viewerIp?: string) {
+  async getJobDetail(jobId: string, viewerIp?: string, lang?: string) {
     const job = await this.prisma.jobPosting.findUnique({
       where: { id: BigInt(jobId) },
       include: {
@@ -125,7 +130,29 @@ export class JobPostingService {
       where: { companyId: job.corporateId },
     });
 
-    return this.formatJobPosting(job, corp);
+    const formatted = this.formatJobPosting(job, corp);
+
+    // 번역 적용 / Apply translation if language is not Korean (default)
+    if (lang && lang !== 'ko') {
+      try {
+        const translation = await this.translationService.getJobTranslation(
+          BigInt(jobId),
+          lang,
+        );
+        return {
+          ...formatted,
+          translatedTitle: translation.translatedTitle,
+          translatedDesc: translation.translatedDesc,
+        };
+      } catch (error) {
+        this.logger.warn(
+          `Translation failed for job ${jobId} lang=${lang}: ${(error as Error).message}`,
+        );
+        // 번역 실패 시 원본 반환 / On translation failure, return original
+      }
+    }
+
+    return formatted;
   }
 
   // ========================================
@@ -215,6 +242,18 @@ export class JobPostingService {
       // The just-created one is the only posting = first posting
       await this.couponService.grantFirstPostCoupons(userId, Number(job.id));
     }
+
+    // 영어 번역 자동 저장 (한국어 원문 + 영어 번역 기본 제공)
+    // Auto-save English translation (Korean original + English translation by default)
+    setImmediate(() => {
+      this.translationService
+        .getJobTranslation(job.id, 'en')
+        .catch((err) =>
+          this.logger.warn(
+            `Auto English translation failed for job ${job.id}: ${err.message}`,
+          ),
+        );
+    });
 
     return { jobId: job.id.toString(), status: 'DRAFT' };
   }

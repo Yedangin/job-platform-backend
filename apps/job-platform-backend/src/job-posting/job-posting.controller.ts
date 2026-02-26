@@ -16,6 +16,7 @@ import {
   ApiOperation,
   ApiResponse,
   ApiParam,
+  ApiQuery,
 } from '@nestjs/swagger';
 import {
   Public,
@@ -238,12 +239,27 @@ export class JobPostingController {
 
   @Public()
   @Get(':id')
-  @ApiOperation({ summary: '공고 상세 / Job detail' })
+  @ApiOperation({
+    summary: '공고 상세 (번역 지원) / Job detail with translation',
+  })
   @ApiParam({ name: 'id', description: 'Job posting ID' })
-  @ApiResponse({ status: 200, description: 'Job posting detail' })
-  async getJobDetail(@Param('id') id: string, @Req() req: any) {
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    description:
+      'Translation language code (e.g., en, vi, zh). Defaults to ko (Korean original).',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Job posting detail (with translation if lang specified)',
+  })
+  async getJobDetail(
+    @Param('id') id: string,
+    @Req() req: any,
+    @Query('lang') lang?: string,
+  ) {
     const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
-    return this.jobPostingService.getJobDetail(id, ip);
+    return this.jobPostingService.getJobDetail(id, ip, lang);
   }
 
   @Get(':id/eligibility')

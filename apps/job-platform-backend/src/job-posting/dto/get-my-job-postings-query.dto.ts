@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PostStatus } from '../enums';
 
@@ -12,13 +12,20 @@ export class GetMyJobPostingsQueryDto {
   @IsEnum(PostStatus)
   status?: PostStatus;
 
-  @ApiPropertyOptional({ default: 1 })
+  @ApiPropertyOptional({ description: '페이지 번호 / Page number', default: 1 })
   @IsOptional()
   @Type(() => Number)
+  @IsInt()
+  @Min(1)
   page?: number;
 
-  @ApiPropertyOptional({ default: 20 })
+  @ApiPropertyOptional({
+    description: '페이지 크기 / Items per page',
+    default: 20,
+  })
   @IsOptional()
   @Type(() => Number)
+  @IsInt()
+  @Min(1)
   limit?: number;
 }

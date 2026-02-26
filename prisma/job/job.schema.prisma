@@ -52,6 +52,7 @@ model JobPosting {
   fulltimeAttributes JobAttributesFulltime?
   interviewSlots     InterviewSlot[]
   applications       JobApplication[]
+  translations       JobTranslation[]
 
   @@map("job_postings")
 }
@@ -98,13 +99,20 @@ model JobApplication {
   jobId            BigInt            @map("job_id")
   job              JobPosting        @relation(fields: [jobId], references: [jobId])
   applicantId      BigInt            @map("applicant_id")
-  
+
   status           ApplicationStatus @default(PENDING)
-  
+
   selectedSlotId   BigInt?           @map("selected_slot_id")
   proposedBy       ActorType?        @map("proposed_by")
-  proposedTime     DateTime?         @map("proposed_time") 
-  
+  proposedTime     DateTime?         @map("proposed_time")
+
+  interviewMethod       InterviewType?  @map("interview_method")
+  interviewFirstChoice  DateTime?       @map("interview_first_choice")
+  interviewSecondChoice DateTime?       @map("interview_second_choice")
+  interviewLocation     String?         @map("interview_location")
+  interviewLink         String?         @map("interview_link")
+  interviewRoundTrips   Int             @default(0) @map("interview_round_trips")
+
   rejectionReason  String?           @map("rejection_reason")
   createdAt        DateTime          @default(now()) @map("created_at")
   updatedAt        DateTime          @updatedAt @map("updated_at")
@@ -145,4 +153,25 @@ enum ApplicationStatus {
 enum ActorType {
   EMPLOYER
   APPLICANT
+}
+
+// ========================================
+// [번역 캐시] 채용공고 다국어 번역
+// Job posting translation cache for i18n
+// ========================================
+model JobTranslation {
+  id              BigInt     @id @default(autoincrement()) @map("translation_id")
+  jobId           BigInt     @map("job_id")
+  job             JobPosting @relation(fields: [jobId], references: [jobId], onDelete: Cascade)
+  languageCode    String     @map("language_code") @db.VarChar(10)
+  translatedTitle String     @map("translated_title")
+  translatedDesc  String     @map("translated_desc") @db.Text
+
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+
+  @@unique([jobId, languageCode])
+  @@index([jobId])
+  @@index([languageCode])
+  @@map("job_translations")
 }

@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Logger,
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
@@ -7,6 +8,8 @@ import { AuthPrismaService } from 'libs/common/src';
 
 @Injectable()
 export class JobScrapService {
+  private readonly logger = new Logger(JobScrapService.name);
+
   constructor(private readonly prisma: AuthPrismaService) {}
 
   async scrapJob(userId: string, jobId: string) {
