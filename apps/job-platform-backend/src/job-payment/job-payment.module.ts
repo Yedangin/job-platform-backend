@@ -5,11 +5,18 @@
 import { Module } from '@nestjs/common';
 import { JobPaymentController } from './job-payment.controller';
 import { JobPaymentService } from './job-payment.service';
-import { AuthPrismaService, RedisService } from 'libs/common/src';
+import { JobPaymentCronService } from './job-payment-cron.service';
+import { AuthPrismaService, RedisService, RedisPubSubService } from 'libs/common/src';
 
 @Module({
   controllers: [JobPaymentController],
-  providers: [JobPaymentService, AuthPrismaService, RedisService],
+  providers: [
+    JobPaymentService,
+    JobPaymentCronService,
+    AuthPrismaService,
+    RedisService,
+    RedisPubSubService,
+  ],
   exports: [JobPaymentService],
 })
 export class JobPaymentModule {}

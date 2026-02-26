@@ -6,6 +6,7 @@ import {
   ForbiddenException,
   ConflictException,
 } from '@nestjs/common';
+import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import {
   AuthPrismaService,
   NotificationPrismaService,
@@ -26,12 +27,21 @@ import {
 @Injectable()
 export class JobApplicationService {
   private readonly logger = new Logger(JobApplicationService.name);
+  private readonly sesClient: SESClient;
 
   constructor(
     private readonly prisma: AuthPrismaService,
     private readonly notificationPrisma: NotificationPrismaService,
     private readonly redis: RedisService,
-  ) {}
+  ) {
+    this.sesClient = new SESClient({
+      region: process.env.AWS_REGION || 'ap-northeast-2',
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID ?? '',
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? '',
+      },
+    });
+  }
 
   // ========================================
   // 1. 지원하기 (Apply to Job)
@@ -1049,17 +1059,37 @@ export class JobApplicationService {
   }
 
   /**
-   * 이메일 발송 (로거로 대체, 추후 EmailService DI 연결)
-   * Email notification (logger placeholder, connect EmailService via DI later)
+   * AWS SES 이메일 발송 / Send email via AWS SES
    */
   private async sendEmailNotification(
     to: string,
     subject: string,
     html: string,
   ): Promise<void> {
-    // TODO: EmailService DI 주입 후 실제 발송으로 교체
-    // TODO: Replace with actual EmailService DI injection
-    this.logger.log(`[Email] Would send to: ${to}, subject: ${subject}`);
+    const command = new SendEmailCommand({
+      Source: process.env.MAIL_FROM,
+      Destination: { ToAddresses: [to] },
+      Message: {
+        Subject: {
+          Data: subject,
+          Charset: 'UTF-8',
+        },
+        Body: {
+          Html: {
+            Data: html,
+            Charset: 'UTF-8',
+          },
+        },
+      },
+    });
+
+    try {
+      await this.sesClient.send(command);
+      this.logger.log(`[AWS SES] Email sent to: ${to}, subject: ${subject}`);
+    } catch (error) {
+      this.logger.error(`[AWS SES] Failed to send email to: ${to}`, error);
+      throw error;
+    }
   }
 
   /**

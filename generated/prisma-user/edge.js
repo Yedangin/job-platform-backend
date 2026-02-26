@@ -1094,7 +1094,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\CHANHO\\Documents\\Jobchaja\\Jobchaja_local\\job-platform-backend\\generated\\prisma-user",
+      "value": "/home/mm-lead/job-platform-backend/generated/prisma-user",
       "fromEnvVar": null
     },
     "config": {
@@ -1103,7 +1103,7 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "debian-openssl-3.0.x",
         "native": true
       },
       {
@@ -1120,7 +1120,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\CHANHO\\Documents\\Jobchaja\\Jobchaja_local\\job-platform-backend\\prisma\\user\\user.schema.prisma",
+    "sourceFilePath": "/home/mm-lead/job-platform-backend/prisma/user/user.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
