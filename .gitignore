@@ -59,4 +59,4 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 *.node
 
 # Uploaded files
-/uploads
+/uploadsgenerated/prisma-user/query_engine-windows.dll.node
