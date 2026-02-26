@@ -22,6 +22,8 @@ import {
   SelectInterviewSlotDto,
   ProposeNewTimeDto,
   SendResultNotificationDto,
+  ProposeInterviewDto,
+  AcceptInterviewDto,
 } from './dto';
 
 @Injectable()
@@ -1262,6 +1264,475 @@ export class JobApplicationService {
                 면접 시간 선택하기 / Select Interview Time
               </a>
             </div>
+          </div>
+          <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #999;">
+            <p>본 메일은 발신 전용입니다.<br>&copy; 2026 JobChaja. All rights reserved.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+  }
+
+  // ========================================
+  // 12. 면접 일정 제안 (Propose Interview)
+  // ========================================
+  async proposeInterview(
+    applicationId: bigint,
+    dto: ProposeInterviewDto,
+    actorType: 'EMPLOYER' | 'APPLICANT',
+    actorId: bigint,
+  ) {
+    const app = await this.prisma.jobApplication.findUnique({
+      where: { id: applicationId },
+      include: { job: true },
+    });
+    if (!app) throw new NotFoundException('Application not found');
+
+    // 권한 확인 / Validate actor owns this application
+    if (actorType === 'EMPLOYER') {
+      const corp = await this.prisma.corporateProfile.findUnique({
+        where: { companyId: actorId },
+      });
+      if (!corp || app.job.corporateId !== corp.companyId) {
+        throw new ForbiddenException('Not the owner of this job posting');
+      }
+    } else {
+      if (app.applicantId !== actorId.toString()) {
+        throw new ForbiddenException('Not the applicant');
+      }
+    }
+
+    // 협상 횟수 제한 / Check round-trip limit (max 1)
+    if (app.interviewRoundTrips >= 1) {
+      throw new BadRequestException(
+        'Maximum negotiation round-trips reached. The interview must be accepted or rejected.',
+      );
+    }
+
+    // 상태 전이 검증 / Validate status for proposing
+    if (actorType === 'EMPLOYER') {
+      const allowedStatuses = [
+        'PENDING',
+        'INTERVIEW_REQUESTED',
+        'COORDINATION_NEEDED',
+      ];
+      if (!allowedStatuses.includes(app.status)) {
+        throw new BadRequestException(
+          `Employer cannot propose interview when status is ${app.status}`,
+        );
+      }
+    } else {
+      // 지원자는 INTERVIEW_REQUESTED 상태에서만 역제안 가능
+      // Applicant can only counter-propose when status is INTERVIEW_REQUESTED
+      if (app.status !== 'INTERVIEW_REQUESTED') {
+        throw new BadRequestException(
+          `Applicant can only counter-propose when status is INTERVIEW_REQUESTED`,
+        );
+      }
+    }
+
+    // 면접 시간 유효성 검증 / Validate proposed times are in the future
+    const firstChoice = new Date(dto.firstChoice);
+    if (firstChoice <= new Date()) {
+      throw new BadRequestException(
+        'First choice datetime must be in the future',
+      );
+    }
+    if (dto.secondChoice) {
+      const secondChoice = new Date(dto.secondChoice);
+      if (secondChoice <= new Date()) {
+        throw new BadRequestException(
+          'Second choice datetime must be in the future',
+        );
+      }
+    }
+
+    // 상태 결정 / Determine new status
+    const newStatus =
+      actorType === 'EMPLOYER' ? 'INTERVIEW_REQUESTED' : 'COORDINATION_NEEDED';
+
+    // 지원서 업데이트 / Update application with interview details
+    const updated = await this.prisma.jobApplication.update({
+      where: { id: applicationId },
+      data: {
+        interviewMethod: dto.interviewMethod as any,
+        interviewFirstChoice: firstChoice,
+        interviewSecondChoice: dto.secondChoice
+          ? new Date(dto.secondChoice)
+          : null,
+        interviewLocation: dto.location || null,
+        interviewLink: dto.link || null,
+        interviewRoundTrips: { increment: 1 },
+        proposedBy: actorType as any,
+        status: newStatus as any,
+      },
+    });
+
+    // 상대방에게 알림 / Notify the other party
+    if (actorType === 'EMPLOYER') {
+      // 지원자에게 알림 / Notify applicant
+      setImmediate(() => {
+        this.createInAppNotification(
+          app.applicantId,
+          'INTERVIEW_UPDATE',
+          `기업에서 면접 일정을 제안했습니다. 확인해주세요. / The employer has proposed an interview schedule. Please review.`,
+          {
+            applicationId: applicationId.toString(),
+            jobId: app.jobId.toString(),
+            proposedBy: actorType,
+            interviewMethod: dto.interviewMethod,
+            firstChoice: dto.firstChoice,
+            secondChoice: dto.secondChoice,
+            note: dto.note,
+          },
+        ).catch((err) =>
+          this.logger.error('Failed to create in-app notification:', err),
+        );
+      });
+    } else {
+      // 기업에게 알림 / Notify employer
+      const corp = await this.prisma.corporateProfile.findUnique({
+        where: { companyId: app.job.corporateId },
+      });
+      if (corp) {
+        setImmediate(() => {
+          this.createInAppNotification(
+            corp.authId,
+            'INTERVIEW_UPDATE',
+            `지원자가 면접 일정을 역제안했습니다. 확인해주세요. / The applicant has counter-proposed an interview schedule. Please review.`,
+            {
+              applicationId: applicationId.toString(),
+              jobId: app.jobId.toString(),
+              proposedBy: actorType,
+              interviewMethod: dto.interviewMethod,
+              firstChoice: dto.firstChoice,
+              secondChoice: dto.secondChoice,
+              note: dto.note,
+            },
+          ).catch((err) =>
+            this.logger.error('Failed to create in-app notification:', err),
+          );
+        });
+      }
+    }
+
+    return {
+      success: true,
+      status: newStatus,
+      proposedBy: actorType,
+      interviewMethod: dto.interviewMethod,
+      firstChoice: firstChoice,
+      secondChoice: dto.secondChoice ? new Date(dto.secondChoice) : null,
+      interviewRoundTrips: updated.interviewRoundTrips,
+    };
+  }
+
+  // ========================================
+  // 13. 면접 수락 (Accept Interview - Applicant)
+  // ========================================
+  async acceptInterview(
+    applicationId: bigint,
+    dto: AcceptInterviewDto,
+    applicantId: bigint,
+  ) {
+    const app = await this.prisma.jobApplication.findUnique({
+      where: { id: applicationId },
+      include: { job: true },
+    });
+    if (!app) throw new NotFoundException('Application not found');
+
+    // 지원자 확인 / Validate applicant
+    if (app.applicantId !== applicantId.toString()) {
+      throw new ForbiddenException('Not the applicant');
+    }
+
+    // 상태 확인 / Validate status
+    if (
+      app.status !== 'INTERVIEW_REQUESTED' &&
+      app.status !== 'COORDINATION_NEEDED'
+    ) {
+      throw new BadRequestException(
+        `Cannot accept interview when status is ${app.status}. Must be INTERVIEW_REQUESTED or COORDINATION_NEEDED.`,
+      );
+    }
+
+    // 선택한 시간 결정 / Determine selected datetime
+    let selectedTime: Date | null = null;
+    if (dto.selectedChoice === 'FIRST') {
+      selectedTime = app.interviewFirstChoice;
+    } else {
+      selectedTime = app.interviewSecondChoice;
+    }
+
+    if (!selectedTime) {
+      throw new BadRequestException(
+        `The ${dto.selectedChoice.toLowerCase()} choice datetime is not available`,
+      );
+    }
+
+    // 지원서 업데이트 / Update application
+    await this.prisma.jobApplication.update({
+      where: { id: applicationId },
+      data: {
+        proposedTime: selectedTime,
+        status: 'CONFIRMED',
+      },
+    });
+
+    // 면접 확정 이메일 + 인앱 알림 발송 (지원자 + 기업 모두)
+    // Send interview confirmation email + in-app notifications (both applicant & employer)
+    setImmediate(() => {
+      this.sendInterviewConfirmationEmail(applicationId).catch((err) => {
+        this.logger.error(
+          `Failed to send interview confirmation for app ${applicationId}:`,
+          err,
+        );
+      });
+    });
+
+    return {
+      success: true,
+      status: 'CONFIRMED',
+      confirmedTime: selectedTime,
+      selectedChoice: dto.selectedChoice,
+    };
+  }
+
+  // ========================================
+  // 14. 면접 확정 이메일 발송 (Interview Confirmation Email)
+  // ========================================
+  async sendInterviewConfirmationEmail(
+    applicationId: bigint,
+  ): Promise<void> {
+    // 지원서 + 공고 정보 조회 / Fetch application with job posting info
+    const app = await this.prisma.jobApplication.findUnique({
+      where: { id: applicationId },
+      include: { job: true },
+    });
+    if (!app) {
+      this.logger.error(
+        `[InterviewConfirmation] Application not found: ${applicationId}`,
+      );
+      return;
+    }
+
+    // 기업 정보 조회 / Fetch corporate profile
+    const corp = await this.prisma.corporateProfile.findUnique({
+      where: { companyId: app.job.corporateId },
+    });
+    const companyName = corp?.companyNameOfficial || 'Unknown Company';
+    const jobTitle = app.job.title;
+
+    // 확정된 면접 시간 결정 / Determine the confirmed interview time
+    const confirmedTime = app.proposedTime || app.interviewDate;
+
+    // 면접 방식 결정 / Determine interview method
+    const interviewMethod =
+      (app as any).interviewMethod || app.job.interviewMethod || 'OFFLINE';
+    const interviewLocation =
+      (app as any).interviewLocation || app.job.interviewPlace;
+    const interviewLink = (app as any).interviewLink;
+
+    // 1. 지원자에게 확정 이메일 발송 / Send confirmation email to applicant
+    const applicantEmail = await this.getApplicantEmail(app.applicantId);
+
+    if (applicantEmail) {
+      const subject = `[JobChaja] ${companyName} 면접 확정 안내 / Interview Confirmed with ${companyName}`;
+      const html = this.getInterviewConfirmationEmailTemplate({
+        companyName,
+        jobTitle,
+        confirmedTime,
+        interviewMethod,
+        interviewLocation,
+        interviewLink,
+        recipientType: 'APPLICANT',
+      });
+
+      setImmediate(() => {
+        this.sendEmailNotification(applicantEmail, subject, html).catch(
+          (err) =>
+            this.logger.error(
+              `Failed to send interview confirmation email to applicant ${applicantEmail}:`,
+              err,
+            ),
+        );
+      });
+    }
+
+    // 2. 지원자에게 인앱 알림 생성 / Create in-app notification for applicant
+    const confirmedTimeStr = confirmedTime
+      ? confirmedTime.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+      : '미정 / TBD';
+
+    setImmediate(() => {
+      this.createInAppNotification(
+        app.applicantId,
+        'INTERVIEW_UPDATE',
+        `${companyName} 면접이 확정되었습니다. (${confirmedTimeStr}) / Your interview with ${companyName} has been confirmed. (${confirmedTimeStr})`,
+        {
+          applicationId: applicationId.toString(),
+          jobId: app.jobId.toString(),
+          interviewTime: confirmedTime?.toISOString() || null,
+          interviewMethod,
+          ...(interviewMethod === 'ONLINE' && interviewLink
+            ? { meetingLink: interviewLink }
+            : {}),
+          ...(interviewMethod === 'OFFLINE' && interviewLocation
+            ? { location: interviewLocation }
+            : {}),
+        },
+      ).catch((err) =>
+        this.logger.error(
+          'Failed to create in-app notification for applicant:',
+          err,
+        ),
+      );
+    });
+
+    // 3. 기업 담당자에게 확정 알림 이메일 + 인앱 알림 / Notify employer
+    if (corp) {
+      const corpEmail = await this.getApplicantEmail(corp.authId);
+
+      if (corpEmail) {
+        const corpSubject = `[JobChaja] 면접 확정 안내 - ${jobTitle} / Interview Confirmed - ${jobTitle}`;
+        const corpHtml = this.getInterviewConfirmationEmailTemplate({
+          companyName,
+          jobTitle,
+          confirmedTime,
+          interviewMethod,
+          interviewLocation,
+          interviewLink,
+          recipientType: 'EMPLOYER',
+        });
+
+        setImmediate(() => {
+          this.sendEmailNotification(corpEmail, corpSubject, corpHtml).catch(
+            (err) =>
+              this.logger.error(
+                `Failed to send interview confirmation email to employer ${corpEmail}:`,
+                err,
+              ),
+          );
+        });
+      }
+
+      setImmediate(() => {
+        this.createInAppNotification(
+          corp.authId,
+          'INTERVIEW_UPDATE',
+          `면접이 확정되었습니다. (${confirmedTimeStr}) / Interview has been confirmed. (${confirmedTimeStr})`,
+          {
+            applicationId: applicationId.toString(),
+            jobId: app.jobId.toString(),
+            interviewTime: confirmedTime?.toISOString() || null,
+            interviewMethod,
+            ...(interviewMethod === 'ONLINE' && interviewLink
+              ? { meetingLink: interviewLink }
+              : {}),
+            ...(interviewMethod === 'OFFLINE' && interviewLocation
+              ? { location: interviewLocation }
+              : {}),
+          },
+        ).catch((err) =>
+          this.logger.error(
+            'Failed to create in-app notification for employer:',
+            err,
+          ),
+        );
+      });
+    }
+
+    this.logger.log(
+      `[InterviewConfirmation] Confirmation notifications sent for application ${applicationId}`,
+    );
+  }
+
+  /**
+   * 면접 확정 이메일 템플릿 / Interview confirmation email template
+   */
+  private getInterviewConfirmationEmailTemplate(params: {
+    companyName: string;
+    jobTitle: string;
+    confirmedTime: Date | null;
+    interviewMethod: string;
+    interviewLocation?: string | null;
+    interviewLink?: string | null;
+    recipientType: 'APPLICANT' | 'EMPLOYER';
+  }): string {
+    const {
+      companyName,
+      jobTitle,
+      confirmedTime,
+      interviewMethod,
+      interviewLocation,
+      interviewLink,
+      recipientType,
+    } = params;
+
+    const isApplicant = recipientType === 'APPLICANT';
+    const isOnline = interviewMethod === 'ONLINE';
+
+    const confirmedTimeStr = confirmedTime
+      ? confirmedTime.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })
+      : '미정 / TBD';
+
+    const methodLabel = isOnline
+      ? '온라인 면접 / Online Interview'
+      : '오프라인 면접 / Offline Interview';
+
+    const methodDetailHtml = isOnline
+      ? `<div style="margin: 15px 0; padding: 16px; background-color: #e8f5e9; border-radius: 8px; border-left: 4px solid #28a745;">
+           <p style="font-size: 14px; color: #333; margin: 0 0 8px 0; font-weight: bold;">
+             면접 방식 / Interview Method: ${methodLabel}
+           </p>
+           ${
+             interviewLink
+               ? `<p style="font-size: 14px; color: #333; margin: 0 0 8px 0;">미팅 링크 / Meeting Link:</p>
+                  <a href="${interviewLink}" style="display: inline-block; background-color: #28a745; color: #ffffff; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: bold; margin-top: 4px;">미팅 참여하기 / Join Meeting</a>
+                  <p style="font-size: 12px; color: #666; margin-top: 8px; word-break: break-all;">${interviewLink}</p>`
+               : `<p style="font-size: 13px; color: #666; margin: 0;">미팅 링크는 별도 안내드립니다. / Meeting link will be provided separately.</p>`
+           }
+         </div>`
+      : `<div style="margin: 15px 0; padding: 16px; background-color: #fff3e0; border-radius: 8px; border-left: 4px solid #ff9800;">
+           <p style="font-size: 14px; color: #333; margin: 0 0 8px 0; font-weight: bold;">
+             면접 방식 / Interview Method: ${methodLabel}
+           </p>
+           ${
+             interviewLocation
+               ? `<p style="font-size: 14px; color: #333; margin: 0;">면접 장소 / Location: <strong>${interviewLocation}</strong></p>`
+               : `<p style="font-size: 13px; color: #666; margin: 0;">면접 장소는 별도 안내드립니다. / Interview location will be provided separately.</p>`
+           }
+         </div>`;
+
+    const bodyMessage = isApplicant
+      ? `<p style="font-size: 16px; color: #28a745; font-weight: bold;">면접 일정이 확정되었습니다.<br>Your interview schedule has been confirmed.</p>
+         <p style="font-size: 14px; color: #555; margin-top: 8px;">아래 일정에 맞춰 면접에 참석해주세요.<br>Please attend the interview at the scheduled time below.</p>`
+      : `<p style="font-size: 16px; color: #28a745; font-weight: bold;">면접 일정이 확정되었습니다.<br>The interview schedule has been confirmed.</p>
+         <p style="font-size: 14px; color: #555; margin-top: 8px;">지원자가 면접 일정을 수락하였습니다.<br>The applicant has accepted the interview schedule.</p>`;
+
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head><meta charset="utf-8"><title>면접 확정 / Interview Confirmed</title></head>
+      <body style="font-family: 'Pretendard', sans-serif; background-color: #f4f5f7; margin: 0; padding: 0;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 40px; border-radius: 8px; margin-top: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #007bff; margin: 0; font-size: 28px; font-weight: 800;">JobChaja</h1>
+            <p style="color: #888; font-size: 14px; margin-top: 5px;">Global Job Platform for Foreigners</p>
+          </div>
+          <div style="border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 30px 0;">
+            <h2 style="text-align: center; color: #28a745;">면접 확정 / Interview Confirmed</h2>
+            <p style="font-size: 14px; color: #666; text-align: center;">
+              공고 / Job: <strong>${jobTitle}</strong><br>
+              기업 / Company: <strong>${companyName}</strong>
+            </p>
+            <div style="margin: 20px 0; text-align: center;">${bodyMessage}</div>
+            <div style="margin: 20px 0; padding: 16px; background-color: #f0f7ff; border-radius: 8px; text-align: center;">
+              <p style="font-size: 13px; color: #666; margin: 0 0 4px 0;">면접 일시 / Interview Date & Time</p>
+              <p style="font-size: 20px; color: #007bff; font-weight: bold; margin: 0;">${confirmedTimeStr}</p>
+            </div>
+            ${methodDetailHtml}
           </div>
           <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #999;">
             <p>본 메일은 발신 전용입니다.<br>&copy; 2026 JobChaja. All rights reserved.</p>

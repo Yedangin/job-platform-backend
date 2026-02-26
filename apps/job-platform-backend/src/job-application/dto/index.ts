@@ -6,3 +6,5 @@ export * from './create-interview-slots.dto';
 export * from './select-interview-slot.dto';
 export * from './propose-new-time.dto';
 export * from './send-result-notification.dto';
+export * from './propose-interview.dto';
+export * from './accept-interview.dto';

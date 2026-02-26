@@ -25,6 +25,9 @@ model User {
   userType          UserType        @default(INDIVIDUAL) @map("user_type")
   isActive          Boolean         @default(true) @map("is_active")
 
+  // [선호 언어 / Preferred language]
+  preferredLanguage String          @default("ko") @map("preferred_language") @db.VarChar(10)
+
   // [타임스탬프]
   joinedAt          DateTime        @default(now()) @map("joined_at")
   lastLoginAt       DateTime?       @map("last_login_at")
@@ -1261,6 +1264,14 @@ model JobApplication {
 
   interviewDate   DateTime?         @map("interview_date")
   interviewNote   String?           @map("interview_note")
+
+  // 면접 제안 필드 / Interview proposal fields
+  interviewMethod       InterviewType?  @map("interview_method")
+  interviewFirstChoice  DateTime?       @map("interview_first_choice")
+  interviewSecondChoice DateTime?       @map("interview_second_choice")
+  interviewLocation     String?         @map("interview_location")
+  interviewLink         String?         @map("interview_link")
+  interviewRoundTrips   Int             @default(0) @map("interview_round_trips")
 
   rejectionReason String?           @map("rejection_reason")
   resultNotifiedAt DateTime?        @map("result_notified_at")

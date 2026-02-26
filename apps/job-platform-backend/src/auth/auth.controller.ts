@@ -149,7 +149,7 @@ export class AuthController {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? 'strict' : 'lax',
-      maxAge: 2 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7일 / 7 days (Redis 세션 TTL과 일치 / Match Redis session TTL)
       path: '/',
     });
 
@@ -821,7 +821,7 @@ export class AuthController {
         httpOnly: true,
         secure: isProduction,
         sameSite: isProduction ? 'strict' : 'lax',
-        maxAge: 2 * 60 * 60 * 1000,
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7일 / 7 days (Redis 세션 TTL과 일치 / Match Redis session TTL)
         path: '/',
       });
 
