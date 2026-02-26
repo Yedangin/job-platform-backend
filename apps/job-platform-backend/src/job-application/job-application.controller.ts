@@ -263,7 +263,10 @@ export class JobApplicationController {
     status: 201,
     description: 'Interview proposed successfully',
   })
-  @ApiResponse({ status: 400, description: 'Invalid status or max round-trips reached' })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid status or max round-trips reached',
+  })
   @ApiResponse({ status: 404, description: 'Application not found' })
   async proposeInterview(
     @CurrentSession() session: SessionData,
@@ -289,7 +292,10 @@ export class JobApplicationController {
     status: 201,
     description: 'Interview accepted successfully',
   })
-  @ApiResponse({ status: 400, description: 'Invalid status or choice not available' })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid status or choice not available',
+  })
   @ApiResponse({ status: 404, description: 'Application not found' })
   async acceptInterview(
     @CurrentSession() session: SessionData,

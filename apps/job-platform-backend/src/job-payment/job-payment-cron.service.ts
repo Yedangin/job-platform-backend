@@ -75,9 +75,7 @@ export class JobPaymentCronService {
             })
           : [];
 
-      const orderMap = new Map(
-        orders.map((o) => [o.id.toString(), o]),
-      );
+      const orderMap = new Map(orders.map((o) => [o.id.toString(), o]));
 
       const toDowngrade: bigint[] = [];
       const corporateIds: string[] = [];
@@ -138,8 +136,7 @@ export class JobPaymentCronService {
             JSON.stringify({
               type: 'PREMIUM_EXPIRED',
               title: '프리미엄 기간 만료',
-              message:
-                '프리미엄 기간이 만료되어 일반 등급으로 변경되었습니다.',
+              message: '프리미엄 기간이 만료되어 일반 등급으로 변경되었습니다.',
               createdAt: now.toISOString(),
             }),
           );

@@ -1502,9 +1502,7 @@ export class JobApplicationService {
   // ========================================
   // 14. 면접 확정 이메일 발송 (Interview Confirmation Email)
   // ========================================
-  async sendInterviewConfirmationEmail(
-    applicationId: bigint,
-  ): Promise<void> {
+  async sendInterviewConfirmationEmail(applicationId: bigint): Promise<void> {
     // 지원서 + 공고 정보 조회 / Fetch application with job posting info
     const app = await this.prisma.jobApplication.findUnique({
       where: { id: applicationId },
@@ -1550,12 +1548,11 @@ export class JobApplicationService {
       });
 
       setImmediate(() => {
-        this.sendEmailNotification(applicantEmail, subject, html).catch(
-          (err) =>
-            this.logger.error(
-              `Failed to send interview confirmation email to applicant ${applicantEmail}:`,
-              err,
-            ),
+        this.sendEmailNotification(applicantEmail, subject, html).catch((err) =>
+          this.logger.error(
+            `Failed to send interview confirmation email to applicant ${applicantEmail}:`,
+            err,
+          ),
         );
       });
     }
