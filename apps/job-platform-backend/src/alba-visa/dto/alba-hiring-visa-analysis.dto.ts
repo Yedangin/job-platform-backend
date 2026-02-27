@@ -8,7 +8,15 @@
  * Filters eligible visas in real-time based on job type and weekly hours.
  */
 
-import { IsString, IsNumber, Min, Max, IsNotEmpty } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  Min,
+  Max,
+  IsNotEmpty,
+  IsOptional,
+  IsBoolean,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 // ─── Request DTO ───
@@ -33,6 +41,16 @@ export class AlbaHiringVisaAnalysisRequestDto {
   @Min(1)
   @Max(80)
   weeklyHours: number;
+
+  @ApiProperty({
+    description:
+      '인구감소지역 여부 (F-4 단순노무 제한 해제용) / Whether in depopulation area (lifts F-4 simple labor restriction)',
+    example: false,
+    required: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isDepopulationArea?: boolean;
 }
 
 // ─── Visa Status Item ───
@@ -117,7 +135,8 @@ export class AlbaHiringVisaAnalysisResponseDto {
     weeklyHours: number;
     isSimpleLabor: boolean;
     isEntertainment: boolean;
-    isBlockedIndustryForH2: boolean;
+    isBlockedForH2: boolean;
+    isDepopulationArea: boolean;
   };
 
   @ApiProperty({

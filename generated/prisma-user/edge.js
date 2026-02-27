@@ -1101,7 +1101,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\CHANHO\\Documents\\Jobchaja\\Jobchaja_local\\job-platform-backend\\generated\\prisma-user",
+      "value": "/Users/abed/Work/Jobchaja/job-platform-backend/generated/prisma-user",
       "fromEnvVar": null
     },
     "config": {
@@ -1110,7 +1110,7 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "darwin-arm64",
         "native": true
       },
       {
@@ -1127,7 +1127,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\CHANHO\\Documents\\Jobchaja\\Jobchaja_local\\job-platform-backend\\prisma\\user\\user.schema.prisma",
+    "sourceFilePath": "/Users/abed/Work/Jobchaja/job-platform-backend/prisma/user/user.schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -1141,7 +1141,6 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {

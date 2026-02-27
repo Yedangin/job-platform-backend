@@ -13,8 +13,8 @@ function ensureDatabaseUrl() {
   }
 }
 
-function roleForIndex(index) {
-  return index % 2 === 0 ? 'MEMBER' : 'CORPORATE';
+function userTypeForIndex(index) {
+  return index % 2 === 0 ? 'INDIVIDUAL' : 'CORPORATE';
 }
 
 async function main() {
@@ -32,11 +32,8 @@ async function main() {
     users.push({
       email: `seeduser${i}@seed.test`,
       password: hashedPassword,
-      fullName: `Seed User ${i}`,
-      role: roleForIndex(i),
-      status: 'ACTIVE',
-      isEmailedVerified: true,
-      isPhoneVerified: false,
+      userType: userTypeForIndex(i),
+      isActive: true,
     });
   }
 
