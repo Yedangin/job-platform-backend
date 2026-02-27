@@ -205,9 +205,24 @@ export class DiagnosisEngineService {
 
     // (e) DB에 진단 세션 저장 / Save diagnosis session to DB
     try {
+      // userId FK는 IndividualProfile.authId를 참조하므로,
+      // IndividualProfile이 없는 사용자(기업/관리자)는 userId를 null로 저장
+      // userId FK references IndividualProfile.authId,
+      // so save userId as null for users without IndividualProfile (corporate/admin)
+      let validUserId: string | null = null;
+      if (userId) {
+        const profile = await this.prisma.individualProfile.findUnique({
+          where: { authId: userId },
+          select: { authId: true },
+        });
+        if (profile) {
+          validUserId = userId;
+        }
+      }
+
       await this.prisma.diagnosisSession.create({
         data: {
-          userId: userId ?? null,
+          userId: validUserId,
           anonymousId: anonymousId ?? null,
           inputSnapshot: input as any,
           resultsSnapshot: result as any,

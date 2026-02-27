@@ -395,6 +395,23 @@
   },
 
   "milestones": {
+    "PW-001": [
+      {"order": 1, "monthFromStart": 0,  "type": "application",        "nameKo": "GKS 장학금 지원서 제출",             "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "고졸+GPA기준충족+추천서",    "platformAction": "info_only"},
+      {"order": 2, "monthFromStart": 6,  "type": "selection",          "nameKo": "1차 서류심사 + 2차 면접",            "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "대사관면접+건강검진",        "platformAction": "info_only"},
+      {"order": 3, "monthFromStart": 9,  "type": "entry",              "nameKo": "한국 입국, 한국어연수 시작",          "visaStatus": "D-2",   "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "장학금합격+비자발급",        "platformAction": "info_only"},
+      {"order": 4, "monthFromStart": 12, "type": "part_time_unlock",   "nameKo": "아르바이트 가능 (6개월 경과)",        "visaStatus": "D-2",   "canWorkPartTime": true,  "weeklyHours": 20, "estimatedMonthlyIncome": 80,  "requirements": "출석90%+지도교수허가",       "platformAction": "alba_matching"},
+      {"order": 5, "monthFromStart": 21, "type": "study_upgrade",      "nameKo": "학부 과정 시작",                     "visaStatus": "D-2",   "canWorkPartTime": true,  "weeklyHours": 20, "estimatedMonthlyIncome": 80,  "requirements": "한국어연수 수료+TOPIK3급",   "platformAction": "info_only"},
+      {"order": 6, "monthFromStart": 57, "type": "graduation",         "nameKo": "학부 졸업, D-10 전환",               "visaStatus": "D-10",  "canWorkPartTime": true,  "weeklyHours": 20, "estimatedMonthlyIncome": 80,  "requirements": "학위취득+TOPIK4급",          "platformAction": "job_matching"},
+      {"order": 7, "monthFromStart": 60, "type": "final_goal",         "nameKo": "E-7 정규취업",                       "visaStatus": "E-7",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 280, "requirements": "기업매칭+비자처리",           "platformAction": "visa_processing"}
+    ],
+    "PW-002": [
+      {"order": 1, "monthFromStart": 0,  "type": "application",        "nameKo": "GKS 대학원 장학금 지원",             "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "학사학위+GPA기준+추천서",    "platformAction": "info_only"},
+      {"order": 2, "monthFromStart": 6,  "type": "selection",          "nameKo": "서류심사 + 대사관 면접",             "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "대사관면접+건강검진",        "platformAction": "info_only"},
+      {"order": 3, "monthFromStart": 9,  "type": "entry",              "nameKo": "한국 입국, 한국어연수 시작",          "visaStatus": "D-2",   "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "장학금합격+비자발급",        "platformAction": "info_only"},
+      {"order": 4, "monthFromStart": 15, "type": "study_upgrade",      "nameKo": "대학원 과정 시작",                   "visaStatus": "D-2",   "canWorkPartTime": true,  "weeklyHours": 20, "estimatedMonthlyIncome": 80,  "requirements": "한국어연수 수료+TOPIK3급",   "platformAction": "alba_matching"},
+      {"order": 5, "monthFromStart": 33, "type": "graduation",         "nameKo": "석사 졸업, D-10 전환",               "visaStatus": "D-10",  "canWorkPartTime": true,  "weeklyHours": 20, "estimatedMonthlyIncome": 80,  "requirements": "학위취득",                   "platformAction": "job_matching"},
+      {"order": 6, "monthFromStart": 36, "type": "final_goal",         "nameKo": "E-7 정규취업",                       "visaStatus": "E-7",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 320, "requirements": "기업매칭+비자처리",           "platformAction": "visa_processing"}
+    ],
     "PW-003": [
       {"order": 1, "monthFromStart": 0,  "type": "entry",              "nameKo": "한국 입국, 어학당 시작",           "visaStatus": "D-4",   "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "어학당 입학허가+재정증명",   "platformAction": "language_school_connect"},
       {"order": 2, "monthFromStart": 6,  "type": "part_time_unlock",   "nameKo": "아르바이트 허가 가능",             "visaStatus": "D-4",   "canWorkPartTime": true,  "weeklyHours": 10, "estimatedMonthlyIncome": 40,  "requirements": "출석90%+TOPIK2급",         "platformAction": "alba_matching"},
@@ -410,10 +427,24 @@
       {"order": 4, "monthFromStart": 60, "type": "graduation",         "nameKo": "대학 졸업, D-10 전환",             "visaStatus": "D-10",  "canWorkPartTime": true,  "weeklyHours": 20, "estimatedMonthlyIncome": 80,  "requirements": "졸업+TOPIK4급",            "platformAction": "job_matching"},
       {"order": 5, "monthFromStart": 62, "type": "final_goal",         "nameKo": "E-7-1 전문직 취업",                "visaStatus": "E-7-1", "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 300, "requirements": "기업매칭+비자처리",         "platformAction": "visa_processing"}
     ],
+    "PW-005": [
+      {"order": 1, "monthFromStart": 0,  "type": "application",      "nameKo": "대학 입학 지원(TOPIK 3급 보유)",     "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "TOPIK3급+고졸+재정증명",    "platformAction": "university_connect"},
+      {"order": 2, "monthFromStart": 2,  "type": "entry",            "nameKo": "한국 입국, 대학 수업 시작",           "visaStatus": "D-2",   "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "대학입학허가+D-2비자발급",   "platformAction": "info_only"},
+      {"order": 3, "monthFromStart": 8,  "type": "part_time_unlock", "nameKo": "아르바이트 허가 가능(6개월 경과)",    "visaStatus": "D-2",   "canWorkPartTime": true,  "weeklyHours": 25, "estimatedMonthlyIncome": 100, "requirements": "출석90%+학교허가",           "platformAction": "alba_matching"},
+      {"order": 4, "monthFromStart": 44, "type": "graduation",       "nameKo": "대학 졸업, D-10 전환",               "visaStatus": "D-10",  "canWorkPartTime": true,  "weeklyHours": 20, "estimatedMonthlyIncome": 80,  "requirements": "학위취득+TOPIK4급",          "platformAction": "job_matching"},
+      {"order": 5, "monthFromStart": 48, "type": "final_goal",       "nameKo": "E-7 정규취업",                       "visaStatus": "E-7",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 300, "requirements": "기업매칭+비자처리",           "platformAction": "visa_processing"}
+    ],
     "PW-006": [
       {"order": 1, "monthFromStart": 0,  "type": "entry",              "nameKo": "EPS-TOPIK 응시",                   "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "EPS-TOPIK합격",            "platformAction": "info_only"},
       {"order": 2, "monthFromStart": 6,  "type": "waiting",            "nameKo": "구직자명부 등록, 대기",            "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "산업인력공단 배정대기",      "platformAction": "info_only"},
       {"order": 3, "monthFromStart": 12, "type": "final_goal",         "nameKo": "E-9 취업 시작",                    "visaStatus": "E-9",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 250, "requirements": "고용허가+입국",             "platformAction": "info_only"}
+    ],
+    "PW-007": [
+      {"order": 1, "monthFromStart": 0,  "type": "entry",            "nameKo": "E-9 비전문취업 근무 시작",            "visaStatus": "E-9",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 250, "requirements": "EPS-TOPIK합격+고용허가",     "platformAction": "info_only"},
+      {"order": 2, "monthFromStart": 34, "type": "contract_renewal", "nameKo": "근로계약 갱신(최초 3년)",             "visaStatus": "E-9",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 270, "requirements": "동일사업장근무+고용주추천",   "platformAction": "info_only"},
+      {"order": 3, "monthFromStart": 48, "type": "certification",    "nameKo": "숙련기능 자격 준비",                  "visaStatus": "E-9",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 270, "requirements": "4년근무+기능자격+TOPIK2급",  "platformAction": "info_only"},
+      {"order": 4, "monthFromStart": 54, "type": "visa_change",      "nameKo": "E-7-4 전환 신청",                    "visaStatus": "E-9",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 270, "requirements": "숙련기능점수+고용주확보",     "platformAction": "visa_processing"},
+      {"order": 5, "monthFromStart": 60, "type": "final_goal",       "nameKo": "E-7-4 숙련기능인력",                  "visaStatus": "E-7-4", "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 300, "requirements": "E-7-4비자발급",              "platformAction": "job_matching"}
     ],
     "PW-008": [
       {"order": 1, "monthFromStart": 0,  "type": "entry",              "nameKo": "한국 입국",                        "visaStatus": "H-1",   "canWorkPartTime": true,  "weeklyHours": 25, "estimatedMonthlyIncome": 100, "requirements": "협정국국적+30세이하",       "platformAction": "alba_matching"},
@@ -422,6 +453,32 @@
     "PW-009": [
       {"order": 1, "monthFromStart": 0,  "type": "application",        "nameKo": "고용주 확보, 사증발급인정서 신청", "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "학사+고용계약",             "platformAction": "visa_processing"},
       {"order": 2, "monthFromStart": 3,  "type": "final_goal",         "nameKo": "E-7 입국, 근무 시작",              "visaStatus": "E-7",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 300, "requirements": "사증발급+입국",             "platformAction": "onboarding_support"}
+    ],
+    "PW-010": [
+      {"order": 1, "monthFromStart": 0,  "type": "application",        "nameKo": "구직활동 및 고용주 매칭",            "visaStatus": "D-10",  "canWorkPartTime": true,  "weeklyHours": 20, "estimatedMonthlyIncome": 80,  "requirements": "D-10또는D-2체류중+학사학위", "platformAction": "job_matching"},
+      {"order": 2, "monthFromStart": 1,  "type": "final_goal",         "nameKo": "E-7 체류자격 변경 완료",            "visaStatus": "E-7",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 300, "requirements": "고용계약+체류자격변경신청",   "platformAction": "visa_processing"}
+    ],
+    "PW-011": [
+      {"order": 1, "monthFromStart": 0,  "type": "application",        "nameKo": "사업계획서 작성 및 법인설립",        "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "1억원투자금+사업계획서",     "platformAction": "info_only"},
+      {"order": 2, "monthFromStart": 1,  "type": "visa_change",        "nameKo": "D-8 비자 신청",                    "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "법인등기+사업자등록+투자증명","platformAction": "visa_processing"},
+      {"order": 3, "monthFromStart": 2,  "type": "final_goal",         "nameKo": "D-8 비자 발급, 사업 운영 시작",     "visaStatus": "D-8",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "D-8비자발급",                "platformAction": "info_only"}
+    ],
+    "PW-012": [
+      {"order": 1, "monthFromStart": 0,  "type": "application",        "nameKo": "점수 산정 및 서류 준비",            "visaStatus": "E-7",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 300, "requirements": "80점이상+TOPIK4급+전문학사", "platformAction": "info_only"},
+      {"order": 2, "monthFromStart": 1,  "type": "final_goal",         "nameKo": "F-2-7 거주비자 취득",              "visaStatus": "F-2-7", "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 300, "requirements": "점수제심사통과+비자발급",     "platformAction": "visa_processing"}
+    ],
+    "PW-013": [
+      {"order": 1, "monthFromStart": 0,  "type": "application",        "nameKo": "인구감소지역 고용주 매칭",          "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "인구감소지역사업장+고용계약","platformAction": "job_matching"},
+      {"order": 2, "monthFromStart": 1,  "type": "final_goal",         "nameKo": "F-2-R 지역특화비자 취득",          "visaStatus": "F-2-R", "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 250, "requirements": "F-2-R비자발급",              "platformAction": "visa_processing"}
+    ],
+    "PW-014": [
+      {"order": 1, "monthFromStart": 0,  "type": "application",        "nameKo": "H-2 방문취업 비자 신청",           "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "동포증명+여권+대사관신청",   "platformAction": "info_only"},
+      {"order": 2, "monthFromStart": 1,  "type": "entry",              "nameKo": "한국 입국, 취업교육 이수",          "visaStatus": "H-2",   "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "H-2비자발급+취업교육",       "platformAction": "info_only"},
+      {"order": 3, "monthFromStart": 2,  "type": "final_goal",         "nameKo": "취업 시작(네거티브 리스트)",         "visaStatus": "H-2",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 250, "requirements": "취업교육이수+구직",           "platformAction": "alba_matching"}
+    ],
+    "PW-015": [
+      {"order": 1, "monthFromStart": 0,  "type": "application",        "nameKo": "F-4 재외동포 비자 신청",           "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "동포증명+전문학사이상학위",   "platformAction": "visa_processing"},
+      {"order": 2, "monthFromStart": 1,  "type": "final_goal",         "nameKo": "F-4 비자 취득, 자유 취업",         "visaStatus": "F-4",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 280, "requirements": "F-4비자발급",                "platformAction": "job_matching"}
     ]
   },
 
