@@ -204,28 +204,26 @@ export class DiagnosisEngineService {
     };
 
     // (e) DB에 진단 세션 저장 / Save diagnosis session to DB
-    // DiagnosisSession.userId는 IndividualProfile.authId에 대한 FK 참조.
-    // DiagnosisSession.userId is an FK to IndividualProfile.authId.
-    // 기업(CORPORATE)/관리자(ADMIN) 유저는 IndividualProfile이 없으므로
-    // userId를 설정하면 FK 위반 크래시 발생 → userId 대신 anonymousId 사용.
-    // Corporate/admin users have no IndividualProfile, so setting userId
-    // causes FK violation crash → use anonymousId for them instead.
     try {
-      let safeUserId: string | null = null;
+      // userId FK는 IndividualProfile.authId를 참조하므로,
+      // IndividualProfile이 없는 사용자(기업/관리자)는 userId를 null로 저장
+      // userId FK references IndividualProfile.authId,
+      // so save userId as null for users without IndividualProfile (corporate/admin)
+      let validUserId: string | null = null;
       if (userId) {
         const profile = await this.prisma.individualProfile.findUnique({
           where: { authId: userId },
           select: { authId: true },
         });
-        safeUserId = profile ? userId : null;
+        if (profile) {
+          validUserId = userId;
+        }
       }
 
       await this.prisma.diagnosisSession.create({
         data: {
-          userId: safeUserId,
-          anonymousId: safeUserId
-            ? (anonymousId ?? null)
-            : (anonymousId ?? userId ?? null),
+          userId: validUserId,
+          anonymousId: anonymousId ?? null,
           inputSnapshot: input as any,
           resultsSnapshot: result as any,
           topPathwayId: topPathways[0]?.pathwayId ?? null,
