@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { CacheModule } from '@nestjs/cache-manager';
@@ -10,6 +8,7 @@ import { redisStore } from 'cache-manager-redis-yet';
 import {
   RedisModule,
   SessionAuthGuard,
+  SuccessTransformInterceptor,
   ThrottlerBehindProxyGuard,
 } from 'libs/common/src';
 import { AuthModule } from './auth/auth.module';
@@ -80,9 +79,10 @@ import { NotificationModule } from './notification/notification.module';
         },
       ],
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
-    }),
+    // ServeStaticModule 제거: 프론트엔드는 Next.js가 담당, 백엔드는 순수 API 서버
+    // ServeStaticModule removed: frontend served by Next.js, backend is pure API server
+    // 기존 설정의 경로가 Docker 빌드에서 불일치하여 ENOENT 에러 발생
+    // Previous config path mismatched in Docker build, causing ENOENT errors
     JwtModule.register({
       global: true,
       // JWT_SECRET 미설정 시 서버 시작 실패 (하드코딩 폴백 금지)
@@ -130,6 +130,10 @@ import { NotificationModule } from './notification/notification.module';
       useClass: ThrottlerBehindProxyGuard,
     },
     SessionAuthGuard,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: SuccessTransformInterceptor,
+    },
     {
       provide: APP_INTERCEPTOR,
       useClass: RequestLogInterceptor,
