@@ -349,9 +349,7 @@ export class AlbaHiringVisaAnalysisService {
     if (visa.visaCode === 'D-2' && ctx.weeklyHours > 25) {
       result.status = 'blocked';
       result.reason = `D-2 비자는 주 25시간을 초과할 수 없습니다 (현재: ${ctx.weeklyHours}시간). / D-2 visa cannot exceed 25 hours/week (current: ${ctx.weeklyHours}h).`;
-      appliedRules.push(
-        'Working Hours → D-2 차단 (>25h) / D-2 blocked (>25h)',
-      );
+      appliedRules.push('Working Hours → D-2 차단 (>25h) / D-2 blocked (>25h)');
       return result;
     }
 
@@ -359,9 +357,7 @@ export class AlbaHiringVisaAnalysisService {
     if (visa.visaCode === 'D-4' && ctx.weeklyHours > 20) {
       result.status = 'blocked';
       result.reason = `D-4 비자는 주 20시간을 초과할 수 없습니다 (현재: ${ctx.weeklyHours}시간). / D-4 visa cannot exceed 20 hours/week (current: ${ctx.weeklyHours}h).`;
-      appliedRules.push(
-        'Working Hours → D-4 차단 (>20h) / D-4 blocked (>20h)',
-      );
+      appliedRules.push('Working Hours → D-4 차단 (>20h) / D-4 blocked (>20h)');
       return result;
     }
 
@@ -369,14 +365,15 @@ export class AlbaHiringVisaAnalysisService {
     if (visa.visaCode === 'H-1' && ctx.weeklyHours > 25) {
       result.status = 'blocked';
       result.reason = `H-1 비자는 주 25시간을 초과할 수 없습니다 (현재: ${ctx.weeklyHours}시간). / H-1 visa cannot exceed 25 hours/week (current: ${ctx.weeklyHours}h).`;
-      appliedRules.push(
-        'Working Hours → H-1 차단 (>25h) / H-1 blocked (>25h)',
-      );
+      appliedRules.push('Working Hours → H-1 차단 (>25h) / H-1 blocked (>25h)');
       return result;
     }
 
     // ─── Hour-restricted but within limit → mark as restricted ───
-    if (visa.maxWeeklyHours !== null && ctx.weeklyHours <= visa.maxWeeklyHours) {
+    if (
+      visa.maxWeeklyHours !== null &&
+      ctx.weeklyHours <= visa.maxWeeklyHours
+    ) {
       result.status = 'restricted';
       result.reason = `주 ${visa.maxWeeklyHours}시간 이내 근무 가능 (허가 필요). / May work up to ${visa.maxWeeklyHours}h/week (permit required).`;
     }
