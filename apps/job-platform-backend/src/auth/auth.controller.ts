@@ -24,6 +24,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Response } from 'express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
@@ -163,6 +164,9 @@ export class AuthController {
   }
 
   // --- 5. 프로필 조회 ---
+  // rate limit 제외: F5 새로고침 시 429로 인해 로그인 상태 깜빡임 방지
+  // Skip throttle: prevents 429 causing auth state flickering on F5 refresh
+  @SkipThrottle({ short: true, medium: true })
   @Get('profile')
   @ApiOperation({ summary: 'Get current user profile' })
   @ApiResponse({
@@ -511,6 +515,9 @@ export class AuthController {
   }
 
   // --- 19. 기업 인증 상태 조회 ---
+  // rate limit 제외: F5 새로고침 시 429로 인해 로그인 상태 깜빡임 방지
+  // Skip throttle: prevents 429 causing auth state flickering on F5 refresh
+  @SkipThrottle({ short: true, medium: true })
   @Get('corporate-verify')
   @ApiOperation({ summary: 'Get corporate verification status' })
   async getCorporateVerifyStatus(@Session() sessionId: string) {
