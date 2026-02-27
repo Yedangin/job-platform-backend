@@ -63,16 +63,20 @@ import { NotificationModule } from './notification/notification.module';
     ThrottlerModule.forRoot({
       throttlers: [
         {
-          // 단기 버스트 제한 (10초 5회) / Short burst limit (5 req per 10s)
+          // 단기 버스트 제한 (10초 30회) / Short burst limit (30 req per 10s)
+          // 이전 5/10s → 페이지 로드 시 동시 API 호출(auth+jobs+etc)만으로 429 발생
+          // Previous 5/10s → concurrent API calls on page load (auth+jobs+etc) triggered 429
           name: 'short',
           ttl: 10000,
-          limit: 5,
+          limit: 30,
         },
         {
-          // 분당 제한 (60초 30회) / Per-minute limit (30 req per 60s)
+          // 분당 제한 (60초 100회) / Per-minute limit (100 req per 60s)
+          // 이전 30/60s → 페이지 이동 시 빠르게 한계 도달
+          // Previous 30/60s → limit reached quickly during navigation
           name: 'medium',
           ttl: 60000,
-          limit: 30,
+          limit: 100,
         },
       ],
     }),
