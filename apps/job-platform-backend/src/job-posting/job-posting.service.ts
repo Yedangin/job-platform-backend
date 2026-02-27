@@ -1,18 +1,27 @@
 import {
+  Inject,
   Injectable,
+  Logger,
   NotFoundException,
   BadRequestException,
   ForbiddenException,
 } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { createHash } from 'crypto';
 import { AuthPrismaService, RedisService } from 'libs/common/src';
 import { CouponService } from '../payment/coupon.service';
 
 @Injectable()
 export class JobPostingService {
+  // 로거 인스턴스 / Logger instance
+  private readonly logger = new Logger(JobPostingService.name);
+
   constructor(
     private readonly prisma: AuthPrismaService,
     private readonly redis: RedisService,
     private readonly couponService: CouponService,
+    @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
   // ========================================
@@ -27,11 +36,35 @@ export class JobPostingService {
     page?: number;
     limit?: number;
   }) {
+    // 캐시 키 생성 (쿼리 파라미터 기반 MD5 해시)
+    // Generate cache key from query params via MD5 hash
+    const cacheKey =
+      'jobs:listing:' +
+      createHash('md5').update(JSON.stringify(query)).digest('hex');
+
+    // 캐시 확인 / Check cache first
+    const cached = await this.cacheManager.get<{
+      items: ReturnType<typeof this.formatJobPosting>[];
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    }>(cacheKey);
+    if (cached) {
+      this.logger.debug(
+        `캐시 적중: ${cacheKey} / Cache HIT: ${cacheKey}`,
+      );
+      return cached;
+    }
+    this.logger.debug(
+      `캐시 미스: ${cacheKey} / Cache MISS: ${cacheKey}`,
+    );
+
     const page = query.page || 1;
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;
 
-    const where: any = {
+    const where: Record<string, unknown> = {
       status: 'ACTIVE',
     };
 
@@ -80,7 +113,7 @@ export class JobPostingService {
     });
     const corpMap = new Map(corporates.map((c) => [c.companyId.toString(), c]));
 
-    return {
+    const result = {
       items: items.map((item) => {
         const corp = corpMap.get(item.corporateId.toString());
         return this.formatJobPosting(item, corp);
@@ -90,6 +123,12 @@ export class JobPostingService {
       limit,
       totalPages: Math.ceil(total / limit),
     };
+
+    // 캐시 저장 (60초 TTL — 공고 목록은 자주 변경됨)
+    // Store in cache (60s TTL — listings change often)
+    await this.cacheManager.set(cacheKey, result, 60000);
+
+    return result;
   }
 
   // ========================================
@@ -216,6 +255,9 @@ export class JobPostingService {
       await this.couponService.grantFirstPostCoupons(userId, Number(job.id));
     }
 
+    // 공고 생성 후 목록 캐시 무효화 / Invalidate listing cache after creation
+    await this.invalidateListingCache();
+
     return { jobId: job.id.toString(), status: 'DRAFT' };
   }
 
@@ -286,6 +328,9 @@ export class JobPostingService {
         create: { jobId: BigInt(jobId), ...data.fulltimeAttributes },
       });
     }
+
+    // 공고 수정 후 목록 캐시 무효화 / Invalidate listing cache after update
+    await this.invalidateListingCache();
 
     return { success: true };
   }
@@ -571,6 +616,9 @@ export class JobPostingService {
       });
     }
 
+    // 공고 삭제 후 목록 캐시 무효화 / Invalidate listing cache after deletion
+    await this.invalidateListingCache();
+
     return { success: true };
   }
 
@@ -613,6 +661,23 @@ export class JobPostingService {
   // ========================================
   // Helpers
   // ========================================
+
+  /**
+   * 공고 목록 캐시 무효화
+   * Invalidate all listing cache entries by scanning Redis for matching keys
+   */
+  private async invalidateListingCache(): Promise<void> {
+    const keys = await this.redis.keys('jobs:listing:*');
+    for (const key of keys) {
+      await this.cacheManager.del(key);
+    }
+    if (keys.length > 0) {
+      this.logger.debug(
+        `목록 캐시 ${keys.length}건 삭제 / Invalidated ${keys.length} listing cache entries`,
+      );
+    }
+  }
+
   private async getOwnedJob(userId: string, jobId: string) {
     const corp = await this.prisma.corporateProfile.findUnique({
       where: { authId: userId },
@@ -660,6 +725,8 @@ export class JobPostingService {
       scrapCount: item.scrapCount,
       applyCount: item.applyCount,
       expiresAt: item.expiresAt,
+      premiumStartAt: item.premiumStartAt,
+      premiumEndAt: item.premiumEndAt,
       bumpedAt: item.bumpedAt,
       isUrgent: item.isUrgent || false,
       isFeatured: item.isFeatured || false,
