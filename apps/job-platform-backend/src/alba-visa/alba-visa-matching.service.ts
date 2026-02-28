@@ -105,48 +105,83 @@ export class AlbaVisaMatchingService {
     );
 
     // 그룹 매핑 정의 / Group mapping definitions
-    const GROUP_MAP: Record<string, { group: string; groupName: string; icon: string }> = {
-      'REST_SERVING': { group: 'FOOD', groupName: '음식점/카페', icon: '🍽️' },
-      'REST_KITCHEN': { group: 'FOOD', groupName: '음식점/카페', icon: '🧑‍🍳' },
-      'CAFE_BARISTA': { group: 'FOOD', groupName: '음식점/카페', icon: '☕' },
-      'FAST_FOOD': { group: 'FOOD', groupName: '음식점/카페', icon: '🍔' },
-      'HOTEL_SERVICE': { group: 'FOOD', groupName: '음식점/카페', icon: '🏨' },
-      'CONV_STORE': { group: 'RETAIL', groupName: '판매/유통', icon: '🏪' },
-      'MART_SALES': { group: 'RETAIL', groupName: '판매/유통', icon: '🛒' },
-      'CLOTHING_SALES': { group: 'RETAIL', groupName: '판매/유통', icon: '👗' },
-      'LOGISTICS_SORT': { group: 'LOGISTICS', groupName: '물류/배달', icon: '📦' },
-      'DELIVERY': { group: 'LOGISTICS', groupName: '물류/배달', icon: '🛵' },
-      'MOVING_LABOR': { group: 'LOGISTICS', groupName: '물류/배달', icon: '🚛' },
-      'NEWSPAPER_DELIVERY': { group: 'LOGISTICS', groupName: '물류/배달', icon: '📰' },
-      'CONSTRUCTION_LABOR': { group: 'CONSTRUCTION', groupName: '건설', icon: '🏗️' },
-      'CONSTRUCTION_SKILLED': { group: 'CONSTRUCTION', groupName: '건설', icon: '🔧' },
-      'FACTORY_SIMPLE': { group: 'MANUFACTURING', groupName: '제조/생산', icon: '🏭' },
-      'FACTORY_PACKING': { group: 'MANUFACTURING', groupName: '제조/생산', icon: '📋' },
-      'AGRICULTURE': { group: 'PRIMARY', groupName: '농축수산', icon: '🌾' },
-      'FISHING': { group: 'PRIMARY', groupName: '농축수산', icon: '🐟' },
-      'OFFICE_ASSIST': { group: 'OFFICE', groupName: '사무/전문직', icon: '💼' },
-      'TRANSLATION': { group: 'OFFICE', groupName: '사무/전문직', icon: '🌐' },
-      'IT_ASSIST': { group: 'IT', groupName: 'IT/개발', icon: '💻' },
-      'TUTORING': { group: 'EDUCATION', groupName: '교육', icon: '📚' },
-      'GAS_STATION': { group: 'SERVICE', groupName: '서비스', icon: '⛽' },
-      'PARKING_MGMT': { group: 'SERVICE', groupName: '서비스', icon: '🅿️' },
-      'CLEANING': { group: 'SERVICE', groupName: '서비스', icon: '🧹' },
-      'CAREGIVER': { group: 'SERVICE', groupName: '서비스', icon: '🩺' },
-      'HOUSEKEEPER': { group: 'SERVICE', groupName: '서비스', icon: '🏠' },
-      'ENTERTAINMENT': { group: 'ENTERTAINMENT', groupName: '유흥업소', icon: '🚫' },
-      'FINANCE': { group: 'OFFICE', groupName: '사무/전문직', icon: '🏦' },
-      'REAL_ESTATE': { group: 'OFFICE', groupName: '사무/전문직', icon: '🏢' },
-      'PUBLIC_ADMIN': { group: 'OFFICE', groupName: '사무/전문직', icon: '🏛️' },
-      'INTERN_PROFESSIONAL': { group: 'OFFICE', groupName: '사무/전문직', icon: '🎓' },
-      'BUILDING_SECURITY': { group: 'SERVICE', groupName: '서비스', icon: '🛡️' },
-      'SKIN_CARE': { group: 'BEAUTY', groupName: '뷰티/관리', icon: '💆' },
-      'BATH_HOUSE': { group: 'BEAUTY', groupName: '뷰티/관리', icon: '🛁' },
-      'KARAOKE_STAFF': { group: 'LEISURE', groupName: '여가/오락', icon: '🎤' },
-      'PC_ROOM_STAFF': { group: 'LEISURE', groupName: '여가/오락', icon: '🖥️' },
-      'GOLF_CADDY': { group: 'LEISURE', groupName: '여가/오락', icon: '⛳' },
-      'STREET_VENDOR': { group: 'RETAIL', groupName: '판매/유통', icon: '🏪' },
-      'EVENT_STAFF': { group: 'ETC', groupName: '기타', icon: '🎪' },
-      'PROMOTION': { group: 'ETC', groupName: '기타', icon: '📢' },
+    const GROUP_MAP: Record<
+      string,
+      { group: string; groupName: string; icon: string }
+    > = {
+      REST_SERVING: { group: 'FOOD', groupName: '음식점/카페', icon: '🍽️' },
+      REST_KITCHEN: { group: 'FOOD', groupName: '음식점/카페', icon: '🧑‍🍳' },
+      CAFE_BARISTA: { group: 'FOOD', groupName: '음식점/카페', icon: '☕' },
+      FAST_FOOD: { group: 'FOOD', groupName: '음식점/카페', icon: '🍔' },
+      HOTEL_SERVICE: { group: 'FOOD', groupName: '음식점/카페', icon: '🏨' },
+      CONV_STORE: { group: 'RETAIL', groupName: '판매/유통', icon: '🏪' },
+      MART_SALES: { group: 'RETAIL', groupName: '판매/유통', icon: '🛒' },
+      CLOTHING_SALES: { group: 'RETAIL', groupName: '판매/유통', icon: '👗' },
+      LOGISTICS_SORT: {
+        group: 'LOGISTICS',
+        groupName: '물류/배달',
+        icon: '📦',
+      },
+      DELIVERY: { group: 'LOGISTICS', groupName: '물류/배달', icon: '🛵' },
+      MOVING_LABOR: { group: 'LOGISTICS', groupName: '물류/배달', icon: '🚛' },
+      NEWSPAPER_DELIVERY: {
+        group: 'LOGISTICS',
+        groupName: '물류/배달',
+        icon: '📰',
+      },
+      CONSTRUCTION_LABOR: {
+        group: 'CONSTRUCTION',
+        groupName: '건설',
+        icon: '🏗️',
+      },
+      CONSTRUCTION_SKILLED: {
+        group: 'CONSTRUCTION',
+        groupName: '건설',
+        icon: '🔧',
+      },
+      FACTORY_SIMPLE: {
+        group: 'MANUFACTURING',
+        groupName: '제조/생산',
+        icon: '🏭',
+      },
+      FACTORY_PACKING: {
+        group: 'MANUFACTURING',
+        groupName: '제조/생산',
+        icon: '📋',
+      },
+      AGRICULTURE: { group: 'PRIMARY', groupName: '농축수산', icon: '🌾' },
+      FISHING: { group: 'PRIMARY', groupName: '농축수산', icon: '🐟' },
+      OFFICE_ASSIST: { group: 'OFFICE', groupName: '사무/전문직', icon: '💼' },
+      TRANSLATION: { group: 'OFFICE', groupName: '사무/전문직', icon: '🌐' },
+      IT_ASSIST: { group: 'IT', groupName: 'IT/개발', icon: '💻' },
+      TUTORING: { group: 'EDUCATION', groupName: '교육', icon: '📚' },
+      GAS_STATION: { group: 'SERVICE', groupName: '서비스', icon: '⛽' },
+      PARKING_MGMT: { group: 'SERVICE', groupName: '서비스', icon: '🅿️' },
+      CLEANING: { group: 'SERVICE', groupName: '서비스', icon: '🧹' },
+      CAREGIVER: { group: 'SERVICE', groupName: '서비스', icon: '🩺' },
+      HOUSEKEEPER: { group: 'SERVICE', groupName: '서비스', icon: '🏠' },
+      ENTERTAINMENT: {
+        group: 'ENTERTAINMENT',
+        groupName: '유흥업소',
+        icon: '🚫',
+      },
+      FINANCE: { group: 'OFFICE', groupName: '사무/전문직', icon: '🏦' },
+      REAL_ESTATE: { group: 'OFFICE', groupName: '사무/전문직', icon: '🏢' },
+      PUBLIC_ADMIN: { group: 'OFFICE', groupName: '사무/전문직', icon: '🏛️' },
+      INTERN_PROFESSIONAL: {
+        group: 'OFFICE',
+        groupName: '사무/전문직',
+        icon: '🎓',
+      },
+      BUILDING_SECURITY: { group: 'SERVICE', groupName: '서비스', icon: '🛡️' },
+      SKIN_CARE: { group: 'BEAUTY', groupName: '뷰티/관리', icon: '💆' },
+      BATH_HOUSE: { group: 'BEAUTY', groupName: '뷰티/관리', icon: '🛁' },
+      KARAOKE_STAFF: { group: 'LEISURE', groupName: '여가/오락', icon: '🎤' },
+      PC_ROOM_STAFF: { group: 'LEISURE', groupName: '여가/오락', icon: '🖥️' },
+      GOLF_CADDY: { group: 'LEISURE', groupName: '여가/오락', icon: '⛳' },
+      STREET_VENDOR: { group: 'RETAIL', groupName: '판매/유통', icon: '🏪' },
+      EVENT_STAFF: { group: 'ETC', groupName: '기타', icon: '🎪' },
+      PROMOTION: { group: 'ETC', groupName: '기타', icon: '📢' },
     };
 
     // 카테고리 변환 / Transform categories
@@ -170,7 +205,10 @@ export class AlbaVisaMatchingService {
     });
 
     // 그룹 집계 / Aggregate groups
-    const groupCounts = new Map<string, { group: string; groupName: string; count: number }>();
+    const groupCounts = new Map<
+      string,
+      { group: string; groupName: string; count: number }
+    >();
     for (const cat of categories) {
       const existing = groupCounts.get(cat.group);
       if (existing) {

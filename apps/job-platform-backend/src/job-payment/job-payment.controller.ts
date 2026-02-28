@@ -32,6 +32,7 @@ import {
   ConfirmPremiumUpgradeDto,
   GetAllOrdersQueryDto,
   AdminGrantPremiumDto,
+  AdminRevokePremiumDto,
 } from './dto';
 
 @ApiTags('Job Payments')
@@ -245,7 +246,8 @@ export class JobPaymentController {
   @Post('admin/grant-premium/:jobId')
   @Roles('ADMIN')
   @ApiOperation({
-    summary: '프리미엄 수동 부여 / Admin: manually grant premium to a posting',
+    summary:
+      '프리미엄 수동 부여 (이중확인 후) / Admin: manually grant premium (after double confirmation)',
   })
   @ApiParam({ name: 'jobId', description: 'Job posting ID' })
   @ApiResponse({ status: 200, description: 'Premium granted to posting' })
@@ -259,6 +261,52 @@ export class JobPaymentController {
       session.userId,
       jobId,
       dto.days,
+      {
+        reason: dto.reason,
+        memo: dto.memo,
+        grantFeatured: dto.grantFeatured,
+      },
     );
+  }
+
+  @Post('admin/revoke-premium/:jobId')
+  @Roles('ADMIN')
+  @ApiOperation({
+    summary:
+      '프리미엄 해제 (이중확인 후) / Admin: revoke premium (after double confirmation)',
+  })
+  @ApiParam({ name: 'jobId', description: 'Job posting ID' })
+  @ApiResponse({ status: 200, description: 'Premium revoked from posting' })
+  @ApiResponse({
+    status: 400,
+    description: 'Already standard posting',
+  })
+  @ApiResponse({ status: 404, description: 'Job posting not found' })
+  async revokePremium(
+    @CurrentSession() session: SessionData,
+    @Param('jobId') jobId: string,
+    @Body() dto: AdminRevokePremiumDto,
+  ) {
+    return this.jobPaymentService.adminRevokePremium(session.userId, jobId, {
+      reason: dto.reason,
+      memo: dto.memo,
+      forceNoRefund: dto.forceNoRefund,
+    });
+  }
+
+  @Get('admin/premium-history/:jobId')
+  @Roles('ADMIN')
+  @ApiOperation({
+    summary:
+      '프리미엄 이력 조회 / Admin: premium action + payment history for a posting',
+  })
+  @ApiParam({ name: 'jobId', description: 'Job posting ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Premium history with admin actions and payment records',
+  })
+  @ApiResponse({ status: 404, description: 'Job posting not found' })
+  async getPremiumHistory(@Param('jobId') jobId: string) {
+    return this.jobPaymentService.getPremiumHistory(jobId);
   }
 }

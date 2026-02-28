@@ -131,7 +131,8 @@ export const F4_PUBLIC_INTEREST_BLOCKED_CODES: ReadonlyArray<{
     jobCategoryCode: 'SKIN_CARE',
     nameKo: '피부관리사',
     restrictionType: 'PUBLIC_INTEREST',
-    reasonKo: 'F-4 비자는 피부관리사 취업이 공공이익 사유로 금지됩니다 (인구감소지역 포함)',
+    reasonKo:
+      'F-4 비자는 피부관리사 취업이 공공이익 사유로 금지됩니다 (인구감소지역 포함)',
     reasonEn:
       'F-4 visa prohibits skin care employment for public interest reasons (including depopulation areas)',
   },
@@ -139,7 +140,8 @@ export const F4_PUBLIC_INTEREST_BLOCKED_CODES: ReadonlyArray<{
     jobCategoryCode: 'BATH_HOUSE',
     nameKo: '목욕관리사',
     restrictionType: 'PUBLIC_INTEREST',
-    reasonKo: 'F-4 비자는 목욕관리사 취업이 공공이익 사유로 금지됩니다 (인구감소지역 포함)',
+    reasonKo:
+      'F-4 비자는 목욕관리사 취업이 공공이익 사유로 금지됩니다 (인구감소지역 포함)',
     reasonEn:
       'F-4 visa prohibits bath house employment for public interest reasons (including depopulation areas)',
   },
@@ -147,7 +149,8 @@ export const F4_PUBLIC_INTEREST_BLOCKED_CODES: ReadonlyArray<{
     jobCategoryCode: 'KARAOKE_STAFF',
     nameKo: '노래방 직원',
     restrictionType: 'PUBLIC_INTEREST',
-    reasonKo: 'F-4 비자는 노래방 직원 취업이 공공이익 사유로 금지됩니다 (인구감소지역 포함)',
+    reasonKo:
+      'F-4 비자는 노래방 직원 취업이 공공이익 사유로 금지됩니다 (인구감소지역 포함)',
     reasonEn:
       'F-4 visa prohibits karaoke room staff employment for public interest reasons (including depopulation areas)',
   },
@@ -155,7 +158,8 @@ export const F4_PUBLIC_INTEREST_BLOCKED_CODES: ReadonlyArray<{
     jobCategoryCode: 'PC_ROOM_STAFF',
     nameKo: 'PC방 직원',
     restrictionType: 'PUBLIC_INTEREST',
-    reasonKo: 'F-4 비자는 PC방 직원 취업이 공공이익 사유로 금지됩니다 (인구감소지역 포함)',
+    reasonKo:
+      'F-4 비자는 PC방 직원 취업이 공공이익 사유로 금지됩니다 (인구감소지역 포함)',
     reasonEn:
       'F-4 visa prohibits PC room staff employment for public interest reasons (including depopulation areas)',
   },
@@ -163,7 +167,8 @@ export const F4_PUBLIC_INTEREST_BLOCKED_CODES: ReadonlyArray<{
     jobCategoryCode: 'GOLF_CADDY',
     nameKo: '골프장 캐디',
     restrictionType: 'PUBLIC_INTEREST',
-    reasonKo: 'F-4 비자는 골프장 캐디 취업이 공공이익 사유로 금지됩니다 (인구감소지역 포함)',
+    reasonKo:
+      'F-4 비자는 골프장 캐디 취업이 공공이익 사유로 금지됩니다 (인구감소지역 포함)',
     reasonEn:
       'F-4 visa prohibits golf caddy employment for public interest reasons (including depopulation areas)',
   },
@@ -171,7 +176,8 @@ export const F4_PUBLIC_INTEREST_BLOCKED_CODES: ReadonlyArray<{
     jobCategoryCode: 'STREET_VENDOR',
     nameKo: '노점상',
     restrictionType: 'PUBLIC_INTEREST',
-    reasonKo: 'F-4 비자는 노점상 취업이 공공이익 사유로 금지됩니다 (인구감소지역 포함)',
+    reasonKo:
+      'F-4 비자는 노점상 취업이 공공이익 사유로 금지됩니다 (인구감소지역 포함)',
     reasonEn:
       'F-4 visa prohibits street vendor employment for public interest reasons (including depopulation areas)',
   },
@@ -305,7 +311,8 @@ export const F4_SIMPLE_LABOR_BLOCKED_CODES: ReadonlyArray<{
     jobCategoryCode: 'BUILDING_SECURITY',
     nameKo: '건물 경비원',
     restrictionType: 'SIMPLE_LABOR',
-    reasonKo: 'F-4 비자는 건물 경비 단순노무 금지 (예외 허용 / 인구감소지역 제외)',
+    reasonKo:
+      'F-4 비자는 건물 경비 단순노무 금지 (예외 허용 / 인구감소지역 제외)',
     reasonEn:
       'F-4 visa prohibits simple labor in building security (exception allowed / except depopulation areas)',
   },

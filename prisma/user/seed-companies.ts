@@ -34,6 +34,7 @@ interface JobDef {
   alba?: { hourlyWage: number; workDaysMask: string; workTimeStart: string; workTimeEnd: string };
   fulltime?: { salaryMin: number; salaryMax: number; experienceLevel: string; educationLevel: string };
   isPremium?: boolean;
+  premiumSource?: 'PAID' | 'ADMIN_GRANT' | 'PROMOTION'; // 프리미엄 소스 / Premium source
 }
 
 /* ── 기업 정의 (13개) / Company definitions ── */
@@ -64,28 +65,28 @@ const JOBS: JobDef[] = [
   // PREMIUM 5개 기업 (각 알바+정규직 = 10건)
   // ═══════════════════════════════════════
 
-  // 삼성전자 — 알바 (PREMIUM)
-  { companyEmail: 'hr@samsung-seed.com', boardType: 'PART_TIME', tierType: 'PREMIUM', title: '반도체 생산라인 오퍼레이터 (기숙사 제공)', description: '삼성전자 평택캠퍼스 반도체 생산라인에서 오퍼레이터를 모집합니다.\n\n[주요 업무]\n- 반도체 생산장비 모니터링 및 운영\n- 웨이퍼 로딩/언로딩 작업\n- 설비 이상 시 초기 대응\n\n[근무 조건]\n- 3조 2교대 (주/야 교대)\n- 기숙사 무료 제공\n- 식사 제공 (3식)\n- 통근버스 운행', allowedVisas: 'E-9,H-2,F-4,F-2', minKoreanLevel: 2, displayAddress: '경기 평택시', actualAddress: '경기도 평택시 진위면 삼성전자로 1', workIntensity: 'UPPER', contactName: '삼성전자 채용팀', contactPhone: '031-200-1234', closingDate: future(14), alba: { hourlyWage: 14000, workDaysMask: '1111100', workTimeStart: '08:00', workTimeEnd: '20:00' }, isPremium: true },
+  // 삼성전자 — 알바 (PREMIUM, PAID)
+  { companyEmail: 'hr@samsung-seed.com', boardType: 'PART_TIME', tierType: 'PREMIUM', premiumSource: 'PAID', title: '반도체 생산라인 오퍼레이터 (기숙사 제공)', description: '삼성전자 평택캠퍼스 반도체 생산라인에서 오퍼레이터를 모집합니다.\n\n[주요 업무]\n- 반도체 생산장비 모니터링 및 운영\n- 웨이퍼 로딩/언로딩 작업\n- 설비 이상 시 초기 대응\n\n[근무 조건]\n- 3조 2교대 (주/야 교대)\n- 기숙사 무료 제공\n- 식사 제공 (3식)\n- 통근버스 운행', allowedVisas: 'E-9,H-2,F-4,F-2', minKoreanLevel: 2, displayAddress: '경기 평택시', actualAddress: '경기도 평택시 진위면 삼성전자로 1', workIntensity: 'UPPER', contactName: '삼성전자 채용팀', contactPhone: '031-200-1234', closingDate: future(14), alba: { hourlyWage: 14000, workDaysMask: '1111100', workTimeStart: '08:00', workTimeEnd: '20:00' }, isPremium: true },
   // 삼성전자 — 정규직
   { companyEmail: 'hr@samsung-seed.com', boardType: 'FULL_TIME', tierType: 'STANDARD', title: '반도체 설비 엔지니어 (신입/경력)', description: '삼성전자 반도체 설비 엔지니어를 모집합니다.\n\n[주요 업무]\n- 반도체 제조 설비 유지보수\n- 설비 개선 및 최적화\n- 공정 데이터 분석\n\n[자격요건]\n- 전기/전자/기계공학 전공\n- 설비 보전 경력 우대\n- 교대 근무 가능자', allowedVisas: 'E-7,F-2,F-5,F-6', minKoreanLevel: 3, displayAddress: '경기 평택시', actualAddress: '경기도 평택시 진위면 삼성전자로 1', workIntensity: 'UPPER', contactName: '삼성전자 채용팀', contactPhone: '031-200-1234', closingDate: future(21), fulltime: { salaryMin: 35000000, salaryMax: 50000000, experienceLevel: 'JUNIOR', educationLevel: 'BACHELOR' } },
 
-  // 현대건설 — 정규직 (PREMIUM)
-  { companyEmail: 'hr@hyundai-enc-seed.com', boardType: 'FULL_TIME', tierType: 'PREMIUM', title: '건설 현장 안전관리자 (경험자 우대)', description: '현대건설 강남 현장에서 안전관리자를 모집합니다.\n\n[주요 업무]\n- 건설현장 안전관리 및 점검\n- 안전교육 실시 및 기록 관리\n- 사고 예방 활동 계획 수립\n\n[자격요건]\n- 건설안전기사 또는 산업안전기사 보유자\n- 건설현장 안전관리 경력 3년 이상\n- 한국어 능통자 (TOPIK 4급 이상)', allowedVisas: 'E-7,F-2,F-5,F-6', minKoreanLevel: 4, displayAddress: '서울 강남구', actualAddress: '서울특별시 강남구 테헤란로 127', workIntensity: 'UPPER', contactName: '현대건설 인사팀', contactPhone: '02-746-1234', closingDate: future(3), fulltime: { salaryMin: 30000000, salaryMax: 40000000, experienceLevel: 'MID', educationLevel: 'BACHELOR' }, isPremium: true },
+  // 현대건설 — 정규직 (PREMIUM, PAID)
+  { companyEmail: 'hr@hyundai-enc-seed.com', boardType: 'FULL_TIME', tierType: 'PREMIUM', premiumSource: 'PAID', title: '건설 현장 안전관리자 (경험자 우대)', description: '현대건설 강남 현장에서 안전관리자를 모집합니다.\n\n[주요 업무]\n- 건설현장 안전관리 및 점검\n- 안전교육 실시 및 기록 관리\n- 사고 예방 활동 계획 수립\n\n[자격요건]\n- 건설안전기사 또는 산업안전기사 보유자\n- 건설현장 안전관리 경력 3년 이상\n- 한국어 능통자 (TOPIK 4급 이상)', allowedVisas: 'E-7,F-2,F-5,F-6', minKoreanLevel: 4, displayAddress: '서울 강남구', actualAddress: '서울특별시 강남구 테헤란로 127', workIntensity: 'UPPER', contactName: '현대건설 인사팀', contactPhone: '02-746-1234', closingDate: future(3), fulltime: { salaryMin: 30000000, salaryMax: 40000000, experienceLevel: 'MID', educationLevel: 'BACHELOR' }, isPremium: true },
   // 현대건설 — 알바
   { companyEmail: 'hr@hyundai-enc-seed.com', boardType: 'PART_TIME', tierType: 'STANDARD', title: '건설현장 일용 보조인력 모집', description: '현대건설 송도 현장에서 보조인력을 모집합니다.\n\n[주요 업무]\n- 자재 운반 보조\n- 현장 청소 및 정리\n- 안전시설 설치 보조\n\n[근무 조건]\n- 일당제 (일 8시간)\n- 중식 제공\n- 안전장비 지급', allowedVisas: 'E-9,H-2', minKoreanLevel: 1, displayAddress: '인천 연수구', actualAddress: '인천광역시 연수구 송도동', workIntensity: 'UPPER', contactName: '현대건설 현장', contactPhone: '032-850-1234', closingDate: future(7), alba: { hourlyWage: 13500, workDaysMask: '1111100', workTimeStart: '07:00', workTimeEnd: '16:00' } },
 
-  // 신라호텔 — 알바 (PREMIUM)
-  { companyEmail: 'hr@shilla-seed.com', boardType: 'PART_TIME', tierType: 'PREMIUM', title: '호텔 주방 스태프 (식사 제공)', description: '신라호텔 메인 주방에서 조리 보조 스태프를 모집합니다.\n\n[주요 업무]\n- 식재료 전처리 및 조리 보조\n- 주방 청결 관리\n- 연회 준비 보조\n\n[근무 조건]\n- 주 5일 근무 (교대제)\n- 직원식 무료 제공\n- 유니폼 지급', allowedVisas: 'E-9,H-2,F-4', minKoreanLevel: 2, displayAddress: '서울 중구', actualAddress: '서울특별시 중구 동호로 249', workIntensity: 'UPPER', contactName: '신라호텔 인사팀', contactPhone: '02-2230-3310', closingDate: future(30), alba: { hourlyWage: 12000, workDaysMask: '1111100', workTimeStart: '07:00', workTimeEnd: '16:00' }, isPremium: true },
+  // 신라호텔 — 알바 (PREMIUM, PAID)
+  { companyEmail: 'hr@shilla-seed.com', boardType: 'PART_TIME', tierType: 'PREMIUM', premiumSource: 'PAID', title: '호텔 주방 스태프 (식사 제공)', description: '신라호텔 메인 주방에서 조리 보조 스태프를 모집합니다.\n\n[주요 업무]\n- 식재료 전처리 및 조리 보조\n- 주방 청결 관리\n- 연회 준비 보조\n\n[근무 조건]\n- 주 5일 근무 (교대제)\n- 직원식 무료 제공\n- 유니폼 지급', allowedVisas: 'E-9,H-2,F-4', minKoreanLevel: 2, displayAddress: '서울 중구', actualAddress: '서울특별시 중구 동호로 249', workIntensity: 'UPPER', contactName: '신라호텔 인사팀', contactPhone: '02-2230-3310', closingDate: future(30), alba: { hourlyWage: 12000, workDaysMask: '1111100', workTimeStart: '07:00', workTimeEnd: '16:00' }, isPremium: true },
   // 신라호텔 — 정규직
   { companyEmail: 'hr@shilla-seed.com', boardType: 'FULL_TIME', tierType: 'STANDARD', title: '호텔 프론트데스크 매니저', description: '신라호텔에서 프론트데스크 매니저를 모집합니다.\n\n[주요 업무]\n- 고객 체크인/체크아웃 관리\n- VIP 고객 응대\n- 프론트 직원 교육 및 관리\n\n[자격요건]\n- 호텔 프론트 경력 3년 이상\n- 영어 능통, 일본어/중국어 우대\n- TOPIK 5급 이상', allowedVisas: 'E-7,F-2,F-5,F-6', minKoreanLevel: 5, displayAddress: '서울 중구', actualAddress: '서울특별시 중구 동호로 249', workIntensity: 'MIDDLE', contactName: '신라호텔 인사팀', contactPhone: '02-2230-3310', closingDate: future(15), fulltime: { salaryMin: 32000000, salaryMax: 42000000, experienceLevel: 'MID', educationLevel: 'BACHELOR' } },
 
-  // CJ대한통운 — 알바 (PREMIUM)
-  { companyEmail: 'hr@cj-logistics-seed.com', boardType: 'PART_TIME', tierType: 'PREMIUM', title: '물류센터 포장/분류 직원', description: 'CJ대한통운 인천 물류센터에서 포장/분류 직원을 모집합니다.\n\n[주요 업무]\n- 택배 상품 분류 및 포장\n- 바코드 스캔 및 적재\n- 물류 라인 정리\n\n[근무 조건]\n- 주 5일 근무\n- 중식 제공\n- 통근버스 운행\n- 장기 근무 시 수당 인상', allowedVisas: 'E-9,H-2', minKoreanLevel: 1, displayAddress: '인천 남동구', actualAddress: '인천광역시 남동구 남동서로 206', workIntensity: 'UPPER', contactName: 'CJ대한통운 채용', contactPhone: '032-820-5678', closingDate: null, alba: { hourlyWage: 13000, workDaysMask: '1111100', workTimeStart: '09:00', workTimeEnd: '18:00' }, isPremium: true },
+  // CJ대한통운 — 알바 (PREMIUM, ADMIN_GRANT)
+  { companyEmail: 'hr@cj-logistics-seed.com', boardType: 'PART_TIME', tierType: 'PREMIUM', premiumSource: 'ADMIN_GRANT', title: '물류센터 포장/분류 직원', description: 'CJ대한통운 인천 물류센터에서 포장/분류 직원을 모집합니다.\n\n[주요 업무]\n- 택배 상품 분류 및 포장\n- 바코드 스캔 및 적재\n- 물류 라인 정리\n\n[근무 조건]\n- 주 5일 근무\n- 중식 제공\n- 통근버스 운행\n- 장기 근무 시 수당 인상', allowedVisas: 'E-9,H-2', minKoreanLevel: 1, displayAddress: '인천 남동구', actualAddress: '인천광역시 남동구 남동서로 206', workIntensity: 'UPPER', contactName: 'CJ대한통운 채용', contactPhone: '032-820-5678', closingDate: null, alba: { hourlyWage: 13000, workDaysMask: '1111100', workTimeStart: '09:00', workTimeEnd: '18:00' }, isPremium: true },
   // CJ대한통운 — 정규직
   { companyEmail: 'hr@cj-logistics-seed.com', boardType: 'FULL_TIME', tierType: 'STANDARD', title: '물류 운영 관리자 (경력직)', description: 'CJ대한통운에서 물류 운영 관리자를 모집합니다.\n\n[주요 업무]\n- 물류센터 전체 운영 관리\n- 인력 배치 및 스케줄 관리\n- KPI 관리 및 개선활동\n\n[자격요건]\n- 물류 운영 경력 2년 이상\n- WMS 시스템 활용 가능자\n- 리더십 있는 분', allowedVisas: 'E-7,F-2,F-4,F-5', minKoreanLevel: 3, displayAddress: '인천 남동구', actualAddress: '인천광역시 남동구 남동서로 206', workIntensity: 'MIDDLE', contactName: 'CJ대한통운 채용', contactPhone: '032-820-5678', closingDate: future(18), fulltime: { salaryMin: 28000000, salaryMax: 36000000, experienceLevel: 'JUNIOR', educationLevel: 'HIGH_SCHOOL' } },
 
-  // 현대모비스 — 정규직 (PREMIUM)
-  { companyEmail: 'hr@mobis-seed.com', boardType: 'FULL_TIME', tierType: 'PREMIUM', title: '자동차 부품 품질검사원', description: '현대모비스 울산공장에서 품질검사원을 모집합니다.\n\n[주요 업무]\n- 자동차 부품 품질 검사 및 측정\n- 불량 분석 및 개선활동\n- 품질 데이터 관리\n\n[자격요건]\n- 품질관리 또는 자동차 관련 경력 2년 이상\n- 측정기 사용 가능자\n- 교대 근무 가능자', allowedVisas: 'E-9,H-2,F-2', minKoreanLevel: 3, displayAddress: '울산 북구', actualAddress: '울산광역시 북구 양정동 현대모비스', workIntensity: 'MIDDLE', contactName: '현대모비스 채용', contactPhone: '052-280-9876', closingDate: future(7), fulltime: { salaryMin: 28000000, salaryMax: 35000000, experienceLevel: 'JUNIOR', educationLevel: 'HIGH_SCHOOL' }, isPremium: true },
+  // 현대모비스 — 정규직 (PREMIUM, ADMIN_GRANT)
+  { companyEmail: 'hr@mobis-seed.com', boardType: 'FULL_TIME', tierType: 'PREMIUM', premiumSource: 'ADMIN_GRANT', title: '자동차 부품 품질검사원', description: '현대모비스 울산공장에서 품질검사원을 모집합니다.\n\n[주요 업무]\n- 자동차 부품 품질 검사 및 측정\n- 불량 분석 및 개선활동\n- 품질 데이터 관리\n\n[자격요건]\n- 품질관리 또는 자동차 관련 경력 2년 이상\n- 측정기 사용 가능자\n- 교대 근무 가능자', allowedVisas: 'E-9,H-2,F-2', minKoreanLevel: 3, displayAddress: '울산 북구', actualAddress: '울산광역시 북구 양정동 현대모비스', workIntensity: 'MIDDLE', contactName: '현대모비스 채용', contactPhone: '052-280-9876', closingDate: future(7), fulltime: { salaryMin: 28000000, salaryMax: 35000000, experienceLevel: 'JUNIOR', educationLevel: 'HIGH_SCHOOL' }, isPremium: true },
   // 현대모비스 — 알바
   { companyEmail: 'hr@mobis-seed.com', boardType: 'PART_TIME', tierType: 'STANDARD', title: '부품 조립 보조 (단기 알바)', description: '현대모비스 울산공장에서 부품 조립 보조를 모집합니다.\n\n[주요 업무]\n- 소형 부품 조립 보조\n- 포장 및 출하 준비\n- 라인 청소 및 정리\n\n[근무 조건]\n- 단기 가능 (1개월~)\n- 중식 제공\n- 통근버스 운행', allowedVisas: 'E-9,H-2,F-4', minKoreanLevel: 1, displayAddress: '울산 북구', actualAddress: '울산광역시 북구 양정동 현대모비스', workIntensity: 'MIDDLE', contactName: '현대모비스 채용', contactPhone: '052-280-9876', closingDate: future(14), alba: { hourlyWage: 11500, workDaysMask: '1111100', workTimeStart: '08:00', workTimeEnd: '17:00' } },
 
@@ -235,6 +236,9 @@ async function main() {
         isPremium: j.isPremium ?? false,
         premiumStartAt: premiumStart,
         premiumEndAt: premiumEnd,
+        premiumSource: j.premiumSource || undefined,
+        premiumGrantedBy: j.premiumSource === 'ADMIN_GRANT' ? 'SEED_ADMIN' : undefined,
+        premiumMemo: j.premiumSource === 'ADMIN_GRANT' ? '시드 데이터 자동 생성' : undefined,
         viewCount: Math.floor(Math.random() * 80) + 10,
         scrapCount: Math.floor(Math.random() * 15),
         applyCount: Math.floor(Math.random() * 8),

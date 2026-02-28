@@ -475,6 +475,9 @@ export class JobPaymentService {
           premiumStartAt: now,
           premiumEndAt: premiumEndAt,
           upgradedAt: now,
+          premiumSource: 'PAID',
+          premiumGrantedBy: null,
+          premiumMemo: null,
         },
       });
 
@@ -549,6 +552,9 @@ export class JobPaymentService {
               data: {
                 tierType: 'STANDARD',
                 isPremium: false,
+                premiumSource: null,
+                premiumGrantedBy: null,
+                premiumMemo: null,
               },
             });
 
@@ -687,31 +693,95 @@ export class JobPaymentService {
   }
 
   // ========================================
-  // Admin: 프리미엄 수동 부여 / Admin: manually grant premium
+  // Admin: 프리미엄 수동 부여 (강화) / Admin: manually grant premium (enhanced)
   // ========================================
-  async adminGrantPremium(adminId: string, jobId: string, days: number) {
+  async adminGrantPremium(
+    adminId: string,
+    jobId: string,
+    days: number,
+    options?: { reason?: string; memo?: string; grantFeatured?: boolean },
+  ) {
     const job = await this.prisma.jobPosting.findUnique({
       where: { id: BigInt(jobId) },
     });
     if (!job) throw new NotFoundException('Job posting not found');
 
     const now = new Date();
-    const premiumEndAt = new Date(now);
+    // 기존 프리미엄이 유효하면 종료일 기준 연장 / Extend from existing end date if still valid
+    const baseDate =
+      job.isPremium && job.premiumEndAt && job.premiumEndAt > now
+        ? job.premiumEndAt
+        : now;
+    const premiumEndAt = new Date(baseDate);
     premiumEndAt.setDate(premiumEndAt.getDate() + days);
+
+    // 이전 상태 스냅샷 / Previous state snapshot
+    const previousState = {
+      tierType: job.tierType,
+      isPremium: job.isPremium,
+      premiumSource: job.premiumSource,
+      premiumStartAt: job.premiumStartAt?.toISOString() || null,
+      premiumEndAt: job.premiumEndAt?.toISOString() || null,
+      isFeatured: job.isFeatured,
+    };
+
+    // 공고 업데이트 / Update posting
+    const updateData: any = {
+      tierType: 'PREMIUM',
+      isPremium: true,
+      premiumStartAt: job.isPremium ? job.premiumStartAt : now,
+      premiumEndAt,
+      upgradedAt: now,
+      premiumSource: 'ADMIN_GRANT',
+      premiumGrantedBy: adminId,
+      premiumMemo: options?.memo || null,
+    };
+
+    if (options?.grantFeatured) {
+      updateData.isFeatured = true;
+      updateData.featuredAt = now;
+    }
 
     await this.prisma.jobPosting.update({
       where: { id: BigInt(jobId) },
+      data: updateData,
+    });
+
+    // AdminJobAction 로그 기록 / Record admin action log
+    await this.prisma.adminJobAction.create({
       data: {
-        tierType: 'PREMIUM',
-        isPremium: true,
-        premiumStartAt: now,
-        premiumEndAt: premiumEndAt,
-        upgradedAt: now,
+        jobId: BigInt(jobId),
+        adminId,
+        actionType: 'PREMIUM_GRANT',
+        reason: options?.reason || 'ADMIN_MANUAL',
+        metadata: {
+          days,
+          memo: options?.memo || null,
+          grantFeatured: options?.grantFeatured || false,
+          previousState,
+          newPremiumEndAt: premiumEndAt.toISOString(),
+        },
       },
     });
 
+    // Featured 부여 시 별도 로그 / Log featured grant separately
+    if (options?.grantFeatured) {
+      await this.prisma.adminJobAction.create({
+        data: {
+          jobId: BigInt(jobId),
+          adminId,
+          actionType: 'FEATURED_GRANT',
+          reason: options?.reason || 'ADMIN_MANUAL',
+          metadata: {
+            grantedWith: 'PREMIUM_GRANT',
+            memo: options?.memo || null,
+          },
+        },
+      });
+    }
+
     this.logger.log(
-      `[Admin] 프리미엄 수동 부여: adminId=${adminId}, jobId=${jobId}, days=${days}, premiumEnd=${premiumEndAt.toISOString()}`,
+      `[Admin] 프리미엄 수동 부여: adminId=${adminId}, jobId=${jobId}, days=${days}, reason=${options?.reason || 'N/A'}, premiumEnd=${premiumEndAt.toISOString()}`,
     );
 
     return {
@@ -719,10 +789,220 @@ export class JobPaymentService {
       jobPostingId: jobId,
       tierType: 'PREMIUM',
       isPremium: true,
-      premiumStartAt: now,
-      premiumEndAt: premiumEndAt,
+      premiumStartAt: updateData.premiumStartAt,
+      premiumEndAt,
+      premiumSource: 'ADMIN_GRANT',
       grantedBy: adminId,
       durationDays: days,
+      isFeatured: options?.grantFeatured || false,
+    };
+  }
+
+  // ========================================
+  // Admin: 프리미엄 해제 / Admin: revoke premium
+  // ========================================
+  async adminRevokePremium(
+    adminId: string,
+    jobId: string,
+    dto: { reason: string; memo?: string; forceNoRefund?: boolean },
+  ) {
+    const job = await this.prisma.jobPosting.findUnique({
+      where: { id: BigInt(jobId) },
+    });
+    if (!job) throw new NotFoundException('Job posting not found');
+    if (!job.isPremium) {
+      throw new BadRequestException(
+        '이미 일반 공고입니다 / Already a standard posting',
+      );
+    }
+
+    // 환불 분기 / Refund branching logic
+    let refundInfo: {
+      eligible: boolean;
+      amount: number;
+      reason: string;
+    } | null = null;
+
+    if (job.premiumSource === 'PAID' && !dto.forceNoRefund) {
+      // 결제 공고 + 환불 대상 → 잔여 기간 일할계산 / Paid + refund eligible → pro-rata calculation
+      const order = await this.prisma.jobOrder.findFirst({
+        where: {
+          jobPostingId: BigInt(jobId),
+          paymentStatus: 'PAID',
+        },
+        include: { product: true },
+        orderBy: { paidAt: 'desc' },
+      });
+
+      if (order && job.premiumStartAt && job.premiumEndAt) {
+        const totalDays = Math.ceil(
+          (job.premiumEndAt.getTime() - job.premiumStartAt.getTime()) /
+            (1000 * 60 * 60 * 24),
+        );
+        const usedDays = Math.ceil(
+          (Date.now() - job.premiumStartAt.getTime()) /
+            (1000 * 60 * 60 * 24),
+        );
+        const remainingDays = Math.max(totalDays - usedDays, 0);
+
+        // 50% 초과 사용 시 환불 제한 / Refund limited if > 50% used
+        if (usedDays <= totalDays * 0.5) {
+          const dailyRate = order.paidAmount / totalDays;
+          const refundAmount = Math.floor(dailyRate * remainingDays);
+          refundInfo = {
+            eligible: true,
+            amount: refundAmount,
+            reason: `잔여 ${remainingDays}일 / ${totalDays}일, 일할계산 환불`,
+          };
+        } else {
+          refundInfo = {
+            eligible: false,
+            amount: 0,
+            reason: `사용 기간(${usedDays}일)이 전체(${totalDays}일)의 50% 초과 — 환불 제한`,
+          };
+        }
+      }
+    } else if (job.premiumSource === 'PAID' && dto.forceNoRefund) {
+      // 위반 사유 환불 없이 해제 / Violation — no refund
+      refundInfo = {
+        eligible: false,
+        amount: 0,
+        reason: '위반 사유로 환불 없이 해제 / Violation — no refund',
+      };
+    }
+    // ADMIN_GRANT / PROMOTION → 환불 없음 (무상 부여) / No refund (free grant)
+
+    // 이전 상태 스냅샷 / Previous state snapshot
+    const previousState = {
+      tierType: job.tierType,
+      isPremium: job.isPremium,
+      premiumSource: job.premiumSource,
+      premiumStartAt: job.premiumStartAt?.toISOString() || null,
+      premiumEndAt: job.premiumEndAt?.toISOString() || null,
+      isFeatured: job.isFeatured,
+    };
+
+    // 공고 다운그레이드 / Downgrade posting
+    await this.prisma.jobPosting.update({
+      where: { id: BigInt(jobId) },
+      data: {
+        tierType: 'STANDARD',
+        isPremium: false,
+        premiumSource: null,
+        premiumGrantedBy: null,
+        premiumMemo: null,
+        isFeatured: false,
+      },
+    });
+
+    // AdminJobAction 로그 / Record admin action
+    await this.prisma.adminJobAction.create({
+      data: {
+        jobId: BigInt(jobId),
+        adminId,
+        actionType: 'PREMIUM_REVOKE',
+        reason: dto.reason,
+        metadata: {
+          memo: dto.memo || null,
+          forceNoRefund: dto.forceNoRefund || false,
+          previousState,
+          refundInfo,
+        },
+      },
+    });
+
+    this.logger.log(
+      `[Admin] 프리미엄 해제: adminId=${adminId}, jobId=${jobId}, reason=${dto.reason}, refund=${refundInfo?.eligible ? refundInfo.amount + '원' : 'N/A'}`,
+    );
+
+    return {
+      success: true,
+      jobPostingId: jobId,
+      tierType: 'STANDARD',
+      isPremium: false,
+      revokedBy: adminId,
+      reason: dto.reason,
+      refundInfo,
+    };
+  }
+
+  // ========================================
+  // Admin: 프리미엄 이력 조회 / Admin: premium action history
+  // ========================================
+  async getPremiumHistory(jobId: string) {
+    const job = await this.prisma.jobPosting.findUnique({
+      where: { id: BigInt(jobId) },
+      select: {
+        id: true,
+        title: true,
+        tierType: true,
+        isPremium: true,
+        premiumSource: true,
+        premiumStartAt: true,
+        premiumEndAt: true,
+        premiumGrantedBy: true,
+        premiumMemo: true,
+        isFeatured: true,
+        corporateId: true,
+      },
+    });
+    if (!job) throw new NotFoundException('Job posting not found');
+
+    // AdminJobAction 이력 / Admin action history
+    const adminActions = await this.prisma.adminJobAction.findMany({
+      where: {
+        jobId: BigInt(jobId),
+        actionType: {
+          in: [
+            'PREMIUM_GRANT',
+            'PREMIUM_REVOKE',
+            'FEATURED_GRANT',
+            'FEATURED_REVOKE',
+          ],
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    // 결제 이력 / Payment history
+    const orders = await this.prisma.jobOrder.findMany({
+      where: {
+        jobPostingId: BigInt(jobId),
+        paymentStatus: 'PAID',
+      },
+      include: { product: true },
+      orderBy: { paidAt: 'desc' },
+    });
+
+    return {
+      currentStatus: {
+        jobPostingId: job.id.toString(),
+        title: job.title,
+        tierType: job.tierType,
+        isPremium: job.isPremium,
+        premiumSource: job.premiumSource,
+        premiumStartAt: job.premiumStartAt,
+        premiumEndAt: job.premiumEndAt,
+        premiumGrantedBy: job.premiumGrantedBy,
+        premiumMemo: job.premiumMemo,
+        isFeatured: job.isFeatured,
+      },
+      adminActions: adminActions.map((a) => ({
+        id: a.id.toString(),
+        actionType: a.actionType,
+        adminId: a.adminId,
+        reason: a.reason,
+        metadata: a.metadata,
+        createdAt: a.createdAt,
+      })),
+      paymentHistory: orders.map((o) => ({
+        orderId: o.id.toString(),
+        orderNo: o.orderNo,
+        productCode: o.product.productCode,
+        productName: o.snapshotProductName,
+        paidAmount: o.paidAmount,
+        paidAt: o.paidAt,
+      })),
     };
   }
 

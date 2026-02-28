@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { AuthPrismaService } from 'libs/common/src';
 import { CreateInfoBoardDto } from './dto/create-info-board.dto';
 import { InfoBoardQueryDto } from './dto/info-board-query.dto';
@@ -24,7 +29,10 @@ export class InfoBoardService implements OnModuleInit {
         this.logger.log('Info board seeded with 8 guide posts');
       }
     } catch (e) {
-      this.logger.warn('Info board table may not exist yet. Run prisma db push.', (e as Error).message);
+      this.logger.warn(
+        'Info board table may not exist yet. Run prisma db push.',
+        (e as Error).message,
+      );
     }
   }
 
@@ -39,7 +47,8 @@ export class InfoBoardService implements OnModuleInit {
     // where 조건 / where clause
     const where: Record<string, unknown> = {};
     if (query.category) where.category = query.category;
-    if (query.search) where.title = { contains: query.search, mode: 'insensitive' };
+    if (query.search)
+      where.title = { contains: query.search, mode: 'insensitive' };
 
     const [items, total] = await Promise.all([
       this.authPrisma.infoBoard.findMany({
@@ -47,7 +56,13 @@ export class InfoBoardService implements OnModuleInit {
         orderBy: { createdAt: 'desc' },
         skip,
         take: limit,
-        select: { id: true, title: true, category: true, thumbnail: true, createdAt: true },
+        select: {
+          id: true,
+          title: true,
+          category: true,
+          thumbnail: true,
+          createdAt: true,
+        },
       }),
       this.authPrisma.infoBoard.count({ where }),
     ]);
@@ -62,8 +77,13 @@ export class InfoBoardService implements OnModuleInit {
    * 단건 조회 / Find one by ID
    */
   async findOne(id: number) {
-    const post = await this.authPrisma.infoBoard.findUnique({ where: { id: BigInt(id) } });
-    if (!post) throw new NotFoundException(`게시글을 찾을 수 없습니다 (id: ${id}) / Post not found`);
+    const post = await this.authPrisma.infoBoard.findUnique({
+      where: { id: BigInt(id) },
+    });
+    if (!post)
+      throw new NotFoundException(
+        `게시글을 찾을 수 없습니다 (id: ${id}) / Post not found`,
+      );
     return { ...post, id: Number(post.id) };
   }
 
@@ -72,7 +92,12 @@ export class InfoBoardService implements OnModuleInit {
    */
   async create(dto: CreateInfoBoardDto) {
     const post = await this.authPrisma.infoBoard.create({
-      data: { title: dto.title, content: dto.content, category: dto.category, thumbnail: dto.thumbnail },
+      data: {
+        title: dto.title,
+        content: dto.content,
+        category: dto.category,
+        thumbnail: dto.thumbnail,
+      },
     });
     return { ...post, id: Number(post.id) };
   }
@@ -81,9 +106,13 @@ export class InfoBoardService implements OnModuleInit {
    * 삭제 (어드민 전용) / Delete (admin only)
    */
   async remove(id: number) {
-    await this.authPrisma.infoBoard.delete({ where: { id: BigInt(id) } }).catch(() => {
-      throw new NotFoundException(`게시글을 찾을 수 없습니다 (id: ${id}) / Post not found`);
-    });
+    await this.authPrisma.infoBoard
+      .delete({ where: { id: BigInt(id) } })
+      .catch(() => {
+        throw new NotFoundException(
+          `게시글을 찾을 수 없습니다 (id: ${id}) / Post not found`,
+        );
+      });
     return { deleted: true };
   }
 

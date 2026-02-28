@@ -223,7 +223,9 @@ export class DiagnosisEngineService {
       await this.prisma.diagnosisSession.create({
         data: {
           userId: safeUserId,
-          anonymousId: safeUserId ? (anonymousId ?? null) : (anonymousId ?? userId ?? null),
+          anonymousId: safeUserId
+            ? (anonymousId ?? null)
+            : (anonymousId ?? userId ?? null),
           inputSnapshot: input as any,
           resultsSnapshot: result as any,
           topPathwayId: topPathways[0]?.pathwayId ?? null,

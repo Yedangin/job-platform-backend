@@ -6,7 +6,10 @@ import { InfoCategoryEnum } from './create-info-board.dto';
  * 게시판 목록 조회 쿼리 / Info board list query DTO
  */
 export class InfoBoardQueryDto {
-  @ApiPropertyOptional({ enum: InfoCategoryEnum, description: '카테고리 필터 / Category filter' })
+  @ApiPropertyOptional({
+    enum: InfoCategoryEnum,
+    description: '카테고리 필터 / Category filter',
+  })
   @IsOptional()
   @IsEnum(InfoCategoryEnum)
   category?: InfoCategoryEnum;
@@ -16,7 +19,9 @@ export class InfoBoardQueryDto {
   @IsString()
   search?: string;
 
-  @ApiPropertyOptional({ description: '페이지 (1부터) / Page number (1-indexed)' })
+  @ApiPropertyOptional({
+    description: '페이지 (1부터) / Page number (1-indexed)',
+  })
   @IsOptional()
   @IsString()
   page?: string;

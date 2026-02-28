@@ -697,6 +697,9 @@ exports.Prisma.JobPostingScalarFieldEnum = {
   isPremium: 'isPremium',
   premiumStartAt: 'premiumStartAt',
   premiumEndAt: 'premiumEndAt',
+  premiumSource: 'premiumSource',
+  premiumGrantedBy: 'premiumGrantedBy',
+  premiumMemo: 'premiumMemo',
   fulltimeVisaResult: 'fulltimeVisaResult'
 };
 
@@ -771,6 +774,7 @@ exports.Prisma.AdminJobActionScalarFieldEnum = {
   adminId: 'adminId',
   actionType: 'actionType',
   reason: 'reason',
+  metadata: 'metadata',
   createdAt: 'createdAt'
 };
 
@@ -1059,6 +1063,12 @@ exports.EmploymentSubType = exports.$Enums.EmploymentSubType = {
   INTERNSHIP: 'INTERNSHIP'
 };
 
+exports.PremiumSource = exports.$Enums.PremiumSource = {
+  PAID: 'PAID',
+  ADMIN_GRANT: 'ADMIN_GRANT',
+  PROMOTION: 'PROMOTION'
+};
+
 exports.ApplicationStatus = exports.$Enums.ApplicationStatus = {
   PENDING: 'PENDING',
   REVIEWING: 'REVIEWING',
@@ -1080,7 +1090,11 @@ exports.AdminActionType = exports.$Enums.AdminActionType = {
   SUSPEND: 'SUSPEND',
   UNSUSPEND: 'UNSUSPEND',
   FORCE_CLOSE: 'FORCE_CLOSE',
-  DELETE: 'DELETE'
+  DELETE: 'DELETE',
+  PREMIUM_GRANT: 'PREMIUM_GRANT',
+  PREMIUM_REVOKE: 'PREMIUM_REVOKE',
+  FEATURED_GRANT: 'FEATURED_GRANT',
+  FEATURED_REVOKE: 'FEATURED_REVOKE'
 };
 
 exports.VisaVerifyMethod = exports.$Enums.VisaVerifyMethod = {

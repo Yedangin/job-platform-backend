@@ -1040,17 +1040,14 @@ describe('F4 공공이익 제한 직종 / F-4 Public Interest Restricted Jobs', 
     ['PC_ROOM_STAFF', 'R', 'PC방 직원'],
     ['GOLF_CADDY', 'R', '골프장 캐디'],
     ['STREET_VENDOR', 'G', '노점상'],
-  ])(
-    '%s → F-4 blocked (공공이익 제한: %s)',
-    (code, ksic, _nameKo) => {
-      // [Legal] 법무부 고시 — F-4 공공이익 제한 직종은 인구감소지역(F-4-R)에서도 불가
-      const result = f4.evaluate(
-        createAlbaJobInput({ jobCategoryCode: code, ksicCode: ksic }),
-      );
-      expect(result.status).toBe('blocked');
-      expect(result.blockReasons.some((r) => r.includes('공공이익'))).toBe(true);
-    },
-  );
+  ])('%s → F-4 blocked (공공이익 제한: %s)', (code, ksic, _nameKo) => {
+    // [Legal] 법무부 고시 — F-4 공공이익 제한 직종은 인구감소지역(F-4-R)에서도 불가
+    const result = f4.evaluate(
+      createAlbaJobInput({ jobCategoryCode: code, ksicCode: ksic }),
+    );
+    expect(result.status).toBe('blocked');
+    expect(result.blockReasons.some((r) => r.includes('공공이익'))).toBe(true);
+  });
 
   it('공공이익 제한 직종은 인구감소지역(F-4-R)에서도 금지 (Blocked even in depopulation areas)', () => {
     // [Legal] 법무부 고시 — 공공이익 제한은 F-4-R에서도 해제되지 않음
@@ -1107,19 +1104,18 @@ describe('F4 예외 8직종 전수 확인 / F-4 Exception 8 Jobs Full Verificati
     ['REST_KITCHEN', 'I', '조리 보조원 (예외8a)'],
     ['REST_SERVING', 'I', '음식점 서빙 (예외8b)'],
     ['HOTEL_SERVICE', 'I', '호텔 서비스 (예외8c)'],
-  ])(
-    '%s → F-4 conditional (예외 허용: %s)',
-    (code, ksic, _desc) => {
-      // [Legal] 법무부 고시 (2024) — 단순노무이지만 예외적으로 허용
-      const result = f4.evaluate(
-        createAlbaJobInput({ jobCategoryCode: code, ksicCode: ksic }),
-      );
-      expect(result.status).toBe('conditional');
-      expect(
-        result.conditions.some((c) => c.includes('예외') || c.includes('exception')),
-      ).toBe(true);
-    },
-  );
+  ])('%s → F-4 conditional (예외 허용: %s)', (code, ksic, _desc) => {
+    // [Legal] 법무부 고시 (2024) — 단순노무이지만 예외적으로 허용
+    const result = f4.evaluate(
+      createAlbaJobInput({ jobCategoryCode: code, ksicCode: ksic }),
+    );
+    expect(result.status).toBe('conditional');
+    expect(
+      result.conditions.some(
+        (c) => c.includes('예외') || c.includes('exception'),
+      ),
+    ).toBe(true);
+  });
 });
 
 // ====================================================================
@@ -1142,7 +1138,10 @@ describe('종합 시나리오: 직종+시간 조합별 비자 필터링 / E2E: C
 
   /** 전체 비자 평가 실행 / Run all evaluators */
   function evaluateAll(input: AlbaJobInput) {
-    const results: Record<string, ReturnType<typeof ALL_EVALUATORS['D-2']['evaluate']>> = {};
+    const results: Record<
+      string,
+      ReturnType<(typeof ALL_EVALUATORS)['D-2']['evaluate']>
+    > = {};
     for (const [code, evaluator] of Object.entries(ALL_EVALUATORS)) {
       results[code] = evaluator.evaluate(input);
     }
@@ -1371,35 +1370,50 @@ describe('종합 시나리오: 직종+시간 조합별 비자 필터링 / E2E: C
   // ----------------------------------------------------------------
   describe('시나리오 7: D-2 시간별 필터링 단계', () => {
     const d2 = new D2AlbaEvaluator();
-    const baseInput = { jobCategoryCode: 'CAFE_BARISTA' as string, ksicCode: 'I' };
+    const baseInput = {
+      jobCategoryCode: 'CAFE_BARISTA' as string,
+      ksicCode: 'I',
+    };
 
     it('주 10시간: eligible/conditional (TOPIK 미충족 학부 기본)', () => {
-      const r = d2.evaluate(createAlbaJobInput({ ...baseInput, weeklyHours: 10 }));
+      const r = d2.evaluate(
+        createAlbaJobInput({ ...baseInput, weeklyHours: 10 }),
+      );
       expect(r.status).not.toBe('blocked');
     });
 
     it('주 15시간: conditional (TOPIK 3급+ 필요)', () => {
-      const r = d2.evaluate(createAlbaJobInput({ ...baseInput, weeklyHours: 15 }));
+      const r = d2.evaluate(
+        createAlbaJobInput({ ...baseInput, weeklyHours: 15 }),
+      );
       expect(r.status).toBe('conditional');
     });
 
     it('주 20시간: conditional (학부 TOPIK 최대)', () => {
-      const r = d2.evaluate(createAlbaJobInput({ ...baseInput, weeklyHours: 20 }));
+      const r = d2.evaluate(
+        createAlbaJobInput({ ...baseInput, weeklyHours: 20 }),
+      );
       expect(r.status).toBe('conditional');
     });
 
     it('주 25시간: conditional (석사/박사 조건)', () => {
-      const r = d2.evaluate(createAlbaJobInput({ ...baseInput, weeklyHours: 25 }));
+      const r = d2.evaluate(
+        createAlbaJobInput({ ...baseInput, weeklyHours: 25 }),
+      );
       expect(r.status).toBe('conditional');
     });
 
     it('주 35시간: conditional (박사 우대 최대)', () => {
-      const r = d2.evaluate(createAlbaJobInput({ ...baseInput, weeklyHours: 35 }));
+      const r = d2.evaluate(
+        createAlbaJobInput({ ...baseInput, weeklyHours: 35 }),
+      );
       expect(r.status).toBe('conditional');
     });
 
     it('주 36시간: blocked (절대 최대 초과)', () => {
-      const r = d2.evaluate(createAlbaJobInput({ ...baseInput, weeklyHours: 36 }));
+      const r = d2.evaluate(
+        createAlbaJobInput({ ...baseInput, weeklyHours: 36 }),
+      );
       expect(r.status).toBe('blocked');
     });
   });

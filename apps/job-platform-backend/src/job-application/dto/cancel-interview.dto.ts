@@ -25,8 +25,7 @@ export enum ApplicantCancelReason {
 
 export class CancelInterviewDto {
   @ApiProperty({
-    description:
-      '취소 사유 코드 / Cancel reason code (enum depends on role)',
+    description: '취소 사유 코드 / Cancel reason code (enum depends on role)',
     example: 'PERSONAL_REASON',
   })
   @IsString()

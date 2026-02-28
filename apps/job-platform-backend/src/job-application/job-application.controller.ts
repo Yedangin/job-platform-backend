@@ -317,8 +317,7 @@ export class JobApplicationController {
   @Post(':id/cancel-interview')
   @Roles('CORPORATE', 'ADMIN')
   @ApiOperation({
-    summary:
-      '면접 취소 (기업) / Cancel interview (employer side with reason)',
+    summary: '면접 취소 (기업) / Cancel interview (employer side with reason)',
   })
   @ApiParam({ name: 'id', description: 'Application ID' })
   @ApiResponse({ status: 200, description: 'Interview cancelled' })

@@ -1,5 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsNotEmpty, IsInt, Min } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNotEmpty,
+  IsInt,
+  IsBoolean,
+  Min,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 // ========================================
@@ -138,7 +145,8 @@ export class GetAllOrdersQueryDto {
 }
 
 // ========================================
-// AdminGrantPremiumDto
+// AdminGrantPremiumDto — 어드민 프리미엄 수동 부여
+// AdminGrantPremiumDto — Admin manual premium grant
 // ========================================
 export class AdminGrantPremiumDto {
   @ApiProperty({
@@ -149,4 +157,63 @@ export class AdminGrantPremiumDto {
   @IsInt()
   @Min(1)
   days: number;
+
+  @ApiPropertyOptional({
+    description:
+      '부여 사유 / Grant reason (PARTNER_PROMO, NEW_SIGNUP, EVENT, CS_COMP, OTHER)',
+    example: 'EVENT',
+  })
+  @IsOptional()
+  @IsString()
+  reason?: string;
+
+  @ApiPropertyOptional({
+    description: '내부 메모 / Internal memo',
+    example: '런칭 이벤트 프로모션 대상',
+  })
+  @IsOptional()
+  @IsString()
+  memo?: string;
+
+  @ApiPropertyOptional({
+    description: '상위노출(Featured) 동시 부여 / Also grant featured status',
+    default: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Type(() => Boolean)
+  grantFeatured?: boolean;
+}
+
+// ========================================
+// AdminRevokePremiumDto — 어드민 프리미엄 해제
+// AdminRevokePremiumDto — Admin premium revocation
+// ========================================
+export class AdminRevokePremiumDto {
+  @ApiProperty({
+    description:
+      '해제 사유 / Revocation reason (VIOLATION, WRONG_GRANT, PROMO_END, CORP_REQUEST, OTHER)',
+    example: 'VIOLATION',
+  })
+  @IsString()
+  @IsNotEmpty()
+  reason: string;
+
+  @ApiPropertyOptional({
+    description: '내부 메모 / Internal memo',
+    example: '불법 직종 채용공고 확인',
+  })
+  @IsOptional()
+  @IsString()
+  memo?: string;
+
+  @ApiPropertyOptional({
+    description:
+      '환불 없이 해제 (위반 사유) / Force revoke without refund (violation cases)',
+    default: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Type(() => Boolean)
+  forceNoRefund?: boolean;
 }

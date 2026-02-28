@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { InfoBoardService } from './info-board.service';
 import { CreateInfoBoardDto } from './dto/create-info-board.dto';
@@ -31,13 +39,17 @@ export class InfoBoardController {
   }
 
   @Post()
-  @ApiOperation({ summary: '게시글 생성 (어드민) / Create info board post (admin)' })
+  @ApiOperation({
+    summary: '게시글 생성 (어드민) / Create info board post (admin)',
+  })
   create(@Body() dto: CreateInfoBoardDto) {
     return this.infoBoardService.create(dto);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: '게시글 삭제 (어드민) / Delete info board post (admin)' })
+  @ApiOperation({
+    summary: '게시글 삭제 (어드민) / Delete info board post (admin)',
+  })
   remove(@Param('id') id: string) {
     return this.infoBoardService.remove(parseInt(id, 10));
   }

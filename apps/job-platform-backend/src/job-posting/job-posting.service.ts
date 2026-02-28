@@ -723,6 +723,7 @@ export class JobPostingService {
       expiresAt: item.expiresAt,
       premiumStartAt: item.premiumStartAt,
       premiumEndAt: item.premiumEndAt,
+      premiumSource: item.premiumSource || null,
       bumpedAt: item.bumpedAt,
       isUrgent: item.isUrgent || false,
       isFeatured: item.isFeatured || false,

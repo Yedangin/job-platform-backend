@@ -1162,8 +1162,14 @@ export class JobApplicationService {
     rejectionReason?: string;
     additionalInfo?: string;
   }): string {
-    const { companyName, jobTitle, isAccepted, message, rejectionReason, additionalInfo } =
-      params;
+    const {
+      companyName,
+      jobTitle,
+      isAccepted,
+      message,
+      rejectionReason,
+      additionalInfo,
+    } = params;
 
     const resultTitle = isAccepted
       ? '합격을 축하드립니다! / Congratulations!'
@@ -1591,8 +1597,7 @@ export class JobApplicationService {
     });
 
     // 상대방에게 알림 / Notify the other party
-    const notifyUserId =
-      actorType === 'EMPLOYER' ? app.applicantId : null;
+    const notifyUserId = actorType === 'EMPLOYER' ? app.applicantId : null;
 
     if (actorType === 'EMPLOYER' && notifyUserId) {
       setImmediate(() => {

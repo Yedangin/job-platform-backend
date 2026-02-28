@@ -855,9 +855,12 @@ export class AuthController {
       const pendingPlatform = req.cookies?.pending_platform || null;
       if (pendingPlatform === 'app') {
         res.clearCookie('pending_platform', { path: '/' });
-        Logger.log('[소셜 로그인] 앱 딥링크 리다이렉트 / App deep link redirect', {
-          sessionId: result.sessionId,
-        });
+        Logger.log(
+          '[소셜 로그인] 앱 딥링크 리다이렉트 / App deep link redirect',
+          {
+            sessionId: result.sessionId,
+          },
+        );
         return res.redirect(
           `jobchaja://auth/callback?sessionId=${result.sessionId}`,
         );

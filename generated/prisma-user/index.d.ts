@@ -535,10 +535,23 @@ export const AdminActionType: {
   SUSPEND: 'SUSPEND',
   UNSUSPEND: 'UNSUSPEND',
   FORCE_CLOSE: 'FORCE_CLOSE',
-  DELETE: 'DELETE'
+  DELETE: 'DELETE',
+  PREMIUM_GRANT: 'PREMIUM_GRANT',
+  PREMIUM_REVOKE: 'PREMIUM_REVOKE',
+  FEATURED_GRANT: 'FEATURED_GRANT',
+  FEATURED_REVOKE: 'FEATURED_REVOKE'
 };
 
 export type AdminActionType = (typeof AdminActionType)[keyof typeof AdminActionType]
+
+
+export const PremiumSource: {
+  PAID: 'PAID',
+  ADMIN_GRANT: 'ADMIN_GRANT',
+  PROMOTION: 'PROMOTION'
+};
+
+export type PremiumSource = (typeof PremiumSource)[keyof typeof PremiumSource]
 
 
 export const VisaVerifyMethod: {
@@ -679,6 +692,10 @@ export const ActorType: typeof $Enums.ActorType
 export type AdminActionType = $Enums.AdminActionType
 
 export const AdminActionType: typeof $Enums.AdminActionType
+
+export type PremiumSource = $Enums.PremiumSource
+
+export const PremiumSource: typeof $Enums.PremiumSource
 
 export type VisaVerifyMethod = $Enums.VisaVerifyMethod
 
@@ -46142,6 +46159,9 @@ export namespace Prisma {
     isPremium: boolean | null
     premiumStartAt: Date | null
     premiumEndAt: Date | null
+    premiumSource: $Enums.PremiumSource | null
+    premiumGrantedBy: string | null
+    premiumMemo: string | null
   }
 
   export type JobPostingMaxAggregateOutputType = {
@@ -46187,6 +46207,9 @@ export namespace Prisma {
     isPremium: boolean | null
     premiumStartAt: Date | null
     premiumEndAt: Date | null
+    premiumSource: $Enums.PremiumSource | null
+    premiumGrantedBy: string | null
+    premiumMemo: string | null
   }
 
   export type JobPostingCountAggregateOutputType = {
@@ -46232,6 +46255,9 @@ export namespace Prisma {
     isPremium: number
     premiumStartAt: number
     premiumEndAt: number
+    premiumSource: number
+    premiumGrantedBy: number
+    premiumMemo: number
     fulltimeVisaResult: number
     _all: number
   }
@@ -46300,6 +46326,9 @@ export namespace Prisma {
     isPremium?: true
     premiumStartAt?: true
     premiumEndAt?: true
+    premiumSource?: true
+    premiumGrantedBy?: true
+    premiumMemo?: true
   }
 
   export type JobPostingMaxAggregateInputType = {
@@ -46345,6 +46374,9 @@ export namespace Prisma {
     isPremium?: true
     premiumStartAt?: true
     premiumEndAt?: true
+    premiumSource?: true
+    premiumGrantedBy?: true
+    premiumMemo?: true
   }
 
   export type JobPostingCountAggregateInputType = {
@@ -46390,6 +46422,9 @@ export namespace Prisma {
     isPremium?: true
     premiumStartAt?: true
     premiumEndAt?: true
+    premiumSource?: true
+    premiumGrantedBy?: true
+    premiumMemo?: true
     fulltimeVisaResult?: true
     _all?: true
   }
@@ -46523,6 +46558,9 @@ export namespace Prisma {
     isPremium: boolean
     premiumStartAt: Date | null
     premiumEndAt: Date | null
+    premiumSource: $Enums.PremiumSource | null
+    premiumGrantedBy: string | null
+    premiumMemo: string | null
     fulltimeVisaResult: JsonValue | null
     _count: JobPostingCountAggregateOutputType | null
     _avg: JobPostingAvgAggregateOutputType | null
@@ -46588,6 +46626,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: boolean
     premiumEndAt?: boolean
+    premiumSource?: boolean
+    premiumGrantedBy?: boolean
+    premiumMemo?: boolean
     fulltimeVisaResult?: boolean
     albaAttributes?: boolean | JobPosting$albaAttributesArgs<ExtArgs>
     fulltimeAttributes?: boolean | JobPosting$fulltimeAttributesArgs<ExtArgs>
@@ -46640,6 +46681,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: boolean
     premiumEndAt?: boolean
+    premiumSource?: boolean
+    premiumGrantedBy?: boolean
+    premiumMemo?: boolean
     fulltimeVisaResult?: boolean
   }, ExtArgs["result"]["jobPosting"]>
 
@@ -46686,6 +46730,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: boolean
     premiumEndAt?: boolean
+    premiumSource?: boolean
+    premiumGrantedBy?: boolean
+    premiumMemo?: boolean
     fulltimeVisaResult?: boolean
   }, ExtArgs["result"]["jobPosting"]>
 
@@ -46732,10 +46779,13 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: boolean
     premiumEndAt?: boolean
+    premiumSource?: boolean
+    premiumGrantedBy?: boolean
+    premiumMemo?: boolean
     fulltimeVisaResult?: boolean
   }
 
-  export type JobPostingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "corporateId" | "orderId" | "boardType" | "tierType" | "title" | "description" | "workContentImg" | "status" | "closingDate" | "allowedVisas" | "minKoreanLevel" | "displayAddress" | "actualAddress" | "workIntensity" | "benefits" | "contactName" | "contactPhone" | "contactEmail" | "applicationMethod" | "externalUrl" | "externalEmail" | "interviewMethod" | "interviewPlace" | "employmentSubType" | "expiresAt" | "bumpedAt" | "isUrgent" | "isFeatured" | "featuredUntil" | "upgradedAt" | "viewCount" | "scrapCount" | "applyCount" | "suspendedAt" | "suspendReason" | "suspendedBy" | "createdAt" | "updatedAt" | "isPremium" | "premiumStartAt" | "premiumEndAt" | "fulltimeVisaResult", ExtArgs["result"]["jobPosting"]>
+  export type JobPostingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "corporateId" | "orderId" | "boardType" | "tierType" | "title" | "description" | "workContentImg" | "status" | "closingDate" | "allowedVisas" | "minKoreanLevel" | "displayAddress" | "actualAddress" | "workIntensity" | "benefits" | "contactName" | "contactPhone" | "contactEmail" | "applicationMethod" | "externalUrl" | "externalEmail" | "interviewMethod" | "interviewPlace" | "employmentSubType" | "expiresAt" | "bumpedAt" | "isUrgent" | "isFeatured" | "featuredUntil" | "upgradedAt" | "viewCount" | "scrapCount" | "applyCount" | "suspendedAt" | "suspendReason" | "suspendedBy" | "createdAt" | "updatedAt" | "isPremium" | "premiumStartAt" | "premiumEndAt" | "premiumSource" | "premiumGrantedBy" | "premiumMemo" | "fulltimeVisaResult", ExtArgs["result"]["jobPosting"]>
   export type JobPostingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     albaAttributes?: boolean | JobPosting$albaAttributesArgs<ExtArgs>
     fulltimeAttributes?: boolean | JobPosting$fulltimeAttributesArgs<ExtArgs>
@@ -46799,6 +46849,9 @@ export namespace Prisma {
       isPremium: boolean
       premiumStartAt: Date | null
       premiumEndAt: Date | null
+      premiumSource: $Enums.PremiumSource | null
+      premiumGrantedBy: string | null
+      premiumMemo: string | null
       fulltimeVisaResult: Prisma.JsonValue | null
     }, ExtArgs["result"]["jobPosting"]>
     composites: {}
@@ -47270,6 +47323,9 @@ export namespace Prisma {
     readonly isPremium: FieldRef<"JobPosting", 'Boolean'>
     readonly premiumStartAt: FieldRef<"JobPosting", 'DateTime'>
     readonly premiumEndAt: FieldRef<"JobPosting", 'DateTime'>
+    readonly premiumSource: FieldRef<"JobPosting", 'PremiumSource'>
+    readonly premiumGrantedBy: FieldRef<"JobPosting", 'String'>
+    readonly premiumMemo: FieldRef<"JobPosting", 'String'>
     readonly fulltimeVisaResult: FieldRef<"JobPosting", 'Json'>
   }
     
@@ -53700,6 +53756,7 @@ export namespace Prisma {
     adminId: number
     actionType: number
     reason: number
+    metadata: number
     createdAt: number
     _all: number
   }
@@ -53739,6 +53796,7 @@ export namespace Prisma {
     adminId?: true
     actionType?: true
     reason?: true
+    metadata?: true
     createdAt?: true
     _all?: true
   }
@@ -53835,6 +53893,7 @@ export namespace Prisma {
     adminId: string
     actionType: $Enums.AdminActionType
     reason: string | null
+    metadata: JsonValue | null
     createdAt: Date
     _count: AdminJobActionCountAggregateOutputType | null
     _avg: AdminJobActionAvgAggregateOutputType | null
@@ -53863,6 +53922,7 @@ export namespace Prisma {
     adminId?: boolean
     actionType?: boolean
     reason?: boolean
+    metadata?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["adminJobAction"]>
 
@@ -53872,6 +53932,7 @@ export namespace Prisma {
     adminId?: boolean
     actionType?: boolean
     reason?: boolean
+    metadata?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["adminJobAction"]>
 
@@ -53881,6 +53942,7 @@ export namespace Prisma {
     adminId?: boolean
     actionType?: boolean
     reason?: boolean
+    metadata?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["adminJobAction"]>
 
@@ -53890,10 +53952,11 @@ export namespace Prisma {
     adminId?: boolean
     actionType?: boolean
     reason?: boolean
+    metadata?: boolean
     createdAt?: boolean
   }
 
-  export type AdminJobActionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "adminId" | "actionType" | "reason" | "createdAt", ExtArgs["result"]["adminJobAction"]>
+  export type AdminJobActionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "adminId" | "actionType" | "reason" | "metadata" | "createdAt", ExtArgs["result"]["adminJobAction"]>
 
   export type $AdminJobActionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "AdminJobAction"
@@ -53904,6 +53967,7 @@ export namespace Prisma {
       adminId: string
       actionType: $Enums.AdminActionType
       reason: string | null
+      metadata: Prisma.JsonValue | null
       createdAt: Date
     }, ExtArgs["result"]["adminJobAction"]>
     composites: {}
@@ -54333,6 +54397,7 @@ export namespace Prisma {
     readonly adminId: FieldRef<"AdminJobAction", 'String'>
     readonly actionType: FieldRef<"AdminJobAction", 'AdminActionType'>
     readonly reason: FieldRef<"AdminJobAction", 'String'>
+    readonly metadata: FieldRef<"AdminJobAction", 'Json'>
     readonly createdAt: FieldRef<"AdminJobAction", 'DateTime'>
   }
     
@@ -61248,6 +61313,9 @@ export namespace Prisma {
     isPremium: 'isPremium',
     premiumStartAt: 'premiumStartAt',
     premiumEndAt: 'premiumEndAt',
+    premiumSource: 'premiumSource',
+    premiumGrantedBy: 'premiumGrantedBy',
+    premiumMemo: 'premiumMemo',
     fulltimeVisaResult: 'fulltimeVisaResult'
   };
 
@@ -61340,6 +61408,7 @@ export namespace Prisma {
     adminId: 'adminId',
     actionType: 'actionType',
     reason: 'reason',
+    metadata: 'metadata',
     createdAt: 'createdAt'
   };
 
@@ -61966,6 +62035,20 @@ export namespace Prisma {
    * Reference to a field of type 'EmploymentSubType[]'
    */
   export type ListEnumEmploymentSubTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmploymentSubType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'PremiumSource'
+   */
+  export type EnumPremiumSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PremiumSource'>
+    
+
+
+  /**
+   * Reference to a field of type 'PremiumSource[]'
+   */
+  export type ListEnumPremiumSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PremiumSource[]'>
     
 
 
@@ -65384,6 +65467,9 @@ export namespace Prisma {
     isPremium?: BoolFilter<"JobPosting"> | boolean
     premiumStartAt?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
     premiumEndAt?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
+    premiumSource?: EnumPremiumSourceNullableFilter<"JobPosting"> | $Enums.PremiumSource | null
+    premiumGrantedBy?: StringNullableFilter<"JobPosting"> | string | null
+    premiumMemo?: StringNullableFilter<"JobPosting"> | string | null
     fulltimeVisaResult?: JsonNullableFilter<"JobPosting">
     albaAttributes?: XOR<JobAttributesAlbaNullableScalarRelationFilter, JobAttributesAlbaWhereInput> | null
     fulltimeAttributes?: XOR<JobAttributesFulltimeNullableScalarRelationFilter, JobAttributesFulltimeWhereInput> | null
@@ -65435,6 +65521,9 @@ export namespace Prisma {
     isPremium?: SortOrder
     premiumStartAt?: SortOrderInput | SortOrder
     premiumEndAt?: SortOrderInput | SortOrder
+    premiumSource?: SortOrderInput | SortOrder
+    premiumGrantedBy?: SortOrderInput | SortOrder
+    premiumMemo?: SortOrderInput | SortOrder
     fulltimeVisaResult?: SortOrderInput | SortOrder
     albaAttributes?: JobAttributesAlbaOrderByWithRelationInput
     fulltimeAttributes?: JobAttributesFulltimeOrderByWithRelationInput
@@ -65489,6 +65578,9 @@ export namespace Prisma {
     isPremium?: BoolFilter<"JobPosting"> | boolean
     premiumStartAt?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
     premiumEndAt?: DateTimeNullableFilter<"JobPosting"> | Date | string | null
+    premiumSource?: EnumPremiumSourceNullableFilter<"JobPosting"> | $Enums.PremiumSource | null
+    premiumGrantedBy?: StringNullableFilter<"JobPosting"> | string | null
+    premiumMemo?: StringNullableFilter<"JobPosting"> | string | null
     fulltimeVisaResult?: JsonNullableFilter<"JobPosting">
     albaAttributes?: XOR<JobAttributesAlbaNullableScalarRelationFilter, JobAttributesAlbaWhereInput> | null
     fulltimeAttributes?: XOR<JobAttributesFulltimeNullableScalarRelationFilter, JobAttributesFulltimeWhereInput> | null
@@ -65540,6 +65632,9 @@ export namespace Prisma {
     isPremium?: SortOrder
     premiumStartAt?: SortOrderInput | SortOrder
     premiumEndAt?: SortOrderInput | SortOrder
+    premiumSource?: SortOrderInput | SortOrder
+    premiumGrantedBy?: SortOrderInput | SortOrder
+    premiumMemo?: SortOrderInput | SortOrder
     fulltimeVisaResult?: SortOrderInput | SortOrder
     _count?: JobPostingCountOrderByAggregateInput
     _avg?: JobPostingAvgOrderByAggregateInput
@@ -65594,6 +65689,9 @@ export namespace Prisma {
     isPremium?: BoolWithAggregatesFilter<"JobPosting"> | boolean
     premiumStartAt?: DateTimeNullableWithAggregatesFilter<"JobPosting"> | Date | string | null
     premiumEndAt?: DateTimeNullableWithAggregatesFilter<"JobPosting"> | Date | string | null
+    premiumSource?: EnumPremiumSourceNullableWithAggregatesFilter<"JobPosting"> | $Enums.PremiumSource | null
+    premiumGrantedBy?: StringNullableWithAggregatesFilter<"JobPosting"> | string | null
+    premiumMemo?: StringNullableWithAggregatesFilter<"JobPosting"> | string | null
     fulltimeVisaResult?: JsonNullableWithAggregatesFilter<"JobPosting">
   }
 
@@ -66024,6 +66122,7 @@ export namespace Prisma {
     adminId?: StringFilter<"AdminJobAction"> | string
     actionType?: EnumAdminActionTypeFilter<"AdminJobAction"> | $Enums.AdminActionType
     reason?: StringNullableFilter<"AdminJobAction"> | string | null
+    metadata?: JsonNullableFilter<"AdminJobAction">
     createdAt?: DateTimeFilter<"AdminJobAction"> | Date | string
   }
 
@@ -66033,6 +66132,7 @@ export namespace Prisma {
     adminId?: SortOrder
     actionType?: SortOrder
     reason?: SortOrderInput | SortOrder
+    metadata?: SortOrderInput | SortOrder
     createdAt?: SortOrder
   }
 
@@ -66045,6 +66145,7 @@ export namespace Prisma {
     adminId?: StringFilter<"AdminJobAction"> | string
     actionType?: EnumAdminActionTypeFilter<"AdminJobAction"> | $Enums.AdminActionType
     reason?: StringNullableFilter<"AdminJobAction"> | string | null
+    metadata?: JsonNullableFilter<"AdminJobAction">
     createdAt?: DateTimeFilter<"AdminJobAction"> | Date | string
   }, "id">
 
@@ -66054,6 +66155,7 @@ export namespace Prisma {
     adminId?: SortOrder
     actionType?: SortOrder
     reason?: SortOrderInput | SortOrder
+    metadata?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: AdminJobActionCountOrderByAggregateInput
     _avg?: AdminJobActionAvgOrderByAggregateInput
@@ -66071,6 +66173,7 @@ export namespace Prisma {
     adminId?: StringWithAggregatesFilter<"AdminJobAction"> | string
     actionType?: EnumAdminActionTypeWithAggregatesFilter<"AdminJobAction"> | $Enums.AdminActionType
     reason?: StringNullableWithAggregatesFilter<"AdminJobAction"> | string | null
+    metadata?: JsonNullableWithAggregatesFilter<"AdminJobAction">
     createdAt?: DateTimeWithAggregatesFilter<"AdminJobAction"> | Date | string
   }
 
@@ -70387,6 +70490,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: Date | string | null
     premiumEndAt?: Date | string | null
+    premiumSource?: $Enums.PremiumSource | null
+    premiumGrantedBy?: string | null
+    premiumMemo?: string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeCreateNestedOneWithoutJobInput
@@ -70438,6 +70544,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: Date | string | null
     premiumEndAt?: Date | string | null
+    premiumSource?: $Enums.PremiumSource | null
+    premiumGrantedBy?: string | null
+    premiumMemo?: string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedCreateNestedOneWithoutJobInput
@@ -70489,6 +70598,9 @@ export namespace Prisma {
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumSource?: NullableEnumPremiumSourceFieldUpdateOperationsInput | $Enums.PremiumSource | null
+    premiumGrantedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    premiumMemo?: NullableStringFieldUpdateOperationsInput | string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUpdateOneWithoutJobNestedInput
@@ -70540,6 +70652,9 @@ export namespace Prisma {
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumSource?: NullableEnumPremiumSourceFieldUpdateOperationsInput | $Enums.PremiumSource | null
+    premiumGrantedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    premiumMemo?: NullableStringFieldUpdateOperationsInput | string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedUpdateOneWithoutJobNestedInput
@@ -70591,6 +70706,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: Date | string | null
     premiumEndAt?: Date | string | null
+    premiumSource?: $Enums.PremiumSource | null
+    premiumGrantedBy?: string | null
+    premiumMemo?: string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
   }
 
@@ -70637,6 +70755,9 @@ export namespace Prisma {
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumSource?: NullableEnumPremiumSourceFieldUpdateOperationsInput | $Enums.PremiumSource | null
+    premiumGrantedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    premiumMemo?: NullableStringFieldUpdateOperationsInput | string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
   }
 
@@ -70683,6 +70804,9 @@ export namespace Prisma {
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumSource?: NullableEnumPremiumSourceFieldUpdateOperationsInput | $Enums.PremiumSource | null
+    premiumGrantedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    premiumMemo?: NullableStringFieldUpdateOperationsInput | string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
   }
 
@@ -71145,6 +71269,7 @@ export namespace Prisma {
     adminId: string
     actionType: $Enums.AdminActionType
     reason?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
   }
 
@@ -71154,6 +71279,7 @@ export namespace Prisma {
     adminId: string
     actionType: $Enums.AdminActionType
     reason?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
   }
 
@@ -71163,6 +71289,7 @@ export namespace Prisma {
     adminId?: StringFieldUpdateOperationsInput | string
     actionType?: EnumAdminActionTypeFieldUpdateOperationsInput | $Enums.AdminActionType
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -71172,6 +71299,7 @@ export namespace Prisma {
     adminId?: StringFieldUpdateOperationsInput | string
     actionType?: EnumAdminActionTypeFieldUpdateOperationsInput | $Enums.AdminActionType
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -71181,6 +71309,7 @@ export namespace Prisma {
     adminId: string
     actionType: $Enums.AdminActionType
     reason?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
   }
 
@@ -71190,6 +71319,7 @@ export namespace Prisma {
     adminId?: StringFieldUpdateOperationsInput | string
     actionType?: EnumAdminActionTypeFieldUpdateOperationsInput | $Enums.AdminActionType
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -71199,6 +71329,7 @@ export namespace Prisma {
     adminId?: StringFieldUpdateOperationsInput | string
     actionType?: EnumAdminActionTypeFieldUpdateOperationsInput | $Enums.AdminActionType
     reason?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -74863,6 +74994,13 @@ export namespace Prisma {
     not?: NestedEnumEmploymentSubTypeNullableFilter<$PrismaModel> | $Enums.EmploymentSubType | null
   }
 
+  export type EnumPremiumSourceNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.PremiumSource | EnumPremiumSourceFieldRefInput<$PrismaModel> | null
+    in?: $Enums.PremiumSource[] | ListEnumPremiumSourceFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.PremiumSource[] | ListEnumPremiumSourceFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumPremiumSourceNullableFilter<$PrismaModel> | $Enums.PremiumSource | null
+  }
+
   export type JobAttributesAlbaNullableScalarRelationFilter = {
     is?: JobAttributesAlbaWhereInput | null
     isNot?: JobAttributesAlbaWhereInput | null
@@ -74946,6 +75084,9 @@ export namespace Prisma {
     isPremium?: SortOrder
     premiumStartAt?: SortOrder
     premiumEndAt?: SortOrder
+    premiumSource?: SortOrder
+    premiumGrantedBy?: SortOrder
+    premiumMemo?: SortOrder
     fulltimeVisaResult?: SortOrder
   }
 
@@ -75002,6 +75143,9 @@ export namespace Prisma {
     isPremium?: SortOrder
     premiumStartAt?: SortOrder
     premiumEndAt?: SortOrder
+    premiumSource?: SortOrder
+    premiumGrantedBy?: SortOrder
+    premiumMemo?: SortOrder
   }
 
   export type JobPostingMinOrderByAggregateInput = {
@@ -75047,6 +75191,9 @@ export namespace Prisma {
     isPremium?: SortOrder
     premiumStartAt?: SortOrder
     premiumEndAt?: SortOrder
+    premiumSource?: SortOrder
+    premiumGrantedBy?: SortOrder
+    premiumMemo?: SortOrder
   }
 
   export type JobPostingSumOrderByAggregateInput = {
@@ -75107,6 +75254,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumEmploymentSubTypeNullableFilter<$PrismaModel>
     _max?: NestedEnumEmploymentSubTypeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumPremiumSourceNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PremiumSource | EnumPremiumSourceFieldRefInput<$PrismaModel> | null
+    in?: $Enums.PremiumSource[] | ListEnumPremiumSourceFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.PremiumSource[] | ListEnumPremiumSourceFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumPremiumSourceNullableWithAggregatesFilter<$PrismaModel> | $Enums.PremiumSource | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumPremiumSourceNullableFilter<$PrismaModel>
+    _max?: NestedEnumPremiumSourceNullableFilter<$PrismaModel>
   }
 
   export type JobPostingScalarRelationFilter = {
@@ -75449,6 +75606,7 @@ export namespace Prisma {
     adminId?: SortOrder
     actionType?: SortOrder
     reason?: SortOrder
+    metadata?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -77599,6 +77757,10 @@ export namespace Prisma {
     set?: $Enums.EmploymentSubType | null
   }
 
+  export type NullableEnumPremiumSourceFieldUpdateOperationsInput = {
+    set?: $Enums.PremiumSource | null
+  }
+
   export type JobAttributesAlbaUpdateOneWithoutJobNestedInput = {
     create?: XOR<JobAttributesAlbaCreateWithoutJobInput, JobAttributesAlbaUncheckedCreateWithoutJobInput>
     connectOrCreate?: JobAttributesAlbaCreateOrConnectWithoutJobInput
@@ -78779,6 +78941,13 @@ export namespace Prisma {
     not?: NestedEnumEmploymentSubTypeNullableFilter<$PrismaModel> | $Enums.EmploymentSubType | null
   }
 
+  export type NestedEnumPremiumSourceNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.PremiumSource | EnumPremiumSourceFieldRefInput<$PrismaModel> | null
+    in?: $Enums.PremiumSource[] | ListEnumPremiumSourceFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.PremiumSource[] | ListEnumPremiumSourceFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumPremiumSourceNullableFilter<$PrismaModel> | $Enums.PremiumSource | null
+  }
+
   export type NestedEnumPostStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.PostStatus | EnumPostStatusFieldRefInput<$PrismaModel>
     in?: $Enums.PostStatus[] | ListEnumPostStatusFieldRefInput<$PrismaModel>
@@ -78827,6 +78996,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumEmploymentSubTypeNullableFilter<$PrismaModel>
     _max?: NestedEnumEmploymentSubTypeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumPremiumSourceNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PremiumSource | EnumPremiumSourceFieldRefInput<$PrismaModel> | null
+    in?: $Enums.PremiumSource[] | ListEnumPremiumSourceFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.PremiumSource[] | ListEnumPremiumSourceFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumPremiumSourceNullableWithAggregatesFilter<$PrismaModel> | $Enums.PremiumSource | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumPremiumSourceNullableFilter<$PrismaModel>
+    _max?: NestedEnumPremiumSourceNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumApplicationStatusFilter<$PrismaModel = never> = {
@@ -84888,6 +85067,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: Date | string | null
     premiumEndAt?: Date | string | null
+    premiumSource?: $Enums.PremiumSource | null
+    premiumGrantedBy?: string | null
+    premiumMemo?: string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     fulltimeAttributes?: JobAttributesFulltimeCreateNestedOneWithoutJobInput
     interviewSlots?: InterviewSlotCreateNestedManyWithoutJobInput
@@ -84938,6 +85120,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: Date | string | null
     premiumEndAt?: Date | string | null
+    premiumSource?: $Enums.PremiumSource | null
+    premiumGrantedBy?: string | null
+    premiumMemo?: string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     fulltimeAttributes?: JobAttributesFulltimeUncheckedCreateNestedOneWithoutJobInput
     interviewSlots?: InterviewSlotUncheckedCreateNestedManyWithoutJobInput
@@ -85004,6 +85189,9 @@ export namespace Prisma {
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumSource?: NullableEnumPremiumSourceFieldUpdateOperationsInput | $Enums.PremiumSource | null
+    premiumGrantedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    premiumMemo?: NullableStringFieldUpdateOperationsInput | string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     fulltimeAttributes?: JobAttributesFulltimeUpdateOneWithoutJobNestedInput
     interviewSlots?: InterviewSlotUpdateManyWithoutJobNestedInput
@@ -85054,6 +85242,9 @@ export namespace Prisma {
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumSource?: NullableEnumPremiumSourceFieldUpdateOperationsInput | $Enums.PremiumSource | null
+    premiumGrantedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    premiumMemo?: NullableStringFieldUpdateOperationsInput | string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     fulltimeAttributes?: JobAttributesFulltimeUncheckedUpdateOneWithoutJobNestedInput
     interviewSlots?: InterviewSlotUncheckedUpdateManyWithoutJobNestedInput
@@ -85104,6 +85295,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: Date | string | null
     premiumEndAt?: Date | string | null
+    premiumSource?: $Enums.PremiumSource | null
+    premiumGrantedBy?: string | null
+    premiumMemo?: string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaCreateNestedOneWithoutJobInput
     interviewSlots?: InterviewSlotCreateNestedManyWithoutJobInput
@@ -85154,6 +85348,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: Date | string | null
     premiumEndAt?: Date | string | null
+    premiumSource?: $Enums.PremiumSource | null
+    premiumGrantedBy?: string | null
+    premiumMemo?: string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedCreateNestedOneWithoutJobInput
     interviewSlots?: InterviewSlotUncheckedCreateNestedManyWithoutJobInput
@@ -85220,6 +85417,9 @@ export namespace Prisma {
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumSource?: NullableEnumPremiumSourceFieldUpdateOperationsInput | $Enums.PremiumSource | null
+    premiumGrantedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    premiumMemo?: NullableStringFieldUpdateOperationsInput | string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUpdateOneWithoutJobNestedInput
     interviewSlots?: InterviewSlotUpdateManyWithoutJobNestedInput
@@ -85270,6 +85470,9 @@ export namespace Prisma {
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumSource?: NullableEnumPremiumSourceFieldUpdateOperationsInput | $Enums.PremiumSource | null
+    premiumGrantedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    premiumMemo?: NullableStringFieldUpdateOperationsInput | string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedUpdateOneWithoutJobNestedInput
     interviewSlots?: InterviewSlotUncheckedUpdateManyWithoutJobNestedInput
@@ -85320,6 +85523,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: Date | string | null
     premiumEndAt?: Date | string | null
+    premiumSource?: $Enums.PremiumSource | null
+    premiumGrantedBy?: string | null
+    premiumMemo?: string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeCreateNestedOneWithoutJobInput
@@ -85370,6 +85576,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: Date | string | null
     premiumEndAt?: Date | string | null
+    premiumSource?: $Enums.PremiumSource | null
+    premiumGrantedBy?: string | null
+    premiumMemo?: string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedCreateNestedOneWithoutJobInput
@@ -85461,6 +85670,9 @@ export namespace Prisma {
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumSource?: NullableEnumPremiumSourceFieldUpdateOperationsInput | $Enums.PremiumSource | null
+    premiumGrantedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    premiumMemo?: NullableStringFieldUpdateOperationsInput | string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUpdateOneWithoutJobNestedInput
@@ -85511,6 +85723,9 @@ export namespace Prisma {
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumSource?: NullableEnumPremiumSourceFieldUpdateOperationsInput | $Enums.PremiumSource | null
+    premiumGrantedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    premiumMemo?: NullableStringFieldUpdateOperationsInput | string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedUpdateOneWithoutJobNestedInput
@@ -85592,6 +85807,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: Date | string | null
     premiumEndAt?: Date | string | null
+    premiumSource?: $Enums.PremiumSource | null
+    premiumGrantedBy?: string | null
+    premiumMemo?: string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeCreateNestedOneWithoutJobInput
@@ -85642,6 +85860,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: Date | string | null
     premiumEndAt?: Date | string | null
+    premiumSource?: $Enums.PremiumSource | null
+    premiumGrantedBy?: string | null
+    premiumMemo?: string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedCreateNestedOneWithoutJobInput
@@ -85773,6 +85994,9 @@ export namespace Prisma {
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumSource?: NullableEnumPremiumSourceFieldUpdateOperationsInput | $Enums.PremiumSource | null
+    premiumGrantedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    premiumMemo?: NullableStringFieldUpdateOperationsInput | string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUpdateOneWithoutJobNestedInput
@@ -85823,6 +86047,9 @@ export namespace Prisma {
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumSource?: NullableEnumPremiumSourceFieldUpdateOperationsInput | $Enums.PremiumSource | null
+    premiumGrantedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    premiumMemo?: NullableStringFieldUpdateOperationsInput | string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedUpdateOneWithoutJobNestedInput
@@ -85944,6 +86171,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: Date | string | null
     premiumEndAt?: Date | string | null
+    premiumSource?: $Enums.PremiumSource | null
+    premiumGrantedBy?: string | null
+    premiumMemo?: string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeCreateNestedOneWithoutJobInput
@@ -85994,6 +86224,9 @@ export namespace Prisma {
     isPremium?: boolean
     premiumStartAt?: Date | string | null
     premiumEndAt?: Date | string | null
+    premiumSource?: $Enums.PremiumSource | null
+    premiumGrantedBy?: string | null
+    premiumMemo?: string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedCreateNestedOneWithoutJobInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedCreateNestedOneWithoutJobInput
@@ -86060,6 +86293,9 @@ export namespace Prisma {
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumSource?: NullableEnumPremiumSourceFieldUpdateOperationsInput | $Enums.PremiumSource | null
+    premiumGrantedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    premiumMemo?: NullableStringFieldUpdateOperationsInput | string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUpdateOneWithoutJobNestedInput
@@ -86110,6 +86346,9 @@ export namespace Prisma {
     isPremium?: BoolFieldUpdateOperationsInput | boolean
     premiumStartAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     premiumEndAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumSource?: NullableEnumPremiumSourceFieldUpdateOperationsInput | $Enums.PremiumSource | null
+    premiumGrantedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    premiumMemo?: NullableStringFieldUpdateOperationsInput | string | null
     fulltimeVisaResult?: NullableJsonNullValueInput | InputJsonValue
     albaAttributes?: JobAttributesAlbaUncheckedUpdateOneWithoutJobNestedInput
     fulltimeAttributes?: JobAttributesFulltimeUncheckedUpdateOneWithoutJobNestedInput

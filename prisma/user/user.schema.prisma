@@ -1189,6 +1189,9 @@ model JobPosting {
   isPremium        Boolean           @default(false) @map("is_premium")
   premiumStartAt   DateTime?         @map("premium_start_at")
   premiumEndAt     DateTime?         @map("premium_end_at")
+  premiumSource    PremiumSource?    @map("premium_source")
+  premiumGrantedBy String?           @map("premium_granted_by")
+  premiumMemo      String?           @map("premium_memo") @db.Text
 
   // 비자 매칭 결과 캐시 / Visa matching result cache
   fulltimeVisaResult Json?           @map("fulltime_visa_result")
@@ -1379,6 +1382,7 @@ model AdminJobAction {
   adminId     String          @map("admin_id")
   actionType  AdminActionType @map("action_type")
   reason      String?         @db.Text
+  metadata    Json?           @map("metadata")
   createdAt   DateTime        @default(now()) @map("created_at")
 
   @@index([jobId])
@@ -1390,6 +1394,17 @@ enum AdminActionType {
   UNSUSPEND
   FORCE_CLOSE
   DELETE
+  PREMIUM_GRANT
+  PREMIUM_REVOKE
+  FEATURED_GRANT
+  FEATURED_REVOKE
+}
+
+// 프리미엄 출처 / Premium source tracking
+enum PremiumSource {
+  PAID          // 결제를 통한 프리미엄 / Via payment
+  ADMIN_GRANT   // 어드민 수동 부여 / Admin manual grant
+  PROMOTION     // 프로모션/이벤트 / Promotion or event
 }
 
 // ========================================
