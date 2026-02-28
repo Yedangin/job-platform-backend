@@ -24,6 +24,8 @@ import {
 } from 'types/notification/notification';
 import {
   SessionAuthGuard,
+  RolesGuard,
+  Roles,
   CurrentSession,
   grpcToHttpStatus,
 } from 'libs/common/src';
@@ -124,7 +126,11 @@ export class NotificationController implements OnModuleInit {
     }
   }
 
+  // 어드민 전용: Guard + Decorator 패턴으로 권한 검증
+  // Admin only: auth verified via Guard + Decorator pattern
   @Post('broadcast')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiOperation({ summary: 'Broadcast notification to multiple users (admin)' })
   @ApiResponse({ status: 200, description: 'Broadcast sent.' })
   async broadcast(
@@ -139,14 +145,6 @@ export class NotificationController implements OnModuleInit {
       metadata?: string;
     },
   ) {
-    // Admin role check (4 = ADMIN, 5 = SUPERADMIN)
-    const role = session.role;
-    const isAdmin =
-      role === 'ADMIN' || role === 'SUPERADMIN' || role === 4 || role === 5;
-    if (!isAdmin) {
-      throw new HttpException('Forbidden: Admin only', HttpStatus.FORBIDDEN);
-    }
-
     try {
       const typeKey = String(
         body.notificationType || 'STATUS_ALERT',

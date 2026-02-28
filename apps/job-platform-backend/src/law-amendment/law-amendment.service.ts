@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { LogPrismaService } from 'libs/common/src';
+import { LogPrismaService, RedisLockService } from 'libs/common/src';
 import { AuthPrismaService } from 'libs/common/src';
 import { LoggingService } from '../logging/logging.service';
 
@@ -36,6 +36,7 @@ export class LawAmendmentService {
     private readonly logPrisma: LogPrismaService,
     private readonly authPrisma: AuthPrismaService,
     private readonly loggingService: LoggingService,
+    private readonly lock: RedisLockService,
   ) {}
 
   // ================================================
@@ -617,35 +618,50 @@ export class LawAmendmentService {
   // ================================================
   @Cron('0 5 0 * * *', { name: 'law-amendment-apply', timeZone: 'Asia/Seoul' })
   async scheduledApply() {
-    this.logger.log('Running scheduled law amendment check...');
+    // 분산 락: 다중 인스턴스 중복 실행 방지 / Distributed lock: prevent duplicate execution
+    const executed = await this.lock.withLock(
+      'cron:law-amendment-apply',
+      300,
+      async () => {
+        this.logger.log('Running scheduled law amendment check...');
 
-    const now = new Date();
-    const pendingAmendments = await this.logPrisma.lawAmendment.findMany({
-      where: {
-        status: 'APPROVED',
-        effectiveDate: { lte: now },
-      },
-      include: { items: true },
-    });
+        const now = new Date();
+        const pendingAmendments = await this.logPrisma.lawAmendment.findMany({
+          where: {
+            status: 'APPROVED',
+            effectiveDate: { lte: now },
+          },
+          include: { items: true },
+        });
 
-    if (pendingAmendments.length === 0) {
-      this.logger.log('No amendments to apply.');
-      return;
-    }
+        if (pendingAmendments.length === 0) {
+          this.logger.log('No amendments to apply.');
+          return;
+        }
 
-    this.logger.log(`Found ${pendingAmendments.length} amendments to apply.`);
-
-    for (const amendment of pendingAmendments) {
-      try {
-        await this.applyAmendment('SYSTEM_SCHEDULER', amendment.id);
         this.logger.log(
-          `Auto-applied amendment: ${amendment.id} — ${amendment.title}`,
+          `Found ${pendingAmendments.length} amendments to apply.`,
         );
-      } catch (e) {
-        this.logger.error(
-          `Failed to auto-apply amendment ${amendment.id}: ${e.message}`,
-        );
-      }
+
+        for (const amendment of pendingAmendments) {
+          try {
+            await this.applyAmendment('SYSTEM_SCHEDULER', amendment.id);
+            this.logger.log(
+              `Auto-applied amendment: ${amendment.id} — ${amendment.title}`,
+            );
+          } catch (e) {
+            this.logger.error(
+              `Failed to auto-apply amendment ${amendment.id}: ${e.message}`,
+            );
+          }
+        }
+      },
+    );
+
+    if (!executed) {
+      this.logger.debug(
+        '[Cron:LawAmendmentApply] 다른 인스턴스에서 실행 중 — 스킵 / Another instance running — skipped',
+      );
     }
   }
 

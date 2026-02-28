@@ -6,7 +6,11 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { AuthPrismaService, RedisService } from 'libs/common/src';
+import {
+  AuthPrismaService,
+  RedisService,
+  RedisLockService,
+} from 'libs/common/src';
 
 @Injectable()
 export class JobPaymentService {
@@ -15,6 +19,7 @@ export class JobPaymentService {
   constructor(
     private readonly prisma: AuthPrismaService,
     private readonly redis: RedisService,
+    private readonly lock: RedisLockService,
   ) {}
 
   // ========================================
@@ -509,49 +514,63 @@ export class JobPaymentService {
   // ========================================
   @Cron('0 0 0 * * *', { name: 'premium-downgrade', timeZone: 'Asia/Seoul' })
   async downgradeExpiredPremiums() {
-    const now = new Date();
+    // 분산 락: job-payment-cron.service.ts와 동일 키 사용 (중복 실행 방지)
+    // Distributed lock: shares key with job-payment-cron.service.ts to prevent duplicate execution
+    const executed = await this.lock.withLock(
+      'cron:premium-downgrade-legacy',
+      600,
+      async () => {
+        const now = new Date();
 
-    try {
-      // 만료된 프리미엄 공고 조회 / Find expired premium postings
-      const expiredPostings = await this.prisma.jobPosting.findMany({
-        where: {
-          isPremium: true,
-          premiumEndAt: { lt: now },
-          NOT: { premiumEndAt: null },
-        },
-        select: {
-          id: true,
-          title: true,
-          corporateId: true,
-          premiumEndAt: true,
-        },
-      });
+        try {
+          // 만료된 프리미엄 공고 조회 / Find expired premium postings
+          const expiredPostings = await this.prisma.jobPosting.findMany({
+            where: {
+              isPremium: true,
+              premiumEndAt: { lt: now },
+              NOT: { premiumEndAt: null },
+            },
+            select: {
+              id: true,
+              title: true,
+              corporateId: true,
+              premiumEndAt: true,
+            },
+          });
 
-      if (expiredPostings.length === 0) {
-        return;
-      }
+          if (expiredPostings.length === 0) {
+            return;
+          }
 
-      // 각 공고 다운그레이드 / Downgrade each posting
-      for (const posting of expiredPostings) {
-        await this.prisma.jobPosting.update({
-          where: { id: posting.id },
-          data: {
-            tierType: 'STANDARD',
-            isPremium: false,
-          },
-        });
+          // 각 공고 다운그레이드 / Downgrade each posting
+          for (const posting of expiredPostings) {
+            await this.prisma.jobPosting.update({
+              where: { id: posting.id },
+              data: {
+                tierType: 'STANDARD',
+                isPremium: false,
+              },
+            });
 
-        this.logger.log(
-          `[Cron:PremiumDowngrade] 프리미엄 만료: jobId=${posting.id}, title="${posting.title}", expiredAt=${posting.premiumEndAt?.toISOString()}`,
-        );
-      }
+            this.logger.log(
+              `[Cron:PremiumDowngrade] 프리미엄 만료: jobId=${posting.id}, title="${posting.title}", expiredAt=${posting.premiumEndAt?.toISOString()}`,
+            );
+          }
 
-      this.logger.log(
-        `[Cron:PremiumDowngrade] ${expiredPostings.length}건 다운그레이드 완료 / ${expiredPostings.length} postings downgraded`,
-      );
-    } catch (error) {
-      this.logger.error(
-        `[Cron:PremiumDowngrade] 다운그레이드 처리 실패 / Downgrade processing failed: ${error.message}`,
+          this.logger.log(
+            `[Cron:PremiumDowngrade] ${expiredPostings.length}건 다운그레이드 완료 / ${expiredPostings.length} postings downgraded`,
+          );
+        } catch (error) {
+          this.logger.error(
+            `[Cron:PremiumDowngrade] 다운그레이드 처리 실패 / Downgrade processing failed: ${error.message}`,
+          );
+        }
+      },
+    );
+
+    if (!executed) {
+      this.logger.debug(
+        '[Cron:PremiumDowngrade] 다른 인스턴스에서 실행 중 — 스킵 / Another instance running — skipped',
       );
     }
   }

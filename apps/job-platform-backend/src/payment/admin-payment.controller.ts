@@ -3,6 +3,9 @@
  *
  * 관리자 전용 결제/상품/쿠폰 관리 엔드포인트
  * Admin-only endpoints for payment/product/coupon management
+ *
+ * Guard + Decorator 패턴으로 어드민 인증 통일
+ * Unified admin auth via Guard + Decorator pattern
  */
 import {
   Controller,
@@ -12,7 +15,7 @@ import {
   Param,
   Query,
   Body,
-  UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -21,32 +24,15 @@ import {
   ApiQuery,
   ApiParam,
 } from '@nestjs/swagger';
-import { Session, RedisService, SessionData } from 'libs/common/src';
+import { SessionAuthGuard, RolesGuard, Roles } from 'libs/common/src';
 import { AdminPaymentService } from './admin-payment.service';
 
 @ApiTags('Admin Payments / 결제 관리')
 @Controller('admin/payments')
+@UseGuards(SessionAuthGuard, RolesGuard)
+@Roles('ADMIN', 'SUPERADMIN')
 export class AdminPaymentController {
-  constructor(
-    private readonly adminPaymentService: AdminPaymentService,
-    private readonly redisService: RedisService,
-  ) {}
-
-  /**
-   * 어드민 권한 확인 / Verify admin access
-   */
-  private async verifyAdmin(sessionId: string): Promise<void> {
-    if (!sessionId)
-      throw new UnauthorizedException('로그인 필요 / Login required');
-    const raw = await this.redisService.get(`session:${sessionId}`);
-    if (!raw) throw new UnauthorizedException('세션 만료 / Session expired');
-    const session = JSON.parse(raw) as SessionData;
-    if (String(session.role) !== '5') {
-      throw new UnauthorizedException(
-        '관리자 권한 필요 / Admin access required',
-      );
-    }
-  }
+  constructor(private readonly adminPaymentService: AdminPaymentService) {}
 
   // ──── 주문 관리 / Order management ────
 
@@ -58,13 +44,11 @@ export class AdminPaymentController {
   @ApiQuery({ name: 'page', required: false })
   @ApiResponse({ status: 200, description: '주문 목록 / Order list' })
   async getOrders(
-    @Session() sessionId: string,
     @Query('status') status?: string,
     @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('page') page?: string,
   ) {
-    await this.verifyAdmin(sessionId);
     return this.adminPaymentService.getOrders({
       status,
       from,
@@ -77,8 +61,7 @@ export class AdminPaymentController {
   @ApiOperation({ summary: '주문 상세 / Order detail' })
   @ApiParam({ name: 'id', type: 'number' })
   @ApiResponse({ status: 200, description: '주문 상세 / Order detail' })
-  async getOrderDetail(@Session() sessionId: string, @Param('id') id: string) {
-    await this.verifyAdmin(sessionId);
+  async getOrderDetail(@Param('id') id: string) {
     return this.adminPaymentService.getOrderDetail(parseInt(id));
   }
 
@@ -86,12 +69,7 @@ export class AdminPaymentController {
   @ApiOperation({ summary: '어드민 환불 / Admin refund' })
   @ApiParam({ name: 'id', type: 'number' })
   @ApiResponse({ status: 200, description: '환불 완료 / Refund complete' })
-  async cancelOrder(
-    @Session() sessionId: string,
-    @Param('id') id: string,
-    @Body() body: { reason: string },
-  ) {
-    await this.verifyAdmin(sessionId);
+  async cancelOrder(@Param('id') id: string, @Body() body: { reason: string }) {
     return this.adminPaymentService.cancelOrder(parseInt(id), body.reason);
   }
 
@@ -100,8 +78,7 @@ export class AdminPaymentController {
   @Get('stats')
   @ApiOperation({ summary: '결제 통계 / Payment statistics' })
   @ApiResponse({ status: 200, description: '통계 데이터 / Stats data' })
-  async getStats(@Session() sessionId: string) {
-    await this.verifyAdmin(sessionId);
+  async getStats() {
     return this.adminPaymentService.getStats();
   }
 
@@ -110,8 +87,7 @@ export class AdminPaymentController {
   @Get('products')
   @ApiOperation({ summary: '상품 관리 목록 / Product management list' })
   @ApiResponse({ status: 200, description: '상품 목록 / Product list' })
-  async getProducts(@Session() sessionId: string) {
-    await this.verifyAdmin(sessionId);
+  async getProducts() {
     return this.adminPaymentService.getProducts();
   }
 
@@ -120,12 +96,10 @@ export class AdminPaymentController {
   @ApiParam({ name: 'id', type: 'number' })
   @ApiResponse({ status: 200, description: '상품 수정 완료 / Product updated' })
   async updateProduct(
-    @Session() sessionId: string,
     @Param('id') id: string,
     @Body()
     body: { name?: string; price?: number; isActive?: boolean; metadata?: any },
   ) {
-    await this.verifyAdmin(sessionId);
     return this.adminPaymentService.updateProduct(parseInt(id), body);
   }
 
@@ -134,8 +108,7 @@ export class AdminPaymentController {
   @Get('coupons')
   @ApiOperation({ summary: '쿠폰 관리 목록 / Coupon management list' })
   @ApiResponse({ status: 200, description: '쿠폰 목록 / Coupon list' })
-  async getCoupons(@Session() sessionId: string) {
-    await this.verifyAdmin(sessionId);
+  async getCoupons() {
     return this.adminPaymentService.getCoupons();
   }
 
@@ -143,7 +116,6 @@ export class AdminPaymentController {
   @ApiOperation({ summary: '쿠폰 생성 / Create coupon' })
   @ApiResponse({ status: 201, description: '쿠폰 생성 완료 / Coupon created' })
   async createCoupon(
-    @Session() sessionId: string,
     @Body()
     body: {
       code: string;
@@ -157,7 +129,6 @@ export class AdminPaymentController {
       expiresAt?: string;
     },
   ) {
-    await this.verifyAdmin(sessionId);
     return this.adminPaymentService.createCoupon(body);
   }
 
@@ -166,11 +137,9 @@ export class AdminPaymentController {
   @ApiParam({ name: 'id', type: 'number' })
   @ApiResponse({ status: 200, description: '쿠폰 수정 완료 / Coupon updated' })
   async updateCoupon(
-    @Session() sessionId: string,
     @Param('id') id: string,
     @Body() body: { isActive?: boolean; maxUses?: number; expiresAt?: string },
   ) {
-    await this.verifyAdmin(sessionId);
     return this.adminPaymentService.updateCoupon(parseInt(id), body);
   }
 }

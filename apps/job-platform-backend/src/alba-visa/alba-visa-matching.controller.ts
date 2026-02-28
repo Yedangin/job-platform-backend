@@ -15,6 +15,7 @@
 import {
   Controller,
   Post,
+  Get,
   Body,
   HttpCode,
   HttpStatus,
@@ -25,6 +26,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { AlbaVisaMatchingService } from './alba-visa-matching.service';
 import { AlbaVisaMatchingRequestDto } from './dto/alba-visa-matching-request.dto';
 import { AlbaVisaMatchingResponseDto } from './dto/alba-visa-matching-response.dto';
+import { AlbaCategoriesResponseDto } from './dto/alba-categories-response.dto';
 import { AlbaHiringVisaAnalysisService } from './alba-hiring-visa-analysis.service';
 import {
   AlbaHiringVisaAnalysisRequestDto,
@@ -38,6 +40,31 @@ export class AlbaVisaMatchingController {
     private readonly albaVisaMatchingService: AlbaVisaMatchingService,
     private readonly albaHiringVisaAnalysisService: AlbaHiringVisaAnalysisService,
   ) {}
+
+  /**
+   * 알바 직종 목록 조회 (웹/앱 드롭다운용)
+   * Get alba job categories (for web/app dropdown)
+   *
+   * KSIC 매핑 테이블의 34개 직종을 그룹별로 정리하여 반환합니다.
+   * Returns 34 job categories from KSIC mapping table, grouped by category.
+   */
+  @Get('categories')
+  @ApiOperation({
+    summary: '알바 직종 목록 조회 / Get alba job categories',
+    description:
+      'KSIC 매핑 테이블 기반 알바 직종 34개를 그룹별로 반환합니다. ' +
+      '공고 등록 시 직종 선택 드롭다운에 사용합니다. (웹/앱 공통) ' +
+      '(Returns 34 alba job categories grouped by type. Used for job posting dropdown — shared by web and app)',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      '알바 직종 목록 조회 성공 / Alba categories retrieved successfully',
+    type: AlbaCategoriesResponseDto,
+  })
+  getAlbaCategories(): AlbaCategoriesResponseDto {
+    return this.albaVisaMatchingService.getAlbaCategories();
+  }
 
   /**
    * 알바 비자 매칭 실행

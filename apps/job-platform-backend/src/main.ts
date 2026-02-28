@@ -19,16 +19,20 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.use(cookieParser());
 
+  // CORS 허용 오리진 설정 / Configure CORS allowed origins
   const clientUrl = (process.env.CLIENT_URL || 'http://localhost:3000').replace(
     /\/$/,
     '',
   );
-  const allowedOrigins = [
-    clientUrl,
-    'http://localhost:3000',
-    'http://localhost:3001',
-    'http://127.0.0.1:3000',
-  ];
+  const isProduction = process.env.NODE_ENV === 'production';
+  const allowedOrigins = isProduction
+    ? [clientUrl] // 프로덕션: CLIENT_URL만 허용 / Production: only CLIENT_URL
+    : [
+        clientUrl,
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://127.0.0.1:3000',
+      ];
 
   app.enableCors({
     origin: (origin, callback) => {
@@ -44,37 +48,46 @@ async function bootstrap() {
     exposedHeaders: 'Authorization',
     credentials: true,
   });
-  const config = new DocumentBuilder()
-    .setTitle('JobChaja API Documentation')
-    .setDescription('잡차자 백엔드 API 문서 / JobChaja backend API docs')
-    .addBearerAuth({
-      type: 'http',
-      scheme: 'bearer',
-      bearerFormat: 'JWT',
-      in: 'header',
-    })
-    .addTag('Auth', '인증 / Authentication')
-    .addTag('Jobs', '공고 관리 / Job posting management')
-    .addTag('Visa Matching', '비자 매칭 / Visa matching engine')
-    .addTag('Resumes', '이력서 / Resume management')
-    .addTag('Visa Verification', '비자 인증 / Visa verification')
-    .addTag('Admin', '어드민 / Admin management')
-    .addTag(
-      'Law Amendment Management',
-      '법령 변경 관리 / Law amendment management',
-    )
-    .addTag('Policy Monitoring', '정책 모니터링 / Policy change monitoring')
-    .addTag('Applications', '지원 관리 / Application & Interview management')
-    .addTag('Job Payments', '공고 결제 / Job posting payment & premium upgrade')
-    .addTag('Payments', '결제 / Payment system')
-    .addTag('Logs', '시스템 로그 / System logs')
-    .setVersion('1.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
+  // Swagger: 프로덕션 환경에서는 비활성화 / Disable Swagger in production
+  if (!isProduction) {
+    const config = new DocumentBuilder()
+      .setTitle('JobChaja API Documentation')
+      .setDescription('잡차자 백엔드 API 문서 / JobChaja backend API docs')
+      .addBearerAuth({
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+      })
+      .addTag('Auth', '인증 / Authentication')
+      .addTag('Jobs', '공고 관리 / Job posting management')
+      .addTag('Visa Matching', '비자 매칭 / Visa matching engine')
+      .addTag('Resumes', '이력서 / Resume management')
+      .addTag('Visa Verification', '비자 인증 / Visa verification')
+      .addTag('Admin', '어드민 / Admin management')
+      .addTag(
+        'Law Amendment Management',
+        '법령 변경 관리 / Law amendment management',
+      )
+      .addTag('Policy Monitoring', '정책 모니터링 / Policy change monitoring')
+      .addTag('Applications', '지원 관리 / Application & Interview management')
+      .addTag(
+        'Job Payments',
+        '공고 결제 / Job posting payment & premium upgrade',
+      )
+      .addTag('Payments', '결제 / Payment system')
+      .addTag('Logs', '시스템 로그 / System logs')
+      .setVersion('1.0')
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api-docs', app, document);
+  }
 
   const port = process.env.API_GATEWAY_PORT ?? 8000;
   await app.listen(port);
   Logger.log(`🚀 Application is running on: http://localhost:${port}`);
+  if (!isProduction) {
+    Logger.log(`📄 Swagger UI: http://localhost:${port}/api-docs`);
+  }
 }
 bootstrap();

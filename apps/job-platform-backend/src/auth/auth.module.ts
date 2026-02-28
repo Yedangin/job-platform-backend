@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import {
@@ -14,6 +14,8 @@ import { FacebookStrategy } from 'libs/common/src/common/strategies/facebook.str
 import { AppleStrategy } from 'libs/common/src/common/strategies/apple.strategy';
 import { GenerateStoreToken } from 'libs/common/src/common/helper/generate-store-token';
 import { PaymentModule } from '../payment/payment.module';
+import { AuthPlatformMiddleware } from './auth-platform.middleware';
+
 @Module({
   imports: [PaymentModule],
   controllers: [AuthController],
@@ -32,4 +34,17 @@ import { PaymentModule } from '../payment/payment.module';
   ],
   exports: [AuthService],
 })
-export class AuthModule {}
+export class AuthModule implements NestModule {
+  /**
+   * 소셜 로그인 초기 라우트에 미들웨어 등록
+   * platform, userType 쿼리 파라미터를 쿠키에 저장
+   *
+   * Register middleware on initial OAuth routes to save
+   * platform & userType query params as cookies
+   */
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthPlatformMiddleware)
+      .forRoutes('auth/google', 'auth/kakao', 'auth/facebook', 'auth/apple');
+  }
+}

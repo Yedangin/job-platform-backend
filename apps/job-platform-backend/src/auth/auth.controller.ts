@@ -24,7 +24,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { SkipThrottle } from '@nestjs/throttler';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 import { Response } from 'express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
@@ -37,6 +37,15 @@ import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
+import { SendOtpDto } from './dto/send-otp.dto';
+import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { VerifyPasswordDto } from './dto/verify-password.dto';
+import { CreateSupportTicketDto } from './dto/support-ticket.dto';
+import { AnswerTicketDto } from './dto/answer-ticket.dto';
+import { CorporateActionDto } from './dto/corporate-action.dto';
+import { UpdateNotificationSettingsDto } from './dto/notification-settings.dto';
 import {
   GoogleOAuthGuard,
   SessionAuthGuard,
@@ -76,21 +85,13 @@ export class AuthController {
     return 'This is admin-only data';
   }
 
-  // --- 관리자 통계 API ---
+  // --- 관리자 통계 API / Admin statistics API ---
   @Get('admin/stats')
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiOperation({ summary: 'Get admin dashboard statistics' })
   @ApiResponse({ status: 200, description: 'Admin stats retrieved.' })
-  async getAdminStats(@Session() sessionId: string) {
-    if (!sessionId) {
-      throw new UnauthorizedException('No session provided');
-    }
-
-    // 세션에서 사용자 정보 확인 후 ADMIN인지 검증
-    const profile = await this.authService.getProfile(sessionId);
-    if (profile.user?.role !== 5) {
-      throw new UnauthorizedException('Admin access required');
-    }
-
+  async getAdminStats() {
     return await this.authService.getAdminStats();
   }
 
@@ -102,6 +103,11 @@ export class AuthController {
     status: 201,
     description: 'User registered successfully.',
   })
+  // 인증 엔드포인트 강화 제한: 1분 5회 / Stricter rate limit for auth endpoint: 5 per minute
+  @Throttle({
+    short: { ttl: 60000, limit: 5 },
+    medium: { ttl: 300000, limit: 10 },
+  })
   async register(@Body() registerDto: RegisterDto) {
     // ✅ [변경 2] firstValueFrom 없이 바로 함수를 호출합니다.
     return await this.authService.register(registerDto);
@@ -112,7 +118,12 @@ export class AuthController {
   @ApiOperation({ summary: 'Send verification OTP to email' })
   @ApiBody({ schema: { example: { email: 'user@example.com' } } })
   @ApiResponse({ status: 200, description: 'OTP sent successfully.' })
-  async sendOtp(@Body() { email }: { email: string }) {
+  // 인증 엔드포인트 강화 제한: 1분 3회 / Stricter rate limit for auth endpoint: 3 per minute
+  @Throttle({
+    short: { ttl: 60000, limit: 3 },
+    medium: { ttl: 300000, limit: 10 },
+  })
+  async sendOtp(@Body() { email }: SendOtpDto) {
     // ✅ 외부 서버 호출 X -> 내부 함수 실행 O
     return await this.authService.sendOtp(email);
   }
@@ -124,7 +135,12 @@ export class AuthController {
     schema: { example: { email: 'user@example.com', code: '123456' } },
   })
   @ApiResponse({ status: 200, description: 'OTP verified successfully.' })
-  async verifyOtp(@Body() body: { email: string; code: string }) {
+  // 인증 엔드포인트 강화 제한: 1분 5회 / Stricter rate limit for auth endpoint: 5 per minute
+  @Throttle({
+    short: { ttl: 60000, limit: 5 },
+    medium: { ttl: 300000, limit: 15 },
+  })
+  async verifyOtp(@Body() body: VerifyOtpDto) {
     return await this.authService.verifyOtp(body.email, body.code);
   }
 
@@ -135,6 +151,11 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'Login successful. Session cookie set.',
+  })
+  // 인증 엔드포인트 강화 제한: 1분 5회 / Stricter rate limit for auth endpoint: 5 per minute
+  @Throttle({
+    short: { ttl: 60000, limit: 5 },
+    medium: { ttl: 300000, limit: 15 },
   })
   async login(
     @Body() loginDto: LoginDto,
@@ -221,6 +242,11 @@ export class AuthController {
   @Post('request-password-reset')
   @ApiOperation({ summary: 'Request password reset email' })
   @ApiBody({ type: RequestPasswordResetDto })
+  // 인증 엔드포인트 강화 제한: 1분 3회 / Stricter rate limit for auth endpoint: 3 per minute
+  @Throttle({
+    short: { ttl: 60000, limit: 3 },
+    medium: { ttl: 300000, limit: 5 },
+  })
   async requestPasswordReset(@Body() { email }: RequestPasswordResetDto) {
     return await this.authService.requestPasswordReset(email);
   }
@@ -228,6 +254,11 @@ export class AuthController {
   @Post('reset-password')
   @ApiOperation({ summary: 'Reset password with token' })
   @ApiBody({ type: ResetPasswordDto })
+  // 인증 엔드포인트 강화 제한: 1분 3회 / Stricter rate limit for auth endpoint: 3 per minute
+  @Throttle({
+    short: { ttl: 60000, limit: 3 },
+    medium: { ttl: 300000, limit: 5 },
+  })
   async resetPassword(@Body() { token, newPassword }: ResetPasswordDto) {
     return await this.authService.resetPassword(token, newPassword);
   }
@@ -238,9 +269,14 @@ export class AuthController {
   @ApiBody({
     schema: { example: { oldPassword: 'current', newPassword: 'new123' } },
   })
+  // 인증 엔드포인트 강화 제한: 1분 3회 / Stricter rate limit for auth endpoint: 3 per minute
+  @Throttle({
+    short: { ttl: 60000, limit: 3 },
+    medium: { ttl: 300000, limit: 5 },
+  })
   async changePassword(
     @Session() sessionId: string,
-    @Body() body: { oldPassword: string; newPassword: string },
+    @Body() body: ChangePasswordDto,
   ) {
     if (!sessionId) throw new UnauthorizedException('No session provided');
     return await this.authService.changePassword(
@@ -269,7 +305,7 @@ export class AuthController {
   })
   async updateMyProfile(
     @Session() sessionId: string,
-    @Body() body: { fullName?: string; profileImageUrl?: string },
+    @Body() body: UpdateProfileDto,
   ) {
     if (!sessionId) throw new UnauthorizedException('No session provided');
     return await this.authService.updateMyProfile(sessionId, body);
@@ -304,7 +340,7 @@ export class AuthController {
   async updateNotificationSettings(
     @Session() sessionId: string,
     @Body()
-    body: { sms: boolean; email: boolean; kakao: boolean; marketing?: boolean },
+    body: UpdateNotificationSettingsDto,
   ) {
     if (!sessionId) throw new UnauthorizedException('No session provided');
     return await this.authService.updateNotificationSettings(
@@ -322,9 +358,14 @@ export class AuthController {
     summary: 'Verify current password for security re-authentication',
   })
   @ApiBody({ schema: { example: { password: 'currentPassword123' } } })
+  // 인증 엔드포인트 강화 제한: 1분 5회 / Stricter rate limit for auth endpoint: 5 per minute
+  @Throttle({
+    short: { ttl: 60000, limit: 5 },
+    medium: { ttl: 300000, limit: 10 },
+  })
   async verifyPassword(
     @Session() sessionId: string,
-    @Body() body: { password: string },
+    @Body() body: VerifyPasswordDto,
   ) {
     if (!sessionId) throw new UnauthorizedException('No session provided');
     return await this.authService.verifyPassword(sessionId, body.password);
@@ -338,7 +379,7 @@ export class AuthController {
   })
   async createSupportTicket(
     @Session() sessionId: string,
-    @Body() body: { title: string; content: string },
+    @Body() body: CreateSupportTicketDto,
   ) {
     if (!sessionId) throw new UnauthorizedException('No session provided');
     return await this.authService.createSupportTicket(
@@ -356,38 +397,34 @@ export class AuthController {
     return await this.authService.getMySupportTickets(sessionId);
   }
 
-  // --- 15. Admin: 모든 문의 조회 ---
+  // --- 15. Admin: 모든 문의 조회 / Admin: Get all support tickets ---
   @Get('admin/support-tickets')
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiOperation({ summary: 'Get all support tickets (admin)' })
-  async getAllSupportTickets(@Session() sessionId: string) {
-    if (!sessionId) throw new UnauthorizedException('No session provided');
-    const profile = await this.authService.getProfile(sessionId);
-    if (profile.user?.role !== 5)
-      throw new UnauthorizedException('Admin access required');
+  async getAllSupportTickets() {
     return await this.authService.getAllSupportTickets();
   }
 
-  // --- 16. Admin: 문의 답변 ---
+  // --- 16. Admin: 문의 답변 / Admin: Answer support ticket ---
   @Put('admin/support-tickets/:id')
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiOperation({ summary: 'Answer a support ticket (admin)' })
   @ApiBody({ schema: { example: { answer: '답변 내용' } } })
   async answerSupportTicket(
-    @Session() sessionId: string,
     @Param('id') id: string,
-    @Body() body: { answer: string },
+    @Body() body: AnswerTicketDto,
   ) {
-    if (!sessionId) throw new UnauthorizedException('No session provided');
-    const profile = await this.authService.getProfile(sessionId);
-    if (profile.user?.role !== 5)
-      throw new UnauthorizedException('Admin access required');
     return await this.authService.answerSupportTicket(id, body.answer);
   }
 
-  // --- 17. Admin: 활동 로그 조회 ---
+  // --- 17. Admin: 활동 로그 조회 / Admin: Get activity logs ---
   @Get('admin/activity-logs')
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiOperation({ summary: 'Get activity logs (admin, sortable/filterable)' })
   async getActivityLogs(
-    @Session() sessionId: string,
     @Query('actionType') actionType?: string,
     @Query('userName') userName?: string,
     @Query('page') page?: string,
@@ -395,10 +432,6 @@ export class AuthController {
     @Query('sortField') sortField?: string,
     @Query('sortOrder') sortOrder?: 'asc' | 'desc',
   ) {
-    if (!sessionId) throw new UnauthorizedException('No session provided');
-    const profile = await this.authService.getProfile(sessionId);
-    if (profile.user?.role !== 5)
-      throw new UnauthorizedException('Admin access required');
     return await this.authService.getActivityLogs({
       actionType,
       userName,
@@ -560,11 +593,12 @@ export class AuthController {
     );
   }
 
-  // --- 19-2. Admin: 전체 회원 목록 조회 ---
+  // --- 19-2. Admin: 전체 회원 목록 조회 / Admin: Get all users list ---
   @Get('admin/users')
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiOperation({ summary: 'Get all users with profiles (admin)' })
   async getAdminUsers(
-    @Session() sessionId: string,
     @Query('type') type?: string,
     @Query('search') search?: string,
     @Query('page') page?: string,
@@ -572,10 +606,6 @@ export class AuthController {
     @Query('sortBy') sortBy?: string,
     @Query('sortOrder') sortOrder?: string,
   ) {
-    if (!sessionId) throw new UnauthorizedException('No session provided');
-    const profile = await this.authService.getProfile(sessionId);
-    if (profile.user?.role !== 5)
-      throw new UnauthorizedException('Admin access required');
     return await this.authService.getAdminUsers({
       type,
       search,
@@ -586,20 +616,16 @@ export class AuthController {
     });
   }
 
-  // --- 19-3. Admin: 기업 서류 파일 조회 ---
+  // --- 19-3. Admin: 기업 서류 파일 조회 / Admin: Serve corporate document file ---
   @Get('admin/corporate-doc-file')
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiOperation({ summary: 'Serve corporate document file (admin only)' })
   async getCorporateDocFile(
-    @Session() sessionId: string,
     @Query('path') filePath: string,
     @Res() res: Response,
   ) {
-    if (!sessionId) throw new UnauthorizedException('No session provided');
-    const profile = await this.authService.getProfile(sessionId);
-    if (profile.user?.role !== 5)
-      throw new UnauthorizedException('Admin access required');
-
-    // 보안: path traversal 방지
+    // 보안: path traversal 방지 / Security: prevent path traversal
     if (!filePath || filePath.includes('..')) {
       throw new BadRequestException('잘못된 파일 경로입니다.');
     }
@@ -613,7 +639,7 @@ export class AuthController {
       throw new NotFoundException('파일을 찾을 수 없습니다.');
     }
 
-    // Content-Type 판별
+    // Content-Type 판별 / Determine Content-Type
     const ext = path.extname(absolutePath).toLowerCase();
     const mimeMap: Record<string, string> = {
       '.jpg': 'image/jpeg',
@@ -628,17 +654,12 @@ export class AuthController {
     fileStream.pipe(res);
   }
 
-  // --- 20. Admin: 기업 인증 목록 조회 ---
+  // --- 20. Admin: 기업 인증 목록 조회 / Admin: Get corporate verification list ---
   @Get('admin/corporate-verifications')
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiOperation({ summary: 'Get corporate verification list (admin)' })
-  async getCorporateVerifications(
-    @Session() sessionId: string,
-    @Query('status') status?: string,
-  ) {
-    if (!sessionId) throw new UnauthorizedException('No session provided');
-    const profile = await this.authService.getProfile(sessionId);
-    if (profile.user?.role !== 5)
-      throw new UnauthorizedException('Admin access required');
+  async getCorporateVerifications(@Query('status') status?: string) {
     return await this.authService.getCorporateVerifications(status);
   }
 
@@ -653,7 +674,7 @@ export class AuthController {
   async updateCorporateVerification(
     @Session() sessionId: string,
     @Param('userId') userId: string,
-    @Body() body: { action: 'APPROVE' | 'REJECT'; reason?: string },
+    @Body() body: CorporateActionDto,
   ) {
     if (!sessionId) throw new UnauthorizedException('No session provided');
     return await this.authService.updateCorporateVerification(
@@ -667,17 +688,12 @@ export class AuthController {
   // --- 22. Admin: 회원 상세 조회 (이력서+비자인증 포함) ---
   // --- 22. Admin: Get user detail with resume + visa verification ---
   @Get('admin/users/:userId')
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiOperation({
     summary: 'Get user detail with resume and visa verification (admin)',
   })
-  async getAdminUserDetail(
-    @Session() sessionId: string,
-    @Param('userId') userId: string,
-  ) {
-    if (!sessionId) throw new UnauthorizedException('No session provided');
-    const profile = await this.authService.getProfile(sessionId);
-    if (profile.user?.role !== 5)
-      throw new UnauthorizedException('Admin access required');
+  async getAdminUserDetail(@Param('userId') userId: string) {
     return await this.authService.getAdminUserDetail(userId);
   }
 
@@ -832,11 +848,23 @@ export class AuthController {
         path: '/',
       });
 
-      // pending_user_type 쿠키 삭제
+      // pending_user_type 쿠키 삭제 / Clear pending_user_type cookie
       res.clearCookie('pending_user_type', { path: '/' });
 
-      // 메인 페이지로 리다이렉트 (쿠키 기반, URL에 sessionId 노출 금지)
-      // Redirect to main page (cookie-based, never expose sessionId in URL)
+      // 앱에서 호출 시 딥링크로 리다이렉트 / Redirect to deep link when called from app
+      const pendingPlatform = req.cookies?.pending_platform || null;
+      if (pendingPlatform === 'app') {
+        res.clearCookie('pending_platform', { path: '/' });
+        Logger.log('[소셜 로그인] 앱 딥링크 리다이렉트 / App deep link redirect', {
+          sessionId: result.sessionId,
+        });
+        return res.redirect(
+          `jobchaja://auth/callback?sessionId=${result.sessionId}`,
+        );
+      }
+
+      // 웹: 메인 페이지로 리다이렉트 (쿠키 기반, URL에 sessionId 노출 금지)
+      // Web: Redirect to main page (cookie-based, never expose sessionId in URL)
       const baseUrl =
         process.env.NODE_ENV === 'production'
           ? 'http://jobchaja.com'
@@ -851,6 +879,9 @@ export class AuthController {
         maxAge: 60 * 1000, // 1분 후 자동 만료 / Expires in 1 minute
         path: '/',
       });
+
+      // pending_platform 쿠키 삭제 (웹일 때도 정리) / Clear pending_platform cookie
+      res.clearCookie('pending_platform', { path: '/' });
 
       return res.redirect(baseUrl);
     } catch (error) {

@@ -24,6 +24,7 @@ import {
   SendResultNotificationDto,
   ProposeInterviewDto,
   AcceptInterviewDto,
+  CancelInterviewDto,
 } from './dto';
 
 @Injectable()
@@ -185,6 +186,20 @@ export class JobApplicationService {
           rejectionReason: app.rejectionReason,
           resultNotifiedAt: app.resultNotifiedAt,
           createdAt: app.createdAt,
+          // 면접 제안 필드 / Interview proposal fields
+          interviewMethod: app.interviewMethod,
+          interviewFirstChoice: app.interviewFirstChoice,
+          interviewSecondChoice: app.interviewSecondChoice,
+          interviewLocation: app.interviewLocation,
+          interviewLink: app.interviewLink,
+          interviewDirections: app.interviewDirections,
+          interviewWhatToBring: app.interviewWhatToBring,
+          proposedBy: app.proposedBy,
+          proposedTime: app.proposedTime,
+          // 취소 정보 / Cancellation info
+          cancelReason: app.cancelReason,
+          cancelledBy: app.cancelledBy,
+          cancelledAt: app.cancelledAt,
           job: {
             id: app.job.id.toString(),
             title: app.job.title,
@@ -765,6 +780,11 @@ export class JobApplicationService {
     if (dto.rejectionReason) {
       updateData.rejectionReason = dto.rejectionReason;
     }
+    // 합격 시 추가 안내 메시지를 interviewNote에 저장
+    // Save additional info for accepted applicants in interviewNote
+    if (dto.additionalInfo && dto.result === 'ACCEPTED') {
+      updateData.interviewNote = `[합격 안내] ${dto.additionalInfo}`;
+    }
 
     await this.prisma.jobApplication.update({
       where: { id: BigInt(applicationId) },
@@ -790,6 +810,7 @@ export class JobApplicationService {
         isAccepted,
         message: dto.message,
         rejectionReason: dto.rejectionReason,
+        additionalInfo: dto.additionalInfo,
       });
 
       setImmediate(() => {
@@ -1139,8 +1160,9 @@ export class JobApplicationService {
     isAccepted: boolean;
     message?: string;
     rejectionReason?: string;
+    additionalInfo?: string;
   }): string {
-    const { companyName, jobTitle, isAccepted, message, rejectionReason } =
+    const { companyName, jobTitle, isAccepted, message, rejectionReason, additionalInfo } =
       params;
 
     const resultTitle = isAccepted
@@ -1178,6 +1200,14 @@ export class JobApplicationService {
               ${resultMessage}
             </div>
             ${message ? `<p style="font-size: 14px; color: #555; text-align: center; margin-top: 15px; background-color: #f8f9fa; padding: 15px; border-radius: 6px;">${message}</p>` : ''}
+            ${
+              additionalInfo && isAccepted
+                ? `<div style="margin-top: 20px; padding: 16px; background-color: #e8f5e9; border-radius: 8px; border-left: 4px solid #28a745;">
+                     <p style="font-size: 14px; color: #333; font-weight: bold; margin: 0 0 8px 0;">안내사항 / Additional Information:</p>
+                     <p style="font-size: 14px; color: #555; margin: 0; white-space: pre-line;">${additionalInfo}</p>
+                   </div>`
+                : ''
+            }
           </div>
           <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #999;">
             <p>본 메일은 발신 전용입니다.<br>&copy; 2026 JobChaja. All rights reserved.</p>
@@ -1363,6 +1393,8 @@ export class JobApplicationService {
           : null,
         interviewLocation: dto.location || null,
         interviewLink: dto.link || null,
+        interviewDirections: dto.directions || null,
+        interviewWhatToBring: dto.whatToBring || null,
         interviewRoundTrips: { increment: 1 },
         proposedBy: actorType as any,
         status: newStatus as any,
@@ -1500,7 +1532,118 @@ export class JobApplicationService {
   }
 
   // ========================================
-  // 14. 면접 확정 이메일 발송 (Interview Confirmation Email)
+  // 14-a. 면접 취소 (Cancel Interview — 기업/구직자 양측 가능)
+  // Cancel interview — both employer and applicant
+  // ========================================
+  async cancelInterview(
+    applicationId: bigint,
+    dto: CancelInterviewDto,
+    actorType: 'EMPLOYER' | 'APPLICANT',
+    actorId: string,
+  ) {
+    const app = await this.prisma.jobApplication.findUnique({
+      where: { id: applicationId },
+      include: { job: true },
+    });
+    if (!app) throw new NotFoundException('Application not found');
+
+    // 권한 확인 / Validate actor
+    if (actorType === 'EMPLOYER') {
+      const corp = await this.prisma.corporateProfile.findUnique({
+        where: { authId: actorId },
+      });
+      if (!corp || app.job.corporateId !== corp.companyId) {
+        throw new ForbiddenException('Not the owner of this job posting');
+      }
+    } else {
+      if (app.applicantId !== actorId) {
+        throw new ForbiddenException('Not the applicant');
+      }
+    }
+
+    // 취소 가능한 상태 확인 / Validate cancellable statuses
+    const cancellableStatuses = [
+      'INTERVIEW_REQUESTED',
+      'INTERVIEW_SCHEDULED',
+      'COORDINATION_NEEDED',
+      'CONFIRMED',
+    ];
+    if (!cancellableStatuses.includes(app.status)) {
+      throw new BadRequestException(
+        `Cannot cancel interview when status is ${app.status}`,
+      );
+    }
+
+    // 취소 사유 메시지 구성 / Build cancel reason message
+    const reasonText = dto.reasonDetail
+      ? `${dto.reason}: ${dto.reasonDetail}`
+      : dto.reason;
+
+    // 지원서 업데이트 / Update application
+    await this.prisma.jobApplication.update({
+      where: { id: applicationId },
+      data: {
+        status: 'CANCELLED',
+        cancelReason: reasonText,
+        cancelledBy: actorType as any,
+        cancelledAt: new Date(),
+      },
+    });
+
+    // 상대방에게 알림 / Notify the other party
+    const notifyUserId =
+      actorType === 'EMPLOYER' ? app.applicantId : null;
+
+    if (actorType === 'EMPLOYER' && notifyUserId) {
+      setImmediate(() => {
+        this.createInAppNotification(
+          notifyUserId,
+          'INTERVIEW_UPDATE',
+          `기업에서 면접을 취소했습니다. / The employer has cancelled the interview.`,
+          {
+            applicationId: applicationId.toString(),
+            jobId: app.jobId.toString(),
+            cancelReason: reasonText,
+            cancelledBy: actorType,
+          },
+        ).catch((err) =>
+          this.logger.error('Failed to create cancel notification:', err),
+        );
+      });
+    } else {
+      // 구직자가 취소 → 기업에게 알림 / Applicant cancelled → notify employer
+      const corp = await this.prisma.corporateProfile.findUnique({
+        where: { companyId: app.job.corporateId },
+      });
+      if (corp) {
+        setImmediate(() => {
+          this.createInAppNotification(
+            corp.authId,
+            'INTERVIEW_UPDATE',
+            `지원자가 면접을 취소했습니다. / The applicant has cancelled the interview.`,
+            {
+              applicationId: applicationId.toString(),
+              jobId: app.jobId.toString(),
+              cancelReason: reasonText,
+              cancelledBy: actorType,
+            },
+          ).catch((err) =>
+            this.logger.error('Failed to create cancel notification:', err),
+          );
+        });
+      }
+    }
+
+    return {
+      success: true,
+      status: 'CANCELLED',
+      cancelReason: reasonText,
+      cancelledBy: actorType,
+    };
+  }
+
+  // ========================================
+  // 14-b. 면접 확정 이메일 발송 (Interview Confirmation Email)
   // ========================================
   async sendInterviewConfirmationEmail(applicationId: bigint): Promise<void> {
     // 지원서 + 공고 정보 조회 / Fetch application with job posting info

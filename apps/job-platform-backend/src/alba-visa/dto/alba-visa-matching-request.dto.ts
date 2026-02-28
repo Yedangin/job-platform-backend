@@ -196,4 +196,13 @@ export class AlbaVisaMatchingRequestDto {
     message: '시급은 1원 이상이어야 합니다 / Hourly wage must be at least 1',
   })
   hourlyWage: number;
+
+  @ApiPropertyOptional({
+    description:
+      '인구감소지역 여부 (선택 — 미입력 시 서버에서 주소 기반 자동 판별) / ' +
+      'Depopulation area flag (optional — auto-detected from address if omitted)',
+    example: false,
+  })
+  @IsOptional()
+  isDepopulationArea?: boolean;
 }

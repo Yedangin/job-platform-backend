@@ -8,3 +8,4 @@ export * from './propose-new-time.dto';
 export * from './send-result-notification.dto';
 export * from './propose-interview.dto';
 export * from './accept-interview.dto';
+export * from './cancel-interview.dto';

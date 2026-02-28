@@ -1,10 +1,12 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, StrategyOptions } from 'passport-google-oauth20';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
+  private readonly logger = new Logger(GoogleStrategy.name);
+
   constructor(private readonly configService: ConfigService) {
     super({
       clientID: process.env.GOOGLE_CLIENT_ID,
@@ -12,7 +14,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       callbackURL: process.env.GOOGLE_CALLBACK_URL,
       scope: ['email', 'profile'],
       accessType: 'offline',
-      prompt: 'consent', // 매번 동의 화면 표시 (테스트용)
+      prompt: 'consent', // 매번 동의 화면 표시 (테스트용) / Show consent every time (for testing)
     } as StrategyOptions);
   }
 
@@ -22,10 +24,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: any,
   ): Promise<any> {
     try {
-      console.log('[Google Strategy] validate 호출됨', {
-        profileId: profile.id,
-        email: profile.emails?.[0]?.value,
-      });
+      this.logger.debug(
+        `validate 호출됨 / validate called: profileId=${profile.id}, email=${profile.emails?.[0]?.value}`,
+      );
 
       const user = {
         email: profile.emails?.[0]?.value,
@@ -33,17 +34,19 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         lastName: profile.name?.familyName,
         picture: profile.photos?.[0]?.value,
         provider: 'GOOGLE',
-        providerId: String(profile.id), // ★ 숫자를 문자열로 변환
+        providerId: String(profile.id), // ★ 숫자를 문자열로 변환 / Convert number to string
       };
 
-      console.log('[Google Strategy] 유저 객체 생성 완료', user);
+      this.logger.debug(
+        `유저 객체 생성 완료 / User object created: email=${user.email}`,
+      );
 
       return user;
     } catch (error) {
-      console.error('[Google Strategy] 에러 발생', {
-        error: error.message,
-        stack: error.stack,
-      });
+      this.logger.error(
+        `에러 발생 / Error occurred: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }

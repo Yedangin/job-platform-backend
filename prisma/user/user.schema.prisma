@@ -458,6 +458,32 @@ model ActivityLog {
 }
 
 // ========================================
+// [정보 게시판] 외국인 생활 가이드
+// Info board — foreign worker life guide
+// ========================================
+model InfoBoard {
+  id          BigInt        @id @default(autoincrement()) @map("post_id")
+  title       String
+  content     String        @db.Text
+  category    InfoCategory
+  thumbnail   String?
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  @@index([category])
+  @@index([createdAt])
+  @@map("info_board")
+}
+
+enum InfoCategory {
+  VISA_INFO
+  EDUCATION
+  LIVING_TIPS
+  POLICY_LAW
+  ANNOUNCEMENTS
+}
+
+// ========================================
 // [비자 유형] 마스터 데이터
 // ========================================
 model VisaType {
@@ -1272,6 +1298,13 @@ model JobApplication {
   interviewLocation     String?         @map("interview_location")
   interviewLink         String?         @map("interview_link")
   interviewRoundTrips   Int             @default(0) @map("interview_round_trips")
+  interviewDirections   String?         @map("interview_directions") @db.Text
+  interviewWhatToBring  String?         @map("interview_what_to_bring") @db.Text
+
+  // 취소 사유 / Cancellation reason
+  cancelReason          String?         @map("cancel_reason")
+  cancelledBy           ActorType?      @map("cancelled_by")
+  cancelledAt           DateTime?       @map("cancelled_at")
 
   rejectionReason String?           @map("rejection_reason")
   resultNotifiedAt DateTime?        @map("result_notified_at")

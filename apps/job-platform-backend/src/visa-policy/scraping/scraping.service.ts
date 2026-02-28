@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
-import { AuthPrismaService } from 'libs/common/src';
+import { AuthPrismaService, RedisLockService } from 'libs/common/src';
 import { BaseScraper, ScrapedItem } from './scrapers/base.scraper';
 import { LawGoKrScraper } from './scrapers/law-go-kr.scraper';
 import { ImmigrationGoKrScraper } from './scrapers/immigration-go-kr.scraper';
@@ -42,6 +42,7 @@ export class ScrapingService implements OnModuleInit {
     private readonly moelScraper: MoelGoKrScraper,
     private readonly hikoreaScraper: HikoreaGoKrScraper,
     private readonly lawAmendmentService: LawAmendmentService,
+    private readonly lock: RedisLockService,
   ) {
     this.scrapers = [
       this.lawScraper,
@@ -80,8 +81,21 @@ export class ScrapingService implements OnModuleInit {
    */
   @Cron('0 3,6,18 * * *', { timeZone: 'Asia/Seoul' })
   async runScheduledScraping(): Promise<void> {
-    this.logger.log('Scheduled scraping started...');
-    await this.runAllScrapers();
+    // 분산 락: 다중 인스턴스 중복 실행 방지 / Distributed lock: prevent duplicate execution
+    const executed = await this.lock.withLock(
+      'cron:visa-scraping',
+      600,
+      async () => {
+        this.logger.log('Scheduled scraping started...');
+        await this.runAllScrapers();
+      },
+    );
+
+    if (!executed) {
+      this.logger.debug(
+        '[Cron:VisaScraping] 다른 인스턴스에서 실행 중 — 스킵 / Another instance running — skipped',
+      );
+    }
   }
 
   /**

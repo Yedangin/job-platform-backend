@@ -51,14 +51,10 @@ export class JobPostingService {
       totalPages: number;
     }>(cacheKey);
     if (cached) {
-      this.logger.debug(
-        `캐시 적중: ${cacheKey} / Cache HIT: ${cacheKey}`,
-      );
+      this.logger.debug(`캐시 적중: ${cacheKey} / Cache HIT: ${cacheKey}`);
       return cached;
     }
-    this.logger.debug(
-      `캐시 미스: ${cacheKey} / Cache MISS: ${cacheKey}`,
-    );
+    this.logger.debug(`캐시 미스: ${cacheKey} / Cache MISS: ${cacheKey}`);
 
     const page = query.page || 1;
     const limit = query.limit || 20;

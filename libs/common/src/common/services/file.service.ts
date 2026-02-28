@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,6 +10,7 @@ export enum FileCategory {
 
 @Injectable()
 export class FileService {
+  private readonly logger = new Logger(FileService.name);
   private readonly baseUploadPath = join(process.cwd(), 'uploads');
 
   constructor() {
@@ -67,8 +68,8 @@ export class FileService {
       const fullPath = join(process.cwd(), filePath);
       await fs.unlink(fullPath);
     } catch (error) {
-      // File might not exist, which is fine
-      console.warn(`Could not delete file: ${filePath}`, error);
+      // 파일이 존재하지 않을 수 있음 / File might not exist, which is fine
+      this.logger.warn(`파일 삭제 실패 / Could not delete file: ${filePath}`);
     }
   }
 

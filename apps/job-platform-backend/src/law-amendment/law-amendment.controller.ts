@@ -6,45 +6,42 @@ import {
   Post,
   Put,
   Query,
-  UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Session, RedisService, SessionData } from 'libs/common/src';
+import {
+  SessionAuthGuard,
+  RolesGuard,
+  Roles,
+  CurrentSession,
+  SessionData,
+} from 'libs/common/src';
 import { LawAmendmentService } from './law-amendment.service';
 
 /**
- * 법령 변경 관리 컨트롤러 — 어드민 전용
- * Law amendment management controller — admin only
+ * 법령 변경 관리 컨트롤러 -- 어드민 전용
+ * Law amendment management controller -- admin only
+ *
+ * Guard + Decorator 패턴으로 어드민 인증 통일
+ * Unified admin auth via Guard + Decorator pattern
  *
  * Base path: /admin/law-amendments
  */
 @ApiTags('Law Amendment Management')
 @Controller('admin/law-amendments')
+@UseGuards(SessionAuthGuard, RolesGuard)
+@Roles('ADMIN', 'SUPERADMIN')
 export class LawAmendmentController {
-  constructor(
-    private readonly lawAmendmentService: LawAmendmentService,
-    private readonly redisService: RedisService,
-  ) {}
-
-  /** 어드민 권한 확인 / Verify admin role */
-  private async requireAdmin(sessionId: string): Promise<string> {
-    if (!sessionId) throw new UnauthorizedException('No session provided');
-    const sd = await this.redisService.get(`session:${sessionId}`);
-    if (!sd) throw new UnauthorizedException('Invalid session');
-    const session: SessionData = JSON.parse(sd);
-    if (session.role !== 'ADMIN')
-      throw new UnauthorizedException('Admin access required');
-    return session.userId;
-  }
+  constructor(private readonly lawAmendmentService: LawAmendmentService) {}
 
   // ================================================
-  // POST /admin/law-amendments — 수동 등록
+  // POST /admin/law-amendments -- 수동 등록
   // Create amendment (manual registration)
   // ================================================
   @Post()
   @ApiOperation({ summary: '법령 변경 수동 등록 / Create law amendment' })
   async create(
-    @Session() sessionId: string,
+    @CurrentSession() session: SessionData,
     @Body()
     body: {
       title: string;
@@ -63,23 +60,21 @@ export class LawAmendmentController {
       }>;
     },
   ) {
-    const adminId = await this.requireAdmin(sessionId);
-    return await this.lawAmendmentService.create(adminId, body);
+    // 세션에서 관리자 ID 추출 / Extract admin ID from session
+    return await this.lawAmendmentService.create(session.userId, body);
   }
 
   // ================================================
-  // GET /admin/law-amendments — 목록
+  // GET /admin/law-amendments -- 목록
   // List amendments with optional status filter
   // ================================================
   @Get()
   @ApiOperation({ summary: '법령 변경 목록 / List law amendments' })
   async findAll(
-    @Session() sessionId: string,
     @Query('status') status?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ) {
-    await this.requireAdmin(sessionId);
     return await this.lawAmendmentService.findAll({
       status,
       page: page ? parseInt(page) : 1,
@@ -88,93 +83,93 @@ export class LawAmendmentController {
   }
 
   // ================================================
-  // GET /admin/law-amendments/:id — 상세
+  // GET /admin/law-amendments/:id -- 상세
   // Get amendment detail with items and diff
   // ================================================
   @Get(':id')
   @ApiOperation({ summary: '법령 변경 상세 / Get amendment detail' })
-  async findOne(@Session() sessionId: string, @Param('id') id: string) {
-    await this.requireAdmin(sessionId);
+  async findOne(@Param('id') id: string) {
     return await this.lawAmendmentService.findOne(id);
   }
 
   // ================================================
-  // PUT /admin/law-amendments/:id/approve — 승인
+  // PUT /admin/law-amendments/:id/approve -- 승인
   // Approve amendment with optional new effectiveDate
   // ================================================
   @Put(':id/approve')
   @ApiOperation({ summary: '법령 변경 승인 / Approve amendment' })
   async approve(
-    @Session() sessionId: string,
+    @CurrentSession() session: SessionData,
     @Param('id') id: string,
     @Body() body?: { effectiveDate?: string },
   ) {
-    const adminId = await this.requireAdmin(sessionId);
+    // 세션에서 관리자 ID 추출 / Extract admin ID from session
     return await this.lawAmendmentService.approve(
-      adminId,
+      session.userId,
       id,
       body?.effectiveDate,
     );
   }
 
   // ================================================
-  // PUT /admin/law-amendments/:id/reject — 반려
+  // PUT /admin/law-amendments/:id/reject -- 반려
   // Reject amendment with reason
   // ================================================
   @Put(':id/reject')
   @ApiOperation({ summary: '법령 변경 반려 / Reject amendment' })
   async reject(
-    @Session() sessionId: string,
+    @CurrentSession() session: SessionData,
     @Param('id') id: string,
     @Body() body: { reason: string },
   ) {
-    const adminId = await this.requireAdmin(sessionId);
-    return await this.lawAmendmentService.reject(adminId, id, body.reason);
+    // 세션에서 관리자 ID 추출 / Extract admin ID from session
+    return await this.lawAmendmentService.reject(
+      session.userId,
+      id,
+      body.reason,
+    );
   }
 
   // ================================================
-  // POST /admin/law-amendments/:id/simulate — 시뮬레이션
-  // Simulate amendment — preview what changes would be applied
+  // POST /admin/law-amendments/:id/simulate -- 시뮬레이션
+  // Simulate amendment -- preview what changes would be applied
   // ================================================
   @Post(':id/simulate')
   @ApiOperation({ summary: '법령 변경 시뮬레이션 / Simulate amendment' })
-  async simulate(@Session() sessionId: string, @Param('id') id: string) {
-    await this.requireAdmin(sessionId);
+  async simulate(@Param('id') id: string) {
     return await this.lawAmendmentService.simulate(id);
   }
 
   // ================================================
-  // POST /admin/law-amendments/:id/apply — 즉시 적용 (긴급)
+  // POST /admin/law-amendments/:id/apply -- 즉시 적용 (긴급)
   // Apply amendment immediately (emergency)
   // ================================================
   @Post(':id/apply')
   @ApiOperation({
     summary: '법령 변경 즉시 적용 / Apply amendment immediately',
   })
-  async apply(@Session() sessionId: string, @Param('id') id: string) {
-    const adminId = await this.requireAdmin(sessionId);
-    return await this.lawAmendmentService.applyAmendment(adminId, id);
+  async apply(@CurrentSession() session: SessionData, @Param('id') id: string) {
+    // 세션에서 관리자 ID 추출 / Extract admin ID from session
+    return await this.lawAmendmentService.applyAmendment(session.userId, id);
   }
 
   // ================================================
-  // GET /admin/law-amendments/:id/impact — 영향 분석
+  // GET /admin/law-amendments/:id/impact -- 영향 분석
   // Get impact analysis for an amendment
   // ================================================
   @Get(':id/impact')
   @ApiOperation({ summary: '영향 분석 / Impact analysis' })
-  async getImpact(@Session() sessionId: string, @Param('id') id: string) {
-    await this.requireAdmin(sessionId);
+  async getImpact(@Param('id') id: string) {
     return await this.lawAmendmentService.getImpactAnalysis(id);
   }
 
   // ================================================
-  // POST /admin/law-amendments/:id/items — 변경 항목 추가
+  // POST /admin/law-amendments/:id/items -- 변경 항목 추가
   // Add change item to amendment
   // ================================================
   @Post(':id/items')
   @ApiOperation({ summary: '변경 항목 추가 / Add amendment item' })
   async addItem(
-    @Session() sessionId: string,
     @Param('id') id: string,
     @Body()
     body: {
@@ -185,18 +180,16 @@ export class LawAmendmentController {
       afterData: Record<string, any>;
     },
   ) {
-    await this.requireAdmin(sessionId);
     return await this.lawAmendmentService.createItem(id, body);
   }
 
   // ================================================
-  // GET /admin/law-amendments/items/:itemId/diff — 전/후 비교
+  // GET /admin/law-amendments/items/:itemId/diff -- 전/후 비교
   // Get before/after diff for an item
   // ================================================
   @Get('items/:itemId/diff')
   @ApiOperation({ summary: '변경 전후 비교 / Get item diff' })
-  async getDiff(@Session() sessionId: string, @Param('itemId') itemId: string) {
-    await this.requireAdmin(sessionId);
+  async getDiff(@Param('itemId') itemId: string) {
     return await this.lawAmendmentService.getDiff(itemId);
   }
 }

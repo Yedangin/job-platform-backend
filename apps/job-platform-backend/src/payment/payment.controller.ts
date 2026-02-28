@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import {
   ApiTags,
   ApiOperation,
@@ -85,6 +86,11 @@ export class PaymentController {
   })
   @ApiResponse({ status: 401, description: '인증 필요 / Auth required' })
   @ApiResponse({ status: 404, description: '상품 없음 / Product not found' })
+  // 결제 엔드포인트 강화 제한: 1분 5회 / Stricter rate limit for payment endpoint: 5 per minute
+  @Throttle({
+    short: { ttl: 60000, limit: 5 },
+    medium: { ttl: 300000, limit: 15 },
+  })
   async createOrder(@Session() sessionId: string, @Body() dto: CreateOrderDto) {
     const userId = await this.getUserId(sessionId);
     return this.paymentService.createOrder(
@@ -113,6 +119,11 @@ export class PaymentController {
   @ApiResponse({ status: 404, description: '주문 없음 / Order not found' })
   @ApiResponse({ status: 409, description: '이미 처리됨 / Already processed' })
   @ApiResponse({ status: 500, description: '포트원 오류 / PortOne error' })
+  // 결제 확인 강화 제한: 1분 5회 / Stricter rate limit for payment confirm: 5 per minute
+  @Throttle({
+    short: { ttl: 60000, limit: 5 },
+    medium: { ttl: 300000, limit: 15 },
+  })
   async confirmPayment(
     @Session() sessionId: string,
     @Param('id', ParseIntPipe) id: number,

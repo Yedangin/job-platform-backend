@@ -700,6 +700,80 @@ export const H2_JOB_CATEGORY_MAP: ReadonlyArray<H2JobCategoryMapping> = [
     reasonEn:
       'Transport (H) is on the H-2 negative list. Moving labor falls under land transport (H49)',
   },
+
+  // === 건물 경비 — N80(보안 및 탐정업)으로 네거티브 아님 ===
+  // === Building security — N80 (Security & Investigation) is NOT on negative list ===
+  {
+    jobCategoryCode: 'BUILDING_SECURITY',
+    isNegative: false,
+    isException: false,
+    reasonKo:
+      '건물 경비원은 보안 서비스업(N80)에 해당 — H-2 네거티브 중분류(N74·N75)에 해당하지 않음',
+    reasonEn:
+      'Building security falls under Security Services (N80) — not in the H-2 negative mid-categories (N74/N75)',
+  },
+
+  // === 피부관리사 — S(기타 개인 서비스)는 네거티브 아님 ===
+  // === Skin care — S (Other personal services) is NOT on negative list ===
+  {
+    jobCategoryCode: 'SKIN_CARE',
+    isNegative: false,
+    isException: false,
+    reasonKo: '기타 개인 서비스업(S)은 H-2 네거티브 리스트에 해당하지 않음',
+    reasonEn: 'Other personal services (S) is not on the H-2 negative list',
+  },
+
+  // === 목욕관리사 — S(기타 개인 서비스)는 네거티브 아님 ===
+  // === Bath house — S (Other personal services) is NOT on negative list ===
+  {
+    jobCategoryCode: 'BATH_HOUSE',
+    isNegative: false,
+    isException: false,
+    reasonKo: '기타 개인 서비스업(S)은 H-2 네거티브 리스트에 해당하지 않음',
+    reasonEn: 'Other personal services (S) is not on the H-2 negative list',
+  },
+
+  // === 노래방 직원 — R(여가 관련)은 네거티브 아님 ===
+  // === Karaoke staff — R (Arts/Recreation) is NOT on negative list ===
+  {
+    jobCategoryCode: 'KARAOKE_STAFF',
+    isNegative: false,
+    isException: false,
+    reasonKo: '예술·스포츠·여가(R)는 H-2 네거티브 리스트에 해당하지 않음',
+    reasonEn: 'Arts, sports and recreation (R) is not on the H-2 negative list',
+  },
+
+  // === PC방 직원 — R(여가 관련)은 네거티브 아님 ===
+  // === Internet cafe — R (Arts/Recreation) is NOT on negative list ===
+  {
+    jobCategoryCode: 'PC_ROOM_STAFF',
+    isNegative: false,
+    isException: false,
+    reasonKo: '예술·스포츠·여가(R)는 H-2 네거티브 리스트에 해당하지 않음',
+    reasonEn: 'Arts, sports and recreation (R) is not on the H-2 negative list',
+  },
+
+  // === 골프장 캐디 — R(여가 관련)은 네거티브 아님 ===
+  // === Golf caddy — R (Arts/Recreation) is NOT on negative list ===
+  {
+    jobCategoryCode: 'GOLF_CADDY',
+    isNegative: false,
+    isException: false,
+    reasonKo: '예술·스포츠·여가(R)는 H-2 네거티브 리스트에 해당하지 않음',
+    reasonEn: 'Arts, sports and recreation (R) is not on the H-2 negative list',
+  },
+
+  // === 노점상 — G47(소매업)은 네거티브 아님 (G45 자동차만 금지) ===
+  // === Street vendor — G47 (Retail) is NOT negative (only G45 motor vehicles) ===
+  {
+    jobCategoryCode: 'STREET_VENDOR',
+    isNegative: false,
+    isException: false,
+    reasonKo:
+      '소매업(G47)은 H-2 네거티브 리스트에 해당하지 않음 (자동차판매 G45만 금지)',
+    reasonEn:
+      'Retail (G47) is not on the H-2 negative list (only motor vehicle sales G45 is prohibited)',
+  },
 ] as const;
 
 // ============================================================

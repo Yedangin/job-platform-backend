@@ -320,6 +320,16 @@ exports.Prisma.ActivityLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.InfoBoardScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  category: 'category',
+  thumbnail: 'thumbnail',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.VisaTypeScalarFieldEnum = {
   id: 'id',
   code: 'code',
@@ -727,6 +737,11 @@ exports.Prisma.JobApplicationScalarFieldEnum = {
   interviewLocation: 'interviewLocation',
   interviewLink: 'interviewLink',
   interviewRoundTrips: 'interviewRoundTrips',
+  interviewDirections: 'interviewDirections',
+  interviewWhatToBring: 'interviewWhatToBring',
+  cancelReason: 'cancelReason',
+  cancelledBy: 'cancelledBy',
+  cancelledAt: 'cancelledAt',
   rejectionReason: 'rejectionReason',
   resultNotifiedAt: 'resultNotifiedAt',
   createdAt: 'createdAt',
@@ -942,6 +957,14 @@ exports.TicketStatus = exports.$Enums.TicketStatus = {
   CLOSED: 'CLOSED'
 };
 
+exports.InfoCategory = exports.$Enums.InfoCategory = {
+  VISA_INFO: 'VISA_INFO',
+  EDUCATION: 'EDUCATION',
+  LIVING_TIPS: 'LIVING_TIPS',
+  POLICY_LAW: 'POLICY_LAW',
+  ANNOUNCEMENTS: 'ANNOUNCEMENTS'
+};
+
 exports.EmploymentLevel = exports.$Enums.EmploymentLevel = {
   FULL: 'FULL',
   LIMITED: 'LIMITED',
@@ -1083,6 +1106,7 @@ exports.Prisma.ModelName = {
   ProfileLanguage: 'ProfileLanguage',
   SupportTicket: 'SupportTicket',
   ActivityLog: 'ActivityLog',
+  InfoBoard: 'InfoBoard',
   VisaType: 'VisaType',
   IndustryCode: 'IndustryCode',
   VisaRule: 'VisaRule',

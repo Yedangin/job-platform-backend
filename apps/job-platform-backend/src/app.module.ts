@@ -38,6 +38,7 @@ import { InstitutionsModule } from './institutions/institutions.module';
 import { RequestLogInterceptor } from './logging/request-log.interceptor';
 import { ErrorLogFilter } from './logging/error-log.filter';
 import { NotificationModule } from './notification/notification.module';
+import { InfoBoardModule } from './info-board/info-board.module';
 
 @Module({
   imports: [
@@ -122,6 +123,7 @@ import { NotificationModule } from './notification/notification.module';
     FulltimeVisaModule,
     InstitutionsModule,
     NotificationModule,
+    InfoBoardModule,
   ],
   controllers: [],
   providers: [

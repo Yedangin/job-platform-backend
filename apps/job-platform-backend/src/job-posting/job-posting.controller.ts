@@ -10,6 +10,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import {
   ApiTags,
   ApiBearerAuth,
@@ -225,6 +226,11 @@ export class JobPostingController {
   @Roles('CORPORATE', 'ADMIN')
   @ApiOperation({ summary: '공고 생성 / Create job posting' })
   @ApiResponse({ status: 201, description: 'Job posting created (DRAFT)' })
+  // 공고 생성 강화 제한: 1분 5회 / Stricter rate limit for job creation: 5 per minute
+  @Throttle({
+    short: { ttl: 60000, limit: 5 },
+    medium: { ttl: 300000, limit: 20 },
+  })
   async createJobPosting(
     @CurrentSession() session: SessionData,
     @Body() dto: CreateJobPostingDto,
@@ -262,6 +268,11 @@ export class JobPostingController {
   @ApiOperation({ summary: '공고 수정 / Update job posting' })
   @ApiParam({ name: 'id', description: 'Job posting ID' })
   @ApiResponse({ status: 200, description: 'Job posting updated' })
+  // 공고 수정 강화 제한: 1분 10회 / Stricter rate limit for job update: 10 per minute
+  @Throttle({
+    short: { ttl: 60000, limit: 10 },
+    medium: { ttl: 300000, limit: 30 },
+  })
   async updateJobPosting(
     @CurrentSession() session: SessionData,
     @Param('id') id: string,

@@ -33,7 +33,22 @@ export class ProposeInterviewDto {
   @IsString()
   link?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    description:
+      '오시는 길 안내 (오프라인 면접용) / Directions to interview location',
+  })
+  @IsString()
+  @IsOptional()
+  directions?: string;
+
+  @ApiPropertyOptional({
+    description: '면접 준비물 안내 / Items to bring for the interview',
+  })
+  @IsString()
+  @IsOptional()
+  whatToBring?: string;
+
+  @ApiPropertyOptional({ description: '기업 메모 / Note from employer' })
   @IsString()
   @IsOptional()
   note?: string;

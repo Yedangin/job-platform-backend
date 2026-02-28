@@ -26,4 +26,14 @@ export class SendResultNotificationDto {
   @IsOptional()
   @IsString()
   rejectionReason?: string;
+
+  @ApiPropertyOptional({
+    description:
+      '합격 시 추가 안내 (출근일, 준비서류 등) / ' +
+      'Additional info for accepted applicant (start date, required docs, etc.)',
+    example: '3월 10일 오전 9시 출근, 여권·외국인등록증 사본 지참',
+  })
+  @IsOptional()
+  @IsString()
+  additionalInfo?: string;
 }

@@ -1024,3 +1024,482 @@ describe('Cross-evaluator integration / 평가기 간 통합 테스트', () => {
     expect(f6Result.notes).toContain(mw.hourlyWage.toLocaleString());
   });
 });
+
+// ====================================================================
+// F-4 공공이익 제한 직종 테스트 (신규)
+// F-4 Public Interest Restricted Jobs Tests (NEW)
+// [Legal] 법무부 고시 — F-4 공공이익에 반하는 취업제한 업종
+// ====================================================================
+describe('F4 공공이익 제한 직종 / F-4 Public Interest Restricted Jobs', () => {
+  const f4 = new F4AlbaEvaluator();
+
+  it.each([
+    ['SKIN_CARE', 'S', '피부관리사'],
+    ['BATH_HOUSE', 'S', '목욕관리사'],
+    ['KARAOKE_STAFF', 'R', '노래방 직원'],
+    ['PC_ROOM_STAFF', 'R', 'PC방 직원'],
+    ['GOLF_CADDY', 'R', '골프장 캐디'],
+    ['STREET_VENDOR', 'G', '노점상'],
+  ])(
+    '%s → F-4 blocked (공공이익 제한: %s)',
+    (code, ksic, _nameKo) => {
+      // [Legal] 법무부 고시 — F-4 공공이익 제한 직종은 인구감소지역(F-4-R)에서도 불가
+      const result = f4.evaluate(
+        createAlbaJobInput({ jobCategoryCode: code, ksicCode: ksic }),
+      );
+      expect(result.status).toBe('blocked');
+      expect(result.blockReasons.some((r) => r.includes('공공이익'))).toBe(true);
+    },
+  );
+
+  it('공공이익 제한 직종은 인구감소지역(F-4-R)에서도 금지 (Blocked even in depopulation areas)', () => {
+    // [Legal] 법무부 고시 — 공공이익 제한은 F-4-R에서도 해제되지 않음
+    const result = f4.evaluate(
+      createAlbaJobInput({
+        jobCategoryCode: 'KARAOKE_STAFF',
+        ksicCode: 'R',
+        workAddress: {
+          sido: '경상북도',
+          sigungu: '의성군',
+          detail: '읍내',
+          lat: 36.3561,
+          lng: 128.6978,
+          isDepopulationArea: true,
+        },
+      }),
+    );
+    expect(result.status).toBe('blocked');
+  });
+
+  it('공공이익 제한 직종도 F-5는 eligible (F-5 always eligible)', () => {
+    const f5 = new F5AlbaEvaluator();
+    const result = f5.evaluate(
+      createAlbaJobInput({ jobCategoryCode: 'KARAOKE_STAFF', ksicCode: 'R' }),
+    );
+    expect(result.status).toBe('eligible');
+  });
+
+  it('공공이익 제한 직종도 F-6은 eligible (F-6 always eligible)', () => {
+    const f6 = new F6AlbaEvaluator();
+    const result = f6.evaluate(
+      createAlbaJobInput({ jobCategoryCode: 'SKIN_CARE', ksicCode: 'S' }),
+    );
+    expect(result.status).toBe('eligible');
+  });
+});
+
+// ====================================================================
+// F-4 예외 8직종 전수 테스트 (신규 3건 포함)
+// F-4 Exception 8 Jobs Complete Test (including 3 newly added)
+// [Legal] 법무부 고시 (2024) — 단순노무 제한 일부 완화
+// ====================================================================
+describe('F4 예외 8직종 전수 확인 / F-4 Exception 8 Jobs Full Verification', () => {
+  const f4 = new F4AlbaEvaluator();
+
+  it.each([
+    ['CONSTRUCTION_SKILLED', 'F', '건설기능공 (예외1)'],
+    ['LOGISTICS_SORT', 'H', '하역 종사원 (예외2)'],
+    ['FACTORY_PACKING', 'C', '포장원 (예외3)'],
+    ['BUILDING_SECURITY', 'N', '건물 경비원 (예외4)'],
+    ['GAS_STATION', 'G', '주유원 (예외5)'],
+    ['PARKING_MGMT', 'N', '주차안내원 (예외6)'],
+    ['FAST_FOOD', 'I', '패스트푸드점 점원 (예외7)'],
+    ['REST_KITCHEN', 'I', '조리 보조원 (예외8a)'],
+    ['REST_SERVING', 'I', '음식점 서빙 (예외8b)'],
+    ['HOTEL_SERVICE', 'I', '호텔 서비스 (예외8c)'],
+  ])(
+    '%s → F-4 conditional (예외 허용: %s)',
+    (code, ksic, _desc) => {
+      // [Legal] 법무부 고시 (2024) — 단순노무이지만 예외적으로 허용
+      const result = f4.evaluate(
+        createAlbaJobInput({ jobCategoryCode: code, ksicCode: ksic }),
+      );
+      expect(result.status).toBe('conditional');
+      expect(
+        result.conditions.some((c) => c.includes('예외') || c.includes('exception')),
+      ).toBe(true);
+    },
+  );
+});
+
+// ====================================================================
+// 종합 시나리오 테스트 — 직종→시간→조건→최종 비자 출력
+// End-to-end Scenario Tests — Category→Hours→Conditions→Final Visa Output
+// [Legal] 각 비자별 관련 법령 종합
+// ====================================================================
+describe('종합 시나리오: 직종+시간 조합별 비자 필터링 / E2E: Category+Hours Visa Filtering', () => {
+  const ALL_EVALUATORS = {
+    'D-2': new D2AlbaEvaluator(),
+    'D-4': new D4AlbaEvaluator(),
+    'D-10': new D10AlbaEvaluator(),
+    'F-2': new F2AlbaEvaluator(),
+    'F-4': new F4AlbaEvaluator(),
+    'F-5': new F5AlbaEvaluator(),
+    'F-6': new F6AlbaEvaluator(),
+    'H-1': new H1AlbaEvaluator(),
+    'H-2': new H2AlbaEvaluator(),
+  };
+
+  /** 전체 비자 평가 실행 / Run all evaluators */
+  function evaluateAll(input: AlbaJobInput) {
+    const results: Record<string, ReturnType<typeof ALL_EVALUATORS['D-2']['evaluate']>> = {};
+    for (const [code, evaluator] of Object.entries(ALL_EVALUATORS)) {
+      results[code] = evaluator.evaluate(input);
+    }
+    return results;
+  }
+
+  // ----------------------------------------------------------------
+  // 시나리오 1: 음식점 서빙 + 주 15시간 (가장 일반적인 알바)
+  // Scenario 1: Restaurant serving + 15h/week (most common part-time job)
+  // ----------------------------------------------------------------
+  describe('시나리오 1: 음식점 서빙 15시간/주', () => {
+    const results = evaluateAll(
+      createAlbaJobInput({
+        jobCategoryCode: 'REST_SERVING',
+        ksicCode: 'I',
+        weeklyHours: 15,
+      }),
+    );
+
+    it('F-5, F-6 항상 eligible (Always eligible)', () => {
+      expect(results['F-5'].status).toBe('eligible');
+      expect(results['F-6'].status).toBe('eligible');
+    });
+
+    it('H-1 eligible (유흥업소 아님) / H-1 eligible (not entertainment)', () => {
+      expect(results['H-1'].status).toBe('eligible');
+    });
+
+    it('D-2 eligible 또는 conditional (15h ≤ 20h 학부 기본) / D-2 within basic limit', () => {
+      expect(['eligible', 'conditional']).toContain(results['D-2'].status);
+    });
+
+    it('D-4 conditional (15h ≤ 20h, 6개월 대기) / D-4 within limit with wait', () => {
+      expect(results['D-4'].status).toBe('conditional');
+    });
+
+    it('F-4 conditional (예외 8직종) / F-4 conditional (exception job)', () => {
+      expect(results['F-4'].status).toBe('conditional');
+    });
+
+    it('H-2 eligible 또는 conditional (허용 업종) / H-2 allowed industry', () => {
+      expect(['eligible', 'conditional']).toContain(results['H-2'].status);
+    });
+  });
+
+  // ----------------------------------------------------------------
+  // 시나리오 2: 편의점 + 주 25시간 (D-2 경계값)
+  // Scenario 2: Convenience store + 25h/week (D-2 boundary)
+  // ----------------------------------------------------------------
+  describe('시나리오 2: 편의점 25시간/주', () => {
+    const results = evaluateAll(
+      createAlbaJobInput({
+        jobCategoryCode: 'CONV_STORE',
+        ksicCode: 'G',
+        weeklyHours: 25,
+      }),
+    );
+
+    it('F-5, F-6 항상 eligible', () => {
+      expect(results['F-5'].status).toBe('eligible');
+      expect(results['F-6'].status).toBe('eligible');
+    });
+
+    it('D-2 conditional (25h = 석사/박사 조건) / D-2 conditional (grad level)', () => {
+      // [Legal] 법무부 — 석사 TOPIK 4+ 이상 주 25시간
+      expect(results['D-2'].status).toBe('conditional');
+    });
+
+    it('D-4 blocked (25h > 20h 최대) / D-4 blocked (over 20h max)', () => {
+      // [Legal] 법무부 — D-4 최대 주 20시간
+      expect(results['D-4'].status).toBe('blocked');
+    });
+
+    it('D-10 blocked (편의점 비전문직) / D-10 blocked (non-professional)', () => {
+      expect(results['D-10'].status).toBe('blocked');
+    });
+
+    it('F-4 blocked (편의점 = 단순판매, 비인구감소지역)', () => {
+      // [Legal] 법무부 — F-4 편의점 단순판매 금지
+      expect(results['F-4'].status).toBe('blocked');
+    });
+
+    it('H-1 eligible (유흥업소 아님) / H-1 eligible', () => {
+      expect(results['H-1'].status).toBe('eligible');
+    });
+  });
+
+  // ----------------------------------------------------------------
+  // 시나리오 3: 건설 현장 보조 + 주 40시간 (풀타임)
+  // Scenario 3: Construction site helper + 40h/week (full-time)
+  // ----------------------------------------------------------------
+  describe('시나리오 3: 건설 현장 보조 40시간/주', () => {
+    const results = evaluateAll(
+      createAlbaJobInput({
+        jobCategoryCode: 'CONSTRUCTION_LABOR',
+        ksicCode: 'F',
+        weeklyHours: 40,
+      }),
+    );
+
+    it('F-5, F-6 항상 eligible', () => {
+      expect(results['F-5'].status).toBe('eligible');
+      expect(results['F-6'].status).toBe('eligible');
+    });
+
+    it('D-2 blocked (건설업 전면 금지) / D-2 blocked (construction banned)', () => {
+      // [Legal] 출입국관리법 시행령 제23조 — 건설업 전면 금지
+      expect(results['D-2'].status).toBe('blocked');
+    });
+
+    it('D-4 blocked (건설업 전면 금지) / D-4 blocked (construction banned)', () => {
+      expect(results['D-4'].status).toBe('blocked');
+    });
+
+    it('F-4 blocked (단순노무 + 비인구감소지역) / F-4 blocked (simple labor)', () => {
+      expect(results['F-4'].status).toBe('blocked');
+    });
+  });
+
+  // ----------------------------------------------------------------
+  // 시나리오 4: 유흥업소 → 전비자 차단 (F-5, F-6 제외)
+  // Scenario 4: Entertainment → ALL blocked (except F-5, F-6)
+  // ----------------------------------------------------------------
+  describe('시나리오 4: 유흥업소', () => {
+    const results = evaluateAll(
+      createAlbaJobInput({
+        jobCategoryCode: 'ENTERTAINMENT',
+        ksicCode: 'I_ENT',
+        weeklyHours: 20,
+      }),
+    );
+
+    it('F-5, F-6만 eligible (Only F-5, F-6 eligible)', () => {
+      // [Legal] F-5/F-6은 활동 제한 없음
+      expect(results['F-5'].status).toBe('eligible');
+      expect(results['F-6'].status).toBe('eligible');
+    });
+
+    it('나머지 7개 비자 전부 blocked (All other 7 visas blocked)', () => {
+      // [Legal] 출입국관리법 — 유흥업소 외국인 취업 전면 금지
+      const otherVisas = ['D-2', 'D-4', 'D-10', 'F-2', 'F-4', 'H-1', 'H-2'];
+      for (const visa of otherVisas) {
+        expect(results[visa].status).toBe('blocked');
+      }
+    });
+  });
+
+  // ----------------------------------------------------------------
+  // 시나리오 5: IT보조 + 주 10시간 (D-10 인턴 경로)
+  // Scenario 5: IT assistant + 10h/week (D-10 intern path)
+  // ----------------------------------------------------------------
+  describe('시나리오 5: IT보조 10시간/주', () => {
+    const results = evaluateAll(
+      createAlbaJobInput({
+        jobCategoryCode: 'IT_ASSIST',
+        ksicCode: 'J',
+        weeklyHours: 10,
+      }),
+    );
+
+    it('F-5, F-6 항상 eligible', () => {
+      expect(results['F-5'].status).toBe('eligible');
+      expect(results['F-6'].status).toBe('eligible');
+    });
+
+    it('D-10 conditional (전문직 인턴) / D-10 conditional (professional intern)', () => {
+      // [Legal] 법무부 — D-10 E-1~E-7 분야 인턴 가능
+      expect(results['D-10'].status).toBe('conditional');
+    });
+
+    it('D-2 eligible 또는 conditional (10h 기본 허용) / D-2 within basic', () => {
+      expect(['eligible', 'conditional']).toContain(results['D-2'].status);
+    });
+
+    it('F-4 eligible (비단순노무) / F-4 eligible (non-simple-labor)', () => {
+      // [Legal] 법무부 — IT보조는 전문직, F-4 자유취업
+      expect(results['F-4'].status).toBe('eligible');
+    });
+
+    it('H-1 eligible (유흥업소 아님)', () => {
+      expect(results['H-1'].status).toBe('eligible');
+    });
+  });
+
+  // ----------------------------------------------------------------
+  // 시나리오 6: 물류 분류 + 인구감소지역 (F-4-R 특례)
+  // Scenario 6: Logistics sorting + depopulation area (F-4-R special)
+  // ----------------------------------------------------------------
+  describe('시나리오 6: 물류분류 + 인구감소지역', () => {
+    const depopInput = createAlbaJobInput({
+      jobCategoryCode: 'LOGISTICS_SORT',
+      ksicCode: 'H',
+      weeklyHours: 20,
+      workAddress: {
+        sido: '경상북도',
+        sigungu: '의성군',
+        detail: '읍내',
+        lat: 36.3561,
+        lng: 128.6978,
+        isDepopulationArea: true,
+      },
+    });
+    const normalInput = createAlbaJobInput({
+      jobCategoryCode: 'LOGISTICS_SORT',
+      ksicCode: 'H',
+      weeklyHours: 20,
+    });
+
+    it('F-4 비인구감소: conditional (예외 8직종) / F-4 normal: conditional (exception)', () => {
+      // [Legal] 법무부 고시 (2024) — 하역종사원 예외 허용
+      const result = new F4AlbaEvaluator().evaluate(normalInput);
+      expect(result.status).toBe('conditional');
+    });
+
+    it('F-4 인구감소지역(F-4-R): conditional (예외가 우선 적용) / F-4-R: conditional (exception first)', () => {
+      // [Legal] 예외 체크가 인구감소지역 체크보다 먼저 실행됨
+      const result = new F4AlbaEvaluator().evaluate(depopInput);
+      // 예외 8직종 체크가 STEP 3에서 먼저 걸리므로 conditional
+      expect(result.status).toBe('conditional');
+    });
+  });
+
+  // ----------------------------------------------------------------
+  // 시나리오 7: 시간별 D-2 필터링 단계 검증
+  // Scenario 7: D-2 filtering by weekly hours (step-by-step)
+  // ----------------------------------------------------------------
+  describe('시나리오 7: D-2 시간별 필터링 단계', () => {
+    const d2 = new D2AlbaEvaluator();
+    const baseInput = { jobCategoryCode: 'CAFE_BARISTA' as string, ksicCode: 'I' };
+
+    it('주 10시간: eligible/conditional (TOPIK 미충족 학부 기본)', () => {
+      const r = d2.evaluate(createAlbaJobInput({ ...baseInput, weeklyHours: 10 }));
+      expect(r.status).not.toBe('blocked');
+    });
+
+    it('주 15시간: conditional (TOPIK 3급+ 필요)', () => {
+      const r = d2.evaluate(createAlbaJobInput({ ...baseInput, weeklyHours: 15 }));
+      expect(r.status).toBe('conditional');
+    });
+
+    it('주 20시간: conditional (학부 TOPIK 최대)', () => {
+      const r = d2.evaluate(createAlbaJobInput({ ...baseInput, weeklyHours: 20 }));
+      expect(r.status).toBe('conditional');
+    });
+
+    it('주 25시간: conditional (석사/박사 조건)', () => {
+      const r = d2.evaluate(createAlbaJobInput({ ...baseInput, weeklyHours: 25 }));
+      expect(r.status).toBe('conditional');
+    });
+
+    it('주 35시간: conditional (박사 우대 최대)', () => {
+      const r = d2.evaluate(createAlbaJobInput({ ...baseInput, weeklyHours: 35 }));
+      expect(r.status).toBe('conditional');
+    });
+
+    it('주 36시간: blocked (절대 최대 초과)', () => {
+      const r = d2.evaluate(createAlbaJobInput({ ...baseInput, weeklyHours: 36 }));
+      expect(r.status).toBe('blocked');
+    });
+  });
+
+  // ----------------------------------------------------------------
+  // 시나리오 8: 피부관리사 (공공이익 제한 → 대부분 허용, F-4만 금지)
+  // Scenario 8: Skin care (public interest → mostly allowed, only F-4 blocked)
+  // ----------------------------------------------------------------
+  describe('시나리오 8: 피부관리사 20시간/주', () => {
+    const results = evaluateAll(
+      createAlbaJobInput({
+        jobCategoryCode: 'SKIN_CARE',
+        ksicCode: 'S',
+        weeklyHours: 20,
+      }),
+    );
+
+    it('F-5, F-6 항상 eligible', () => {
+      expect(results['F-5'].status).toBe('eligible');
+      expect(results['F-6'].status).toBe('eligible');
+    });
+
+    it('F-4 blocked (공공이익 제한) / F-4 blocked (public interest)', () => {
+      // [Legal] 법무부 고시 — 피부관리사 공공이익 제한
+      expect(results['F-4'].status).toBe('blocked');
+    });
+
+    it('H-1 eligible (유흥업소 아님) / H-1 eligible', () => {
+      expect(results['H-1'].status).toBe('eligible');
+    });
+
+    it('D-2 eligible 또는 conditional (20h 이내) / D-2 within limit', () => {
+      expect(['eligible', 'conditional']).toContain(results['D-2'].status);
+    });
+  });
+
+  // ----------------------------------------------------------------
+  // 시나리오 9: 농업 보조 + 주 40시간
+  // Scenario 9: Agriculture helper + 40h/week
+  // ----------------------------------------------------------------
+  describe('시나리오 9: 농업 보조 40시간/주', () => {
+    const results = evaluateAll(
+      createAlbaJobInput({
+        jobCategoryCode: 'AGRICULTURE',
+        ksicCode: 'A',
+        weeklyHours: 40,
+      }),
+    );
+
+    it('F-5, F-6 항상 eligible', () => {
+      expect(results['F-5'].status).toBe('eligible');
+      expect(results['F-6'].status).toBe('eligible');
+    });
+
+    it('D-2 blocked (40h > 35h 최대) / D-2 blocked (over max)', () => {
+      expect(results['D-2'].status).toBe('blocked');
+    });
+
+    it('D-4 blocked (40h > 20h 최대) / D-4 blocked (over max)', () => {
+      expect(results['D-4'].status).toBe('blocked');
+    });
+
+    it('F-4 blocked (단순노무, 비인구감소지역) / F-4 blocked (simple labor)', () => {
+      expect(results['F-4'].status).toBe('blocked');
+    });
+
+    it('H-2 eligible 또는 conditional (농업 허용 + 구인기간 조건)', () => {
+      // [Legal] 외국인근로자 고용법 — 농축산업 허용
+      expect(['eligible', 'conditional']).toContain(results['H-2'].status);
+    });
+  });
+
+  // ----------------------------------------------------------------
+  // 시나리오 10: 주말만 근무 (D-2/D-4 분기점)
+  // Scenario 10: Weekend-only work (D-2 vs D-4 divergence)
+  // ----------------------------------------------------------------
+  describe('시나리오 10: 카페 바리스타 주말만 16시간/주', () => {
+    const results = evaluateAll(
+      createAlbaJobInput({
+        jobCategoryCode: 'CAFE_BARISTA',
+        ksicCode: 'I',
+        weeklyHours: 16,
+        isWeekendOnly: true,
+        hasWeekdayShift: false,
+        schedule: WEEKEND_ONLY_SCHEDULE,
+      }),
+    );
+
+    it('D-2 eligible (주말 TOPIK 충족 시 무제한) / D-2 eligible (weekend unlimited)', () => {
+      // [Legal] 법무부 고시 — 주말/공휴일 근무 시간 무제한 (TOPIK 충족 조건)
+      expect(results['D-2'].status).toBe('eligible');
+    });
+
+    it('D-4 conditional (주말도 시간제한 동일) / D-4 conditional (same limit on weekends)', () => {
+      // [Legal] 법무부 고시 — D-4는 주말에도 20시간 제한 동일 (D-2와 핵심 차이)
+      expect(results['D-4'].status).toBe('conditional');
+    });
+
+    it('F-4 eligible (비단순노무) / F-4 eligible (non-simple-labor)', () => {
+      expect(results['F-4'].status).toBe('eligible');
+    });
+  });
+});

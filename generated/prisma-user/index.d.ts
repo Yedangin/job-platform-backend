@@ -64,6 +64,11 @@ export type SupportTicket = $Result.DefaultSelection<Prisma.$SupportTicketPayloa
  */
 export type ActivityLog = $Result.DefaultSelection<Prisma.$ActivityLogPayload>
 /**
+ * Model InfoBoard
+ * 
+ */
+export type InfoBoard = $Result.DefaultSelection<Prisma.$InfoBoardPayload>
+/**
  * Model VisaType
  * 
  */
@@ -356,6 +361,17 @@ export const TicketStatus: {
 export type TicketStatus = (typeof TicketStatus)[keyof typeof TicketStatus]
 
 
+export const InfoCategory: {
+  VISA_INFO: 'VISA_INFO',
+  EDUCATION: 'EDUCATION',
+  LIVING_TIPS: 'LIVING_TIPS',
+  POLICY_LAW: 'POLICY_LAW',
+  ANNOUNCEMENTS: 'ANNOUNCEMENTS'
+};
+
+export type InfoCategory = (typeof InfoCategory)[keyof typeof InfoCategory]
+
+
 export const EmploymentLevel: {
   FULL: 'FULL',
   LIMITED: 'LIMITED',
@@ -591,6 +607,10 @@ export const GraduationStatus: typeof $Enums.GraduationStatus
 export type TicketStatus = $Enums.TicketStatus
 
 export const TicketStatus: typeof $Enums.TicketStatus
+
+export type InfoCategory = $Enums.InfoCategory
+
+export const InfoCategory: typeof $Enums.InfoCategory
 
 export type EmploymentLevel = $Enums.EmploymentLevel
 
@@ -892,6 +912,16 @@ export class PrismaClient<
     * ```
     */
   get activityLog(): Prisma.ActivityLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.infoBoard`: Exposes CRUD operations for the **InfoBoard** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more InfoBoards
+    * const infoBoards = await prisma.infoBoard.findMany()
+    * ```
+    */
+  get infoBoard(): Prisma.InfoBoardDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.visaType`: Exposes CRUD operations for the **VisaType** model.
@@ -1682,6 +1712,7 @@ export namespace Prisma {
     ProfileLanguage: 'ProfileLanguage',
     SupportTicket: 'SupportTicket',
     ActivityLog: 'ActivityLog',
+    InfoBoard: 'InfoBoard',
     VisaType: 'VisaType',
     IndustryCode: 'IndustryCode',
     VisaRule: 'VisaRule',
@@ -1734,7 +1765,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "corporateProfile" | "individualProfile" | "talentAccessLog" | "educationalInstitution" | "profileEducation" | "profileCareer" | "profileLanguage" | "supportTicket" | "activityLog" | "visaType" | "industryCode" | "visaRule" | "policyChange" | "scrapingState" | "visaEvaluationLog" | "occupationCode" | "visaOccupationMapping" | "visaIndustryMapping" | "visaCountryRestriction" | "pointSystemCategory" | "pointSystemCriteria" | "visaRequiredDocument" | "hireQuotaRule" | "prohibitedIndustry" | "workHourRule" | "visaTransition" | "scoringSystem" | "scoringCriteria" | "visaTransitionChain" | "jobProduct" | "jobOrder" | "jobPosting" | "jobAttributesAlba" | "jobAttributesFulltime" | "jobApplication" | "interviewSlot" | "jobScrap" | "adminJobAction" | "resume" | "visaVerification" | "diagnosisSession" | "diagnosisPathwayClick" | "scoreCalibrationLog"
+      modelProps: "user" | "corporateProfile" | "individualProfile" | "talentAccessLog" | "educationalInstitution" | "profileEducation" | "profileCareer" | "profileLanguage" | "supportTicket" | "activityLog" | "infoBoard" | "visaType" | "industryCode" | "visaRule" | "policyChange" | "scrapingState" | "visaEvaluationLog" | "occupationCode" | "visaOccupationMapping" | "visaIndustryMapping" | "visaCountryRestriction" | "pointSystemCategory" | "pointSystemCriteria" | "visaRequiredDocument" | "hireQuotaRule" | "prohibitedIndustry" | "workHourRule" | "visaTransition" | "scoringSystem" | "scoringCriteria" | "visaTransitionChain" | "jobProduct" | "jobOrder" | "jobPosting" | "jobAttributesAlba" | "jobAttributesFulltime" | "jobApplication" | "interviewSlot" | "jobScrap" | "adminJobAction" | "resume" | "visaVerification" | "diagnosisSession" | "diagnosisPathwayClick" | "scoreCalibrationLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2475,6 +2506,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ActivityLogCountArgs<ExtArgs>
             result: $Utils.Optional<ActivityLogCountAggregateOutputType> | number
+          }
+        }
+      }
+      InfoBoard: {
+        payload: Prisma.$InfoBoardPayload<ExtArgs>
+        fields: Prisma.InfoBoardFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.InfoBoardFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InfoBoardPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.InfoBoardFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InfoBoardPayload>
+          }
+          findFirst: {
+            args: Prisma.InfoBoardFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InfoBoardPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.InfoBoardFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InfoBoardPayload>
+          }
+          findMany: {
+            args: Prisma.InfoBoardFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InfoBoardPayload>[]
+          }
+          create: {
+            args: Prisma.InfoBoardCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InfoBoardPayload>
+          }
+          createMany: {
+            args: Prisma.InfoBoardCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.InfoBoardCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InfoBoardPayload>[]
+          }
+          delete: {
+            args: Prisma.InfoBoardDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InfoBoardPayload>
+          }
+          update: {
+            args: Prisma.InfoBoardUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InfoBoardPayload>
+          }
+          deleteMany: {
+            args: Prisma.InfoBoardDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.InfoBoardUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.InfoBoardUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InfoBoardPayload>[]
+          }
+          upsert: {
+            args: Prisma.InfoBoardUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InfoBoardPayload>
+          }
+          aggregate: {
+            args: Prisma.InfoBoardAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInfoBoard>
+          }
+          groupBy: {
+            args: Prisma.InfoBoardGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InfoBoardGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.InfoBoardCountArgs<ExtArgs>
+            result: $Utils.Optional<InfoBoardCountAggregateOutputType> | number
           }
         }
       }
@@ -5088,6 +5193,7 @@ export namespace Prisma {
     profileLanguage?: ProfileLanguageOmit
     supportTicket?: SupportTicketOmit
     activityLog?: ActivityLogOmit
+    infoBoard?: InfoBoardOmit
     visaType?: VisaTypeOmit
     industryCode?: IndustryCodeOmit
     visaRule?: VisaRuleOmit
@@ -18518,6 +18624,1061 @@ export namespace Prisma {
      * Omit specific fields from the ActivityLog
      */
     omit?: ActivityLogOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model InfoBoard
+   */
+
+  export type AggregateInfoBoard = {
+    _count: InfoBoardCountAggregateOutputType | null
+    _avg: InfoBoardAvgAggregateOutputType | null
+    _sum: InfoBoardSumAggregateOutputType | null
+    _min: InfoBoardMinAggregateOutputType | null
+    _max: InfoBoardMaxAggregateOutputType | null
+  }
+
+  export type InfoBoardAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type InfoBoardSumAggregateOutputType = {
+    id: bigint | null
+  }
+
+  export type InfoBoardMinAggregateOutputType = {
+    id: bigint | null
+    title: string | null
+    content: string | null
+    category: $Enums.InfoCategory | null
+    thumbnail: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type InfoBoardMaxAggregateOutputType = {
+    id: bigint | null
+    title: string | null
+    content: string | null
+    category: $Enums.InfoCategory | null
+    thumbnail: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type InfoBoardCountAggregateOutputType = {
+    id: number
+    title: number
+    content: number
+    category: number
+    thumbnail: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type InfoBoardAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type InfoBoardSumAggregateInputType = {
+    id?: true
+  }
+
+  export type InfoBoardMinAggregateInputType = {
+    id?: true
+    title?: true
+    content?: true
+    category?: true
+    thumbnail?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type InfoBoardMaxAggregateInputType = {
+    id?: true
+    title?: true
+    content?: true
+    category?: true
+    thumbnail?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type InfoBoardCountAggregateInputType = {
+    id?: true
+    title?: true
+    content?: true
+    category?: true
+    thumbnail?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type InfoBoardAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InfoBoard to aggregate.
+     */
+    where?: InfoBoardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InfoBoards to fetch.
+     */
+    orderBy?: InfoBoardOrderByWithRelationInput | InfoBoardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: InfoBoardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InfoBoards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InfoBoards.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned InfoBoards
+    **/
+    _count?: true | InfoBoardCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: InfoBoardAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: InfoBoardSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: InfoBoardMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: InfoBoardMaxAggregateInputType
+  }
+
+  export type GetInfoBoardAggregateType<T extends InfoBoardAggregateArgs> = {
+        [P in keyof T & keyof AggregateInfoBoard]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateInfoBoard[P]>
+      : GetScalarType<T[P], AggregateInfoBoard[P]>
+  }
+
+
+
+
+  export type InfoBoardGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InfoBoardWhereInput
+    orderBy?: InfoBoardOrderByWithAggregationInput | InfoBoardOrderByWithAggregationInput[]
+    by: InfoBoardScalarFieldEnum[] | InfoBoardScalarFieldEnum
+    having?: InfoBoardScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: InfoBoardCountAggregateInputType | true
+    _avg?: InfoBoardAvgAggregateInputType
+    _sum?: InfoBoardSumAggregateInputType
+    _min?: InfoBoardMinAggregateInputType
+    _max?: InfoBoardMaxAggregateInputType
+  }
+
+  export type InfoBoardGroupByOutputType = {
+    id: bigint
+    title: string
+    content: string
+    category: $Enums.InfoCategory
+    thumbnail: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: InfoBoardCountAggregateOutputType | null
+    _avg: InfoBoardAvgAggregateOutputType | null
+    _sum: InfoBoardSumAggregateOutputType | null
+    _min: InfoBoardMinAggregateOutputType | null
+    _max: InfoBoardMaxAggregateOutputType | null
+  }
+
+  type GetInfoBoardGroupByPayload<T extends InfoBoardGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<InfoBoardGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof InfoBoardGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], InfoBoardGroupByOutputType[P]>
+            : GetScalarType<T[P], InfoBoardGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type InfoBoardSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    category?: boolean
+    thumbnail?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["infoBoard"]>
+
+  export type InfoBoardSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    category?: boolean
+    thumbnail?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["infoBoard"]>
+
+  export type InfoBoardSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    category?: boolean
+    thumbnail?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["infoBoard"]>
+
+  export type InfoBoardSelectScalar = {
+    id?: boolean
+    title?: boolean
+    content?: boolean
+    category?: boolean
+    thumbnail?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type InfoBoardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "content" | "category" | "thumbnail" | "createdAt" | "updatedAt", ExtArgs["result"]["infoBoard"]>
+
+  export type $InfoBoardPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "InfoBoard"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      title: string
+      content: string
+      category: $Enums.InfoCategory
+      thumbnail: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["infoBoard"]>
+    composites: {}
+  }
+
+  type InfoBoardGetPayload<S extends boolean | null | undefined | InfoBoardDefaultArgs> = $Result.GetResult<Prisma.$InfoBoardPayload, S>
+
+  type InfoBoardCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<InfoBoardFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InfoBoardCountAggregateInputType | true
+    }
+
+  export interface InfoBoardDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['InfoBoard'], meta: { name: 'InfoBoard' } }
+    /**
+     * Find zero or one InfoBoard that matches the filter.
+     * @param {InfoBoardFindUniqueArgs} args - Arguments to find a InfoBoard
+     * @example
+     * // Get one InfoBoard
+     * const infoBoard = await prisma.infoBoard.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends InfoBoardFindUniqueArgs>(args: SelectSubset<T, InfoBoardFindUniqueArgs<ExtArgs>>): Prisma__InfoBoardClient<$Result.GetResult<Prisma.$InfoBoardPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one InfoBoard that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {InfoBoardFindUniqueOrThrowArgs} args - Arguments to find a InfoBoard
+     * @example
+     * // Get one InfoBoard
+     * const infoBoard = await prisma.infoBoard.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends InfoBoardFindUniqueOrThrowArgs>(args: SelectSubset<T, InfoBoardFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InfoBoardClient<$Result.GetResult<Prisma.$InfoBoardPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InfoBoard that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InfoBoardFindFirstArgs} args - Arguments to find a InfoBoard
+     * @example
+     * // Get one InfoBoard
+     * const infoBoard = await prisma.infoBoard.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends InfoBoardFindFirstArgs>(args?: SelectSubset<T, InfoBoardFindFirstArgs<ExtArgs>>): Prisma__InfoBoardClient<$Result.GetResult<Prisma.$InfoBoardPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first InfoBoard that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InfoBoardFindFirstOrThrowArgs} args - Arguments to find a InfoBoard
+     * @example
+     * // Get one InfoBoard
+     * const infoBoard = await prisma.infoBoard.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends InfoBoardFindFirstOrThrowArgs>(args?: SelectSubset<T, InfoBoardFindFirstOrThrowArgs<ExtArgs>>): Prisma__InfoBoardClient<$Result.GetResult<Prisma.$InfoBoardPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more InfoBoards that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InfoBoardFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all InfoBoards
+     * const infoBoards = await prisma.infoBoard.findMany()
+     * 
+     * // Get first 10 InfoBoards
+     * const infoBoards = await prisma.infoBoard.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const infoBoardWithIdOnly = await prisma.infoBoard.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends InfoBoardFindManyArgs>(args?: SelectSubset<T, InfoBoardFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InfoBoardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a InfoBoard.
+     * @param {InfoBoardCreateArgs} args - Arguments to create a InfoBoard.
+     * @example
+     * // Create one InfoBoard
+     * const InfoBoard = await prisma.infoBoard.create({
+     *   data: {
+     *     // ... data to create a InfoBoard
+     *   }
+     * })
+     * 
+     */
+    create<T extends InfoBoardCreateArgs>(args: SelectSubset<T, InfoBoardCreateArgs<ExtArgs>>): Prisma__InfoBoardClient<$Result.GetResult<Prisma.$InfoBoardPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many InfoBoards.
+     * @param {InfoBoardCreateManyArgs} args - Arguments to create many InfoBoards.
+     * @example
+     * // Create many InfoBoards
+     * const infoBoard = await prisma.infoBoard.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends InfoBoardCreateManyArgs>(args?: SelectSubset<T, InfoBoardCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many InfoBoards and returns the data saved in the database.
+     * @param {InfoBoardCreateManyAndReturnArgs} args - Arguments to create many InfoBoards.
+     * @example
+     * // Create many InfoBoards
+     * const infoBoard = await prisma.infoBoard.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many InfoBoards and only return the `id`
+     * const infoBoardWithIdOnly = await prisma.infoBoard.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends InfoBoardCreateManyAndReturnArgs>(args?: SelectSubset<T, InfoBoardCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InfoBoardPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a InfoBoard.
+     * @param {InfoBoardDeleteArgs} args - Arguments to delete one InfoBoard.
+     * @example
+     * // Delete one InfoBoard
+     * const InfoBoard = await prisma.infoBoard.delete({
+     *   where: {
+     *     // ... filter to delete one InfoBoard
+     *   }
+     * })
+     * 
+     */
+    delete<T extends InfoBoardDeleteArgs>(args: SelectSubset<T, InfoBoardDeleteArgs<ExtArgs>>): Prisma__InfoBoardClient<$Result.GetResult<Prisma.$InfoBoardPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one InfoBoard.
+     * @param {InfoBoardUpdateArgs} args - Arguments to update one InfoBoard.
+     * @example
+     * // Update one InfoBoard
+     * const infoBoard = await prisma.infoBoard.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends InfoBoardUpdateArgs>(args: SelectSubset<T, InfoBoardUpdateArgs<ExtArgs>>): Prisma__InfoBoardClient<$Result.GetResult<Prisma.$InfoBoardPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more InfoBoards.
+     * @param {InfoBoardDeleteManyArgs} args - Arguments to filter InfoBoards to delete.
+     * @example
+     * // Delete a few InfoBoards
+     * const { count } = await prisma.infoBoard.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends InfoBoardDeleteManyArgs>(args?: SelectSubset<T, InfoBoardDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InfoBoards.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InfoBoardUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many InfoBoards
+     * const infoBoard = await prisma.infoBoard.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends InfoBoardUpdateManyArgs>(args: SelectSubset<T, InfoBoardUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more InfoBoards and returns the data updated in the database.
+     * @param {InfoBoardUpdateManyAndReturnArgs} args - Arguments to update many InfoBoards.
+     * @example
+     * // Update many InfoBoards
+     * const infoBoard = await prisma.infoBoard.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more InfoBoards and only return the `id`
+     * const infoBoardWithIdOnly = await prisma.infoBoard.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends InfoBoardUpdateManyAndReturnArgs>(args: SelectSubset<T, InfoBoardUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InfoBoardPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one InfoBoard.
+     * @param {InfoBoardUpsertArgs} args - Arguments to update or create a InfoBoard.
+     * @example
+     * // Update or create a InfoBoard
+     * const infoBoard = await prisma.infoBoard.upsert({
+     *   create: {
+     *     // ... data to create a InfoBoard
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the InfoBoard we want to update
+     *   }
+     * })
+     */
+    upsert<T extends InfoBoardUpsertArgs>(args: SelectSubset<T, InfoBoardUpsertArgs<ExtArgs>>): Prisma__InfoBoardClient<$Result.GetResult<Prisma.$InfoBoardPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of InfoBoards.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InfoBoardCountArgs} args - Arguments to filter InfoBoards to count.
+     * @example
+     * // Count the number of InfoBoards
+     * const count = await prisma.infoBoard.count({
+     *   where: {
+     *     // ... the filter for the InfoBoards we want to count
+     *   }
+     * })
+    **/
+    count<T extends InfoBoardCountArgs>(
+      args?: Subset<T, InfoBoardCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], InfoBoardCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a InfoBoard.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InfoBoardAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends InfoBoardAggregateArgs>(args: Subset<T, InfoBoardAggregateArgs>): Prisma.PrismaPromise<GetInfoBoardAggregateType<T>>
+
+    /**
+     * Group by InfoBoard.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InfoBoardGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends InfoBoardGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: InfoBoardGroupByArgs['orderBy'] }
+        : { orderBy?: InfoBoardGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, InfoBoardGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInfoBoardGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the InfoBoard model
+   */
+  readonly fields: InfoBoardFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for InfoBoard.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__InfoBoardClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the InfoBoard model
+   */
+  interface InfoBoardFieldRefs {
+    readonly id: FieldRef<"InfoBoard", 'BigInt'>
+    readonly title: FieldRef<"InfoBoard", 'String'>
+    readonly content: FieldRef<"InfoBoard", 'String'>
+    readonly category: FieldRef<"InfoBoard", 'InfoCategory'>
+    readonly thumbnail: FieldRef<"InfoBoard", 'String'>
+    readonly createdAt: FieldRef<"InfoBoard", 'DateTime'>
+    readonly updatedAt: FieldRef<"InfoBoard", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * InfoBoard findUnique
+   */
+  export type InfoBoardFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InfoBoard
+     */
+    select?: InfoBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InfoBoard
+     */
+    omit?: InfoBoardOmit<ExtArgs> | null
+    /**
+     * Filter, which InfoBoard to fetch.
+     */
+    where: InfoBoardWhereUniqueInput
+  }
+
+  /**
+   * InfoBoard findUniqueOrThrow
+   */
+  export type InfoBoardFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InfoBoard
+     */
+    select?: InfoBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InfoBoard
+     */
+    omit?: InfoBoardOmit<ExtArgs> | null
+    /**
+     * Filter, which InfoBoard to fetch.
+     */
+    where: InfoBoardWhereUniqueInput
+  }
+
+  /**
+   * InfoBoard findFirst
+   */
+  export type InfoBoardFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InfoBoard
+     */
+    select?: InfoBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InfoBoard
+     */
+    omit?: InfoBoardOmit<ExtArgs> | null
+    /**
+     * Filter, which InfoBoard to fetch.
+     */
+    where?: InfoBoardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InfoBoards to fetch.
+     */
+    orderBy?: InfoBoardOrderByWithRelationInput | InfoBoardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InfoBoards.
+     */
+    cursor?: InfoBoardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InfoBoards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InfoBoards.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InfoBoards.
+     */
+    distinct?: InfoBoardScalarFieldEnum | InfoBoardScalarFieldEnum[]
+  }
+
+  /**
+   * InfoBoard findFirstOrThrow
+   */
+  export type InfoBoardFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InfoBoard
+     */
+    select?: InfoBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InfoBoard
+     */
+    omit?: InfoBoardOmit<ExtArgs> | null
+    /**
+     * Filter, which InfoBoard to fetch.
+     */
+    where?: InfoBoardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InfoBoards to fetch.
+     */
+    orderBy?: InfoBoardOrderByWithRelationInput | InfoBoardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for InfoBoards.
+     */
+    cursor?: InfoBoardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InfoBoards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InfoBoards.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of InfoBoards.
+     */
+    distinct?: InfoBoardScalarFieldEnum | InfoBoardScalarFieldEnum[]
+  }
+
+  /**
+   * InfoBoard findMany
+   */
+  export type InfoBoardFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InfoBoard
+     */
+    select?: InfoBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InfoBoard
+     */
+    omit?: InfoBoardOmit<ExtArgs> | null
+    /**
+     * Filter, which InfoBoards to fetch.
+     */
+    where?: InfoBoardWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of InfoBoards to fetch.
+     */
+    orderBy?: InfoBoardOrderByWithRelationInput | InfoBoardOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing InfoBoards.
+     */
+    cursor?: InfoBoardWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` InfoBoards from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` InfoBoards.
+     */
+    skip?: number
+    distinct?: InfoBoardScalarFieldEnum | InfoBoardScalarFieldEnum[]
+  }
+
+  /**
+   * InfoBoard create
+   */
+  export type InfoBoardCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InfoBoard
+     */
+    select?: InfoBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InfoBoard
+     */
+    omit?: InfoBoardOmit<ExtArgs> | null
+    /**
+     * The data needed to create a InfoBoard.
+     */
+    data: XOR<InfoBoardCreateInput, InfoBoardUncheckedCreateInput>
+  }
+
+  /**
+   * InfoBoard createMany
+   */
+  export type InfoBoardCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many InfoBoards.
+     */
+    data: InfoBoardCreateManyInput | InfoBoardCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * InfoBoard createManyAndReturn
+   */
+  export type InfoBoardCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InfoBoard
+     */
+    select?: InfoBoardSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InfoBoard
+     */
+    omit?: InfoBoardOmit<ExtArgs> | null
+    /**
+     * The data used to create many InfoBoards.
+     */
+    data: InfoBoardCreateManyInput | InfoBoardCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * InfoBoard update
+   */
+  export type InfoBoardUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InfoBoard
+     */
+    select?: InfoBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InfoBoard
+     */
+    omit?: InfoBoardOmit<ExtArgs> | null
+    /**
+     * The data needed to update a InfoBoard.
+     */
+    data: XOR<InfoBoardUpdateInput, InfoBoardUncheckedUpdateInput>
+    /**
+     * Choose, which InfoBoard to update.
+     */
+    where: InfoBoardWhereUniqueInput
+  }
+
+  /**
+   * InfoBoard updateMany
+   */
+  export type InfoBoardUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update InfoBoards.
+     */
+    data: XOR<InfoBoardUpdateManyMutationInput, InfoBoardUncheckedUpdateManyInput>
+    /**
+     * Filter which InfoBoards to update
+     */
+    where?: InfoBoardWhereInput
+    /**
+     * Limit how many InfoBoards to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * InfoBoard updateManyAndReturn
+   */
+  export type InfoBoardUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InfoBoard
+     */
+    select?: InfoBoardSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the InfoBoard
+     */
+    omit?: InfoBoardOmit<ExtArgs> | null
+    /**
+     * The data used to update InfoBoards.
+     */
+    data: XOR<InfoBoardUpdateManyMutationInput, InfoBoardUncheckedUpdateManyInput>
+    /**
+     * Filter which InfoBoards to update
+     */
+    where?: InfoBoardWhereInput
+    /**
+     * Limit how many InfoBoards to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * InfoBoard upsert
+   */
+  export type InfoBoardUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InfoBoard
+     */
+    select?: InfoBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InfoBoard
+     */
+    omit?: InfoBoardOmit<ExtArgs> | null
+    /**
+     * The filter to search for the InfoBoard to update in case it exists.
+     */
+    where: InfoBoardWhereUniqueInput
+    /**
+     * In case the InfoBoard found by the `where` argument doesn't exist, create a new InfoBoard with this data.
+     */
+    create: XOR<InfoBoardCreateInput, InfoBoardUncheckedCreateInput>
+    /**
+     * In case the InfoBoard was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<InfoBoardUpdateInput, InfoBoardUncheckedUpdateInput>
+  }
+
+  /**
+   * InfoBoard delete
+   */
+  export type InfoBoardDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InfoBoard
+     */
+    select?: InfoBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InfoBoard
+     */
+    omit?: InfoBoardOmit<ExtArgs> | null
+    /**
+     * Filter which InfoBoard to delete.
+     */
+    where: InfoBoardWhereUniqueInput
+  }
+
+  /**
+   * InfoBoard deleteMany
+   */
+  export type InfoBoardDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which InfoBoards to delete
+     */
+    where?: InfoBoardWhereInput
+    /**
+     * Limit how many InfoBoards to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * InfoBoard without action
+   */
+  export type InfoBoardDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the InfoBoard
+     */
+    select?: InfoBoardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the InfoBoard
+     */
+    omit?: InfoBoardOmit<ExtArgs> | null
   }
 
 
@@ -48881,6 +50042,11 @@ export namespace Prisma {
     interviewLocation: string | null
     interviewLink: string | null
     interviewRoundTrips: number | null
+    interviewDirections: string | null
+    interviewWhatToBring: string | null
+    cancelReason: string | null
+    cancelledBy: $Enums.ActorType | null
+    cancelledAt: Date | null
     rejectionReason: string | null
     resultNotifiedAt: Date | null
     createdAt: Date | null
@@ -48907,6 +50073,11 @@ export namespace Prisma {
     interviewLocation: string | null
     interviewLink: string | null
     interviewRoundTrips: number | null
+    interviewDirections: string | null
+    interviewWhatToBring: string | null
+    cancelReason: string | null
+    cancelledBy: $Enums.ActorType | null
+    cancelledAt: Date | null
     rejectionReason: string | null
     resultNotifiedAt: Date | null
     createdAt: Date | null
@@ -48933,6 +50104,11 @@ export namespace Prisma {
     interviewLocation: number
     interviewLink: number
     interviewRoundTrips: number
+    interviewDirections: number
+    interviewWhatToBring: number
+    cancelReason: number
+    cancelledBy: number
+    cancelledAt: number
     rejectionReason: number
     resultNotifiedAt: number
     createdAt: number
@@ -48975,6 +50151,11 @@ export namespace Prisma {
     interviewLocation?: true
     interviewLink?: true
     interviewRoundTrips?: true
+    interviewDirections?: true
+    interviewWhatToBring?: true
+    cancelReason?: true
+    cancelledBy?: true
+    cancelledAt?: true
     rejectionReason?: true
     resultNotifiedAt?: true
     createdAt?: true
@@ -49001,6 +50182,11 @@ export namespace Prisma {
     interviewLocation?: true
     interviewLink?: true
     interviewRoundTrips?: true
+    interviewDirections?: true
+    interviewWhatToBring?: true
+    cancelReason?: true
+    cancelledBy?: true
+    cancelledAt?: true
     rejectionReason?: true
     resultNotifiedAt?: true
     createdAt?: true
@@ -49027,6 +50213,11 @@ export namespace Prisma {
     interviewLocation?: true
     interviewLink?: true
     interviewRoundTrips?: true
+    interviewDirections?: true
+    interviewWhatToBring?: true
+    cancelReason?: true
+    cancelledBy?: true
+    cancelledAt?: true
     rejectionReason?: true
     resultNotifiedAt?: true
     createdAt?: true
@@ -49140,6 +50331,11 @@ export namespace Prisma {
     interviewLocation: string | null
     interviewLink: string | null
     interviewRoundTrips: number
+    interviewDirections: string | null
+    interviewWhatToBring: string | null
+    cancelReason: string | null
+    cancelledBy: $Enums.ActorType | null
+    cancelledAt: Date | null
     rejectionReason: string | null
     resultNotifiedAt: Date | null
     createdAt: Date
@@ -49185,6 +50381,11 @@ export namespace Prisma {
     interviewLocation?: boolean
     interviewLink?: boolean
     interviewRoundTrips?: boolean
+    interviewDirections?: boolean
+    interviewWhatToBring?: boolean
+    cancelReason?: boolean
+    cancelledBy?: boolean
+    cancelledAt?: boolean
     rejectionReason?: boolean
     resultNotifiedAt?: boolean
     createdAt?: boolean
@@ -49213,6 +50414,11 @@ export namespace Prisma {
     interviewLocation?: boolean
     interviewLink?: boolean
     interviewRoundTrips?: boolean
+    interviewDirections?: boolean
+    interviewWhatToBring?: boolean
+    cancelReason?: boolean
+    cancelledBy?: boolean
+    cancelledAt?: boolean
     rejectionReason?: boolean
     resultNotifiedAt?: boolean
     createdAt?: boolean
@@ -49241,6 +50447,11 @@ export namespace Prisma {
     interviewLocation?: boolean
     interviewLink?: boolean
     interviewRoundTrips?: boolean
+    interviewDirections?: boolean
+    interviewWhatToBring?: boolean
+    cancelReason?: boolean
+    cancelledBy?: boolean
+    cancelledAt?: boolean
     rejectionReason?: boolean
     resultNotifiedAt?: boolean
     createdAt?: boolean
@@ -49269,13 +50480,18 @@ export namespace Prisma {
     interviewLocation?: boolean
     interviewLink?: boolean
     interviewRoundTrips?: boolean
+    interviewDirections?: boolean
+    interviewWhatToBring?: boolean
+    cancelReason?: boolean
+    cancelledBy?: boolean
+    cancelledAt?: boolean
     rejectionReason?: boolean
     resultNotifiedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type JobApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "applicantId" | "applicationMethod" | "status" | "coverLetter" | "resumeSnapshot" | "selectedSlotId" | "proposedBy" | "proposedTime" | "selfReportedAt" | "interviewDate" | "interviewNote" | "interviewMethod" | "interviewFirstChoice" | "interviewSecondChoice" | "interviewLocation" | "interviewLink" | "interviewRoundTrips" | "rejectionReason" | "resultNotifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["jobApplication"]>
+  export type JobApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "applicantId" | "applicationMethod" | "status" | "coverLetter" | "resumeSnapshot" | "selectedSlotId" | "proposedBy" | "proposedTime" | "selfReportedAt" | "interviewDate" | "interviewNote" | "interviewMethod" | "interviewFirstChoice" | "interviewSecondChoice" | "interviewLocation" | "interviewLink" | "interviewRoundTrips" | "interviewDirections" | "interviewWhatToBring" | "cancelReason" | "cancelledBy" | "cancelledAt" | "rejectionReason" | "resultNotifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["jobApplication"]>
   export type JobApplicationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
     selectedSlot?: boolean | JobApplication$selectedSlotArgs<ExtArgs>
@@ -49315,6 +50531,11 @@ export namespace Prisma {
       interviewLocation: string | null
       interviewLink: string | null
       interviewRoundTrips: number
+      interviewDirections: string | null
+      interviewWhatToBring: string | null
+      cancelReason: string | null
+      cancelledBy: $Enums.ActorType | null
+      cancelledAt: Date | null
       rejectionReason: string | null
       resultNotifiedAt: Date | null
       createdAt: Date
@@ -49763,6 +50984,11 @@ export namespace Prisma {
     readonly interviewLocation: FieldRef<"JobApplication", 'String'>
     readonly interviewLink: FieldRef<"JobApplication", 'String'>
     readonly interviewRoundTrips: FieldRef<"JobApplication", 'Int'>
+    readonly interviewDirections: FieldRef<"JobApplication", 'String'>
+    readonly interviewWhatToBring: FieldRef<"JobApplication", 'String'>
+    readonly cancelReason: FieldRef<"JobApplication", 'String'>
+    readonly cancelledBy: FieldRef<"JobApplication", 'ActorType'>
+    readonly cancelledAt: FieldRef<"JobApplication", 'DateTime'>
     readonly rejectionReason: FieldRef<"JobApplication", 'String'>
     readonly resultNotifiedAt: FieldRef<"JobApplication", 'DateTime'>
     readonly createdAt: FieldRef<"JobApplication", 'DateTime'>
@@ -59576,6 +60802,19 @@ export namespace Prisma {
   export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[keyof typeof ActivityLogScalarFieldEnum]
 
 
+  export const InfoBoardScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    content: 'content',
+    category: 'category',
+    thumbnail: 'thumbnail',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type InfoBoardScalarFieldEnum = (typeof InfoBoardScalarFieldEnum)[keyof typeof InfoBoardScalarFieldEnum]
+
+
   export const VisaTypeScalarFieldEnum: {
     id: 'id',
     code: 'code',
@@ -60058,6 +61297,11 @@ export namespace Prisma {
     interviewLocation: 'interviewLocation',
     interviewLink: 'interviewLink',
     interviewRoundTrips: 'interviewRoundTrips',
+    interviewDirections: 'interviewDirections',
+    interviewWhatToBring: 'interviewWhatToBring',
+    cancelReason: 'cancelReason',
+    cancelledBy: 'cancelledBy',
+    cancelledAt: 'cancelledAt',
     rejectionReason: 'rejectionReason',
     resultNotifiedAt: 'resultNotifiedAt',
     createdAt: 'createdAt',
@@ -60498,6 +61742,20 @@ export namespace Prisma {
    * Reference to a field of type 'TicketStatus[]'
    */
   export type ListEnumTicketStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'InfoCategory'
+   */
+  export type EnumInfoCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InfoCategory'>
+    
+
+
+  /**
+   * Reference to a field of type 'InfoCategory[]'
+   */
+  export type ListEnumInfoCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InfoCategory[]'>
     
 
 
@@ -61985,6 +63243,70 @@ export namespace Prisma {
     metadata?: StringNullableWithAggregatesFilter<"ActivityLog"> | string | null
     ipAddress?: StringNullableWithAggregatesFilter<"ActivityLog"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ActivityLog"> | Date | string
+  }
+
+  export type InfoBoardWhereInput = {
+    AND?: InfoBoardWhereInput | InfoBoardWhereInput[]
+    OR?: InfoBoardWhereInput[]
+    NOT?: InfoBoardWhereInput | InfoBoardWhereInput[]
+    id?: BigIntFilter<"InfoBoard"> | bigint | number
+    title?: StringFilter<"InfoBoard"> | string
+    content?: StringFilter<"InfoBoard"> | string
+    category?: EnumInfoCategoryFilter<"InfoBoard"> | $Enums.InfoCategory
+    thumbnail?: StringNullableFilter<"InfoBoard"> | string | null
+    createdAt?: DateTimeFilter<"InfoBoard"> | Date | string
+    updatedAt?: DateTimeFilter<"InfoBoard"> | Date | string
+  }
+
+  export type InfoBoardOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    category?: SortOrder
+    thumbnail?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InfoBoardWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    AND?: InfoBoardWhereInput | InfoBoardWhereInput[]
+    OR?: InfoBoardWhereInput[]
+    NOT?: InfoBoardWhereInput | InfoBoardWhereInput[]
+    title?: StringFilter<"InfoBoard"> | string
+    content?: StringFilter<"InfoBoard"> | string
+    category?: EnumInfoCategoryFilter<"InfoBoard"> | $Enums.InfoCategory
+    thumbnail?: StringNullableFilter<"InfoBoard"> | string | null
+    createdAt?: DateTimeFilter<"InfoBoard"> | Date | string
+    updatedAt?: DateTimeFilter<"InfoBoard"> | Date | string
+  }, "id">
+
+  export type InfoBoardOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    category?: SortOrder
+    thumbnail?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: InfoBoardCountOrderByAggregateInput
+    _avg?: InfoBoardAvgOrderByAggregateInput
+    _max?: InfoBoardMaxOrderByAggregateInput
+    _min?: InfoBoardMinOrderByAggregateInput
+    _sum?: InfoBoardSumOrderByAggregateInput
+  }
+
+  export type InfoBoardScalarWhereWithAggregatesInput = {
+    AND?: InfoBoardScalarWhereWithAggregatesInput | InfoBoardScalarWhereWithAggregatesInput[]
+    OR?: InfoBoardScalarWhereWithAggregatesInput[]
+    NOT?: InfoBoardScalarWhereWithAggregatesInput | InfoBoardScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"InfoBoard"> | bigint | number
+    title?: StringWithAggregatesFilter<"InfoBoard"> | string
+    content?: StringWithAggregatesFilter<"InfoBoard"> | string
+    category?: EnumInfoCategoryWithAggregatesFilter<"InfoBoard"> | $Enums.InfoCategory
+    thumbnail?: StringNullableWithAggregatesFilter<"InfoBoard"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"InfoBoard"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"InfoBoard"> | Date | string
   }
 
   export type VisaTypeWhereInput = {
@@ -64417,6 +65739,11 @@ export namespace Prisma {
     interviewLocation?: StringNullableFilter<"JobApplication"> | string | null
     interviewLink?: StringNullableFilter<"JobApplication"> | string | null
     interviewRoundTrips?: IntFilter<"JobApplication"> | number
+    interviewDirections?: StringNullableFilter<"JobApplication"> | string | null
+    interviewWhatToBring?: StringNullableFilter<"JobApplication"> | string | null
+    cancelReason?: StringNullableFilter<"JobApplication"> | string | null
+    cancelledBy?: EnumActorTypeNullableFilter<"JobApplication"> | $Enums.ActorType | null
+    cancelledAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     rejectionReason?: StringNullableFilter<"JobApplication"> | string | null
     resultNotifiedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     createdAt?: DateTimeFilter<"JobApplication"> | Date | string
@@ -64445,6 +65772,11 @@ export namespace Prisma {
     interviewLocation?: SortOrderInput | SortOrder
     interviewLink?: SortOrderInput | SortOrder
     interviewRoundTrips?: SortOrder
+    interviewDirections?: SortOrderInput | SortOrder
+    interviewWhatToBring?: SortOrderInput | SortOrder
+    cancelReason?: SortOrderInput | SortOrder
+    cancelledBy?: SortOrderInput | SortOrder
+    cancelledAt?: SortOrderInput | SortOrder
     rejectionReason?: SortOrderInput | SortOrder
     resultNotifiedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -64477,6 +65809,11 @@ export namespace Prisma {
     interviewLocation?: StringNullableFilter<"JobApplication"> | string | null
     interviewLink?: StringNullableFilter<"JobApplication"> | string | null
     interviewRoundTrips?: IntFilter<"JobApplication"> | number
+    interviewDirections?: StringNullableFilter<"JobApplication"> | string | null
+    interviewWhatToBring?: StringNullableFilter<"JobApplication"> | string | null
+    cancelReason?: StringNullableFilter<"JobApplication"> | string | null
+    cancelledBy?: EnumActorTypeNullableFilter<"JobApplication"> | $Enums.ActorType | null
+    cancelledAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     rejectionReason?: StringNullableFilter<"JobApplication"> | string | null
     resultNotifiedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     createdAt?: DateTimeFilter<"JobApplication"> | Date | string
@@ -64505,6 +65842,11 @@ export namespace Prisma {
     interviewLocation?: SortOrderInput | SortOrder
     interviewLink?: SortOrderInput | SortOrder
     interviewRoundTrips?: SortOrder
+    interviewDirections?: SortOrderInput | SortOrder
+    interviewWhatToBring?: SortOrderInput | SortOrder
+    cancelReason?: SortOrderInput | SortOrder
+    cancelledBy?: SortOrderInput | SortOrder
+    cancelledAt?: SortOrderInput | SortOrder
     rejectionReason?: SortOrderInput | SortOrder
     resultNotifiedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -64539,6 +65881,11 @@ export namespace Prisma {
     interviewLocation?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
     interviewLink?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
     interviewRoundTrips?: IntWithAggregatesFilter<"JobApplication"> | number
+    interviewDirections?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
+    interviewWhatToBring?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
+    cancelReason?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
+    cancelledBy?: EnumActorTypeNullableWithAggregatesFilter<"JobApplication"> | $Enums.ActorType | null
+    cancelledAt?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
     rejectionReason?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
     resultNotifiedAt?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"JobApplication"> | Date | string
@@ -66609,6 +67956,76 @@ export namespace Prisma {
     metadata?: NullableStringFieldUpdateOperationsInput | string | null
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InfoBoardCreateInput = {
+    id?: bigint | number
+    title: string
+    content: string
+    category: $Enums.InfoCategory
+    thumbnail?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InfoBoardUncheckedCreateInput = {
+    id?: bigint | number
+    title: string
+    content: string
+    category: $Enums.InfoCategory
+    thumbnail?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InfoBoardUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumInfoCategoryFieldUpdateOperationsInput | $Enums.InfoCategory
+    thumbnail?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InfoBoardUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumInfoCategoryFieldUpdateOperationsInput | $Enums.InfoCategory
+    thumbnail?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InfoBoardCreateManyInput = {
+    id?: bigint | number
+    title: string
+    content: string
+    category: $Enums.InfoCategory
+    thumbnail?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InfoBoardUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumInfoCategoryFieldUpdateOperationsInput | $Enums.InfoCategory
+    thumbnail?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InfoBoardUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    category?: EnumInfoCategoryFieldUpdateOperationsInput | $Enums.InfoCategory
+    thumbnail?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type VisaTypeCreateInput = {
@@ -69404,6 +70821,11 @@ export namespace Prisma {
     interviewLocation?: string | null
     interviewLink?: string | null
     interviewRoundTrips?: number
+    interviewDirections?: string | null
+    interviewWhatToBring?: string | null
+    cancelReason?: string | null
+    cancelledBy?: $Enums.ActorType | null
+    cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -69432,6 +70854,11 @@ export namespace Prisma {
     interviewLocation?: string | null
     interviewLink?: string | null
     interviewRoundTrips?: number
+    interviewDirections?: string | null
+    interviewWhatToBring?: string | null
+    cancelReason?: string | null
+    cancelledBy?: $Enums.ActorType | null
+    cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -69456,6 +70883,11 @@ export namespace Prisma {
     interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
     interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
     interviewRoundTrips?: IntFieldUpdateOperationsInput | number
+    interviewDirections?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewWhatToBring?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -69484,6 +70916,11 @@ export namespace Prisma {
     interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
     interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
     interviewRoundTrips?: IntFieldUpdateOperationsInput | number
+    interviewDirections?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewWhatToBring?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -69510,6 +70947,11 @@ export namespace Prisma {
     interviewLocation?: string | null
     interviewLink?: string | null
     interviewRoundTrips?: number
+    interviewDirections?: string | null
+    interviewWhatToBring?: string | null
+    cancelReason?: string | null
+    cancelledBy?: $Enums.ActorType | null
+    cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -69534,6 +70976,11 @@ export namespace Prisma {
     interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
     interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
     interviewRoundTrips?: IntFieldUpdateOperationsInput | number
+    interviewDirections?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewWhatToBring?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -69560,6 +71007,11 @@ export namespace Prisma {
     interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
     interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
     interviewRoundTrips?: IntFieldUpdateOperationsInput | number
+    interviewDirections?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewWhatToBring?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -71652,6 +73104,61 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type EnumInfoCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.InfoCategory | EnumInfoCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.InfoCategory[] | ListEnumInfoCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InfoCategory[] | ListEnumInfoCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumInfoCategoryFilter<$PrismaModel> | $Enums.InfoCategory
+  }
+
+  export type InfoBoardCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    category?: SortOrder
+    thumbnail?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InfoBoardAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type InfoBoardMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    category?: SortOrder
+    thumbnail?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InfoBoardMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    content?: SortOrder
+    category?: SortOrder
+    thumbnail?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type InfoBoardSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type EnumInfoCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InfoCategory | EnumInfoCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.InfoCategory[] | ListEnumInfoCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InfoCategory[] | ListEnumInfoCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumInfoCategoryWithAggregatesFilter<$PrismaModel> | $Enums.InfoCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumInfoCategoryFilter<$PrismaModel>
+    _max?: NestedEnumInfoCategoryFilter<$PrismaModel>
+  }
+
   export type EnumEmploymentLevelFilter<$PrismaModel = never> = {
     equals?: $Enums.EmploymentLevel | EnumEmploymentLevelFieldRefInput<$PrismaModel>
     in?: $Enums.EmploymentLevel[] | ListEnumEmploymentLevelFieldRefInput<$PrismaModel>
@@ -73731,6 +75238,11 @@ export namespace Prisma {
     interviewLocation?: SortOrder
     interviewLink?: SortOrder
     interviewRoundTrips?: SortOrder
+    interviewDirections?: SortOrder
+    interviewWhatToBring?: SortOrder
+    cancelReason?: SortOrder
+    cancelledBy?: SortOrder
+    cancelledAt?: SortOrder
     rejectionReason?: SortOrder
     resultNotifiedAt?: SortOrder
     createdAt?: SortOrder
@@ -73764,6 +75276,11 @@ export namespace Prisma {
     interviewLocation?: SortOrder
     interviewLink?: SortOrder
     interviewRoundTrips?: SortOrder
+    interviewDirections?: SortOrder
+    interviewWhatToBring?: SortOrder
+    cancelReason?: SortOrder
+    cancelledBy?: SortOrder
+    cancelledAt?: SortOrder
     rejectionReason?: SortOrder
     resultNotifiedAt?: SortOrder
     createdAt?: SortOrder
@@ -73790,6 +75307,11 @@ export namespace Prisma {
     interviewLocation?: SortOrder
     interviewLink?: SortOrder
     interviewRoundTrips?: SortOrder
+    interviewDirections?: SortOrder
+    interviewWhatToBring?: SortOrder
+    cancelReason?: SortOrder
+    cancelledBy?: SortOrder
+    cancelledAt?: SortOrder
     rejectionReason?: SortOrder
     resultNotifiedAt?: SortOrder
     createdAt?: SortOrder
@@ -75039,6 +76561,10 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutSupportTicketsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSupportTicketsInput, UserUpdateWithoutSupportTicketsInput>, UserUncheckedUpdateWithoutSupportTicketsInput>
+  }
+
+  export type EnumInfoCategoryFieldUpdateOperationsInput = {
+    set?: $Enums.InfoCategory
   }
 
   export type VisaRuleCreateNestedManyWithoutVisaTypeInput = {
@@ -77017,6 +78543,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTicketStatusFilter<$PrismaModel>
     _max?: NestedEnumTicketStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumInfoCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.InfoCategory | EnumInfoCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.InfoCategory[] | ListEnumInfoCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InfoCategory[] | ListEnumInfoCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumInfoCategoryFilter<$PrismaModel> | $Enums.InfoCategory
+  }
+
+  export type NestedEnumInfoCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.InfoCategory | EnumInfoCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.InfoCategory[] | ListEnumInfoCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.InfoCategory[] | ListEnumInfoCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumInfoCategoryWithAggregatesFilter<$PrismaModel> | $Enums.InfoCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumInfoCategoryFilter<$PrismaModel>
+    _max?: NestedEnumInfoCategoryFilter<$PrismaModel>
   }
 
   export type NestedEnumEmploymentLevelFilter<$PrismaModel = never> = {
@@ -83071,6 +84614,11 @@ export namespace Prisma {
     interviewLocation?: string | null
     interviewLink?: string | null
     interviewRoundTrips?: number
+    interviewDirections?: string | null
+    interviewWhatToBring?: string | null
+    cancelReason?: string | null
+    cancelledBy?: $Enums.ActorType | null
+    cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -83097,6 +84645,11 @@ export namespace Prisma {
     interviewLocation?: string | null
     interviewLink?: string | null
     interviewRoundTrips?: number
+    interviewDirections?: string | null
+    interviewWhatToBring?: string | null
+    cancelReason?: string | null
+    cancelledBy?: $Enums.ActorType | null
+    cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -83255,6 +84808,11 @@ export namespace Prisma {
     interviewLocation?: StringNullableFilter<"JobApplication"> | string | null
     interviewLink?: StringNullableFilter<"JobApplication"> | string | null
     interviewRoundTrips?: IntFilter<"JobApplication"> | number
+    interviewDirections?: StringNullableFilter<"JobApplication"> | string | null
+    interviewWhatToBring?: StringNullableFilter<"JobApplication"> | string | null
+    cancelReason?: StringNullableFilter<"JobApplication"> | string | null
+    cancelledBy?: EnumActorTypeNullableFilter<"JobApplication"> | $Enums.ActorType | null
+    cancelledAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     rejectionReason?: StringNullableFilter<"JobApplication"> | string | null
     resultNotifiedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     createdAt?: DateTimeFilter<"JobApplication"> | Date | string
@@ -84114,6 +85672,11 @@ export namespace Prisma {
     interviewLocation?: string | null
     interviewLink?: string | null
     interviewRoundTrips?: number
+    interviewDirections?: string | null
+    interviewWhatToBring?: string | null
+    cancelReason?: string | null
+    cancelledBy?: $Enums.ActorType | null
+    cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -84140,6 +85703,11 @@ export namespace Prisma {
     interviewLocation?: string | null
     interviewLink?: string | null
     interviewRoundTrips?: number
+    interviewDirections?: string | null
+    interviewWhatToBring?: string | null
+    cancelReason?: string | null
+    cancelledBy?: $Enums.ActorType | null
+    cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -84291,6 +85859,11 @@ export namespace Prisma {
     interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
     interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
     interviewRoundTrips?: IntFieldUpdateOperationsInput | number
+    interviewDirections?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewWhatToBring?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -84317,6 +85890,11 @@ export namespace Prisma {
     interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
     interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
     interviewRoundTrips?: IntFieldUpdateOperationsInput | number
+    interviewDirections?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewWhatToBring?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -86333,6 +87911,11 @@ export namespace Prisma {
     interviewLocation?: string | null
     interviewLink?: string | null
     interviewRoundTrips?: number
+    interviewDirections?: string | null
+    interviewWhatToBring?: string | null
+    cancelReason?: string | null
+    cancelledBy?: $Enums.ActorType | null
+    cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
     createdAt?: Date | string
@@ -86392,6 +87975,11 @@ export namespace Prisma {
     interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
     interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
     interviewRoundTrips?: IntFieldUpdateOperationsInput | number
+    interviewDirections?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewWhatToBring?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -86418,6 +88006,11 @@ export namespace Prisma {
     interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
     interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
     interviewRoundTrips?: IntFieldUpdateOperationsInput | number
+    interviewDirections?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewWhatToBring?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -86443,6 +88036,11 @@ export namespace Prisma {
     interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
     interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
     interviewRoundTrips?: IntFieldUpdateOperationsInput | number
+    interviewDirections?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewWhatToBring?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -44,6 +44,7 @@ export * from './common/interfaces/session.interface';
 // Redis
 export * from './common/redis/redis.service';
 export * from './common/redis/redis-pubsub.service';
+export * from './common/redis/redis-lock.service';
 export * from './common/redis/redis.module';
 
 // Prisma

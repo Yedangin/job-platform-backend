@@ -34,6 +34,7 @@ import {
   SendResultNotificationDto,
   ProposeInterviewDto,
   AcceptInterviewDto,
+  CancelInterviewDto,
 } from './dto';
 
 @ApiTags('Applications')
@@ -306,6 +307,54 @@ export class JobApplicationController {
       BigInt(id),
       dto,
       BigInt(session.userId),
+    );
+  }
+
+  // ========================================
+  // 면접 취소 (Cancel Interview — 양측 모두 가능)
+  // ========================================
+
+  @Post(':id/cancel-interview')
+  @Roles('CORPORATE', 'ADMIN')
+  @ApiOperation({
+    summary:
+      '면접 취소 (기업) / Cancel interview (employer side with reason)',
+  })
+  @ApiParam({ name: 'id', description: 'Application ID' })
+  @ApiResponse({ status: 200, description: 'Interview cancelled' })
+  @ApiResponse({ status: 400, description: 'Cannot cancel in current status' })
+  async cancelInterviewByEmployer(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+    @Body() dto: CancelInterviewDto,
+  ) {
+    return this.jobApplicationService.cancelInterview(
+      BigInt(id),
+      dto,
+      'EMPLOYER',
+      session.userId,
+    );
+  }
+
+  @Post(':id/cancel-interview-applicant')
+  @Roles('INDIVIDUAL')
+  @ApiOperation({
+    summary:
+      '면접 취소 (구직자) / Cancel interview (applicant side with reason)',
+  })
+  @ApiParam({ name: 'id', description: 'Application ID' })
+  @ApiResponse({ status: 200, description: 'Interview cancelled' })
+  @ApiResponse({ status: 400, description: 'Cannot cancel in current status' })
+  async cancelInterviewByApplicant(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+    @Body() dto: CancelInterviewDto,
+  ) {
+    return this.jobApplicationService.cancelInterview(
+      BigInt(id),
+      dto,
+      'APPLICANT',
+      session.userId,
     );
   }
 }
