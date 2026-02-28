@@ -75,7 +75,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
    */
   async expire(key: string, ttlSeconds: number): Promise<boolean> {
     const result = await this.client.expire(key, ttlSeconds);
-    return result;
+    return Boolean(result);
   }
 
   // 패턴에 매칭되는 모든 키를 SCAN으로 조회

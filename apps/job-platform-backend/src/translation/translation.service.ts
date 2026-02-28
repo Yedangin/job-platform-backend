@@ -98,25 +98,15 @@ export class TranslationService {
   }
 
   /**
-   * 채용공고 번역 조회 (DB 캐시 → miss 시 번역 후 저장)
-   * Get job translation (DB cache → on miss, translate & save)
+   * 채용공고 번역 조회 (원본 공고 제목+설명 → 번역)
+   * Get job translation (fetch original title+desc → translate)
+   * TODO: JobTranslation 모델 추가 후 DB 캐싱 구현
    */
   async getJobTranslation(
     jobId: bigint,
     languageCode: string,
   ): Promise<{ translatedTitle: string; translatedDesc: string }> {
-    // 1) DB 캐시 확인 / Check DB cache
-    const cached = await this.jobPrisma.jobTranslation.findUnique({
-      where: { jobId_languageCode: { jobId, languageCode } },
-    });
-    if (cached) {
-      return {
-        translatedTitle: cached.translatedTitle,
-        translatedDesc: cached.translatedDesc,
-      };
-    }
-
-    // 2) 원본 공고 조회 / Fetch original job posting
+    // 원본 공고 조회 / Fetch original job posting
     const job = await this.jobPrisma.jobPosting.findUnique({
       where: { jobId },
       select: { title: true, description: true },
@@ -127,19 +117,11 @@ export class TranslationService {
       );
     }
 
-    // 3) 제목 + 설명 병렬 번역 / Translate title + description in parallel
+    // 제목 + 설명 병렬 번역 / Translate title + description in parallel
     const [translatedTitle, translatedDesc] = await Promise.all([
       this.translateText(job.title, languageCode),
       this.translateText(job.description, languageCode),
     ]);
-
-    // 4) DB 저장 (upsert로 race condition 방지)
-    //    Save to DB (upsert to handle race conditions)
-    await this.jobPrisma.jobTranslation.upsert({
-      where: { jobId_languageCode: { jobId, languageCode } },
-      create: { jobId, languageCode, translatedTitle, translatedDesc },
-      update: { translatedTitle, translatedDesc },
-    });
 
     return { translatedTitle, translatedDesc };
   }
