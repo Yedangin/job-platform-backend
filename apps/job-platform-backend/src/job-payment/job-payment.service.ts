@@ -840,8 +840,7 @@ export class JobPaymentService {
             (1000 * 60 * 60 * 24),
         );
         const usedDays = Math.ceil(
-          (Date.now() - job.premiumStartAt.getTime()) /
-            (1000 * 60 * 60 * 24),
+          (Date.now() - job.premiumStartAt.getTime()) / (1000 * 60 * 60 * 24),
         );
         const remainingDays = Math.max(totalDays - usedDays, 0);
 
