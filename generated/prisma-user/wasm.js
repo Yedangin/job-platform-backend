@@ -225,6 +225,16 @@ exports.Prisma.IndividualProfileScalarFieldEnum = {
   koreaStayMonths: 'koreaStayMonths',
   currentEmployerMonths: 'currentEmployerMonths',
   depopulationArea: 'depopulationArea',
+  majorCategory: 'majorCategory',
+  currentRole: 'currentRole',
+  careerSummaryJson: 'careerSummaryJson',
+  koreaCareerMonths: 'koreaCareerMonths',
+  universityName: 'universityName',
+  universityNameEn: 'universityNameEn',
+  major: 'major',
+  graduationYear: 'graduationYear',
+  nationalLicenses: 'nationalLicenses',
+  internationalCerts: 'internationalCerts',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -282,7 +292,9 @@ exports.Prisma.ProfileCareerScalarFieldEnum = {
   startDate: 'startDate',
   endDate: 'endDate',
   isCurrent: 'isCurrent',
-  description: 'description'
+  description: 'description',
+  occupationCategory: 'occupationCategory',
+  country: 'country'
 };
 
 exports.Prisma.ProfileLanguageScalarFieldEnum = {
@@ -747,6 +759,15 @@ exports.Prisma.JobApplicationScalarFieldEnum = {
   cancelledAt: 'cancelledAt',
   rejectionReason: 'rejectionReason',
   resultNotifiedAt: 'resultNotifiedAt',
+  documentPassedAt: 'documentPassedAt',
+  interviewScheduledAt: 'interviewScheduledAt',
+  finalAcceptedAt: 'finalAcceptedAt',
+  rejectedAt: 'rejectedAt',
+  offeredSalary: 'offeredSalary',
+  expectedStartDate: 'expectedStartDate',
+  companyMessage: 'companyMessage',
+  visaGuideScenario: 'visaGuideScenario',
+  visaGuideGeneratedAt: 'visaGuideGeneratedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -759,6 +780,32 @@ exports.Prisma.InterviewSlotScalarFieldEnum = {
   isBooked: 'isBooked',
   location: 'location',
   notes: 'notes'
+};
+
+exports.Prisma.VisaChecklistTemplateScalarFieldEnum = {
+  id: 'id',
+  scenario: 'scenario',
+  visaTransition: 'visaTransition',
+  category: 'category',
+  itemOrder: 'itemOrder',
+  itemText: 'itemText',
+  isRequired: 'isRequired',
+  note: 'note',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VisaChecklistItemScalarFieldEnum = {
+  id: 'id',
+  applicationId: 'applicationId',
+  category: 'category',
+  itemText: 'itemText',
+  itemOrder: 'itemOrder',
+  isChecked: 'isChecked',
+  checkedAt: 'checkedAt',
+  checkedBy: 'checkedBy',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.JobScrapScalarFieldEnum = {
@@ -797,6 +844,13 @@ exports.Prisma.ResumeScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.TalentBookmarkScalarFieldEnum = {
+  id: 'id',
+  resumeId: 'resumeId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.VisaVerificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -825,6 +879,16 @@ exports.Prisma.DiagnosisSessionScalarFieldEnum = {
   convertedToSignup: 'convertedToSignup',
   convertedToPaid: 'convertedToPaid',
   userFeedbackScore: 'userFeedbackScore',
+  isPremium: 'isPremium',
+  isPremiumViewed: 'isPremiumViewed',
+  stripeSessionId: 'stripeSessionId',
+  stripePaidAt: 'stripePaidAt',
+  premiumResultJson: 'premiumResultJson',
+  premiumViewedAt: 'premiumViewedAt',
+  previousSessionId: 'previousSessionId',
+  refundPolicyAgreedAt: 'refundPolicyAgreedAt',
+  digitalContentAgreedAt: 'digitalContentAgreedAt',
+  privacyAgreedAt: 'privacyAgreedAt',
   createdAt: 'createdAt'
 };
 
@@ -847,6 +911,67 @@ exports.Prisma.ScoreCalibrationLogScalarFieldEnum = {
   changeReason: 'changeReason',
   evidence: 'evidence',
   changedBy: 'changedBy',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.UniversityRankingScalarFieldEnum = {
+  id: 'id',
+  universityName: 'universityName',
+  universityNameEn: 'universityNameEn',
+  country: 'country',
+  qsRank: 'qsRank',
+  theRank: 'theRank',
+  rankTier: 'rankTier',
+  bonusScore: 'bonusScore',
+  updatedYear: 'updatedYear',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AdjacentMajorOccupationScalarFieldEnum = {
+  id: 'id',
+  categoryA: 'categoryA',
+  categoryB: 'categoryB',
+  alignBonus: 'alignBonus'
+};
+
+exports.Prisma.VisaIncomeReferenceScalarFieldEnum = {
+  id: 'id',
+  visaCode: 'visaCode',
+  visaNameKo: 'visaNameKo',
+  avgAnnualIncome: 'avgAnnualIncome',
+  incomeSource: 'incomeSource',
+  incomeNote: 'incomeNote',
+  updatedYear: 'updatedYear',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RediagnosisCouponScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  originalSessionId: 'originalSessionId',
+  couponCode: 'couponCode',
+  status: 'status',
+  issuedAt: 'issuedAt',
+  availableAt: 'availableAt',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  usedSessionId: 'usedSessionId',
+  reminderSentAt: 'reminderSentAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.PlannerRefundScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  userId: 'userId',
+  status: 'status',
+  reason: 'reason',
+  stripeRefundId: 'stripeRefundId',
+  refundAmountCents: 'refundAmountCents',
+  currency: 'currency',
+  message: 'message',
   createdAt: 'createdAt'
 };
 
@@ -1072,13 +1197,17 @@ exports.PremiumSource = exports.$Enums.PremiumSource = {
 exports.ApplicationStatus = exports.$Enums.ApplicationStatus = {
   PENDING: 'PENDING',
   REVIEWING: 'REVIEWING',
+  DOCUMENT_PASSED: 'DOCUMENT_PASSED',
   INTERVIEW_REQUESTED: 'INTERVIEW_REQUESTED',
   INTERVIEW_SCHEDULED: 'INTERVIEW_SCHEDULED',
   COORDINATION_NEEDED: 'COORDINATION_NEEDED',
   CONFIRMED: 'CONFIRMED',
+  FINAL_ACCEPTED: 'FINAL_ACCEPTED',
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
-  CANCELLED: 'CANCELLED'
+  CANCELLED: 'CANCELLED',
+  WITHDRAWN: 'WITHDRAWN',
+  APPLICATION_EXPIRED: 'APPLICATION_EXPIRED'
 };
 
 exports.ActorType = exports.$Enums.ActorType = {
@@ -1148,13 +1277,21 @@ exports.Prisma.ModelName = {
   JobAttributesFulltime: 'JobAttributesFulltime',
   JobApplication: 'JobApplication',
   InterviewSlot: 'InterviewSlot',
+  VisaChecklistTemplate: 'VisaChecklistTemplate',
+  VisaChecklistItem: 'VisaChecklistItem',
   JobScrap: 'JobScrap',
   AdminJobAction: 'AdminJobAction',
   Resume: 'Resume',
+  TalentBookmark: 'TalentBookmark',
   VisaVerification: 'VisaVerification',
   DiagnosisSession: 'DiagnosisSession',
   DiagnosisPathwayClick: 'DiagnosisPathwayClick',
-  ScoreCalibrationLog: 'ScoreCalibrationLog'
+  ScoreCalibrationLog: 'ScoreCalibrationLog',
+  UniversityRanking: 'UniversityRanking',
+  AdjacentMajorOccupation: 'AdjacentMajorOccupation',
+  VisaIncomeReference: 'VisaIncomeReference',
+  RediagnosisCoupon: 'RediagnosisCoupon',
+  PlannerRefund: 'PlannerRefund'
 };
 
 /**

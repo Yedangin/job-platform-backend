@@ -51,6 +51,14 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
+   * Redis PING — 연결 상태 확인 / Check connection status
+   * @returns 'PONG' on success
+   */
+  async ping(): Promise<string> {
+    return await this.client.ping();
+  }
+
+  /**
    * SET NX (Not eXists) — 키가 없을 때만 설정 (분산 락용)
    * SET NX — only set if key does not exist (for distributed locks)
    *
@@ -99,5 +107,49 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     }
 
     return result;
+  }
+
+  // --- Sorted Set 연산 (동시 세션 제한용) ---
+  // --- Sorted Set operations (for concurrent session limit) ---
+
+  /**
+   * Sorted Set에 멤버 추가 / Add member to sorted set
+   * @param key Redis key
+   * @param score 정렬 점수 (타임스탬프) / Sort score (timestamp)
+   * @param member 멤버 값 / Member value
+   */
+  async zadd(key: string, score: number, member: string): Promise<number> {
+    return await this.client.zAdd(key, { score, value: member });
+  }
+
+  /**
+   * Sorted Set 크기 반환 / Get sorted set cardinality
+   */
+  async zcard(key: string): Promise<number> {
+    return await this.client.zCard(key);
+  }
+
+  /**
+   * Sorted Set 범위 조회 (인덱스 기반) / Get range from sorted set by index
+   * @param start 시작 인덱스 / Start index
+   * @param stop 끝 인덱스 / End index
+   */
+  async zrange(key: string, start: number, stop: number): Promise<string[]> {
+    return await this.client.zRange(key, start, stop);
+  }
+
+  /**
+   * Sorted Set에서 멤버 제거 / Remove member from sorted set
+   */
+  async zrem(key: string, member: string): Promise<number> {
+    return await this.client.zRem(key, member);
+  }
+
+  /**
+   * 키의 카운터 증가 / Increment counter for key
+   * @returns 증가 후 값 / Value after increment
+   */
+  async incr(key: string): Promise<number> {
+    return await this.client.incr(key);
   }
 }

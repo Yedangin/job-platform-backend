@@ -10,6 +10,7 @@ import {
   SessionAuthGuard,
   SuccessTransformInterceptor,
   ThrottlerBehindProxyGuard,
+  CsrfGuard,
 } from 'libs/common/src';
 import { AuthModule } from './auth/auth.module';
 import { MemberVerificationModule } from './member-verification/member-verification.module';
@@ -39,6 +40,9 @@ import { RequestLogInterceptor } from './logging/request-log.interceptor';
 import { ErrorLogFilter } from './logging/error-log.filter';
 import { NotificationModule } from './notification/notification.module';
 import { InfoBoardModule } from './info-board/info-board.module';
+import { PlatformConfigModule } from './platform-config/platform-config.module';
+import { VisaPlannerModule } from './visa-planner/visa-planner.module';
+import { HealthController } from './health.controller';
 
 @Module({
   imports: [
@@ -124,12 +128,20 @@ import { InfoBoardModule } from './info-board/info-board.module';
     InstitutionsModule,
     NotificationModule,
     InfoBoardModule,
+    PlatformConfigModule,
+    VisaPlannerModule,
   ],
-  controllers: [],
+  controllers: [HealthController],
   providers: [
     {
       provide: APP_GUARD,
       useClass: ThrottlerBehindProxyGuard,
+    },
+    {
+      // CSRF 방어: Origin 헤더 검증 (SameSite cookie 위에 추가 계층)
+      // CSRF defense: Origin header verification (additional layer on SameSite cookie)
+      provide: APP_GUARD,
+      useClass: CsrfGuard,
     },
     SessionAuthGuard,
     {

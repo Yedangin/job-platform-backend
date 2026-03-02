@@ -55,6 +55,7 @@ import {
   KakaoAuthGuard,
   Apple0AuthGuard,
   Session,
+  SkipCsrf,
 } from 'libs/common/src';
 import { SocialProvider } from 'types/auth/auth';
 
@@ -171,7 +172,7 @@ export class AuthController {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? 'strict' : 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7일 / 7 days (Redis 세션 TTL과 일치 / Match Redis session TTL)
+      maxAge: 24 * 60 * 60 * 1000, // 24시간 / 24 hours (Redis 세션 TTL과 일치 / Match Redis session TTL)
       path: '/',
     });
 
@@ -236,6 +237,27 @@ export class AuthController {
     });
 
     return result;
+  }
+
+  // --- 6-2. 활성 세션 목록 조회 / Get active sessions ---
+  @Get('sessions')
+  @ApiOperation({ summary: 'Get list of active sessions for current user' })
+  @ApiResponse({ status: 200, description: 'Active sessions retrieved.' })
+  async getActiveSessions(@Session() sessionId: string) {
+    if (!sessionId) throw new UnauthorizedException('No session provided');
+    return await this.authService.getActiveSessions(sessionId);
+  }
+
+  // --- 6-3. 특정 세션 강제 종료 / Terminate specific session ---
+  @Post('sessions/:targetSessionId/terminate')
+  @ApiOperation({ summary: 'Terminate a specific session (not current)' })
+  @ApiResponse({ status: 200, description: 'Session terminated.' })
+  async terminateSession(
+    @Session() sessionId: string,
+    @Param('targetSessionId') targetSessionId: string,
+  ) {
+    if (!sessionId) throw new UnauthorizedException('No session provided');
+    return await this.authService.terminateSession(sessionId, targetSessionId);
   }
 
   // --- 7. 비밀번호 초기화 ---
@@ -682,6 +704,7 @@ export class AuthController {
       userId,
       body.action,
       body.reason,
+      body.rejectionDetails,
     );
   }
 
@@ -844,7 +867,7 @@ export class AuthController {
         httpOnly: true,
         secure: isProduction,
         sameSite: isProduction ? 'strict' : 'lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7일 / 7 days (Redis 세션 TTL과 일치 / Match Redis session TTL)
+        maxAge: 24 * 60 * 60 * 1000, // 24시간 / 24 hours (Redis 세션 TTL과 일치 / Match Redis session TTL)
         path: '/',
       });
 

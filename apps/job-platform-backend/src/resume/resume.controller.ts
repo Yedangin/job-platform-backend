@@ -101,6 +101,97 @@ export class ResumeController {
     return this.resumeService.checkAccess(sessionId, parseInt(resumeId));
   }
 
+  // ──── 북마크 / Bookmark ────
+
+  @Get('bookmarks')
+  @ApiOperation({
+    summary: '북마크 인재 목록 / Bookmarked talents',
+    description: '기업회원이 북마크한 인재 목록을 조회합니다.',
+  })
+  @ApiQuery({ name: 'page', required: false })
+  @ApiResponse({
+    status: 200,
+    description: '북마크 인재 목록 / Bookmarked talent list',
+  })
+  async getBookmarks(
+    @Session() sessionId: string,
+    @Query('page') page?: string,
+  ) {
+    if (!sessionId)
+      throw new UnauthorizedException('로그인 필요 / Login required');
+    return this.resumeService.getBookmarks(
+      sessionId,
+      page ? parseInt(page) : 1,
+    );
+  }
+
+  @Get('bookmarks/ids')
+  @ApiOperation({
+    summary: '북마크된 이력서 ID 목록 / Bookmarked resume IDs',
+    description: '검색 결과에서 북마크 상태 표시에 사용합니다.',
+  })
+  @ApiResponse({ status: 200, description: '북마크 ID 목록 / Bookmarked IDs' })
+  async getBookmarkedIds(@Session() sessionId: string) {
+    if (!sessionId)
+      throw new UnauthorizedException('로그인 필요 / Login required');
+    const ids = await this.resumeService.getBookmarkedIds(sessionId);
+    return { ids };
+  }
+
+  @Post(':resumeId/bookmark')
+  @ApiOperation({
+    summary: '인재 북마크 추가 / Add talent bookmark',
+    description: '관심 인재를 북마크에 추가합니다.',
+  })
+  @ApiParam({ name: 'resumeId', type: 'number' })
+  @ApiResponse({
+    status: 201,
+    description: '북마크 추가 성공 / Bookmark added',
+  })
+  async addBookmark(
+    @Session() sessionId: string,
+    @Param('resumeId') resumeId: string,
+  ) {
+    if (!sessionId)
+      throw new UnauthorizedException('로그인 필요 / Login required');
+    return this.resumeService.addBookmark(sessionId, parseInt(resumeId));
+  }
+
+  @Delete(':resumeId/bookmark')
+  @ApiOperation({
+    summary: '인재 북마크 제거 / Remove talent bookmark',
+    description: '북마크에서 인재를 제거합니다.',
+  })
+  @ApiParam({ name: 'resumeId', type: 'number' })
+  @ApiResponse({
+    status: 200,
+    description: '북마크 제거 성공 / Bookmark removed',
+  })
+  async removeBookmark(
+    @Session() sessionId: string,
+    @Param('resumeId') resumeId: string,
+  ) {
+    if (!sessionId)
+      throw new UnauthorizedException('로그인 필요 / Login required');
+    return this.resumeService.removeBookmark(sessionId, parseInt(resumeId));
+  }
+
+  @Get(':resumeId/is-bookmarked')
+  @ApiOperation({
+    summary: '북마크 여부 확인 / Check bookmark status',
+    description: '특정 인재가 북마크되어 있는지 확인합니다.',
+  })
+  @ApiParam({ name: 'resumeId', type: 'number' })
+  @ApiResponse({ status: 200, description: '북마크 상태 / Bookmark status' })
+  async isBookmarked(
+    @Session() sessionId: string,
+    @Param('resumeId') resumeId: string,
+  ) {
+    if (!sessionId)
+      throw new UnauthorizedException('로그인 필요 / Login required');
+    return this.resumeService.isBookmarked(sessionId, parseInt(resumeId));
+  }
+
   // ──── 개인 CRUD / Personal CRUD ────
 
   @Post()

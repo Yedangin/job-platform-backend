@@ -7,9 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { isPublic } from '../decorator/public.decorator';
 import { RedisService } from '../redis/redis.service';
-
-// 세션 TTL 상수 / Session TTL constant
-const SESSION_TTL_SECONDS = 7 * 24 * 60 * 60; // 7일 / 7 days
+import { SESSION_TTL_SECONDS } from '../helper/generate-store-token';
 
 @Injectable()
 export class SessionAuthGuard implements CanActivate {
@@ -46,8 +44,8 @@ export class SessionAuthGuard implements CanActivate {
     // 세션 데이터를 요청에 첨부 / Attach session data to request for use in controllers
     request.session = JSON.parse(sessionData);
 
-    // 세션 슬라이딩: 활성 사용자의 TTL을 갱신하여 7일간 미접속 시에만 만료
-    // Session sliding: renew TTL on active users — expires only after 7 days of inactivity
+    // 세션 슬라이딩: 활성 사용자의 TTL을 갱신하여 24시간 미접속 시에만 만료
+    // Session sliding: renew TTL on active users — expires only after 24h of inactivity
     this.redisService
       .expire(`session:${sessionId}`, SESSION_TTL_SECONDS)
       .catch(() => {

@@ -204,6 +204,16 @@ export type JobApplication = $Result.DefaultSelection<Prisma.$JobApplicationPayl
  */
 export type InterviewSlot = $Result.DefaultSelection<Prisma.$InterviewSlotPayload>
 /**
+ * Model VisaChecklistTemplate
+ * 
+ */
+export type VisaChecklistTemplate = $Result.DefaultSelection<Prisma.$VisaChecklistTemplatePayload>
+/**
+ * Model VisaChecklistItem
+ * 
+ */
+export type VisaChecklistItem = $Result.DefaultSelection<Prisma.$VisaChecklistItemPayload>
+/**
  * Model JobScrap
  * 
  */
@@ -218,6 +228,11 @@ export type AdminJobAction = $Result.DefaultSelection<Prisma.$AdminJobActionPayl
  * 
  */
 export type Resume = $Result.DefaultSelection<Prisma.$ResumePayload>
+/**
+ * Model TalentBookmark
+ * 
+ */
+export type TalentBookmark = $Result.DefaultSelection<Prisma.$TalentBookmarkPayload>
 /**
  * Model VisaVerification
  * 
@@ -238,6 +253,31 @@ export type DiagnosisPathwayClick = $Result.DefaultSelection<Prisma.$DiagnosisPa
  * 
  */
 export type ScoreCalibrationLog = $Result.DefaultSelection<Prisma.$ScoreCalibrationLogPayload>
+/**
+ * Model UniversityRanking
+ * 
+ */
+export type UniversityRanking = $Result.DefaultSelection<Prisma.$UniversityRankingPayload>
+/**
+ * Model AdjacentMajorOccupation
+ * 
+ */
+export type AdjacentMajorOccupation = $Result.DefaultSelection<Prisma.$AdjacentMajorOccupationPayload>
+/**
+ * Model VisaIncomeReference
+ * 
+ */
+export type VisaIncomeReference = $Result.DefaultSelection<Prisma.$VisaIncomeReferencePayload>
+/**
+ * Model RediagnosisCoupon
+ * 
+ */
+export type RediagnosisCoupon = $Result.DefaultSelection<Prisma.$RediagnosisCouponPayload>
+/**
+ * Model PlannerRefund
+ * 
+ */
+export type PlannerRefund = $Result.DefaultSelection<Prisma.$PlannerRefundPayload>
 
 /**
  * Enums
@@ -511,13 +551,17 @@ export type InterviewType = (typeof InterviewType)[keyof typeof InterviewType]
 export const ApplicationStatus: {
   PENDING: 'PENDING',
   REVIEWING: 'REVIEWING',
+  DOCUMENT_PASSED: 'DOCUMENT_PASSED',
   INTERVIEW_REQUESTED: 'INTERVIEW_REQUESTED',
   INTERVIEW_SCHEDULED: 'INTERVIEW_SCHEDULED',
   COORDINATION_NEEDED: 'COORDINATION_NEEDED',
   CONFIRMED: 'CONFIRMED',
+  FINAL_ACCEPTED: 'FINAL_ACCEPTED',
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
-  CANCELLED: 'CANCELLED'
+  CANCELLED: 'CANCELLED',
+  WITHDRAWN: 'WITHDRAWN',
+  APPLICATION_EXPIRED: 'APPLICATION_EXPIRED'
 };
 
 export type ApplicationStatus = (typeof ApplicationStatus)[keyof typeof ApplicationStatus]
@@ -1211,6 +1255,26 @@ export class PrismaClient<
   get interviewSlot(): Prisma.InterviewSlotDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.visaChecklistTemplate`: Exposes CRUD operations for the **VisaChecklistTemplate** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more VisaChecklistTemplates
+    * const visaChecklistTemplates = await prisma.visaChecklistTemplate.findMany()
+    * ```
+    */
+  get visaChecklistTemplate(): Prisma.VisaChecklistTemplateDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.visaChecklistItem`: Exposes CRUD operations for the **VisaChecklistItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more VisaChecklistItems
+    * const visaChecklistItems = await prisma.visaChecklistItem.findMany()
+    * ```
+    */
+  get visaChecklistItem(): Prisma.VisaChecklistItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.jobScrap`: Exposes CRUD operations for the **JobScrap** model.
     * Example usage:
     * ```ts
@@ -1239,6 +1303,16 @@ export class PrismaClient<
     * ```
     */
   get resume(): Prisma.ResumeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.talentBookmark`: Exposes CRUD operations for the **TalentBookmark** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TalentBookmarks
+    * const talentBookmarks = await prisma.talentBookmark.findMany()
+    * ```
+    */
+  get talentBookmark(): Prisma.TalentBookmarkDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.visaVerification`: Exposes CRUD operations for the **VisaVerification** model.
@@ -1279,6 +1353,56 @@ export class PrismaClient<
     * ```
     */
   get scoreCalibrationLog(): Prisma.ScoreCalibrationLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.universityRanking`: Exposes CRUD operations for the **UniversityRanking** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UniversityRankings
+    * const universityRankings = await prisma.universityRanking.findMany()
+    * ```
+    */
+  get universityRanking(): Prisma.UniversityRankingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.adjacentMajorOccupation`: Exposes CRUD operations for the **AdjacentMajorOccupation** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AdjacentMajorOccupations
+    * const adjacentMajorOccupations = await prisma.adjacentMajorOccupation.findMany()
+    * ```
+    */
+  get adjacentMajorOccupation(): Prisma.AdjacentMajorOccupationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.visaIncomeReference`: Exposes CRUD operations for the **VisaIncomeReference** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more VisaIncomeReferences
+    * const visaIncomeReferences = await prisma.visaIncomeReference.findMany()
+    * ```
+    */
+  get visaIncomeReference(): Prisma.VisaIncomeReferenceDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.rediagnosisCoupon`: Exposes CRUD operations for the **RediagnosisCoupon** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RediagnosisCoupons
+    * const rediagnosisCoupons = await prisma.rediagnosisCoupon.findMany()
+    * ```
+    */
+  get rediagnosisCoupon(): Prisma.RediagnosisCouponDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.plannerRefund`: Exposes CRUD operations for the **PlannerRefund** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PlannerRefunds
+    * const plannerRefunds = await prisma.plannerRefund.findMany()
+    * ```
+    */
+  get plannerRefund(): Prisma.PlannerRefundDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1757,13 +1881,21 @@ export namespace Prisma {
     JobAttributesFulltime: 'JobAttributesFulltime',
     JobApplication: 'JobApplication',
     InterviewSlot: 'InterviewSlot',
+    VisaChecklistTemplate: 'VisaChecklistTemplate',
+    VisaChecklistItem: 'VisaChecklistItem',
     JobScrap: 'JobScrap',
     AdminJobAction: 'AdminJobAction',
     Resume: 'Resume',
+    TalentBookmark: 'TalentBookmark',
     VisaVerification: 'VisaVerification',
     DiagnosisSession: 'DiagnosisSession',
     DiagnosisPathwayClick: 'DiagnosisPathwayClick',
-    ScoreCalibrationLog: 'ScoreCalibrationLog'
+    ScoreCalibrationLog: 'ScoreCalibrationLog',
+    UniversityRanking: 'UniversityRanking',
+    AdjacentMajorOccupation: 'AdjacentMajorOccupation',
+    VisaIncomeReference: 'VisaIncomeReference',
+    RediagnosisCoupon: 'RediagnosisCoupon',
+    PlannerRefund: 'PlannerRefund'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1782,7 +1914,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "corporateProfile" | "individualProfile" | "talentAccessLog" | "educationalInstitution" | "profileEducation" | "profileCareer" | "profileLanguage" | "supportTicket" | "activityLog" | "infoBoard" | "visaType" | "industryCode" | "visaRule" | "policyChange" | "scrapingState" | "visaEvaluationLog" | "occupationCode" | "visaOccupationMapping" | "visaIndustryMapping" | "visaCountryRestriction" | "pointSystemCategory" | "pointSystemCriteria" | "visaRequiredDocument" | "hireQuotaRule" | "prohibitedIndustry" | "workHourRule" | "visaTransition" | "scoringSystem" | "scoringCriteria" | "visaTransitionChain" | "jobProduct" | "jobOrder" | "jobPosting" | "jobAttributesAlba" | "jobAttributesFulltime" | "jobApplication" | "interviewSlot" | "jobScrap" | "adminJobAction" | "resume" | "visaVerification" | "diagnosisSession" | "diagnosisPathwayClick" | "scoreCalibrationLog"
+      modelProps: "user" | "corporateProfile" | "individualProfile" | "talentAccessLog" | "educationalInstitution" | "profileEducation" | "profileCareer" | "profileLanguage" | "supportTicket" | "activityLog" | "infoBoard" | "visaType" | "industryCode" | "visaRule" | "policyChange" | "scrapingState" | "visaEvaluationLog" | "occupationCode" | "visaOccupationMapping" | "visaIndustryMapping" | "visaCountryRestriction" | "pointSystemCategory" | "pointSystemCriteria" | "visaRequiredDocument" | "hireQuotaRule" | "prohibitedIndustry" | "workHourRule" | "visaTransition" | "scoringSystem" | "scoringCriteria" | "visaTransitionChain" | "jobProduct" | "jobOrder" | "jobPosting" | "jobAttributesAlba" | "jobAttributesFulltime" | "jobApplication" | "interviewSlot" | "visaChecklistTemplate" | "visaChecklistItem" | "jobScrap" | "adminJobAction" | "resume" | "talentBookmark" | "visaVerification" | "diagnosisSession" | "diagnosisPathwayClick" | "scoreCalibrationLog" | "universityRanking" | "adjacentMajorOccupation" | "visaIncomeReference" | "rediagnosisCoupon" | "plannerRefund"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -4598,6 +4730,154 @@ export namespace Prisma {
           }
         }
       }
+      VisaChecklistTemplate: {
+        payload: Prisma.$VisaChecklistTemplatePayload<ExtArgs>
+        fields: Prisma.VisaChecklistTemplateFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.VisaChecklistTemplateFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistTemplatePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.VisaChecklistTemplateFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistTemplatePayload>
+          }
+          findFirst: {
+            args: Prisma.VisaChecklistTemplateFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistTemplatePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.VisaChecklistTemplateFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistTemplatePayload>
+          }
+          findMany: {
+            args: Prisma.VisaChecklistTemplateFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistTemplatePayload>[]
+          }
+          create: {
+            args: Prisma.VisaChecklistTemplateCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistTemplatePayload>
+          }
+          createMany: {
+            args: Prisma.VisaChecklistTemplateCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.VisaChecklistTemplateCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistTemplatePayload>[]
+          }
+          delete: {
+            args: Prisma.VisaChecklistTemplateDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistTemplatePayload>
+          }
+          update: {
+            args: Prisma.VisaChecklistTemplateUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistTemplatePayload>
+          }
+          deleteMany: {
+            args: Prisma.VisaChecklistTemplateDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.VisaChecklistTemplateUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.VisaChecklistTemplateUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistTemplatePayload>[]
+          }
+          upsert: {
+            args: Prisma.VisaChecklistTemplateUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistTemplatePayload>
+          }
+          aggregate: {
+            args: Prisma.VisaChecklistTemplateAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateVisaChecklistTemplate>
+          }
+          groupBy: {
+            args: Prisma.VisaChecklistTemplateGroupByArgs<ExtArgs>
+            result: $Utils.Optional<VisaChecklistTemplateGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.VisaChecklistTemplateCountArgs<ExtArgs>
+            result: $Utils.Optional<VisaChecklistTemplateCountAggregateOutputType> | number
+          }
+        }
+      }
+      VisaChecklistItem: {
+        payload: Prisma.$VisaChecklistItemPayload<ExtArgs>
+        fields: Prisma.VisaChecklistItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.VisaChecklistItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.VisaChecklistItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistItemPayload>
+          }
+          findFirst: {
+            args: Prisma.VisaChecklistItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.VisaChecklistItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistItemPayload>
+          }
+          findMany: {
+            args: Prisma.VisaChecklistItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistItemPayload>[]
+          }
+          create: {
+            args: Prisma.VisaChecklistItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistItemPayload>
+          }
+          createMany: {
+            args: Prisma.VisaChecklistItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.VisaChecklistItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistItemPayload>[]
+          }
+          delete: {
+            args: Prisma.VisaChecklistItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistItemPayload>
+          }
+          update: {
+            args: Prisma.VisaChecklistItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.VisaChecklistItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.VisaChecklistItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.VisaChecklistItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.VisaChecklistItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaChecklistItemPayload>
+          }
+          aggregate: {
+            args: Prisma.VisaChecklistItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateVisaChecklistItem>
+          }
+          groupBy: {
+            args: Prisma.VisaChecklistItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<VisaChecklistItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.VisaChecklistItemCountArgs<ExtArgs>
+            result: $Utils.Optional<VisaChecklistItemCountAggregateOutputType> | number
+          }
+        }
+      }
       JobScrap: {
         payload: Prisma.$JobScrapPayload<ExtArgs>
         fields: Prisma.JobScrapFieldRefs
@@ -4817,6 +5097,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ResumeCountArgs<ExtArgs>
             result: $Utils.Optional<ResumeCountAggregateOutputType> | number
+          }
+        }
+      }
+      TalentBookmark: {
+        payload: Prisma.$TalentBookmarkPayload<ExtArgs>
+        fields: Prisma.TalentBookmarkFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TalentBookmarkFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentBookmarkPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TalentBookmarkFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentBookmarkPayload>
+          }
+          findFirst: {
+            args: Prisma.TalentBookmarkFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentBookmarkPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TalentBookmarkFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentBookmarkPayload>
+          }
+          findMany: {
+            args: Prisma.TalentBookmarkFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentBookmarkPayload>[]
+          }
+          create: {
+            args: Prisma.TalentBookmarkCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentBookmarkPayload>
+          }
+          createMany: {
+            args: Prisma.TalentBookmarkCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TalentBookmarkCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentBookmarkPayload>[]
+          }
+          delete: {
+            args: Prisma.TalentBookmarkDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentBookmarkPayload>
+          }
+          update: {
+            args: Prisma.TalentBookmarkUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentBookmarkPayload>
+          }
+          deleteMany: {
+            args: Prisma.TalentBookmarkDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TalentBookmarkUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TalentBookmarkUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentBookmarkPayload>[]
+          }
+          upsert: {
+            args: Prisma.TalentBookmarkUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TalentBookmarkPayload>
+          }
+          aggregate: {
+            args: Prisma.TalentBookmarkAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTalentBookmark>
+          }
+          groupBy: {
+            args: Prisma.TalentBookmarkGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TalentBookmarkGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TalentBookmarkCountArgs<ExtArgs>
+            result: $Utils.Optional<TalentBookmarkCountAggregateOutputType> | number
           }
         }
       }
@@ -5116,6 +5470,376 @@ export namespace Prisma {
           }
         }
       }
+      UniversityRanking: {
+        payload: Prisma.$UniversityRankingPayload<ExtArgs>
+        fields: Prisma.UniversityRankingFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UniversityRankingFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UniversityRankingPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UniversityRankingFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UniversityRankingPayload>
+          }
+          findFirst: {
+            args: Prisma.UniversityRankingFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UniversityRankingPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UniversityRankingFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UniversityRankingPayload>
+          }
+          findMany: {
+            args: Prisma.UniversityRankingFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UniversityRankingPayload>[]
+          }
+          create: {
+            args: Prisma.UniversityRankingCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UniversityRankingPayload>
+          }
+          createMany: {
+            args: Prisma.UniversityRankingCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UniversityRankingCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UniversityRankingPayload>[]
+          }
+          delete: {
+            args: Prisma.UniversityRankingDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UniversityRankingPayload>
+          }
+          update: {
+            args: Prisma.UniversityRankingUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UniversityRankingPayload>
+          }
+          deleteMany: {
+            args: Prisma.UniversityRankingDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UniversityRankingUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UniversityRankingUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UniversityRankingPayload>[]
+          }
+          upsert: {
+            args: Prisma.UniversityRankingUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UniversityRankingPayload>
+          }
+          aggregate: {
+            args: Prisma.UniversityRankingAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUniversityRanking>
+          }
+          groupBy: {
+            args: Prisma.UniversityRankingGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UniversityRankingGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UniversityRankingCountArgs<ExtArgs>
+            result: $Utils.Optional<UniversityRankingCountAggregateOutputType> | number
+          }
+        }
+      }
+      AdjacentMajorOccupation: {
+        payload: Prisma.$AdjacentMajorOccupationPayload<ExtArgs>
+        fields: Prisma.AdjacentMajorOccupationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AdjacentMajorOccupationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdjacentMajorOccupationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AdjacentMajorOccupationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdjacentMajorOccupationPayload>
+          }
+          findFirst: {
+            args: Prisma.AdjacentMajorOccupationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdjacentMajorOccupationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AdjacentMajorOccupationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdjacentMajorOccupationPayload>
+          }
+          findMany: {
+            args: Prisma.AdjacentMajorOccupationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdjacentMajorOccupationPayload>[]
+          }
+          create: {
+            args: Prisma.AdjacentMajorOccupationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdjacentMajorOccupationPayload>
+          }
+          createMany: {
+            args: Prisma.AdjacentMajorOccupationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AdjacentMajorOccupationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdjacentMajorOccupationPayload>[]
+          }
+          delete: {
+            args: Prisma.AdjacentMajorOccupationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdjacentMajorOccupationPayload>
+          }
+          update: {
+            args: Prisma.AdjacentMajorOccupationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdjacentMajorOccupationPayload>
+          }
+          deleteMany: {
+            args: Prisma.AdjacentMajorOccupationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AdjacentMajorOccupationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AdjacentMajorOccupationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdjacentMajorOccupationPayload>[]
+          }
+          upsert: {
+            args: Prisma.AdjacentMajorOccupationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AdjacentMajorOccupationPayload>
+          }
+          aggregate: {
+            args: Prisma.AdjacentMajorOccupationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAdjacentMajorOccupation>
+          }
+          groupBy: {
+            args: Prisma.AdjacentMajorOccupationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AdjacentMajorOccupationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AdjacentMajorOccupationCountArgs<ExtArgs>
+            result: $Utils.Optional<AdjacentMajorOccupationCountAggregateOutputType> | number
+          }
+        }
+      }
+      VisaIncomeReference: {
+        payload: Prisma.$VisaIncomeReferencePayload<ExtArgs>
+        fields: Prisma.VisaIncomeReferenceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.VisaIncomeReferenceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaIncomeReferencePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.VisaIncomeReferenceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaIncomeReferencePayload>
+          }
+          findFirst: {
+            args: Prisma.VisaIncomeReferenceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaIncomeReferencePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.VisaIncomeReferenceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaIncomeReferencePayload>
+          }
+          findMany: {
+            args: Prisma.VisaIncomeReferenceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaIncomeReferencePayload>[]
+          }
+          create: {
+            args: Prisma.VisaIncomeReferenceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaIncomeReferencePayload>
+          }
+          createMany: {
+            args: Prisma.VisaIncomeReferenceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.VisaIncomeReferenceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaIncomeReferencePayload>[]
+          }
+          delete: {
+            args: Prisma.VisaIncomeReferenceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaIncomeReferencePayload>
+          }
+          update: {
+            args: Prisma.VisaIncomeReferenceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaIncomeReferencePayload>
+          }
+          deleteMany: {
+            args: Prisma.VisaIncomeReferenceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.VisaIncomeReferenceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.VisaIncomeReferenceUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaIncomeReferencePayload>[]
+          }
+          upsert: {
+            args: Prisma.VisaIncomeReferenceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$VisaIncomeReferencePayload>
+          }
+          aggregate: {
+            args: Prisma.VisaIncomeReferenceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateVisaIncomeReference>
+          }
+          groupBy: {
+            args: Prisma.VisaIncomeReferenceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<VisaIncomeReferenceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.VisaIncomeReferenceCountArgs<ExtArgs>
+            result: $Utils.Optional<VisaIncomeReferenceCountAggregateOutputType> | number
+          }
+        }
+      }
+      RediagnosisCoupon: {
+        payload: Prisma.$RediagnosisCouponPayload<ExtArgs>
+        fields: Prisma.RediagnosisCouponFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RediagnosisCouponFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RediagnosisCouponPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RediagnosisCouponFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RediagnosisCouponPayload>
+          }
+          findFirst: {
+            args: Prisma.RediagnosisCouponFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RediagnosisCouponPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RediagnosisCouponFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RediagnosisCouponPayload>
+          }
+          findMany: {
+            args: Prisma.RediagnosisCouponFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RediagnosisCouponPayload>[]
+          }
+          create: {
+            args: Prisma.RediagnosisCouponCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RediagnosisCouponPayload>
+          }
+          createMany: {
+            args: Prisma.RediagnosisCouponCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.RediagnosisCouponCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RediagnosisCouponPayload>[]
+          }
+          delete: {
+            args: Prisma.RediagnosisCouponDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RediagnosisCouponPayload>
+          }
+          update: {
+            args: Prisma.RediagnosisCouponUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RediagnosisCouponPayload>
+          }
+          deleteMany: {
+            args: Prisma.RediagnosisCouponDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RediagnosisCouponUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.RediagnosisCouponUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RediagnosisCouponPayload>[]
+          }
+          upsert: {
+            args: Prisma.RediagnosisCouponUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RediagnosisCouponPayload>
+          }
+          aggregate: {
+            args: Prisma.RediagnosisCouponAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRediagnosisCoupon>
+          }
+          groupBy: {
+            args: Prisma.RediagnosisCouponGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RediagnosisCouponGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RediagnosisCouponCountArgs<ExtArgs>
+            result: $Utils.Optional<RediagnosisCouponCountAggregateOutputType> | number
+          }
+        }
+      }
+      PlannerRefund: {
+        payload: Prisma.$PlannerRefundPayload<ExtArgs>
+        fields: Prisma.PlannerRefundFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PlannerRefundFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlannerRefundPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PlannerRefundFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlannerRefundPayload>
+          }
+          findFirst: {
+            args: Prisma.PlannerRefundFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlannerRefundPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PlannerRefundFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlannerRefundPayload>
+          }
+          findMany: {
+            args: Prisma.PlannerRefundFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlannerRefundPayload>[]
+          }
+          create: {
+            args: Prisma.PlannerRefundCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlannerRefundPayload>
+          }
+          createMany: {
+            args: Prisma.PlannerRefundCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PlannerRefundCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlannerRefundPayload>[]
+          }
+          delete: {
+            args: Prisma.PlannerRefundDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlannerRefundPayload>
+          }
+          update: {
+            args: Prisma.PlannerRefundUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlannerRefundPayload>
+          }
+          deleteMany: {
+            args: Prisma.PlannerRefundDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PlannerRefundUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PlannerRefundUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlannerRefundPayload>[]
+          }
+          upsert: {
+            args: Prisma.PlannerRefundUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PlannerRefundPayload>
+          }
+          aggregate: {
+            args: Prisma.PlannerRefundAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePlannerRefund>
+          }
+          groupBy: {
+            args: Prisma.PlannerRefundGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PlannerRefundGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PlannerRefundCountArgs<ExtArgs>
+            result: $Utils.Optional<PlannerRefundCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -5238,13 +5962,21 @@ export namespace Prisma {
     jobAttributesFulltime?: JobAttributesFulltimeOmit
     jobApplication?: JobApplicationOmit
     interviewSlot?: InterviewSlotOmit
+    visaChecklistTemplate?: VisaChecklistTemplateOmit
+    visaChecklistItem?: VisaChecklistItemOmit
     jobScrap?: JobScrapOmit
     adminJobAction?: AdminJobActionOmit
     resume?: ResumeOmit
+    talentBookmark?: TalentBookmarkOmit
     visaVerification?: VisaVerificationOmit
     diagnosisSession?: DiagnosisSessionOmit
     diagnosisPathwayClick?: DiagnosisPathwayClickOmit
     scoreCalibrationLog?: ScoreCalibrationLogOmit
+    universityRanking?: UniversityRankingOmit
+    adjacentMajorOccupation?: AdjacentMajorOccupationOmit
+    visaIncomeReference?: VisaIncomeReferenceOmit
+    rediagnosisCoupon?: RediagnosisCouponOmit
+    plannerRefund?: PlannerRefundOmit
   }
 
   /* Types for Logging */
@@ -5816,6 +6548,68 @@ export namespace Prisma {
    */
   export type JobPostingCountOutputTypeCountScrapsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: JobScrapWhereInput
+  }
+
+
+  /**
+   * Count Type JobApplicationCountOutputType
+   */
+
+  export type JobApplicationCountOutputType = {
+    checklistItems: number
+  }
+
+  export type JobApplicationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    checklistItems?: boolean | JobApplicationCountOutputTypeCountChecklistItemsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * JobApplicationCountOutputType without action
+   */
+  export type JobApplicationCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the JobApplicationCountOutputType
+     */
+    select?: JobApplicationCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * JobApplicationCountOutputType without action
+   */
+  export type JobApplicationCountOutputTypeCountChecklistItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: VisaChecklistItemWhereInput
+  }
+
+
+  /**
+   * Count Type ResumeCountOutputType
+   */
+
+  export type ResumeCountOutputType = {
+    bookmarks: number
+  }
+
+  export type ResumeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    bookmarks?: boolean | ResumeCountOutputTypeCountBookmarksArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ResumeCountOutputType without action
+   */
+  export type ResumeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ResumeCountOutputType
+     */
+    select?: ResumeCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ResumeCountOutputType without action
+   */
+  export type ResumeCountOutputTypeCountBookmarksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TalentBookmarkWhereInput
   }
 
 
@@ -8786,6 +9580,8 @@ export namespace Prisma {
     violationCount: number | null
     koreaStayMonths: number | null
     currentEmployerMonths: number | null
+    koreaCareerMonths: number | null
+    graduationYear: number | null
   }
 
   export type IndividualProfileSumAggregateOutputType = {
@@ -8801,6 +9597,8 @@ export namespace Prisma {
     violationCount: number | null
     koreaStayMonths: number | null
     currentEmployerMonths: number | null
+    koreaCareerMonths: number | null
+    graduationYear: number | null
   }
 
   export type IndividualProfileMinAggregateOutputType = {
@@ -8844,6 +9642,13 @@ export namespace Prisma {
     koreaStayMonths: number | null
     currentEmployerMonths: number | null
     depopulationArea: boolean | null
+    majorCategory: string | null
+    currentRole: string | null
+    koreaCareerMonths: number | null
+    universityName: string | null
+    universityNameEn: string | null
+    major: string | null
+    graduationYear: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8889,6 +9694,13 @@ export namespace Prisma {
     koreaStayMonths: number | null
     currentEmployerMonths: number | null
     depopulationArea: boolean | null
+    majorCategory: string | null
+    currentRole: string | null
+    koreaCareerMonths: number | null
+    universityName: string | null
+    universityNameEn: string | null
+    major: string | null
+    graduationYear: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8935,6 +9747,16 @@ export namespace Prisma {
     koreaStayMonths: number
     currentEmployerMonths: number
     depopulationArea: number
+    majorCategory: number
+    currentRole: number
+    careerSummaryJson: number
+    koreaCareerMonths: number
+    universityName: number
+    universityNameEn: number
+    major: number
+    graduationYear: number
+    nationalLicenses: number
+    internationalCerts: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -8954,6 +9776,8 @@ export namespace Prisma {
     violationCount?: true
     koreaStayMonths?: true
     currentEmployerMonths?: true
+    koreaCareerMonths?: true
+    graduationYear?: true
   }
 
   export type IndividualProfileSumAggregateInputType = {
@@ -8969,6 +9793,8 @@ export namespace Prisma {
     violationCount?: true
     koreaStayMonths?: true
     currentEmployerMonths?: true
+    koreaCareerMonths?: true
+    graduationYear?: true
   }
 
   export type IndividualProfileMinAggregateInputType = {
@@ -9012,6 +9838,13 @@ export namespace Prisma {
     koreaStayMonths?: true
     currentEmployerMonths?: true
     depopulationArea?: true
+    majorCategory?: true
+    currentRole?: true
+    koreaCareerMonths?: true
+    universityName?: true
+    universityNameEn?: true
+    major?: true
+    graduationYear?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -9057,6 +9890,13 @@ export namespace Prisma {
     koreaStayMonths?: true
     currentEmployerMonths?: true
     depopulationArea?: true
+    majorCategory?: true
+    currentRole?: true
+    koreaCareerMonths?: true
+    universityName?: true
+    universityNameEn?: true
+    major?: true
+    graduationYear?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -9103,6 +9943,16 @@ export namespace Prisma {
     koreaStayMonths?: true
     currentEmployerMonths?: true
     depopulationArea?: true
+    majorCategory?: true
+    currentRole?: true
+    careerSummaryJson?: true
+    koreaCareerMonths?: true
+    universityName?: true
+    universityNameEn?: true
+    major?: true
+    graduationYear?: true
+    nationalLicenses?: true
+    internationalCerts?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -9236,6 +10086,16 @@ export namespace Prisma {
     koreaStayMonths: number
     currentEmployerMonths: number
     depopulationArea: boolean
+    majorCategory: string | null
+    currentRole: string | null
+    careerSummaryJson: JsonValue | null
+    koreaCareerMonths: number
+    universityName: string | null
+    universityNameEn: string | null
+    major: string | null
+    graduationYear: number | null
+    nationalLicenses: JsonValue | null
+    internationalCerts: JsonValue | null
     createdAt: Date
     updatedAt: Date
     _count: IndividualProfileCountAggregateOutputType | null
@@ -9301,6 +10161,16 @@ export namespace Prisma {
     koreaStayMonths?: boolean
     currentEmployerMonths?: boolean
     depopulationArea?: boolean
+    majorCategory?: boolean
+    currentRole?: boolean
+    careerSummaryJson?: boolean
+    koreaCareerMonths?: boolean
+    universityName?: boolean
+    universityNameEn?: boolean
+    major?: boolean
+    graduationYear?: boolean
+    nationalLicenses?: boolean
+    internationalCerts?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -9354,6 +10224,16 @@ export namespace Prisma {
     koreaStayMonths?: boolean
     currentEmployerMonths?: boolean
     depopulationArea?: boolean
+    majorCategory?: boolean
+    currentRole?: boolean
+    careerSummaryJson?: boolean
+    koreaCareerMonths?: boolean
+    universityName?: boolean
+    universityNameEn?: boolean
+    major?: boolean
+    graduationYear?: boolean
+    nationalLicenses?: boolean
+    internationalCerts?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -9401,6 +10281,16 @@ export namespace Prisma {
     koreaStayMonths?: boolean
     currentEmployerMonths?: boolean
     depopulationArea?: boolean
+    majorCategory?: boolean
+    currentRole?: boolean
+    careerSummaryJson?: boolean
+    koreaCareerMonths?: boolean
+    universityName?: boolean
+    universityNameEn?: boolean
+    major?: boolean
+    graduationYear?: boolean
+    nationalLicenses?: boolean
+    internationalCerts?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -9448,11 +10338,21 @@ export namespace Prisma {
     koreaStayMonths?: boolean
     currentEmployerMonths?: boolean
     depopulationArea?: boolean
+    majorCategory?: boolean
+    currentRole?: boolean
+    careerSummaryJson?: boolean
+    koreaCareerMonths?: boolean
+    universityName?: boolean
+    universityNameEn?: boolean
+    major?: boolean
+    graduationYear?: boolean
+    nationalLicenses?: boolean
+    internationalCerts?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type IndividualProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"individualId" | "authId" | "realName" | "nationality" | "birthDate" | "gender" | "addressRoad" | "visaType" | "visaExpiryDate" | "desiredJobType" | "desiredSalary" | "desiredIndustries" | "isOpenToScout" | "finalEducationLvl" | "koreanFluencyLvl" | "totalCareerMonths" | "profileImageUrl" | "resumeFileUrl" | "portfolioUrl" | "selfIntro" | "isProfileCompleted" | "visaSubType" | "availableAnnualFund" | "topikLevel" | "isEthnicKorean" | "finalGoal" | "priorityPreference" | "nativeSpeakerOf" | "professionalLicense" | "legalStayYears" | "koreaExperienceYears" | "topikExpiryDate" | "kiipStage" | "koreanAncestryCountry" | "annualIncome" | "hasCriminalRecord" | "hasImmigrationViolation" | "violationCount" | "koreaStayMonths" | "currentEmployerMonths" | "depopulationArea" | "createdAt" | "updatedAt", ExtArgs["result"]["individualProfile"]>
+  export type IndividualProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"individualId" | "authId" | "realName" | "nationality" | "birthDate" | "gender" | "addressRoad" | "visaType" | "visaExpiryDate" | "desiredJobType" | "desiredSalary" | "desiredIndustries" | "isOpenToScout" | "finalEducationLvl" | "koreanFluencyLvl" | "totalCareerMonths" | "profileImageUrl" | "resumeFileUrl" | "portfolioUrl" | "selfIntro" | "isProfileCompleted" | "visaSubType" | "availableAnnualFund" | "topikLevel" | "isEthnicKorean" | "finalGoal" | "priorityPreference" | "nativeSpeakerOf" | "professionalLicense" | "legalStayYears" | "koreaExperienceYears" | "topikExpiryDate" | "kiipStage" | "koreanAncestryCountry" | "annualIncome" | "hasCriminalRecord" | "hasImmigrationViolation" | "violationCount" | "koreaStayMonths" | "currentEmployerMonths" | "depopulationArea" | "majorCategory" | "currentRole" | "careerSummaryJson" | "koreaCareerMonths" | "universityName" | "universityNameEn" | "major" | "graduationYear" | "nationalLicenses" | "internationalCerts" | "createdAt" | "updatedAt", ExtArgs["result"]["individualProfile"]>
   export type IndividualProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     accessLogs?: boolean | IndividualProfile$accessLogsArgs<ExtArgs>
@@ -9521,6 +10421,16 @@ export namespace Prisma {
       koreaStayMonths: number
       currentEmployerMonths: number
       depopulationArea: boolean
+      majorCategory: string | null
+      currentRole: string | null
+      careerSummaryJson: Prisma.JsonValue | null
+      koreaCareerMonths: number
+      universityName: string | null
+      universityNameEn: string | null
+      major: string | null
+      graduationYear: number | null
+      nationalLicenses: Prisma.JsonValue | null
+      internationalCerts: Prisma.JsonValue | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["individualProfile"]>
@@ -9993,6 +10903,16 @@ export namespace Prisma {
     readonly koreaStayMonths: FieldRef<"IndividualProfile", 'Int'>
     readonly currentEmployerMonths: FieldRef<"IndividualProfile", 'Int'>
     readonly depopulationArea: FieldRef<"IndividualProfile", 'Boolean'>
+    readonly majorCategory: FieldRef<"IndividualProfile", 'String'>
+    readonly currentRole: FieldRef<"IndividualProfile", 'String'>
+    readonly careerSummaryJson: FieldRef<"IndividualProfile", 'Json'>
+    readonly koreaCareerMonths: FieldRef<"IndividualProfile", 'Int'>
+    readonly universityName: FieldRef<"IndividualProfile", 'String'>
+    readonly universityNameEn: FieldRef<"IndividualProfile", 'String'>
+    readonly major: FieldRef<"IndividualProfile", 'String'>
+    readonly graduationYear: FieldRef<"IndividualProfile", 'Int'>
+    readonly nationalLicenses: FieldRef<"IndividualProfile", 'Json'>
+    readonly internationalCerts: FieldRef<"IndividualProfile", 'Json'>
     readonly createdAt: FieldRef<"IndividualProfile", 'DateTime'>
     readonly updatedAt: FieldRef<"IndividualProfile", 'DateTime'>
   }
@@ -14168,6 +15088,8 @@ export namespace Prisma {
     endDate: Date | null
     isCurrent: boolean | null
     description: string | null
+    occupationCategory: string | null
+    country: string | null
   }
 
   export type ProfileCareerMaxAggregateOutputType = {
@@ -14180,6 +15102,8 @@ export namespace Prisma {
     endDate: Date | null
     isCurrent: boolean | null
     description: string | null
+    occupationCategory: string | null
+    country: string | null
   }
 
   export type ProfileCareerCountAggregateOutputType = {
@@ -14192,6 +15116,8 @@ export namespace Prisma {
     endDate: number
     isCurrent: number
     description: number
+    occupationCategory: number
+    country: number
     _all: number
   }
 
@@ -14216,6 +15142,8 @@ export namespace Prisma {
     endDate?: true
     isCurrent?: true
     description?: true
+    occupationCategory?: true
+    country?: true
   }
 
   export type ProfileCareerMaxAggregateInputType = {
@@ -14228,6 +15156,8 @@ export namespace Prisma {
     endDate?: true
     isCurrent?: true
     description?: true
+    occupationCategory?: true
+    country?: true
   }
 
   export type ProfileCareerCountAggregateInputType = {
@@ -14240,6 +15170,8 @@ export namespace Prisma {
     endDate?: true
     isCurrent?: true
     description?: true
+    occupationCategory?: true
+    country?: true
     _all?: true
   }
 
@@ -14339,6 +15271,8 @@ export namespace Prisma {
     endDate: Date | null
     isCurrent: boolean
     description: string | null
+    occupationCategory: string | null
+    country: string
     _count: ProfileCareerCountAggregateOutputType | null
     _avg: ProfileCareerAvgAggregateOutputType | null
     _sum: ProfileCareerSumAggregateOutputType | null
@@ -14370,6 +15304,8 @@ export namespace Prisma {
     endDate?: boolean
     isCurrent?: boolean
     description?: boolean
+    occupationCategory?: boolean
+    country?: boolean
     individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["profileCareer"]>
 
@@ -14383,6 +15319,8 @@ export namespace Prisma {
     endDate?: boolean
     isCurrent?: boolean
     description?: boolean
+    occupationCategory?: boolean
+    country?: boolean
     individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["profileCareer"]>
 
@@ -14396,6 +15334,8 @@ export namespace Prisma {
     endDate?: boolean
     isCurrent?: boolean
     description?: boolean
+    occupationCategory?: boolean
+    country?: boolean
     individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["profileCareer"]>
 
@@ -14409,9 +15349,11 @@ export namespace Prisma {
     endDate?: boolean
     isCurrent?: boolean
     description?: boolean
+    occupationCategory?: boolean
+    country?: boolean
   }
 
-  export type ProfileCareerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"careerId" | "individualId" | "companyName" | "dutyRole" | "jobPosition" | "startDate" | "endDate" | "isCurrent" | "description", ExtArgs["result"]["profileCareer"]>
+  export type ProfileCareerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"careerId" | "individualId" | "companyName" | "dutyRole" | "jobPosition" | "startDate" | "endDate" | "isCurrent" | "description" | "occupationCategory" | "country", ExtArgs["result"]["profileCareer"]>
   export type ProfileCareerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     individual?: boolean | IndividualProfileDefaultArgs<ExtArgs>
   }
@@ -14437,6 +15379,8 @@ export namespace Prisma {
       endDate: Date | null
       isCurrent: boolean
       description: string | null
+      occupationCategory: string | null
+      country: string
     }, ExtArgs["result"]["profileCareer"]>
     composites: {}
   }
@@ -14870,6 +15814,8 @@ export namespace Prisma {
     readonly endDate: FieldRef<"ProfileCareer", 'DateTime'>
     readonly isCurrent: FieldRef<"ProfileCareer", 'Boolean'>
     readonly description: FieldRef<"ProfileCareer", 'String'>
+    readonly occupationCategory: FieldRef<"ProfileCareer", 'String'>
+    readonly country: FieldRef<"ProfileCareer", 'String'>
   }
     
 
@@ -50069,6 +51015,7 @@ export namespace Prisma {
     jobId: number | null
     selectedSlotId: number | null
     interviewRoundTrips: number | null
+    offeredSalary: number | null
   }
 
   export type JobApplicationSumAggregateOutputType = {
@@ -50076,6 +51023,7 @@ export namespace Prisma {
     jobId: bigint | null
     selectedSlotId: bigint | null
     interviewRoundTrips: number | null
+    offeredSalary: number | null
   }
 
   export type JobApplicationMinAggregateOutputType = {
@@ -50105,6 +51053,15 @@ export namespace Prisma {
     cancelledAt: Date | null
     rejectionReason: string | null
     resultNotifiedAt: Date | null
+    documentPassedAt: Date | null
+    interviewScheduledAt: Date | null
+    finalAcceptedAt: Date | null
+    rejectedAt: Date | null
+    offeredSalary: number | null
+    expectedStartDate: Date | null
+    companyMessage: string | null
+    visaGuideScenario: string | null
+    visaGuideGeneratedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -50136,6 +51093,15 @@ export namespace Prisma {
     cancelledAt: Date | null
     rejectionReason: string | null
     resultNotifiedAt: Date | null
+    documentPassedAt: Date | null
+    interviewScheduledAt: Date | null
+    finalAcceptedAt: Date | null
+    rejectedAt: Date | null
+    offeredSalary: number | null
+    expectedStartDate: Date | null
+    companyMessage: string | null
+    visaGuideScenario: string | null
+    visaGuideGeneratedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -50167,6 +51133,15 @@ export namespace Prisma {
     cancelledAt: number
     rejectionReason: number
     resultNotifiedAt: number
+    documentPassedAt: number
+    interviewScheduledAt: number
+    finalAcceptedAt: number
+    rejectedAt: number
+    offeredSalary: number
+    expectedStartDate: number
+    companyMessage: number
+    visaGuideScenario: number
+    visaGuideGeneratedAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -50178,6 +51153,7 @@ export namespace Prisma {
     jobId?: true
     selectedSlotId?: true
     interviewRoundTrips?: true
+    offeredSalary?: true
   }
 
   export type JobApplicationSumAggregateInputType = {
@@ -50185,6 +51161,7 @@ export namespace Prisma {
     jobId?: true
     selectedSlotId?: true
     interviewRoundTrips?: true
+    offeredSalary?: true
   }
 
   export type JobApplicationMinAggregateInputType = {
@@ -50214,6 +51191,15 @@ export namespace Prisma {
     cancelledAt?: true
     rejectionReason?: true
     resultNotifiedAt?: true
+    documentPassedAt?: true
+    interviewScheduledAt?: true
+    finalAcceptedAt?: true
+    rejectedAt?: true
+    offeredSalary?: true
+    expectedStartDate?: true
+    companyMessage?: true
+    visaGuideScenario?: true
+    visaGuideGeneratedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -50245,6 +51231,15 @@ export namespace Prisma {
     cancelledAt?: true
     rejectionReason?: true
     resultNotifiedAt?: true
+    documentPassedAt?: true
+    interviewScheduledAt?: true
+    finalAcceptedAt?: true
+    rejectedAt?: true
+    offeredSalary?: true
+    expectedStartDate?: true
+    companyMessage?: true
+    visaGuideScenario?: true
+    visaGuideGeneratedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -50276,6 +51271,15 @@ export namespace Prisma {
     cancelledAt?: true
     rejectionReason?: true
     resultNotifiedAt?: true
+    documentPassedAt?: true
+    interviewScheduledAt?: true
+    finalAcceptedAt?: true
+    rejectedAt?: true
+    offeredSalary?: true
+    expectedStartDate?: true
+    companyMessage?: true
+    visaGuideScenario?: true
+    visaGuideGeneratedAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -50394,6 +51398,15 @@ export namespace Prisma {
     cancelledAt: Date | null
     rejectionReason: string | null
     resultNotifiedAt: Date | null
+    documentPassedAt: Date | null
+    interviewScheduledAt: Date | null
+    finalAcceptedAt: Date | null
+    rejectedAt: Date | null
+    offeredSalary: number | null
+    expectedStartDate: Date | null
+    companyMessage: string | null
+    visaGuideScenario: string | null
+    visaGuideGeneratedAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: JobApplicationCountAggregateOutputType | null
@@ -50444,10 +51457,21 @@ export namespace Prisma {
     cancelledAt?: boolean
     rejectionReason?: boolean
     resultNotifiedAt?: boolean
+    documentPassedAt?: boolean
+    interviewScheduledAt?: boolean
+    finalAcceptedAt?: boolean
+    rejectedAt?: boolean
+    offeredSalary?: boolean
+    expectedStartDate?: boolean
+    companyMessage?: boolean
+    visaGuideScenario?: boolean
+    visaGuideGeneratedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
     selectedSlot?: boolean | JobApplication$selectedSlotArgs<ExtArgs>
+    checklistItems?: boolean | JobApplication$checklistItemsArgs<ExtArgs>
+    _count?: boolean | JobApplicationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["jobApplication"]>
 
   export type JobApplicationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -50477,6 +51501,15 @@ export namespace Prisma {
     cancelledAt?: boolean
     rejectionReason?: boolean
     resultNotifiedAt?: boolean
+    documentPassedAt?: boolean
+    interviewScheduledAt?: boolean
+    finalAcceptedAt?: boolean
+    rejectedAt?: boolean
+    offeredSalary?: boolean
+    expectedStartDate?: boolean
+    companyMessage?: boolean
+    visaGuideScenario?: boolean
+    visaGuideGeneratedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
@@ -50510,6 +51543,15 @@ export namespace Prisma {
     cancelledAt?: boolean
     rejectionReason?: boolean
     resultNotifiedAt?: boolean
+    documentPassedAt?: boolean
+    interviewScheduledAt?: boolean
+    finalAcceptedAt?: boolean
+    rejectedAt?: boolean
+    offeredSalary?: boolean
+    expectedStartDate?: boolean
+    companyMessage?: boolean
+    visaGuideScenario?: boolean
+    visaGuideGeneratedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
@@ -50543,14 +51585,25 @@ export namespace Prisma {
     cancelledAt?: boolean
     rejectionReason?: boolean
     resultNotifiedAt?: boolean
+    documentPassedAt?: boolean
+    interviewScheduledAt?: boolean
+    finalAcceptedAt?: boolean
+    rejectedAt?: boolean
+    offeredSalary?: boolean
+    expectedStartDate?: boolean
+    companyMessage?: boolean
+    visaGuideScenario?: boolean
+    visaGuideGeneratedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type JobApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "applicantId" | "applicationMethod" | "status" | "coverLetter" | "resumeSnapshot" | "selectedSlotId" | "proposedBy" | "proposedTime" | "selfReportedAt" | "interviewDate" | "interviewNote" | "interviewMethod" | "interviewFirstChoice" | "interviewSecondChoice" | "interviewLocation" | "interviewLink" | "interviewRoundTrips" | "interviewDirections" | "interviewWhatToBring" | "cancelReason" | "cancelledBy" | "cancelledAt" | "rejectionReason" | "resultNotifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["jobApplication"]>
+  export type JobApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "applicantId" | "applicationMethod" | "status" | "coverLetter" | "resumeSnapshot" | "selectedSlotId" | "proposedBy" | "proposedTime" | "selfReportedAt" | "interviewDate" | "interviewNote" | "interviewMethod" | "interviewFirstChoice" | "interviewSecondChoice" | "interviewLocation" | "interviewLink" | "interviewRoundTrips" | "interviewDirections" | "interviewWhatToBring" | "cancelReason" | "cancelledBy" | "cancelledAt" | "rejectionReason" | "resultNotifiedAt" | "documentPassedAt" | "interviewScheduledAt" | "finalAcceptedAt" | "rejectedAt" | "offeredSalary" | "expectedStartDate" | "companyMessage" | "visaGuideScenario" | "visaGuideGeneratedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["jobApplication"]>
   export type JobApplicationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
     selectedSlot?: boolean | JobApplication$selectedSlotArgs<ExtArgs>
+    checklistItems?: boolean | JobApplication$checklistItemsArgs<ExtArgs>
+    _count?: boolean | JobApplicationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JobApplicationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     job?: boolean | JobPostingDefaultArgs<ExtArgs>
@@ -50566,6 +51619,7 @@ export namespace Prisma {
     objects: {
       job: Prisma.$JobPostingPayload<ExtArgs>
       selectedSlot: Prisma.$InterviewSlotPayload<ExtArgs> | null
+      checklistItems: Prisma.$VisaChecklistItemPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
@@ -50594,6 +51648,15 @@ export namespace Prisma {
       cancelledAt: Date | null
       rejectionReason: string | null
       resultNotifiedAt: Date | null
+      documentPassedAt: Date | null
+      interviewScheduledAt: Date | null
+      finalAcceptedAt: Date | null
+      rejectedAt: Date | null
+      offeredSalary: number | null
+      expectedStartDate: Date | null
+      companyMessage: string | null
+      visaGuideScenario: string | null
+      visaGuideGeneratedAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["jobApplication"]>
@@ -50992,6 +52055,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     job<T extends JobPostingDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobPostingDefaultArgs<ExtArgs>>): Prisma__JobPostingClient<$Result.GetResult<Prisma.$JobPostingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     selectedSlot<T extends JobApplication$selectedSlotArgs<ExtArgs> = {}>(args?: Subset<T, JobApplication$selectedSlotArgs<ExtArgs>>): Prisma__InterviewSlotClient<$Result.GetResult<Prisma.$InterviewSlotPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    checklistItems<T extends JobApplication$checklistItemsArgs<ExtArgs> = {}>(args?: Subset<T, JobApplication$checklistItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VisaChecklistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -51047,6 +52111,15 @@ export namespace Prisma {
     readonly cancelledAt: FieldRef<"JobApplication", 'DateTime'>
     readonly rejectionReason: FieldRef<"JobApplication", 'String'>
     readonly resultNotifiedAt: FieldRef<"JobApplication", 'DateTime'>
+    readonly documentPassedAt: FieldRef<"JobApplication", 'DateTime'>
+    readonly interviewScheduledAt: FieldRef<"JobApplication", 'DateTime'>
+    readonly finalAcceptedAt: FieldRef<"JobApplication", 'DateTime'>
+    readonly rejectedAt: FieldRef<"JobApplication", 'DateTime'>
+    readonly offeredSalary: FieldRef<"JobApplication", 'Int'>
+    readonly expectedStartDate: FieldRef<"JobApplication", 'DateTime'>
+    readonly companyMessage: FieldRef<"JobApplication", 'String'>
+    readonly visaGuideScenario: FieldRef<"JobApplication", 'String'>
+    readonly visaGuideGeneratedAt: FieldRef<"JobApplication", 'DateTime'>
     readonly createdAt: FieldRef<"JobApplication", 'DateTime'>
     readonly updatedAt: FieldRef<"JobApplication", 'DateTime'>
   }
@@ -51461,6 +52534,30 @@ export namespace Prisma {
      */
     include?: InterviewSlotInclude<ExtArgs> | null
     where?: InterviewSlotWhereInput
+  }
+
+  /**
+   * JobApplication.checklistItems
+   */
+  export type JobApplication$checklistItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistItem
+     */
+    select?: VisaChecklistItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistItem
+     */
+    omit?: VisaChecklistItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VisaChecklistItemInclude<ExtArgs> | null
+    where?: VisaChecklistItemWhereInput
+    orderBy?: VisaChecklistItemOrderByWithRelationInput | VisaChecklistItemOrderByWithRelationInput[]
+    cursor?: VisaChecklistItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: VisaChecklistItemScalarFieldEnum | VisaChecklistItemScalarFieldEnum[]
   }
 
   /**
@@ -52624,6 +53721,2269 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: InterviewSlotInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model VisaChecklistTemplate
+   */
+
+  export type AggregateVisaChecklistTemplate = {
+    _count: VisaChecklistTemplateCountAggregateOutputType | null
+    _avg: VisaChecklistTemplateAvgAggregateOutputType | null
+    _sum: VisaChecklistTemplateSumAggregateOutputType | null
+    _min: VisaChecklistTemplateMinAggregateOutputType | null
+    _max: VisaChecklistTemplateMaxAggregateOutputType | null
+  }
+
+  export type VisaChecklistTemplateAvgAggregateOutputType = {
+    id: number | null
+    itemOrder: number | null
+  }
+
+  export type VisaChecklistTemplateSumAggregateOutputType = {
+    id: bigint | null
+    itemOrder: number | null
+  }
+
+  export type VisaChecklistTemplateMinAggregateOutputType = {
+    id: bigint | null
+    scenario: string | null
+    visaTransition: string | null
+    category: string | null
+    itemOrder: number | null
+    itemText: string | null
+    isRequired: boolean | null
+    note: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type VisaChecklistTemplateMaxAggregateOutputType = {
+    id: bigint | null
+    scenario: string | null
+    visaTransition: string | null
+    category: string | null
+    itemOrder: number | null
+    itemText: string | null
+    isRequired: boolean | null
+    note: string | null
+    isActive: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type VisaChecklistTemplateCountAggregateOutputType = {
+    id: number
+    scenario: number
+    visaTransition: number
+    category: number
+    itemOrder: number
+    itemText: number
+    isRequired: number
+    note: number
+    isActive: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type VisaChecklistTemplateAvgAggregateInputType = {
+    id?: true
+    itemOrder?: true
+  }
+
+  export type VisaChecklistTemplateSumAggregateInputType = {
+    id?: true
+    itemOrder?: true
+  }
+
+  export type VisaChecklistTemplateMinAggregateInputType = {
+    id?: true
+    scenario?: true
+    visaTransition?: true
+    category?: true
+    itemOrder?: true
+    itemText?: true
+    isRequired?: true
+    note?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type VisaChecklistTemplateMaxAggregateInputType = {
+    id?: true
+    scenario?: true
+    visaTransition?: true
+    category?: true
+    itemOrder?: true
+    itemText?: true
+    isRequired?: true
+    note?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type VisaChecklistTemplateCountAggregateInputType = {
+    id?: true
+    scenario?: true
+    visaTransition?: true
+    category?: true
+    itemOrder?: true
+    itemText?: true
+    isRequired?: true
+    note?: true
+    isActive?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type VisaChecklistTemplateAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which VisaChecklistTemplate to aggregate.
+     */
+    where?: VisaChecklistTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VisaChecklistTemplates to fetch.
+     */
+    orderBy?: VisaChecklistTemplateOrderByWithRelationInput | VisaChecklistTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: VisaChecklistTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VisaChecklistTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VisaChecklistTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned VisaChecklistTemplates
+    **/
+    _count?: true | VisaChecklistTemplateCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: VisaChecklistTemplateAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: VisaChecklistTemplateSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: VisaChecklistTemplateMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: VisaChecklistTemplateMaxAggregateInputType
+  }
+
+  export type GetVisaChecklistTemplateAggregateType<T extends VisaChecklistTemplateAggregateArgs> = {
+        [P in keyof T & keyof AggregateVisaChecklistTemplate]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateVisaChecklistTemplate[P]>
+      : GetScalarType<T[P], AggregateVisaChecklistTemplate[P]>
+  }
+
+
+
+
+  export type VisaChecklistTemplateGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: VisaChecklistTemplateWhereInput
+    orderBy?: VisaChecklistTemplateOrderByWithAggregationInput | VisaChecklistTemplateOrderByWithAggregationInput[]
+    by: VisaChecklistTemplateScalarFieldEnum[] | VisaChecklistTemplateScalarFieldEnum
+    having?: VisaChecklistTemplateScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: VisaChecklistTemplateCountAggregateInputType | true
+    _avg?: VisaChecklistTemplateAvgAggregateInputType
+    _sum?: VisaChecklistTemplateSumAggregateInputType
+    _min?: VisaChecklistTemplateMinAggregateInputType
+    _max?: VisaChecklistTemplateMaxAggregateInputType
+  }
+
+  export type VisaChecklistTemplateGroupByOutputType = {
+    id: bigint
+    scenario: string
+    visaTransition: string
+    category: string
+    itemOrder: number
+    itemText: string
+    isRequired: boolean
+    note: string | null
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: VisaChecklistTemplateCountAggregateOutputType | null
+    _avg: VisaChecklistTemplateAvgAggregateOutputType | null
+    _sum: VisaChecklistTemplateSumAggregateOutputType | null
+    _min: VisaChecklistTemplateMinAggregateOutputType | null
+    _max: VisaChecklistTemplateMaxAggregateOutputType | null
+  }
+
+  type GetVisaChecklistTemplateGroupByPayload<T extends VisaChecklistTemplateGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<VisaChecklistTemplateGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof VisaChecklistTemplateGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], VisaChecklistTemplateGroupByOutputType[P]>
+            : GetScalarType<T[P], VisaChecklistTemplateGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type VisaChecklistTemplateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    scenario?: boolean
+    visaTransition?: boolean
+    category?: boolean
+    itemOrder?: boolean
+    itemText?: boolean
+    isRequired?: boolean
+    note?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["visaChecklistTemplate"]>
+
+  export type VisaChecklistTemplateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    scenario?: boolean
+    visaTransition?: boolean
+    category?: boolean
+    itemOrder?: boolean
+    itemText?: boolean
+    isRequired?: boolean
+    note?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["visaChecklistTemplate"]>
+
+  export type VisaChecklistTemplateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    scenario?: boolean
+    visaTransition?: boolean
+    category?: boolean
+    itemOrder?: boolean
+    itemText?: boolean
+    isRequired?: boolean
+    note?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["visaChecklistTemplate"]>
+
+  export type VisaChecklistTemplateSelectScalar = {
+    id?: boolean
+    scenario?: boolean
+    visaTransition?: boolean
+    category?: boolean
+    itemOrder?: boolean
+    itemText?: boolean
+    isRequired?: boolean
+    note?: boolean
+    isActive?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type VisaChecklistTemplateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "scenario" | "visaTransition" | "category" | "itemOrder" | "itemText" | "isRequired" | "note" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["visaChecklistTemplate"]>
+
+  export type $VisaChecklistTemplatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "VisaChecklistTemplate"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      scenario: string
+      visaTransition: string
+      category: string
+      itemOrder: number
+      itemText: string
+      isRequired: boolean
+      note: string | null
+      isActive: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["visaChecklistTemplate"]>
+    composites: {}
+  }
+
+  type VisaChecklistTemplateGetPayload<S extends boolean | null | undefined | VisaChecklistTemplateDefaultArgs> = $Result.GetResult<Prisma.$VisaChecklistTemplatePayload, S>
+
+  type VisaChecklistTemplateCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<VisaChecklistTemplateFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: VisaChecklistTemplateCountAggregateInputType | true
+    }
+
+  export interface VisaChecklistTemplateDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['VisaChecklistTemplate'], meta: { name: 'VisaChecklistTemplate' } }
+    /**
+     * Find zero or one VisaChecklistTemplate that matches the filter.
+     * @param {VisaChecklistTemplateFindUniqueArgs} args - Arguments to find a VisaChecklistTemplate
+     * @example
+     * // Get one VisaChecklistTemplate
+     * const visaChecklistTemplate = await prisma.visaChecklistTemplate.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends VisaChecklistTemplateFindUniqueArgs>(args: SelectSubset<T, VisaChecklistTemplateFindUniqueArgs<ExtArgs>>): Prisma__VisaChecklistTemplateClient<$Result.GetResult<Prisma.$VisaChecklistTemplatePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one VisaChecklistTemplate that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {VisaChecklistTemplateFindUniqueOrThrowArgs} args - Arguments to find a VisaChecklistTemplate
+     * @example
+     * // Get one VisaChecklistTemplate
+     * const visaChecklistTemplate = await prisma.visaChecklistTemplate.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends VisaChecklistTemplateFindUniqueOrThrowArgs>(args: SelectSubset<T, VisaChecklistTemplateFindUniqueOrThrowArgs<ExtArgs>>): Prisma__VisaChecklistTemplateClient<$Result.GetResult<Prisma.$VisaChecklistTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first VisaChecklistTemplate that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaChecklistTemplateFindFirstArgs} args - Arguments to find a VisaChecklistTemplate
+     * @example
+     * // Get one VisaChecklistTemplate
+     * const visaChecklistTemplate = await prisma.visaChecklistTemplate.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends VisaChecklistTemplateFindFirstArgs>(args?: SelectSubset<T, VisaChecklistTemplateFindFirstArgs<ExtArgs>>): Prisma__VisaChecklistTemplateClient<$Result.GetResult<Prisma.$VisaChecklistTemplatePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first VisaChecklistTemplate that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaChecklistTemplateFindFirstOrThrowArgs} args - Arguments to find a VisaChecklistTemplate
+     * @example
+     * // Get one VisaChecklistTemplate
+     * const visaChecklistTemplate = await prisma.visaChecklistTemplate.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends VisaChecklistTemplateFindFirstOrThrowArgs>(args?: SelectSubset<T, VisaChecklistTemplateFindFirstOrThrowArgs<ExtArgs>>): Prisma__VisaChecklistTemplateClient<$Result.GetResult<Prisma.$VisaChecklistTemplatePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more VisaChecklistTemplates that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaChecklistTemplateFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all VisaChecklistTemplates
+     * const visaChecklistTemplates = await prisma.visaChecklistTemplate.findMany()
+     * 
+     * // Get first 10 VisaChecklistTemplates
+     * const visaChecklistTemplates = await prisma.visaChecklistTemplate.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const visaChecklistTemplateWithIdOnly = await prisma.visaChecklistTemplate.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends VisaChecklistTemplateFindManyArgs>(args?: SelectSubset<T, VisaChecklistTemplateFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VisaChecklistTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a VisaChecklistTemplate.
+     * @param {VisaChecklistTemplateCreateArgs} args - Arguments to create a VisaChecklistTemplate.
+     * @example
+     * // Create one VisaChecklistTemplate
+     * const VisaChecklistTemplate = await prisma.visaChecklistTemplate.create({
+     *   data: {
+     *     // ... data to create a VisaChecklistTemplate
+     *   }
+     * })
+     * 
+     */
+    create<T extends VisaChecklistTemplateCreateArgs>(args: SelectSubset<T, VisaChecklistTemplateCreateArgs<ExtArgs>>): Prisma__VisaChecklistTemplateClient<$Result.GetResult<Prisma.$VisaChecklistTemplatePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many VisaChecklistTemplates.
+     * @param {VisaChecklistTemplateCreateManyArgs} args - Arguments to create many VisaChecklistTemplates.
+     * @example
+     * // Create many VisaChecklistTemplates
+     * const visaChecklistTemplate = await prisma.visaChecklistTemplate.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends VisaChecklistTemplateCreateManyArgs>(args?: SelectSubset<T, VisaChecklistTemplateCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many VisaChecklistTemplates and returns the data saved in the database.
+     * @param {VisaChecklistTemplateCreateManyAndReturnArgs} args - Arguments to create many VisaChecklistTemplates.
+     * @example
+     * // Create many VisaChecklistTemplates
+     * const visaChecklistTemplate = await prisma.visaChecklistTemplate.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many VisaChecklistTemplates and only return the `id`
+     * const visaChecklistTemplateWithIdOnly = await prisma.visaChecklistTemplate.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends VisaChecklistTemplateCreateManyAndReturnArgs>(args?: SelectSubset<T, VisaChecklistTemplateCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VisaChecklistTemplatePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a VisaChecklistTemplate.
+     * @param {VisaChecklistTemplateDeleteArgs} args - Arguments to delete one VisaChecklistTemplate.
+     * @example
+     * // Delete one VisaChecklistTemplate
+     * const VisaChecklistTemplate = await prisma.visaChecklistTemplate.delete({
+     *   where: {
+     *     // ... filter to delete one VisaChecklistTemplate
+     *   }
+     * })
+     * 
+     */
+    delete<T extends VisaChecklistTemplateDeleteArgs>(args: SelectSubset<T, VisaChecklistTemplateDeleteArgs<ExtArgs>>): Prisma__VisaChecklistTemplateClient<$Result.GetResult<Prisma.$VisaChecklistTemplatePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one VisaChecklistTemplate.
+     * @param {VisaChecklistTemplateUpdateArgs} args - Arguments to update one VisaChecklistTemplate.
+     * @example
+     * // Update one VisaChecklistTemplate
+     * const visaChecklistTemplate = await prisma.visaChecklistTemplate.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends VisaChecklistTemplateUpdateArgs>(args: SelectSubset<T, VisaChecklistTemplateUpdateArgs<ExtArgs>>): Prisma__VisaChecklistTemplateClient<$Result.GetResult<Prisma.$VisaChecklistTemplatePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more VisaChecklistTemplates.
+     * @param {VisaChecklistTemplateDeleteManyArgs} args - Arguments to filter VisaChecklistTemplates to delete.
+     * @example
+     * // Delete a few VisaChecklistTemplates
+     * const { count } = await prisma.visaChecklistTemplate.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends VisaChecklistTemplateDeleteManyArgs>(args?: SelectSubset<T, VisaChecklistTemplateDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more VisaChecklistTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaChecklistTemplateUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many VisaChecklistTemplates
+     * const visaChecklistTemplate = await prisma.visaChecklistTemplate.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends VisaChecklistTemplateUpdateManyArgs>(args: SelectSubset<T, VisaChecklistTemplateUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more VisaChecklistTemplates and returns the data updated in the database.
+     * @param {VisaChecklistTemplateUpdateManyAndReturnArgs} args - Arguments to update many VisaChecklistTemplates.
+     * @example
+     * // Update many VisaChecklistTemplates
+     * const visaChecklistTemplate = await prisma.visaChecklistTemplate.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more VisaChecklistTemplates and only return the `id`
+     * const visaChecklistTemplateWithIdOnly = await prisma.visaChecklistTemplate.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends VisaChecklistTemplateUpdateManyAndReturnArgs>(args: SelectSubset<T, VisaChecklistTemplateUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VisaChecklistTemplatePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one VisaChecklistTemplate.
+     * @param {VisaChecklistTemplateUpsertArgs} args - Arguments to update or create a VisaChecklistTemplate.
+     * @example
+     * // Update or create a VisaChecklistTemplate
+     * const visaChecklistTemplate = await prisma.visaChecklistTemplate.upsert({
+     *   create: {
+     *     // ... data to create a VisaChecklistTemplate
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the VisaChecklistTemplate we want to update
+     *   }
+     * })
+     */
+    upsert<T extends VisaChecklistTemplateUpsertArgs>(args: SelectSubset<T, VisaChecklistTemplateUpsertArgs<ExtArgs>>): Prisma__VisaChecklistTemplateClient<$Result.GetResult<Prisma.$VisaChecklistTemplatePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of VisaChecklistTemplates.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaChecklistTemplateCountArgs} args - Arguments to filter VisaChecklistTemplates to count.
+     * @example
+     * // Count the number of VisaChecklistTemplates
+     * const count = await prisma.visaChecklistTemplate.count({
+     *   where: {
+     *     // ... the filter for the VisaChecklistTemplates we want to count
+     *   }
+     * })
+    **/
+    count<T extends VisaChecklistTemplateCountArgs>(
+      args?: Subset<T, VisaChecklistTemplateCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], VisaChecklistTemplateCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a VisaChecklistTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaChecklistTemplateAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends VisaChecklistTemplateAggregateArgs>(args: Subset<T, VisaChecklistTemplateAggregateArgs>): Prisma.PrismaPromise<GetVisaChecklistTemplateAggregateType<T>>
+
+    /**
+     * Group by VisaChecklistTemplate.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaChecklistTemplateGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends VisaChecklistTemplateGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: VisaChecklistTemplateGroupByArgs['orderBy'] }
+        : { orderBy?: VisaChecklistTemplateGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, VisaChecklistTemplateGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetVisaChecklistTemplateGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the VisaChecklistTemplate model
+   */
+  readonly fields: VisaChecklistTemplateFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for VisaChecklistTemplate.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__VisaChecklistTemplateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the VisaChecklistTemplate model
+   */
+  interface VisaChecklistTemplateFieldRefs {
+    readonly id: FieldRef<"VisaChecklistTemplate", 'BigInt'>
+    readonly scenario: FieldRef<"VisaChecklistTemplate", 'String'>
+    readonly visaTransition: FieldRef<"VisaChecklistTemplate", 'String'>
+    readonly category: FieldRef<"VisaChecklistTemplate", 'String'>
+    readonly itemOrder: FieldRef<"VisaChecklistTemplate", 'Int'>
+    readonly itemText: FieldRef<"VisaChecklistTemplate", 'String'>
+    readonly isRequired: FieldRef<"VisaChecklistTemplate", 'Boolean'>
+    readonly note: FieldRef<"VisaChecklistTemplate", 'String'>
+    readonly isActive: FieldRef<"VisaChecklistTemplate", 'Boolean'>
+    readonly createdAt: FieldRef<"VisaChecklistTemplate", 'DateTime'>
+    readonly updatedAt: FieldRef<"VisaChecklistTemplate", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * VisaChecklistTemplate findUnique
+   */
+  export type VisaChecklistTemplateFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistTemplate
+     */
+    select?: VisaChecklistTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistTemplate
+     */
+    omit?: VisaChecklistTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which VisaChecklistTemplate to fetch.
+     */
+    where: VisaChecklistTemplateWhereUniqueInput
+  }
+
+  /**
+   * VisaChecklistTemplate findUniqueOrThrow
+   */
+  export type VisaChecklistTemplateFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistTemplate
+     */
+    select?: VisaChecklistTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistTemplate
+     */
+    omit?: VisaChecklistTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which VisaChecklistTemplate to fetch.
+     */
+    where: VisaChecklistTemplateWhereUniqueInput
+  }
+
+  /**
+   * VisaChecklistTemplate findFirst
+   */
+  export type VisaChecklistTemplateFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistTemplate
+     */
+    select?: VisaChecklistTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistTemplate
+     */
+    omit?: VisaChecklistTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which VisaChecklistTemplate to fetch.
+     */
+    where?: VisaChecklistTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VisaChecklistTemplates to fetch.
+     */
+    orderBy?: VisaChecklistTemplateOrderByWithRelationInput | VisaChecklistTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for VisaChecklistTemplates.
+     */
+    cursor?: VisaChecklistTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VisaChecklistTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VisaChecklistTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VisaChecklistTemplates.
+     */
+    distinct?: VisaChecklistTemplateScalarFieldEnum | VisaChecklistTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * VisaChecklistTemplate findFirstOrThrow
+   */
+  export type VisaChecklistTemplateFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistTemplate
+     */
+    select?: VisaChecklistTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistTemplate
+     */
+    omit?: VisaChecklistTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which VisaChecklistTemplate to fetch.
+     */
+    where?: VisaChecklistTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VisaChecklistTemplates to fetch.
+     */
+    orderBy?: VisaChecklistTemplateOrderByWithRelationInput | VisaChecklistTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for VisaChecklistTemplates.
+     */
+    cursor?: VisaChecklistTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VisaChecklistTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VisaChecklistTemplates.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VisaChecklistTemplates.
+     */
+    distinct?: VisaChecklistTemplateScalarFieldEnum | VisaChecklistTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * VisaChecklistTemplate findMany
+   */
+  export type VisaChecklistTemplateFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistTemplate
+     */
+    select?: VisaChecklistTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistTemplate
+     */
+    omit?: VisaChecklistTemplateOmit<ExtArgs> | null
+    /**
+     * Filter, which VisaChecklistTemplates to fetch.
+     */
+    where?: VisaChecklistTemplateWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VisaChecklistTemplates to fetch.
+     */
+    orderBy?: VisaChecklistTemplateOrderByWithRelationInput | VisaChecklistTemplateOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing VisaChecklistTemplates.
+     */
+    cursor?: VisaChecklistTemplateWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VisaChecklistTemplates from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VisaChecklistTemplates.
+     */
+    skip?: number
+    distinct?: VisaChecklistTemplateScalarFieldEnum | VisaChecklistTemplateScalarFieldEnum[]
+  }
+
+  /**
+   * VisaChecklistTemplate create
+   */
+  export type VisaChecklistTemplateCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistTemplate
+     */
+    select?: VisaChecklistTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistTemplate
+     */
+    omit?: VisaChecklistTemplateOmit<ExtArgs> | null
+    /**
+     * The data needed to create a VisaChecklistTemplate.
+     */
+    data: XOR<VisaChecklistTemplateCreateInput, VisaChecklistTemplateUncheckedCreateInput>
+  }
+
+  /**
+   * VisaChecklistTemplate createMany
+   */
+  export type VisaChecklistTemplateCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many VisaChecklistTemplates.
+     */
+    data: VisaChecklistTemplateCreateManyInput | VisaChecklistTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * VisaChecklistTemplate createManyAndReturn
+   */
+  export type VisaChecklistTemplateCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistTemplate
+     */
+    select?: VisaChecklistTemplateSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistTemplate
+     */
+    omit?: VisaChecklistTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to create many VisaChecklistTemplates.
+     */
+    data: VisaChecklistTemplateCreateManyInput | VisaChecklistTemplateCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * VisaChecklistTemplate update
+   */
+  export type VisaChecklistTemplateUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistTemplate
+     */
+    select?: VisaChecklistTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistTemplate
+     */
+    omit?: VisaChecklistTemplateOmit<ExtArgs> | null
+    /**
+     * The data needed to update a VisaChecklistTemplate.
+     */
+    data: XOR<VisaChecklistTemplateUpdateInput, VisaChecklistTemplateUncheckedUpdateInput>
+    /**
+     * Choose, which VisaChecklistTemplate to update.
+     */
+    where: VisaChecklistTemplateWhereUniqueInput
+  }
+
+  /**
+   * VisaChecklistTemplate updateMany
+   */
+  export type VisaChecklistTemplateUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update VisaChecklistTemplates.
+     */
+    data: XOR<VisaChecklistTemplateUpdateManyMutationInput, VisaChecklistTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which VisaChecklistTemplates to update
+     */
+    where?: VisaChecklistTemplateWhereInput
+    /**
+     * Limit how many VisaChecklistTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * VisaChecklistTemplate updateManyAndReturn
+   */
+  export type VisaChecklistTemplateUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistTemplate
+     */
+    select?: VisaChecklistTemplateSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistTemplate
+     */
+    omit?: VisaChecklistTemplateOmit<ExtArgs> | null
+    /**
+     * The data used to update VisaChecklistTemplates.
+     */
+    data: XOR<VisaChecklistTemplateUpdateManyMutationInput, VisaChecklistTemplateUncheckedUpdateManyInput>
+    /**
+     * Filter which VisaChecklistTemplates to update
+     */
+    where?: VisaChecklistTemplateWhereInput
+    /**
+     * Limit how many VisaChecklistTemplates to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * VisaChecklistTemplate upsert
+   */
+  export type VisaChecklistTemplateUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistTemplate
+     */
+    select?: VisaChecklistTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistTemplate
+     */
+    omit?: VisaChecklistTemplateOmit<ExtArgs> | null
+    /**
+     * The filter to search for the VisaChecklistTemplate to update in case it exists.
+     */
+    where: VisaChecklistTemplateWhereUniqueInput
+    /**
+     * In case the VisaChecklistTemplate found by the `where` argument doesn't exist, create a new VisaChecklistTemplate with this data.
+     */
+    create: XOR<VisaChecklistTemplateCreateInput, VisaChecklistTemplateUncheckedCreateInput>
+    /**
+     * In case the VisaChecklistTemplate was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<VisaChecklistTemplateUpdateInput, VisaChecklistTemplateUncheckedUpdateInput>
+  }
+
+  /**
+   * VisaChecklistTemplate delete
+   */
+  export type VisaChecklistTemplateDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistTemplate
+     */
+    select?: VisaChecklistTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistTemplate
+     */
+    omit?: VisaChecklistTemplateOmit<ExtArgs> | null
+    /**
+     * Filter which VisaChecklistTemplate to delete.
+     */
+    where: VisaChecklistTemplateWhereUniqueInput
+  }
+
+  /**
+   * VisaChecklistTemplate deleteMany
+   */
+  export type VisaChecklistTemplateDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which VisaChecklistTemplates to delete
+     */
+    where?: VisaChecklistTemplateWhereInput
+    /**
+     * Limit how many VisaChecklistTemplates to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * VisaChecklistTemplate without action
+   */
+  export type VisaChecklistTemplateDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistTemplate
+     */
+    select?: VisaChecklistTemplateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistTemplate
+     */
+    omit?: VisaChecklistTemplateOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model VisaChecklistItem
+   */
+
+  export type AggregateVisaChecklistItem = {
+    _count: VisaChecklistItemCountAggregateOutputType | null
+    _avg: VisaChecklistItemAvgAggregateOutputType | null
+    _sum: VisaChecklistItemSumAggregateOutputType | null
+    _min: VisaChecklistItemMinAggregateOutputType | null
+    _max: VisaChecklistItemMaxAggregateOutputType | null
+  }
+
+  export type VisaChecklistItemAvgAggregateOutputType = {
+    id: number | null
+    applicationId: number | null
+    itemOrder: number | null
+  }
+
+  export type VisaChecklistItemSumAggregateOutputType = {
+    id: bigint | null
+    applicationId: bigint | null
+    itemOrder: number | null
+  }
+
+  export type VisaChecklistItemMinAggregateOutputType = {
+    id: bigint | null
+    applicationId: bigint | null
+    category: string | null
+    itemText: string | null
+    itemOrder: number | null
+    isChecked: boolean | null
+    checkedAt: Date | null
+    checkedBy: string | null
+    createdAt: Date | null
+  }
+
+  export type VisaChecklistItemMaxAggregateOutputType = {
+    id: bigint | null
+    applicationId: bigint | null
+    category: string | null
+    itemText: string | null
+    itemOrder: number | null
+    isChecked: boolean | null
+    checkedAt: Date | null
+    checkedBy: string | null
+    createdAt: Date | null
+  }
+
+  export type VisaChecklistItemCountAggregateOutputType = {
+    id: number
+    applicationId: number
+    category: number
+    itemText: number
+    itemOrder: number
+    isChecked: number
+    checkedAt: number
+    checkedBy: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type VisaChecklistItemAvgAggregateInputType = {
+    id?: true
+    applicationId?: true
+    itemOrder?: true
+  }
+
+  export type VisaChecklistItemSumAggregateInputType = {
+    id?: true
+    applicationId?: true
+    itemOrder?: true
+  }
+
+  export type VisaChecklistItemMinAggregateInputType = {
+    id?: true
+    applicationId?: true
+    category?: true
+    itemText?: true
+    itemOrder?: true
+    isChecked?: true
+    checkedAt?: true
+    checkedBy?: true
+    createdAt?: true
+  }
+
+  export type VisaChecklistItemMaxAggregateInputType = {
+    id?: true
+    applicationId?: true
+    category?: true
+    itemText?: true
+    itemOrder?: true
+    isChecked?: true
+    checkedAt?: true
+    checkedBy?: true
+    createdAt?: true
+  }
+
+  export type VisaChecklistItemCountAggregateInputType = {
+    id?: true
+    applicationId?: true
+    category?: true
+    itemText?: true
+    itemOrder?: true
+    isChecked?: true
+    checkedAt?: true
+    checkedBy?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type VisaChecklistItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which VisaChecklistItem to aggregate.
+     */
+    where?: VisaChecklistItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VisaChecklistItems to fetch.
+     */
+    orderBy?: VisaChecklistItemOrderByWithRelationInput | VisaChecklistItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: VisaChecklistItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VisaChecklistItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VisaChecklistItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned VisaChecklistItems
+    **/
+    _count?: true | VisaChecklistItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: VisaChecklistItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: VisaChecklistItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: VisaChecklistItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: VisaChecklistItemMaxAggregateInputType
+  }
+
+  export type GetVisaChecklistItemAggregateType<T extends VisaChecklistItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateVisaChecklistItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateVisaChecklistItem[P]>
+      : GetScalarType<T[P], AggregateVisaChecklistItem[P]>
+  }
+
+
+
+
+  export type VisaChecklistItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: VisaChecklistItemWhereInput
+    orderBy?: VisaChecklistItemOrderByWithAggregationInput | VisaChecklistItemOrderByWithAggregationInput[]
+    by: VisaChecklistItemScalarFieldEnum[] | VisaChecklistItemScalarFieldEnum
+    having?: VisaChecklistItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: VisaChecklistItemCountAggregateInputType | true
+    _avg?: VisaChecklistItemAvgAggregateInputType
+    _sum?: VisaChecklistItemSumAggregateInputType
+    _min?: VisaChecklistItemMinAggregateInputType
+    _max?: VisaChecklistItemMaxAggregateInputType
+  }
+
+  export type VisaChecklistItemGroupByOutputType = {
+    id: bigint
+    applicationId: bigint
+    category: string
+    itemText: string
+    itemOrder: number
+    isChecked: boolean
+    checkedAt: Date | null
+    checkedBy: string | null
+    createdAt: Date
+    _count: VisaChecklistItemCountAggregateOutputType | null
+    _avg: VisaChecklistItemAvgAggregateOutputType | null
+    _sum: VisaChecklistItemSumAggregateOutputType | null
+    _min: VisaChecklistItemMinAggregateOutputType | null
+    _max: VisaChecklistItemMaxAggregateOutputType | null
+  }
+
+  type GetVisaChecklistItemGroupByPayload<T extends VisaChecklistItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<VisaChecklistItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof VisaChecklistItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], VisaChecklistItemGroupByOutputType[P]>
+            : GetScalarType<T[P], VisaChecklistItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type VisaChecklistItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    applicationId?: boolean
+    category?: boolean
+    itemText?: boolean
+    itemOrder?: boolean
+    isChecked?: boolean
+    checkedAt?: boolean
+    checkedBy?: boolean
+    createdAt?: boolean
+    application?: boolean | JobApplicationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["visaChecklistItem"]>
+
+  export type VisaChecklistItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    applicationId?: boolean
+    category?: boolean
+    itemText?: boolean
+    itemOrder?: boolean
+    isChecked?: boolean
+    checkedAt?: boolean
+    checkedBy?: boolean
+    createdAt?: boolean
+    application?: boolean | JobApplicationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["visaChecklistItem"]>
+
+  export type VisaChecklistItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    applicationId?: boolean
+    category?: boolean
+    itemText?: boolean
+    itemOrder?: boolean
+    isChecked?: boolean
+    checkedAt?: boolean
+    checkedBy?: boolean
+    createdAt?: boolean
+    application?: boolean | JobApplicationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["visaChecklistItem"]>
+
+  export type VisaChecklistItemSelectScalar = {
+    id?: boolean
+    applicationId?: boolean
+    category?: boolean
+    itemText?: boolean
+    itemOrder?: boolean
+    isChecked?: boolean
+    checkedAt?: boolean
+    checkedBy?: boolean
+    createdAt?: boolean
+  }
+
+  export type VisaChecklistItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "applicationId" | "category" | "itemText" | "itemOrder" | "isChecked" | "checkedAt" | "checkedBy" | "createdAt", ExtArgs["result"]["visaChecklistItem"]>
+  export type VisaChecklistItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    application?: boolean | JobApplicationDefaultArgs<ExtArgs>
+  }
+  export type VisaChecklistItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    application?: boolean | JobApplicationDefaultArgs<ExtArgs>
+  }
+  export type VisaChecklistItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    application?: boolean | JobApplicationDefaultArgs<ExtArgs>
+  }
+
+  export type $VisaChecklistItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "VisaChecklistItem"
+    objects: {
+      application: Prisma.$JobApplicationPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      applicationId: bigint
+      category: string
+      itemText: string
+      itemOrder: number
+      isChecked: boolean
+      checkedAt: Date | null
+      checkedBy: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["visaChecklistItem"]>
+    composites: {}
+  }
+
+  type VisaChecklistItemGetPayload<S extends boolean | null | undefined | VisaChecklistItemDefaultArgs> = $Result.GetResult<Prisma.$VisaChecklistItemPayload, S>
+
+  type VisaChecklistItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<VisaChecklistItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: VisaChecklistItemCountAggregateInputType | true
+    }
+
+  export interface VisaChecklistItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['VisaChecklistItem'], meta: { name: 'VisaChecklistItem' } }
+    /**
+     * Find zero or one VisaChecklistItem that matches the filter.
+     * @param {VisaChecklistItemFindUniqueArgs} args - Arguments to find a VisaChecklistItem
+     * @example
+     * // Get one VisaChecklistItem
+     * const visaChecklistItem = await prisma.visaChecklistItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends VisaChecklistItemFindUniqueArgs>(args: SelectSubset<T, VisaChecklistItemFindUniqueArgs<ExtArgs>>): Prisma__VisaChecklistItemClient<$Result.GetResult<Prisma.$VisaChecklistItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one VisaChecklistItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {VisaChecklistItemFindUniqueOrThrowArgs} args - Arguments to find a VisaChecklistItem
+     * @example
+     * // Get one VisaChecklistItem
+     * const visaChecklistItem = await prisma.visaChecklistItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends VisaChecklistItemFindUniqueOrThrowArgs>(args: SelectSubset<T, VisaChecklistItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__VisaChecklistItemClient<$Result.GetResult<Prisma.$VisaChecklistItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first VisaChecklistItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaChecklistItemFindFirstArgs} args - Arguments to find a VisaChecklistItem
+     * @example
+     * // Get one VisaChecklistItem
+     * const visaChecklistItem = await prisma.visaChecklistItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends VisaChecklistItemFindFirstArgs>(args?: SelectSubset<T, VisaChecklistItemFindFirstArgs<ExtArgs>>): Prisma__VisaChecklistItemClient<$Result.GetResult<Prisma.$VisaChecklistItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first VisaChecklistItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaChecklistItemFindFirstOrThrowArgs} args - Arguments to find a VisaChecklistItem
+     * @example
+     * // Get one VisaChecklistItem
+     * const visaChecklistItem = await prisma.visaChecklistItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends VisaChecklistItemFindFirstOrThrowArgs>(args?: SelectSubset<T, VisaChecklistItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__VisaChecklistItemClient<$Result.GetResult<Prisma.$VisaChecklistItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more VisaChecklistItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaChecklistItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all VisaChecklistItems
+     * const visaChecklistItems = await prisma.visaChecklistItem.findMany()
+     * 
+     * // Get first 10 VisaChecklistItems
+     * const visaChecklistItems = await prisma.visaChecklistItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const visaChecklistItemWithIdOnly = await prisma.visaChecklistItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends VisaChecklistItemFindManyArgs>(args?: SelectSubset<T, VisaChecklistItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VisaChecklistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a VisaChecklistItem.
+     * @param {VisaChecklistItemCreateArgs} args - Arguments to create a VisaChecklistItem.
+     * @example
+     * // Create one VisaChecklistItem
+     * const VisaChecklistItem = await prisma.visaChecklistItem.create({
+     *   data: {
+     *     // ... data to create a VisaChecklistItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends VisaChecklistItemCreateArgs>(args: SelectSubset<T, VisaChecklistItemCreateArgs<ExtArgs>>): Prisma__VisaChecklistItemClient<$Result.GetResult<Prisma.$VisaChecklistItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many VisaChecklistItems.
+     * @param {VisaChecklistItemCreateManyArgs} args - Arguments to create many VisaChecklistItems.
+     * @example
+     * // Create many VisaChecklistItems
+     * const visaChecklistItem = await prisma.visaChecklistItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends VisaChecklistItemCreateManyArgs>(args?: SelectSubset<T, VisaChecklistItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many VisaChecklistItems and returns the data saved in the database.
+     * @param {VisaChecklistItemCreateManyAndReturnArgs} args - Arguments to create many VisaChecklistItems.
+     * @example
+     * // Create many VisaChecklistItems
+     * const visaChecklistItem = await prisma.visaChecklistItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many VisaChecklistItems and only return the `id`
+     * const visaChecklistItemWithIdOnly = await prisma.visaChecklistItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends VisaChecklistItemCreateManyAndReturnArgs>(args?: SelectSubset<T, VisaChecklistItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VisaChecklistItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a VisaChecklistItem.
+     * @param {VisaChecklistItemDeleteArgs} args - Arguments to delete one VisaChecklistItem.
+     * @example
+     * // Delete one VisaChecklistItem
+     * const VisaChecklistItem = await prisma.visaChecklistItem.delete({
+     *   where: {
+     *     // ... filter to delete one VisaChecklistItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends VisaChecklistItemDeleteArgs>(args: SelectSubset<T, VisaChecklistItemDeleteArgs<ExtArgs>>): Prisma__VisaChecklistItemClient<$Result.GetResult<Prisma.$VisaChecklistItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one VisaChecklistItem.
+     * @param {VisaChecklistItemUpdateArgs} args - Arguments to update one VisaChecklistItem.
+     * @example
+     * // Update one VisaChecklistItem
+     * const visaChecklistItem = await prisma.visaChecklistItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends VisaChecklistItemUpdateArgs>(args: SelectSubset<T, VisaChecklistItemUpdateArgs<ExtArgs>>): Prisma__VisaChecklistItemClient<$Result.GetResult<Prisma.$VisaChecklistItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more VisaChecklistItems.
+     * @param {VisaChecklistItemDeleteManyArgs} args - Arguments to filter VisaChecklistItems to delete.
+     * @example
+     * // Delete a few VisaChecklistItems
+     * const { count } = await prisma.visaChecklistItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends VisaChecklistItemDeleteManyArgs>(args?: SelectSubset<T, VisaChecklistItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more VisaChecklistItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaChecklistItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many VisaChecklistItems
+     * const visaChecklistItem = await prisma.visaChecklistItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends VisaChecklistItemUpdateManyArgs>(args: SelectSubset<T, VisaChecklistItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more VisaChecklistItems and returns the data updated in the database.
+     * @param {VisaChecklistItemUpdateManyAndReturnArgs} args - Arguments to update many VisaChecklistItems.
+     * @example
+     * // Update many VisaChecklistItems
+     * const visaChecklistItem = await prisma.visaChecklistItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more VisaChecklistItems and only return the `id`
+     * const visaChecklistItemWithIdOnly = await prisma.visaChecklistItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends VisaChecklistItemUpdateManyAndReturnArgs>(args: SelectSubset<T, VisaChecklistItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VisaChecklistItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one VisaChecklistItem.
+     * @param {VisaChecklistItemUpsertArgs} args - Arguments to update or create a VisaChecklistItem.
+     * @example
+     * // Update or create a VisaChecklistItem
+     * const visaChecklistItem = await prisma.visaChecklistItem.upsert({
+     *   create: {
+     *     // ... data to create a VisaChecklistItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the VisaChecklistItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends VisaChecklistItemUpsertArgs>(args: SelectSubset<T, VisaChecklistItemUpsertArgs<ExtArgs>>): Prisma__VisaChecklistItemClient<$Result.GetResult<Prisma.$VisaChecklistItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of VisaChecklistItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaChecklistItemCountArgs} args - Arguments to filter VisaChecklistItems to count.
+     * @example
+     * // Count the number of VisaChecklistItems
+     * const count = await prisma.visaChecklistItem.count({
+     *   where: {
+     *     // ... the filter for the VisaChecklistItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends VisaChecklistItemCountArgs>(
+      args?: Subset<T, VisaChecklistItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], VisaChecklistItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a VisaChecklistItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaChecklistItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends VisaChecklistItemAggregateArgs>(args: Subset<T, VisaChecklistItemAggregateArgs>): Prisma.PrismaPromise<GetVisaChecklistItemAggregateType<T>>
+
+    /**
+     * Group by VisaChecklistItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaChecklistItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends VisaChecklistItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: VisaChecklistItemGroupByArgs['orderBy'] }
+        : { orderBy?: VisaChecklistItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, VisaChecklistItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetVisaChecklistItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the VisaChecklistItem model
+   */
+  readonly fields: VisaChecklistItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for VisaChecklistItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__VisaChecklistItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    application<T extends JobApplicationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobApplicationDefaultArgs<ExtArgs>>): Prisma__JobApplicationClient<$Result.GetResult<Prisma.$JobApplicationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the VisaChecklistItem model
+   */
+  interface VisaChecklistItemFieldRefs {
+    readonly id: FieldRef<"VisaChecklistItem", 'BigInt'>
+    readonly applicationId: FieldRef<"VisaChecklistItem", 'BigInt'>
+    readonly category: FieldRef<"VisaChecklistItem", 'String'>
+    readonly itemText: FieldRef<"VisaChecklistItem", 'String'>
+    readonly itemOrder: FieldRef<"VisaChecklistItem", 'Int'>
+    readonly isChecked: FieldRef<"VisaChecklistItem", 'Boolean'>
+    readonly checkedAt: FieldRef<"VisaChecklistItem", 'DateTime'>
+    readonly checkedBy: FieldRef<"VisaChecklistItem", 'String'>
+    readonly createdAt: FieldRef<"VisaChecklistItem", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * VisaChecklistItem findUnique
+   */
+  export type VisaChecklistItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistItem
+     */
+    select?: VisaChecklistItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistItem
+     */
+    omit?: VisaChecklistItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VisaChecklistItemInclude<ExtArgs> | null
+    /**
+     * Filter, which VisaChecklistItem to fetch.
+     */
+    where: VisaChecklistItemWhereUniqueInput
+  }
+
+  /**
+   * VisaChecklistItem findUniqueOrThrow
+   */
+  export type VisaChecklistItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistItem
+     */
+    select?: VisaChecklistItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistItem
+     */
+    omit?: VisaChecklistItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VisaChecklistItemInclude<ExtArgs> | null
+    /**
+     * Filter, which VisaChecklistItem to fetch.
+     */
+    where: VisaChecklistItemWhereUniqueInput
+  }
+
+  /**
+   * VisaChecklistItem findFirst
+   */
+  export type VisaChecklistItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistItem
+     */
+    select?: VisaChecklistItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistItem
+     */
+    omit?: VisaChecklistItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VisaChecklistItemInclude<ExtArgs> | null
+    /**
+     * Filter, which VisaChecklistItem to fetch.
+     */
+    where?: VisaChecklistItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VisaChecklistItems to fetch.
+     */
+    orderBy?: VisaChecklistItemOrderByWithRelationInput | VisaChecklistItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for VisaChecklistItems.
+     */
+    cursor?: VisaChecklistItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VisaChecklistItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VisaChecklistItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VisaChecklistItems.
+     */
+    distinct?: VisaChecklistItemScalarFieldEnum | VisaChecklistItemScalarFieldEnum[]
+  }
+
+  /**
+   * VisaChecklistItem findFirstOrThrow
+   */
+  export type VisaChecklistItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistItem
+     */
+    select?: VisaChecklistItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistItem
+     */
+    omit?: VisaChecklistItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VisaChecklistItemInclude<ExtArgs> | null
+    /**
+     * Filter, which VisaChecklistItem to fetch.
+     */
+    where?: VisaChecklistItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VisaChecklistItems to fetch.
+     */
+    orderBy?: VisaChecklistItemOrderByWithRelationInput | VisaChecklistItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for VisaChecklistItems.
+     */
+    cursor?: VisaChecklistItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VisaChecklistItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VisaChecklistItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VisaChecklistItems.
+     */
+    distinct?: VisaChecklistItemScalarFieldEnum | VisaChecklistItemScalarFieldEnum[]
+  }
+
+  /**
+   * VisaChecklistItem findMany
+   */
+  export type VisaChecklistItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistItem
+     */
+    select?: VisaChecklistItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistItem
+     */
+    omit?: VisaChecklistItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VisaChecklistItemInclude<ExtArgs> | null
+    /**
+     * Filter, which VisaChecklistItems to fetch.
+     */
+    where?: VisaChecklistItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VisaChecklistItems to fetch.
+     */
+    orderBy?: VisaChecklistItemOrderByWithRelationInput | VisaChecklistItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing VisaChecklistItems.
+     */
+    cursor?: VisaChecklistItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VisaChecklistItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VisaChecklistItems.
+     */
+    skip?: number
+    distinct?: VisaChecklistItemScalarFieldEnum | VisaChecklistItemScalarFieldEnum[]
+  }
+
+  /**
+   * VisaChecklistItem create
+   */
+  export type VisaChecklistItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistItem
+     */
+    select?: VisaChecklistItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistItem
+     */
+    omit?: VisaChecklistItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VisaChecklistItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a VisaChecklistItem.
+     */
+    data: XOR<VisaChecklistItemCreateInput, VisaChecklistItemUncheckedCreateInput>
+  }
+
+  /**
+   * VisaChecklistItem createMany
+   */
+  export type VisaChecklistItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many VisaChecklistItems.
+     */
+    data: VisaChecklistItemCreateManyInput | VisaChecklistItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * VisaChecklistItem createManyAndReturn
+   */
+  export type VisaChecklistItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistItem
+     */
+    select?: VisaChecklistItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistItem
+     */
+    omit?: VisaChecklistItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many VisaChecklistItems.
+     */
+    data: VisaChecklistItemCreateManyInput | VisaChecklistItemCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VisaChecklistItemIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * VisaChecklistItem update
+   */
+  export type VisaChecklistItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistItem
+     */
+    select?: VisaChecklistItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistItem
+     */
+    omit?: VisaChecklistItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VisaChecklistItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a VisaChecklistItem.
+     */
+    data: XOR<VisaChecklistItemUpdateInput, VisaChecklistItemUncheckedUpdateInput>
+    /**
+     * Choose, which VisaChecklistItem to update.
+     */
+    where: VisaChecklistItemWhereUniqueInput
+  }
+
+  /**
+   * VisaChecklistItem updateMany
+   */
+  export type VisaChecklistItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update VisaChecklistItems.
+     */
+    data: XOR<VisaChecklistItemUpdateManyMutationInput, VisaChecklistItemUncheckedUpdateManyInput>
+    /**
+     * Filter which VisaChecklistItems to update
+     */
+    where?: VisaChecklistItemWhereInput
+    /**
+     * Limit how many VisaChecklistItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * VisaChecklistItem updateManyAndReturn
+   */
+  export type VisaChecklistItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistItem
+     */
+    select?: VisaChecklistItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistItem
+     */
+    omit?: VisaChecklistItemOmit<ExtArgs> | null
+    /**
+     * The data used to update VisaChecklistItems.
+     */
+    data: XOR<VisaChecklistItemUpdateManyMutationInput, VisaChecklistItemUncheckedUpdateManyInput>
+    /**
+     * Filter which VisaChecklistItems to update
+     */
+    where?: VisaChecklistItemWhereInput
+    /**
+     * Limit how many VisaChecklistItems to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VisaChecklistItemIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * VisaChecklistItem upsert
+   */
+  export type VisaChecklistItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistItem
+     */
+    select?: VisaChecklistItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistItem
+     */
+    omit?: VisaChecklistItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VisaChecklistItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the VisaChecklistItem to update in case it exists.
+     */
+    where: VisaChecklistItemWhereUniqueInput
+    /**
+     * In case the VisaChecklistItem found by the `where` argument doesn't exist, create a new VisaChecklistItem with this data.
+     */
+    create: XOR<VisaChecklistItemCreateInput, VisaChecklistItemUncheckedCreateInput>
+    /**
+     * In case the VisaChecklistItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<VisaChecklistItemUpdateInput, VisaChecklistItemUncheckedUpdateInput>
+  }
+
+  /**
+   * VisaChecklistItem delete
+   */
+  export type VisaChecklistItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistItem
+     */
+    select?: VisaChecklistItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistItem
+     */
+    omit?: VisaChecklistItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VisaChecklistItemInclude<ExtArgs> | null
+    /**
+     * Filter which VisaChecklistItem to delete.
+     */
+    where: VisaChecklistItemWhereUniqueInput
+  }
+
+  /**
+   * VisaChecklistItem deleteMany
+   */
+  export type VisaChecklistItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which VisaChecklistItems to delete
+     */
+    where?: VisaChecklistItemWhereInput
+    /**
+     * Limit how many VisaChecklistItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * VisaChecklistItem without action
+   */
+  export type VisaChecklistItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaChecklistItem
+     */
+    select?: VisaChecklistItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaChecklistItem
+     */
+    omit?: VisaChecklistItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: VisaChecklistItemInclude<ExtArgs> | null
   }
 
 
@@ -55040,6 +58400,8 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
+    bookmarks?: boolean | Resume$bookmarksArgs<ExtArgs>
+    _count?: boolean | ResumeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["resume"]>
 
   export type ResumeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -55104,6 +58466,8 @@ export namespace Prisma {
   export type ResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "nationality" | "birthDate" | "educations" | "workExperiences" | "topikLevel" | "kiipLevel" | "certificates" | "preferredJobTypes" | "preferredRegions" | "preferredSalary" | "preferredEmploymentTypes" | "isComplete" | "createdAt" | "updatedAt", ExtArgs["result"]["resume"]>
   export type ResumeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
+    bookmarks?: boolean | Resume$bookmarksArgs<ExtArgs>
+    _count?: boolean | ResumeCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ResumeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -55116,6 +58480,7 @@ export namespace Prisma {
     name: "Resume"
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
+      bookmarks: Prisma.$TalentBookmarkPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
@@ -55529,6 +58894,7 @@ export namespace Prisma {
   export interface Prisma__ResumeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    bookmarks<T extends Resume$bookmarksArgs<ExtArgs> = {}>(args?: Subset<T, Resume$bookmarksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TalentBookmarkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -55970,6 +59336,30 @@ export namespace Prisma {
   }
 
   /**
+   * Resume.bookmarks
+   */
+  export type Resume$bookmarksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentBookmark
+     */
+    select?: TalentBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentBookmark
+     */
+    omit?: TalentBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentBookmarkInclude<ExtArgs> | null
+    where?: TalentBookmarkWhereInput
+    orderBy?: TalentBookmarkOrderByWithRelationInput | TalentBookmarkOrderByWithRelationInput[]
+    cursor?: TalentBookmarkWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TalentBookmarkScalarFieldEnum | TalentBookmarkScalarFieldEnum[]
+  }
+
+  /**
    * Resume without action
    */
   export type ResumeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -55985,6 +59375,1089 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ResumeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TalentBookmark
+   */
+
+  export type AggregateTalentBookmark = {
+    _count: TalentBookmarkCountAggregateOutputType | null
+    _avg: TalentBookmarkAvgAggregateOutputType | null
+    _sum: TalentBookmarkSumAggregateOutputType | null
+    _min: TalentBookmarkMinAggregateOutputType | null
+    _max: TalentBookmarkMaxAggregateOutputType | null
+  }
+
+  export type TalentBookmarkAvgAggregateOutputType = {
+    id: number | null
+    resumeId: number | null
+  }
+
+  export type TalentBookmarkSumAggregateOutputType = {
+    id: bigint | null
+    resumeId: bigint | null
+  }
+
+  export type TalentBookmarkMinAggregateOutputType = {
+    id: bigint | null
+    resumeId: bigint | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type TalentBookmarkMaxAggregateOutputType = {
+    id: bigint | null
+    resumeId: bigint | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type TalentBookmarkCountAggregateOutputType = {
+    id: number
+    resumeId: number
+    userId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type TalentBookmarkAvgAggregateInputType = {
+    id?: true
+    resumeId?: true
+  }
+
+  export type TalentBookmarkSumAggregateInputType = {
+    id?: true
+    resumeId?: true
+  }
+
+  export type TalentBookmarkMinAggregateInputType = {
+    id?: true
+    resumeId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type TalentBookmarkMaxAggregateInputType = {
+    id?: true
+    resumeId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type TalentBookmarkCountAggregateInputType = {
+    id?: true
+    resumeId?: true
+    userId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type TalentBookmarkAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TalentBookmark to aggregate.
+     */
+    where?: TalentBookmarkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TalentBookmarks to fetch.
+     */
+    orderBy?: TalentBookmarkOrderByWithRelationInput | TalentBookmarkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TalentBookmarkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TalentBookmarks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TalentBookmarks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TalentBookmarks
+    **/
+    _count?: true | TalentBookmarkCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TalentBookmarkAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TalentBookmarkSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TalentBookmarkMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TalentBookmarkMaxAggregateInputType
+  }
+
+  export type GetTalentBookmarkAggregateType<T extends TalentBookmarkAggregateArgs> = {
+        [P in keyof T & keyof AggregateTalentBookmark]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTalentBookmark[P]>
+      : GetScalarType<T[P], AggregateTalentBookmark[P]>
+  }
+
+
+
+
+  export type TalentBookmarkGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TalentBookmarkWhereInput
+    orderBy?: TalentBookmarkOrderByWithAggregationInput | TalentBookmarkOrderByWithAggregationInput[]
+    by: TalentBookmarkScalarFieldEnum[] | TalentBookmarkScalarFieldEnum
+    having?: TalentBookmarkScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TalentBookmarkCountAggregateInputType | true
+    _avg?: TalentBookmarkAvgAggregateInputType
+    _sum?: TalentBookmarkSumAggregateInputType
+    _min?: TalentBookmarkMinAggregateInputType
+    _max?: TalentBookmarkMaxAggregateInputType
+  }
+
+  export type TalentBookmarkGroupByOutputType = {
+    id: bigint
+    resumeId: bigint
+    userId: string
+    createdAt: Date
+    _count: TalentBookmarkCountAggregateOutputType | null
+    _avg: TalentBookmarkAvgAggregateOutputType | null
+    _sum: TalentBookmarkSumAggregateOutputType | null
+    _min: TalentBookmarkMinAggregateOutputType | null
+    _max: TalentBookmarkMaxAggregateOutputType | null
+  }
+
+  type GetTalentBookmarkGroupByPayload<T extends TalentBookmarkGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TalentBookmarkGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TalentBookmarkGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TalentBookmarkGroupByOutputType[P]>
+            : GetScalarType<T[P], TalentBookmarkGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TalentBookmarkSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    resumeId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    resume?: boolean | ResumeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["talentBookmark"]>
+
+  export type TalentBookmarkSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    resumeId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    resume?: boolean | ResumeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["talentBookmark"]>
+
+  export type TalentBookmarkSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    resumeId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    resume?: boolean | ResumeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["talentBookmark"]>
+
+  export type TalentBookmarkSelectScalar = {
+    id?: boolean
+    resumeId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }
+
+  export type TalentBookmarkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "resumeId" | "userId" | "createdAt", ExtArgs["result"]["talentBookmark"]>
+  export type TalentBookmarkInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    resume?: boolean | ResumeDefaultArgs<ExtArgs>
+  }
+  export type TalentBookmarkIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    resume?: boolean | ResumeDefaultArgs<ExtArgs>
+  }
+  export type TalentBookmarkIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    resume?: boolean | ResumeDefaultArgs<ExtArgs>
+  }
+
+  export type $TalentBookmarkPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TalentBookmark"
+    objects: {
+      resume: Prisma.$ResumePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      resumeId: bigint
+      userId: string
+      createdAt: Date
+    }, ExtArgs["result"]["talentBookmark"]>
+    composites: {}
+  }
+
+  type TalentBookmarkGetPayload<S extends boolean | null | undefined | TalentBookmarkDefaultArgs> = $Result.GetResult<Prisma.$TalentBookmarkPayload, S>
+
+  type TalentBookmarkCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TalentBookmarkFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TalentBookmarkCountAggregateInputType | true
+    }
+
+  export interface TalentBookmarkDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TalentBookmark'], meta: { name: 'TalentBookmark' } }
+    /**
+     * Find zero or one TalentBookmark that matches the filter.
+     * @param {TalentBookmarkFindUniqueArgs} args - Arguments to find a TalentBookmark
+     * @example
+     * // Get one TalentBookmark
+     * const talentBookmark = await prisma.talentBookmark.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TalentBookmarkFindUniqueArgs>(args: SelectSubset<T, TalentBookmarkFindUniqueArgs<ExtArgs>>): Prisma__TalentBookmarkClient<$Result.GetResult<Prisma.$TalentBookmarkPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TalentBookmark that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TalentBookmarkFindUniqueOrThrowArgs} args - Arguments to find a TalentBookmark
+     * @example
+     * // Get one TalentBookmark
+     * const talentBookmark = await prisma.talentBookmark.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TalentBookmarkFindUniqueOrThrowArgs>(args: SelectSubset<T, TalentBookmarkFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TalentBookmarkClient<$Result.GetResult<Prisma.$TalentBookmarkPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TalentBookmark that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TalentBookmarkFindFirstArgs} args - Arguments to find a TalentBookmark
+     * @example
+     * // Get one TalentBookmark
+     * const talentBookmark = await prisma.talentBookmark.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TalentBookmarkFindFirstArgs>(args?: SelectSubset<T, TalentBookmarkFindFirstArgs<ExtArgs>>): Prisma__TalentBookmarkClient<$Result.GetResult<Prisma.$TalentBookmarkPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TalentBookmark that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TalentBookmarkFindFirstOrThrowArgs} args - Arguments to find a TalentBookmark
+     * @example
+     * // Get one TalentBookmark
+     * const talentBookmark = await prisma.talentBookmark.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TalentBookmarkFindFirstOrThrowArgs>(args?: SelectSubset<T, TalentBookmarkFindFirstOrThrowArgs<ExtArgs>>): Prisma__TalentBookmarkClient<$Result.GetResult<Prisma.$TalentBookmarkPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TalentBookmarks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TalentBookmarkFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TalentBookmarks
+     * const talentBookmarks = await prisma.talentBookmark.findMany()
+     * 
+     * // Get first 10 TalentBookmarks
+     * const talentBookmarks = await prisma.talentBookmark.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const talentBookmarkWithIdOnly = await prisma.talentBookmark.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TalentBookmarkFindManyArgs>(args?: SelectSubset<T, TalentBookmarkFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TalentBookmarkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TalentBookmark.
+     * @param {TalentBookmarkCreateArgs} args - Arguments to create a TalentBookmark.
+     * @example
+     * // Create one TalentBookmark
+     * const TalentBookmark = await prisma.talentBookmark.create({
+     *   data: {
+     *     // ... data to create a TalentBookmark
+     *   }
+     * })
+     * 
+     */
+    create<T extends TalentBookmarkCreateArgs>(args: SelectSubset<T, TalentBookmarkCreateArgs<ExtArgs>>): Prisma__TalentBookmarkClient<$Result.GetResult<Prisma.$TalentBookmarkPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TalentBookmarks.
+     * @param {TalentBookmarkCreateManyArgs} args - Arguments to create many TalentBookmarks.
+     * @example
+     * // Create many TalentBookmarks
+     * const talentBookmark = await prisma.talentBookmark.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TalentBookmarkCreateManyArgs>(args?: SelectSubset<T, TalentBookmarkCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TalentBookmarks and returns the data saved in the database.
+     * @param {TalentBookmarkCreateManyAndReturnArgs} args - Arguments to create many TalentBookmarks.
+     * @example
+     * // Create many TalentBookmarks
+     * const talentBookmark = await prisma.talentBookmark.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TalentBookmarks and only return the `id`
+     * const talentBookmarkWithIdOnly = await prisma.talentBookmark.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TalentBookmarkCreateManyAndReturnArgs>(args?: SelectSubset<T, TalentBookmarkCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TalentBookmarkPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TalentBookmark.
+     * @param {TalentBookmarkDeleteArgs} args - Arguments to delete one TalentBookmark.
+     * @example
+     * // Delete one TalentBookmark
+     * const TalentBookmark = await prisma.talentBookmark.delete({
+     *   where: {
+     *     // ... filter to delete one TalentBookmark
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TalentBookmarkDeleteArgs>(args: SelectSubset<T, TalentBookmarkDeleteArgs<ExtArgs>>): Prisma__TalentBookmarkClient<$Result.GetResult<Prisma.$TalentBookmarkPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TalentBookmark.
+     * @param {TalentBookmarkUpdateArgs} args - Arguments to update one TalentBookmark.
+     * @example
+     * // Update one TalentBookmark
+     * const talentBookmark = await prisma.talentBookmark.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TalentBookmarkUpdateArgs>(args: SelectSubset<T, TalentBookmarkUpdateArgs<ExtArgs>>): Prisma__TalentBookmarkClient<$Result.GetResult<Prisma.$TalentBookmarkPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TalentBookmarks.
+     * @param {TalentBookmarkDeleteManyArgs} args - Arguments to filter TalentBookmarks to delete.
+     * @example
+     * // Delete a few TalentBookmarks
+     * const { count } = await prisma.talentBookmark.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TalentBookmarkDeleteManyArgs>(args?: SelectSubset<T, TalentBookmarkDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TalentBookmarks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TalentBookmarkUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TalentBookmarks
+     * const talentBookmark = await prisma.talentBookmark.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TalentBookmarkUpdateManyArgs>(args: SelectSubset<T, TalentBookmarkUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TalentBookmarks and returns the data updated in the database.
+     * @param {TalentBookmarkUpdateManyAndReturnArgs} args - Arguments to update many TalentBookmarks.
+     * @example
+     * // Update many TalentBookmarks
+     * const talentBookmark = await prisma.talentBookmark.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TalentBookmarks and only return the `id`
+     * const talentBookmarkWithIdOnly = await prisma.talentBookmark.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TalentBookmarkUpdateManyAndReturnArgs>(args: SelectSubset<T, TalentBookmarkUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TalentBookmarkPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TalentBookmark.
+     * @param {TalentBookmarkUpsertArgs} args - Arguments to update or create a TalentBookmark.
+     * @example
+     * // Update or create a TalentBookmark
+     * const talentBookmark = await prisma.talentBookmark.upsert({
+     *   create: {
+     *     // ... data to create a TalentBookmark
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TalentBookmark we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TalentBookmarkUpsertArgs>(args: SelectSubset<T, TalentBookmarkUpsertArgs<ExtArgs>>): Prisma__TalentBookmarkClient<$Result.GetResult<Prisma.$TalentBookmarkPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TalentBookmarks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TalentBookmarkCountArgs} args - Arguments to filter TalentBookmarks to count.
+     * @example
+     * // Count the number of TalentBookmarks
+     * const count = await prisma.talentBookmark.count({
+     *   where: {
+     *     // ... the filter for the TalentBookmarks we want to count
+     *   }
+     * })
+    **/
+    count<T extends TalentBookmarkCountArgs>(
+      args?: Subset<T, TalentBookmarkCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TalentBookmarkCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TalentBookmark.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TalentBookmarkAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TalentBookmarkAggregateArgs>(args: Subset<T, TalentBookmarkAggregateArgs>): Prisma.PrismaPromise<GetTalentBookmarkAggregateType<T>>
+
+    /**
+     * Group by TalentBookmark.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TalentBookmarkGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TalentBookmarkGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TalentBookmarkGroupByArgs['orderBy'] }
+        : { orderBy?: TalentBookmarkGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TalentBookmarkGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTalentBookmarkGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TalentBookmark model
+   */
+  readonly fields: TalentBookmarkFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TalentBookmark.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TalentBookmarkClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    resume<T extends ResumeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ResumeDefaultArgs<ExtArgs>>): Prisma__ResumeClient<$Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TalentBookmark model
+   */
+  interface TalentBookmarkFieldRefs {
+    readonly id: FieldRef<"TalentBookmark", 'BigInt'>
+    readonly resumeId: FieldRef<"TalentBookmark", 'BigInt'>
+    readonly userId: FieldRef<"TalentBookmark", 'String'>
+    readonly createdAt: FieldRef<"TalentBookmark", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TalentBookmark findUnique
+   */
+  export type TalentBookmarkFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentBookmark
+     */
+    select?: TalentBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentBookmark
+     */
+    omit?: TalentBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentBookmarkInclude<ExtArgs> | null
+    /**
+     * Filter, which TalentBookmark to fetch.
+     */
+    where: TalentBookmarkWhereUniqueInput
+  }
+
+  /**
+   * TalentBookmark findUniqueOrThrow
+   */
+  export type TalentBookmarkFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentBookmark
+     */
+    select?: TalentBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentBookmark
+     */
+    omit?: TalentBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentBookmarkInclude<ExtArgs> | null
+    /**
+     * Filter, which TalentBookmark to fetch.
+     */
+    where: TalentBookmarkWhereUniqueInput
+  }
+
+  /**
+   * TalentBookmark findFirst
+   */
+  export type TalentBookmarkFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentBookmark
+     */
+    select?: TalentBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentBookmark
+     */
+    omit?: TalentBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentBookmarkInclude<ExtArgs> | null
+    /**
+     * Filter, which TalentBookmark to fetch.
+     */
+    where?: TalentBookmarkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TalentBookmarks to fetch.
+     */
+    orderBy?: TalentBookmarkOrderByWithRelationInput | TalentBookmarkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TalentBookmarks.
+     */
+    cursor?: TalentBookmarkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TalentBookmarks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TalentBookmarks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TalentBookmarks.
+     */
+    distinct?: TalentBookmarkScalarFieldEnum | TalentBookmarkScalarFieldEnum[]
+  }
+
+  /**
+   * TalentBookmark findFirstOrThrow
+   */
+  export type TalentBookmarkFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentBookmark
+     */
+    select?: TalentBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentBookmark
+     */
+    omit?: TalentBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentBookmarkInclude<ExtArgs> | null
+    /**
+     * Filter, which TalentBookmark to fetch.
+     */
+    where?: TalentBookmarkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TalentBookmarks to fetch.
+     */
+    orderBy?: TalentBookmarkOrderByWithRelationInput | TalentBookmarkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TalentBookmarks.
+     */
+    cursor?: TalentBookmarkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TalentBookmarks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TalentBookmarks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TalentBookmarks.
+     */
+    distinct?: TalentBookmarkScalarFieldEnum | TalentBookmarkScalarFieldEnum[]
+  }
+
+  /**
+   * TalentBookmark findMany
+   */
+  export type TalentBookmarkFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentBookmark
+     */
+    select?: TalentBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentBookmark
+     */
+    omit?: TalentBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentBookmarkInclude<ExtArgs> | null
+    /**
+     * Filter, which TalentBookmarks to fetch.
+     */
+    where?: TalentBookmarkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TalentBookmarks to fetch.
+     */
+    orderBy?: TalentBookmarkOrderByWithRelationInput | TalentBookmarkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TalentBookmarks.
+     */
+    cursor?: TalentBookmarkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TalentBookmarks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TalentBookmarks.
+     */
+    skip?: number
+    distinct?: TalentBookmarkScalarFieldEnum | TalentBookmarkScalarFieldEnum[]
+  }
+
+  /**
+   * TalentBookmark create
+   */
+  export type TalentBookmarkCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentBookmark
+     */
+    select?: TalentBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentBookmark
+     */
+    omit?: TalentBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentBookmarkInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TalentBookmark.
+     */
+    data: XOR<TalentBookmarkCreateInput, TalentBookmarkUncheckedCreateInput>
+  }
+
+  /**
+   * TalentBookmark createMany
+   */
+  export type TalentBookmarkCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TalentBookmarks.
+     */
+    data: TalentBookmarkCreateManyInput | TalentBookmarkCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TalentBookmark createManyAndReturn
+   */
+  export type TalentBookmarkCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentBookmark
+     */
+    select?: TalentBookmarkSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentBookmark
+     */
+    omit?: TalentBookmarkOmit<ExtArgs> | null
+    /**
+     * The data used to create many TalentBookmarks.
+     */
+    data: TalentBookmarkCreateManyInput | TalentBookmarkCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentBookmarkIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TalentBookmark update
+   */
+  export type TalentBookmarkUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentBookmark
+     */
+    select?: TalentBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentBookmark
+     */
+    omit?: TalentBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentBookmarkInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TalentBookmark.
+     */
+    data: XOR<TalentBookmarkUpdateInput, TalentBookmarkUncheckedUpdateInput>
+    /**
+     * Choose, which TalentBookmark to update.
+     */
+    where: TalentBookmarkWhereUniqueInput
+  }
+
+  /**
+   * TalentBookmark updateMany
+   */
+  export type TalentBookmarkUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TalentBookmarks.
+     */
+    data: XOR<TalentBookmarkUpdateManyMutationInput, TalentBookmarkUncheckedUpdateManyInput>
+    /**
+     * Filter which TalentBookmarks to update
+     */
+    where?: TalentBookmarkWhereInput
+    /**
+     * Limit how many TalentBookmarks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TalentBookmark updateManyAndReturn
+   */
+  export type TalentBookmarkUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentBookmark
+     */
+    select?: TalentBookmarkSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentBookmark
+     */
+    omit?: TalentBookmarkOmit<ExtArgs> | null
+    /**
+     * The data used to update TalentBookmarks.
+     */
+    data: XOR<TalentBookmarkUpdateManyMutationInput, TalentBookmarkUncheckedUpdateManyInput>
+    /**
+     * Filter which TalentBookmarks to update
+     */
+    where?: TalentBookmarkWhereInput
+    /**
+     * Limit how many TalentBookmarks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentBookmarkIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TalentBookmark upsert
+   */
+  export type TalentBookmarkUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentBookmark
+     */
+    select?: TalentBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentBookmark
+     */
+    omit?: TalentBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentBookmarkInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TalentBookmark to update in case it exists.
+     */
+    where: TalentBookmarkWhereUniqueInput
+    /**
+     * In case the TalentBookmark found by the `where` argument doesn't exist, create a new TalentBookmark with this data.
+     */
+    create: XOR<TalentBookmarkCreateInput, TalentBookmarkUncheckedCreateInput>
+    /**
+     * In case the TalentBookmark was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TalentBookmarkUpdateInput, TalentBookmarkUncheckedUpdateInput>
+  }
+
+  /**
+   * TalentBookmark delete
+   */
+  export type TalentBookmarkDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentBookmark
+     */
+    select?: TalentBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentBookmark
+     */
+    omit?: TalentBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentBookmarkInclude<ExtArgs> | null
+    /**
+     * Filter which TalentBookmark to delete.
+     */
+    where: TalentBookmarkWhereUniqueInput
+  }
+
+  /**
+   * TalentBookmark deleteMany
+   */
+  export type TalentBookmarkDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TalentBookmarks to delete
+     */
+    where?: TalentBookmarkWhereInput
+    /**
+     * Limit how many TalentBookmarks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TalentBookmark without action
+   */
+  export type TalentBookmarkDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TalentBookmark
+     */
+    select?: TalentBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TalentBookmark
+     */
+    omit?: TalentBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TalentBookmarkInclude<ExtArgs> | null
   }
 
 
@@ -57209,12 +61682,14 @@ export namespace Prisma {
     sessionId: number | null
     pathwayCount: number | null
     userFeedbackScore: number | null
+    previousSessionId: number | null
   }
 
   export type DiagnosisSessionSumAggregateOutputType = {
     sessionId: bigint | null
     pathwayCount: number | null
     userFeedbackScore: number | null
+    previousSessionId: bigint | null
   }
 
   export type DiagnosisSessionMinAggregateOutputType = {
@@ -57226,6 +61701,15 @@ export namespace Prisma {
     convertedToSignup: boolean | null
     convertedToPaid: boolean | null
     userFeedbackScore: number | null
+    isPremium: boolean | null
+    isPremiumViewed: boolean | null
+    stripeSessionId: string | null
+    stripePaidAt: Date | null
+    premiumViewedAt: Date | null
+    previousSessionId: bigint | null
+    refundPolicyAgreedAt: Date | null
+    digitalContentAgreedAt: Date | null
+    privacyAgreedAt: Date | null
     createdAt: Date | null
   }
 
@@ -57238,6 +61722,15 @@ export namespace Prisma {
     convertedToSignup: boolean | null
     convertedToPaid: boolean | null
     userFeedbackScore: number | null
+    isPremium: boolean | null
+    isPremiumViewed: boolean | null
+    stripeSessionId: string | null
+    stripePaidAt: Date | null
+    premiumViewedAt: Date | null
+    previousSessionId: bigint | null
+    refundPolicyAgreedAt: Date | null
+    digitalContentAgreedAt: Date | null
+    privacyAgreedAt: Date | null
     createdAt: Date | null
   }
 
@@ -57252,6 +61745,16 @@ export namespace Prisma {
     convertedToSignup: number
     convertedToPaid: number
     userFeedbackScore: number
+    isPremium: number
+    isPremiumViewed: number
+    stripeSessionId: number
+    stripePaidAt: number
+    premiumResultJson: number
+    premiumViewedAt: number
+    previousSessionId: number
+    refundPolicyAgreedAt: number
+    digitalContentAgreedAt: number
+    privacyAgreedAt: number
     createdAt: number
     _all: number
   }
@@ -57261,12 +61764,14 @@ export namespace Prisma {
     sessionId?: true
     pathwayCount?: true
     userFeedbackScore?: true
+    previousSessionId?: true
   }
 
   export type DiagnosisSessionSumAggregateInputType = {
     sessionId?: true
     pathwayCount?: true
     userFeedbackScore?: true
+    previousSessionId?: true
   }
 
   export type DiagnosisSessionMinAggregateInputType = {
@@ -57278,6 +61783,15 @@ export namespace Prisma {
     convertedToSignup?: true
     convertedToPaid?: true
     userFeedbackScore?: true
+    isPremium?: true
+    isPremiumViewed?: true
+    stripeSessionId?: true
+    stripePaidAt?: true
+    premiumViewedAt?: true
+    previousSessionId?: true
+    refundPolicyAgreedAt?: true
+    digitalContentAgreedAt?: true
+    privacyAgreedAt?: true
     createdAt?: true
   }
 
@@ -57290,6 +61804,15 @@ export namespace Prisma {
     convertedToSignup?: true
     convertedToPaid?: true
     userFeedbackScore?: true
+    isPremium?: true
+    isPremiumViewed?: true
+    stripeSessionId?: true
+    stripePaidAt?: true
+    premiumViewedAt?: true
+    previousSessionId?: true
+    refundPolicyAgreedAt?: true
+    digitalContentAgreedAt?: true
+    privacyAgreedAt?: true
     createdAt?: true
   }
 
@@ -57304,6 +61827,16 @@ export namespace Prisma {
     convertedToSignup?: true
     convertedToPaid?: true
     userFeedbackScore?: true
+    isPremium?: true
+    isPremiumViewed?: true
+    stripeSessionId?: true
+    stripePaidAt?: true
+    premiumResultJson?: true
+    premiumViewedAt?: true
+    previousSessionId?: true
+    refundPolicyAgreedAt?: true
+    digitalContentAgreedAt?: true
+    privacyAgreedAt?: true
     createdAt?: true
     _all?: true
   }
@@ -57405,6 +61938,16 @@ export namespace Prisma {
     convertedToSignup: boolean
     convertedToPaid: boolean
     userFeedbackScore: number | null
+    isPremium: boolean
+    isPremiumViewed: boolean
+    stripeSessionId: string | null
+    stripePaidAt: Date | null
+    premiumResultJson: JsonValue | null
+    premiumViewedAt: Date | null
+    previousSessionId: bigint | null
+    refundPolicyAgreedAt: Date | null
+    digitalContentAgreedAt: Date | null
+    privacyAgreedAt: Date | null
     createdAt: Date
     _count: DiagnosisSessionCountAggregateOutputType | null
     _avg: DiagnosisSessionAvgAggregateOutputType | null
@@ -57438,9 +61981,20 @@ export namespace Prisma {
     convertedToSignup?: boolean
     convertedToPaid?: boolean
     userFeedbackScore?: boolean
+    isPremium?: boolean
+    isPremiumViewed?: boolean
+    stripeSessionId?: boolean
+    stripePaidAt?: boolean
+    premiumResultJson?: boolean
+    premiumViewedAt?: boolean
+    previousSessionId?: boolean
+    refundPolicyAgreedAt?: boolean
+    digitalContentAgreedAt?: boolean
+    privacyAgreedAt?: boolean
     createdAt?: boolean
     individual?: boolean | DiagnosisSession$individualArgs<ExtArgs>
     clicks?: boolean | DiagnosisSession$clicksArgs<ExtArgs>
+    rediagnosisCoupon?: boolean | DiagnosisSession$rediagnosisCouponArgs<ExtArgs>
     _count?: boolean | DiagnosisSessionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["diagnosisSession"]>
 
@@ -57455,6 +62009,16 @@ export namespace Prisma {
     convertedToSignup?: boolean
     convertedToPaid?: boolean
     userFeedbackScore?: boolean
+    isPremium?: boolean
+    isPremiumViewed?: boolean
+    stripeSessionId?: boolean
+    stripePaidAt?: boolean
+    premiumResultJson?: boolean
+    premiumViewedAt?: boolean
+    previousSessionId?: boolean
+    refundPolicyAgreedAt?: boolean
+    digitalContentAgreedAt?: boolean
+    privacyAgreedAt?: boolean
     createdAt?: boolean
     individual?: boolean | DiagnosisSession$individualArgs<ExtArgs>
   }, ExtArgs["result"]["diagnosisSession"]>
@@ -57470,6 +62034,16 @@ export namespace Prisma {
     convertedToSignup?: boolean
     convertedToPaid?: boolean
     userFeedbackScore?: boolean
+    isPremium?: boolean
+    isPremiumViewed?: boolean
+    stripeSessionId?: boolean
+    stripePaidAt?: boolean
+    premiumResultJson?: boolean
+    premiumViewedAt?: boolean
+    previousSessionId?: boolean
+    refundPolicyAgreedAt?: boolean
+    digitalContentAgreedAt?: boolean
+    privacyAgreedAt?: boolean
     createdAt?: boolean
     individual?: boolean | DiagnosisSession$individualArgs<ExtArgs>
   }, ExtArgs["result"]["diagnosisSession"]>
@@ -57485,13 +62059,24 @@ export namespace Prisma {
     convertedToSignup?: boolean
     convertedToPaid?: boolean
     userFeedbackScore?: boolean
+    isPremium?: boolean
+    isPremiumViewed?: boolean
+    stripeSessionId?: boolean
+    stripePaidAt?: boolean
+    premiumResultJson?: boolean
+    premiumViewedAt?: boolean
+    previousSessionId?: boolean
+    refundPolicyAgreedAt?: boolean
+    digitalContentAgreedAt?: boolean
+    privacyAgreedAt?: boolean
     createdAt?: boolean
   }
 
-  export type DiagnosisSessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"sessionId" | "userId" | "anonymousId" | "inputSnapshot" | "resultsSnapshot" | "topPathwayId" | "pathwayCount" | "convertedToSignup" | "convertedToPaid" | "userFeedbackScore" | "createdAt", ExtArgs["result"]["diagnosisSession"]>
+  export type DiagnosisSessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"sessionId" | "userId" | "anonymousId" | "inputSnapshot" | "resultsSnapshot" | "topPathwayId" | "pathwayCount" | "convertedToSignup" | "convertedToPaid" | "userFeedbackScore" | "isPremium" | "isPremiumViewed" | "stripeSessionId" | "stripePaidAt" | "premiumResultJson" | "premiumViewedAt" | "previousSessionId" | "refundPolicyAgreedAt" | "digitalContentAgreedAt" | "privacyAgreedAt" | "createdAt", ExtArgs["result"]["diagnosisSession"]>
   export type DiagnosisSessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     individual?: boolean | DiagnosisSession$individualArgs<ExtArgs>
     clicks?: boolean | DiagnosisSession$clicksArgs<ExtArgs>
+    rediagnosisCoupon?: boolean | DiagnosisSession$rediagnosisCouponArgs<ExtArgs>
     _count?: boolean | DiagnosisSessionCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type DiagnosisSessionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -57506,6 +62091,7 @@ export namespace Prisma {
     objects: {
       individual: Prisma.$IndividualProfilePayload<ExtArgs> | null
       clicks: Prisma.$DiagnosisPathwayClickPayload<ExtArgs>[]
+      rediagnosisCoupon: Prisma.$RediagnosisCouponPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       sessionId: bigint
@@ -57518,6 +62104,16 @@ export namespace Prisma {
       convertedToSignup: boolean
       convertedToPaid: boolean
       userFeedbackScore: number | null
+      isPremium: boolean
+      isPremiumViewed: boolean
+      stripeSessionId: string | null
+      stripePaidAt: Date | null
+      premiumResultJson: Prisma.JsonValue | null
+      premiumViewedAt: Date | null
+      previousSessionId: bigint | null
+      refundPolicyAgreedAt: Date | null
+      digitalContentAgreedAt: Date | null
+      privacyAgreedAt: Date | null
       createdAt: Date
     }, ExtArgs["result"]["diagnosisSession"]>
     composites: {}
@@ -57915,6 +62511,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     individual<T extends DiagnosisSession$individualArgs<ExtArgs> = {}>(args?: Subset<T, DiagnosisSession$individualArgs<ExtArgs>>): Prisma__IndividualProfileClient<$Result.GetResult<Prisma.$IndividualProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     clicks<T extends DiagnosisSession$clicksArgs<ExtArgs> = {}>(args?: Subset<T, DiagnosisSession$clicksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DiagnosisPathwayClickPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    rediagnosisCoupon<T extends DiagnosisSession$rediagnosisCouponArgs<ExtArgs> = {}>(args?: Subset<T, DiagnosisSession$rediagnosisCouponArgs<ExtArgs>>): Prisma__RediagnosisCouponClient<$Result.GetResult<Prisma.$RediagnosisCouponPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -57954,6 +62551,16 @@ export namespace Prisma {
     readonly convertedToSignup: FieldRef<"DiagnosisSession", 'Boolean'>
     readonly convertedToPaid: FieldRef<"DiagnosisSession", 'Boolean'>
     readonly userFeedbackScore: FieldRef<"DiagnosisSession", 'Int'>
+    readonly isPremium: FieldRef<"DiagnosisSession", 'Boolean'>
+    readonly isPremiumViewed: FieldRef<"DiagnosisSession", 'Boolean'>
+    readonly stripeSessionId: FieldRef<"DiagnosisSession", 'String'>
+    readonly stripePaidAt: FieldRef<"DiagnosisSession", 'DateTime'>
+    readonly premiumResultJson: FieldRef<"DiagnosisSession", 'Json'>
+    readonly premiumViewedAt: FieldRef<"DiagnosisSession", 'DateTime'>
+    readonly previousSessionId: FieldRef<"DiagnosisSession", 'BigInt'>
+    readonly refundPolicyAgreedAt: FieldRef<"DiagnosisSession", 'DateTime'>
+    readonly digitalContentAgreedAt: FieldRef<"DiagnosisSession", 'DateTime'>
+    readonly privacyAgreedAt: FieldRef<"DiagnosisSession", 'DateTime'>
     readonly createdAt: FieldRef<"DiagnosisSession", 'DateTime'>
   }
     
@@ -58391,6 +62998,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: DiagnosisPathwayClickScalarFieldEnum | DiagnosisPathwayClickScalarFieldEnum[]
+  }
+
+  /**
+   * DiagnosisSession.rediagnosisCoupon
+   */
+  export type DiagnosisSession$rediagnosisCouponArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RediagnosisCoupon
+     */
+    select?: RediagnosisCouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RediagnosisCoupon
+     */
+    omit?: RediagnosisCouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RediagnosisCouponInclude<ExtArgs> | null
+    where?: RediagnosisCouponWhereInput
   }
 
   /**
@@ -60624,6 +65250,5531 @@ export namespace Prisma {
 
 
   /**
+   * Model UniversityRanking
+   */
+
+  export type AggregateUniversityRanking = {
+    _count: UniversityRankingCountAggregateOutputType | null
+    _avg: UniversityRankingAvgAggregateOutputType | null
+    _sum: UniversityRankingSumAggregateOutputType | null
+    _min: UniversityRankingMinAggregateOutputType | null
+    _max: UniversityRankingMaxAggregateOutputType | null
+  }
+
+  export type UniversityRankingAvgAggregateOutputType = {
+    id: number | null
+    qsRank: number | null
+    theRank: number | null
+    bonusScore: number | null
+    updatedYear: number | null
+  }
+
+  export type UniversityRankingSumAggregateOutputType = {
+    id: bigint | null
+    qsRank: number | null
+    theRank: number | null
+    bonusScore: number | null
+    updatedYear: number | null
+  }
+
+  export type UniversityRankingMinAggregateOutputType = {
+    id: bigint | null
+    universityName: string | null
+    universityNameEn: string | null
+    country: string | null
+    qsRank: number | null
+    theRank: number | null
+    rankTier: string | null
+    bonusScore: number | null
+    updatedYear: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UniversityRankingMaxAggregateOutputType = {
+    id: bigint | null
+    universityName: string | null
+    universityNameEn: string | null
+    country: string | null
+    qsRank: number | null
+    theRank: number | null
+    rankTier: string | null
+    bonusScore: number | null
+    updatedYear: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UniversityRankingCountAggregateOutputType = {
+    id: number
+    universityName: number
+    universityNameEn: number
+    country: number
+    qsRank: number
+    theRank: number
+    rankTier: number
+    bonusScore: number
+    updatedYear: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type UniversityRankingAvgAggregateInputType = {
+    id?: true
+    qsRank?: true
+    theRank?: true
+    bonusScore?: true
+    updatedYear?: true
+  }
+
+  export type UniversityRankingSumAggregateInputType = {
+    id?: true
+    qsRank?: true
+    theRank?: true
+    bonusScore?: true
+    updatedYear?: true
+  }
+
+  export type UniversityRankingMinAggregateInputType = {
+    id?: true
+    universityName?: true
+    universityNameEn?: true
+    country?: true
+    qsRank?: true
+    theRank?: true
+    rankTier?: true
+    bonusScore?: true
+    updatedYear?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UniversityRankingMaxAggregateInputType = {
+    id?: true
+    universityName?: true
+    universityNameEn?: true
+    country?: true
+    qsRank?: true
+    theRank?: true
+    rankTier?: true
+    bonusScore?: true
+    updatedYear?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UniversityRankingCountAggregateInputType = {
+    id?: true
+    universityName?: true
+    universityNameEn?: true
+    country?: true
+    qsRank?: true
+    theRank?: true
+    rankTier?: true
+    bonusScore?: true
+    updatedYear?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type UniversityRankingAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UniversityRanking to aggregate.
+     */
+    where?: UniversityRankingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UniversityRankings to fetch.
+     */
+    orderBy?: UniversityRankingOrderByWithRelationInput | UniversityRankingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UniversityRankingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UniversityRankings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UniversityRankings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UniversityRankings
+    **/
+    _count?: true | UniversityRankingCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: UniversityRankingAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UniversityRankingSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UniversityRankingMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UniversityRankingMaxAggregateInputType
+  }
+
+  export type GetUniversityRankingAggregateType<T extends UniversityRankingAggregateArgs> = {
+        [P in keyof T & keyof AggregateUniversityRanking]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUniversityRanking[P]>
+      : GetScalarType<T[P], AggregateUniversityRanking[P]>
+  }
+
+
+
+
+  export type UniversityRankingGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UniversityRankingWhereInput
+    orderBy?: UniversityRankingOrderByWithAggregationInput | UniversityRankingOrderByWithAggregationInput[]
+    by: UniversityRankingScalarFieldEnum[] | UniversityRankingScalarFieldEnum
+    having?: UniversityRankingScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UniversityRankingCountAggregateInputType | true
+    _avg?: UniversityRankingAvgAggregateInputType
+    _sum?: UniversityRankingSumAggregateInputType
+    _min?: UniversityRankingMinAggregateInputType
+    _max?: UniversityRankingMaxAggregateInputType
+  }
+
+  export type UniversityRankingGroupByOutputType = {
+    id: bigint
+    universityName: string
+    universityNameEn: string
+    country: string
+    qsRank: number | null
+    theRank: number | null
+    rankTier: string
+    bonusScore: number
+    updatedYear: number
+    createdAt: Date
+    updatedAt: Date
+    _count: UniversityRankingCountAggregateOutputType | null
+    _avg: UniversityRankingAvgAggregateOutputType | null
+    _sum: UniversityRankingSumAggregateOutputType | null
+    _min: UniversityRankingMinAggregateOutputType | null
+    _max: UniversityRankingMaxAggregateOutputType | null
+  }
+
+  type GetUniversityRankingGroupByPayload<T extends UniversityRankingGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UniversityRankingGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UniversityRankingGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UniversityRankingGroupByOutputType[P]>
+            : GetScalarType<T[P], UniversityRankingGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UniversityRankingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    universityName?: boolean
+    universityNameEn?: boolean
+    country?: boolean
+    qsRank?: boolean
+    theRank?: boolean
+    rankTier?: boolean
+    bonusScore?: boolean
+    updatedYear?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["universityRanking"]>
+
+  export type UniversityRankingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    universityName?: boolean
+    universityNameEn?: boolean
+    country?: boolean
+    qsRank?: boolean
+    theRank?: boolean
+    rankTier?: boolean
+    bonusScore?: boolean
+    updatedYear?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["universityRanking"]>
+
+  export type UniversityRankingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    universityName?: boolean
+    universityNameEn?: boolean
+    country?: boolean
+    qsRank?: boolean
+    theRank?: boolean
+    rankTier?: boolean
+    bonusScore?: boolean
+    updatedYear?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["universityRanking"]>
+
+  export type UniversityRankingSelectScalar = {
+    id?: boolean
+    universityName?: boolean
+    universityNameEn?: boolean
+    country?: boolean
+    qsRank?: boolean
+    theRank?: boolean
+    rankTier?: boolean
+    bonusScore?: boolean
+    updatedYear?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type UniversityRankingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "universityName" | "universityNameEn" | "country" | "qsRank" | "theRank" | "rankTier" | "bonusScore" | "updatedYear" | "createdAt" | "updatedAt", ExtArgs["result"]["universityRanking"]>
+
+  export type $UniversityRankingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UniversityRanking"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      universityName: string
+      universityNameEn: string
+      country: string
+      qsRank: number | null
+      theRank: number | null
+      rankTier: string
+      bonusScore: number
+      updatedYear: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["universityRanking"]>
+    composites: {}
+  }
+
+  type UniversityRankingGetPayload<S extends boolean | null | undefined | UniversityRankingDefaultArgs> = $Result.GetResult<Prisma.$UniversityRankingPayload, S>
+
+  type UniversityRankingCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UniversityRankingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UniversityRankingCountAggregateInputType | true
+    }
+
+  export interface UniversityRankingDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UniversityRanking'], meta: { name: 'UniversityRanking' } }
+    /**
+     * Find zero or one UniversityRanking that matches the filter.
+     * @param {UniversityRankingFindUniqueArgs} args - Arguments to find a UniversityRanking
+     * @example
+     * // Get one UniversityRanking
+     * const universityRanking = await prisma.universityRanking.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UniversityRankingFindUniqueArgs>(args: SelectSubset<T, UniversityRankingFindUniqueArgs<ExtArgs>>): Prisma__UniversityRankingClient<$Result.GetResult<Prisma.$UniversityRankingPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UniversityRanking that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UniversityRankingFindUniqueOrThrowArgs} args - Arguments to find a UniversityRanking
+     * @example
+     * // Get one UniversityRanking
+     * const universityRanking = await prisma.universityRanking.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UniversityRankingFindUniqueOrThrowArgs>(args: SelectSubset<T, UniversityRankingFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UniversityRankingClient<$Result.GetResult<Prisma.$UniversityRankingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UniversityRanking that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UniversityRankingFindFirstArgs} args - Arguments to find a UniversityRanking
+     * @example
+     * // Get one UniversityRanking
+     * const universityRanking = await prisma.universityRanking.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UniversityRankingFindFirstArgs>(args?: SelectSubset<T, UniversityRankingFindFirstArgs<ExtArgs>>): Prisma__UniversityRankingClient<$Result.GetResult<Prisma.$UniversityRankingPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UniversityRanking that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UniversityRankingFindFirstOrThrowArgs} args - Arguments to find a UniversityRanking
+     * @example
+     * // Get one UniversityRanking
+     * const universityRanking = await prisma.universityRanking.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UniversityRankingFindFirstOrThrowArgs>(args?: SelectSubset<T, UniversityRankingFindFirstOrThrowArgs<ExtArgs>>): Prisma__UniversityRankingClient<$Result.GetResult<Prisma.$UniversityRankingPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UniversityRankings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UniversityRankingFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UniversityRankings
+     * const universityRankings = await prisma.universityRanking.findMany()
+     * 
+     * // Get first 10 UniversityRankings
+     * const universityRankings = await prisma.universityRanking.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const universityRankingWithIdOnly = await prisma.universityRanking.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UniversityRankingFindManyArgs>(args?: SelectSubset<T, UniversityRankingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UniversityRankingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UniversityRanking.
+     * @param {UniversityRankingCreateArgs} args - Arguments to create a UniversityRanking.
+     * @example
+     * // Create one UniversityRanking
+     * const UniversityRanking = await prisma.universityRanking.create({
+     *   data: {
+     *     // ... data to create a UniversityRanking
+     *   }
+     * })
+     * 
+     */
+    create<T extends UniversityRankingCreateArgs>(args: SelectSubset<T, UniversityRankingCreateArgs<ExtArgs>>): Prisma__UniversityRankingClient<$Result.GetResult<Prisma.$UniversityRankingPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UniversityRankings.
+     * @param {UniversityRankingCreateManyArgs} args - Arguments to create many UniversityRankings.
+     * @example
+     * // Create many UniversityRankings
+     * const universityRanking = await prisma.universityRanking.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UniversityRankingCreateManyArgs>(args?: SelectSubset<T, UniversityRankingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UniversityRankings and returns the data saved in the database.
+     * @param {UniversityRankingCreateManyAndReturnArgs} args - Arguments to create many UniversityRankings.
+     * @example
+     * // Create many UniversityRankings
+     * const universityRanking = await prisma.universityRanking.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UniversityRankings and only return the `id`
+     * const universityRankingWithIdOnly = await prisma.universityRanking.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UniversityRankingCreateManyAndReturnArgs>(args?: SelectSubset<T, UniversityRankingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UniversityRankingPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UniversityRanking.
+     * @param {UniversityRankingDeleteArgs} args - Arguments to delete one UniversityRanking.
+     * @example
+     * // Delete one UniversityRanking
+     * const UniversityRanking = await prisma.universityRanking.delete({
+     *   where: {
+     *     // ... filter to delete one UniversityRanking
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UniversityRankingDeleteArgs>(args: SelectSubset<T, UniversityRankingDeleteArgs<ExtArgs>>): Prisma__UniversityRankingClient<$Result.GetResult<Prisma.$UniversityRankingPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UniversityRanking.
+     * @param {UniversityRankingUpdateArgs} args - Arguments to update one UniversityRanking.
+     * @example
+     * // Update one UniversityRanking
+     * const universityRanking = await prisma.universityRanking.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UniversityRankingUpdateArgs>(args: SelectSubset<T, UniversityRankingUpdateArgs<ExtArgs>>): Prisma__UniversityRankingClient<$Result.GetResult<Prisma.$UniversityRankingPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UniversityRankings.
+     * @param {UniversityRankingDeleteManyArgs} args - Arguments to filter UniversityRankings to delete.
+     * @example
+     * // Delete a few UniversityRankings
+     * const { count } = await prisma.universityRanking.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UniversityRankingDeleteManyArgs>(args?: SelectSubset<T, UniversityRankingDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UniversityRankings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UniversityRankingUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UniversityRankings
+     * const universityRanking = await prisma.universityRanking.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UniversityRankingUpdateManyArgs>(args: SelectSubset<T, UniversityRankingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UniversityRankings and returns the data updated in the database.
+     * @param {UniversityRankingUpdateManyAndReturnArgs} args - Arguments to update many UniversityRankings.
+     * @example
+     * // Update many UniversityRankings
+     * const universityRanking = await prisma.universityRanking.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UniversityRankings and only return the `id`
+     * const universityRankingWithIdOnly = await prisma.universityRanking.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UniversityRankingUpdateManyAndReturnArgs>(args: SelectSubset<T, UniversityRankingUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UniversityRankingPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UniversityRanking.
+     * @param {UniversityRankingUpsertArgs} args - Arguments to update or create a UniversityRanking.
+     * @example
+     * // Update or create a UniversityRanking
+     * const universityRanking = await prisma.universityRanking.upsert({
+     *   create: {
+     *     // ... data to create a UniversityRanking
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UniversityRanking we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UniversityRankingUpsertArgs>(args: SelectSubset<T, UniversityRankingUpsertArgs<ExtArgs>>): Prisma__UniversityRankingClient<$Result.GetResult<Prisma.$UniversityRankingPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UniversityRankings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UniversityRankingCountArgs} args - Arguments to filter UniversityRankings to count.
+     * @example
+     * // Count the number of UniversityRankings
+     * const count = await prisma.universityRanking.count({
+     *   where: {
+     *     // ... the filter for the UniversityRankings we want to count
+     *   }
+     * })
+    **/
+    count<T extends UniversityRankingCountArgs>(
+      args?: Subset<T, UniversityRankingCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UniversityRankingCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UniversityRanking.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UniversityRankingAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UniversityRankingAggregateArgs>(args: Subset<T, UniversityRankingAggregateArgs>): Prisma.PrismaPromise<GetUniversityRankingAggregateType<T>>
+
+    /**
+     * Group by UniversityRanking.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UniversityRankingGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UniversityRankingGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UniversityRankingGroupByArgs['orderBy'] }
+        : { orderBy?: UniversityRankingGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UniversityRankingGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUniversityRankingGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UniversityRanking model
+   */
+  readonly fields: UniversityRankingFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UniversityRanking.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UniversityRankingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UniversityRanking model
+   */
+  interface UniversityRankingFieldRefs {
+    readonly id: FieldRef<"UniversityRanking", 'BigInt'>
+    readonly universityName: FieldRef<"UniversityRanking", 'String'>
+    readonly universityNameEn: FieldRef<"UniversityRanking", 'String'>
+    readonly country: FieldRef<"UniversityRanking", 'String'>
+    readonly qsRank: FieldRef<"UniversityRanking", 'Int'>
+    readonly theRank: FieldRef<"UniversityRanking", 'Int'>
+    readonly rankTier: FieldRef<"UniversityRanking", 'String'>
+    readonly bonusScore: FieldRef<"UniversityRanking", 'Float'>
+    readonly updatedYear: FieldRef<"UniversityRanking", 'Int'>
+    readonly createdAt: FieldRef<"UniversityRanking", 'DateTime'>
+    readonly updatedAt: FieldRef<"UniversityRanking", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UniversityRanking findUnique
+   */
+  export type UniversityRankingFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UniversityRanking
+     */
+    select?: UniversityRankingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UniversityRanking
+     */
+    omit?: UniversityRankingOmit<ExtArgs> | null
+    /**
+     * Filter, which UniversityRanking to fetch.
+     */
+    where: UniversityRankingWhereUniqueInput
+  }
+
+  /**
+   * UniversityRanking findUniqueOrThrow
+   */
+  export type UniversityRankingFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UniversityRanking
+     */
+    select?: UniversityRankingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UniversityRanking
+     */
+    omit?: UniversityRankingOmit<ExtArgs> | null
+    /**
+     * Filter, which UniversityRanking to fetch.
+     */
+    where: UniversityRankingWhereUniqueInput
+  }
+
+  /**
+   * UniversityRanking findFirst
+   */
+  export type UniversityRankingFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UniversityRanking
+     */
+    select?: UniversityRankingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UniversityRanking
+     */
+    omit?: UniversityRankingOmit<ExtArgs> | null
+    /**
+     * Filter, which UniversityRanking to fetch.
+     */
+    where?: UniversityRankingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UniversityRankings to fetch.
+     */
+    orderBy?: UniversityRankingOrderByWithRelationInput | UniversityRankingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UniversityRankings.
+     */
+    cursor?: UniversityRankingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UniversityRankings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UniversityRankings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UniversityRankings.
+     */
+    distinct?: UniversityRankingScalarFieldEnum | UniversityRankingScalarFieldEnum[]
+  }
+
+  /**
+   * UniversityRanking findFirstOrThrow
+   */
+  export type UniversityRankingFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UniversityRanking
+     */
+    select?: UniversityRankingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UniversityRanking
+     */
+    omit?: UniversityRankingOmit<ExtArgs> | null
+    /**
+     * Filter, which UniversityRanking to fetch.
+     */
+    where?: UniversityRankingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UniversityRankings to fetch.
+     */
+    orderBy?: UniversityRankingOrderByWithRelationInput | UniversityRankingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UniversityRankings.
+     */
+    cursor?: UniversityRankingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UniversityRankings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UniversityRankings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UniversityRankings.
+     */
+    distinct?: UniversityRankingScalarFieldEnum | UniversityRankingScalarFieldEnum[]
+  }
+
+  /**
+   * UniversityRanking findMany
+   */
+  export type UniversityRankingFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UniversityRanking
+     */
+    select?: UniversityRankingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UniversityRanking
+     */
+    omit?: UniversityRankingOmit<ExtArgs> | null
+    /**
+     * Filter, which UniversityRankings to fetch.
+     */
+    where?: UniversityRankingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UniversityRankings to fetch.
+     */
+    orderBy?: UniversityRankingOrderByWithRelationInput | UniversityRankingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UniversityRankings.
+     */
+    cursor?: UniversityRankingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UniversityRankings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UniversityRankings.
+     */
+    skip?: number
+    distinct?: UniversityRankingScalarFieldEnum | UniversityRankingScalarFieldEnum[]
+  }
+
+  /**
+   * UniversityRanking create
+   */
+  export type UniversityRankingCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UniversityRanking
+     */
+    select?: UniversityRankingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UniversityRanking
+     */
+    omit?: UniversityRankingOmit<ExtArgs> | null
+    /**
+     * The data needed to create a UniversityRanking.
+     */
+    data: XOR<UniversityRankingCreateInput, UniversityRankingUncheckedCreateInput>
+  }
+
+  /**
+   * UniversityRanking createMany
+   */
+  export type UniversityRankingCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UniversityRankings.
+     */
+    data: UniversityRankingCreateManyInput | UniversityRankingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UniversityRanking createManyAndReturn
+   */
+  export type UniversityRankingCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UniversityRanking
+     */
+    select?: UniversityRankingSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UniversityRanking
+     */
+    omit?: UniversityRankingOmit<ExtArgs> | null
+    /**
+     * The data used to create many UniversityRankings.
+     */
+    data: UniversityRankingCreateManyInput | UniversityRankingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UniversityRanking update
+   */
+  export type UniversityRankingUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UniversityRanking
+     */
+    select?: UniversityRankingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UniversityRanking
+     */
+    omit?: UniversityRankingOmit<ExtArgs> | null
+    /**
+     * The data needed to update a UniversityRanking.
+     */
+    data: XOR<UniversityRankingUpdateInput, UniversityRankingUncheckedUpdateInput>
+    /**
+     * Choose, which UniversityRanking to update.
+     */
+    where: UniversityRankingWhereUniqueInput
+  }
+
+  /**
+   * UniversityRanking updateMany
+   */
+  export type UniversityRankingUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UniversityRankings.
+     */
+    data: XOR<UniversityRankingUpdateManyMutationInput, UniversityRankingUncheckedUpdateManyInput>
+    /**
+     * Filter which UniversityRankings to update
+     */
+    where?: UniversityRankingWhereInput
+    /**
+     * Limit how many UniversityRankings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UniversityRanking updateManyAndReturn
+   */
+  export type UniversityRankingUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UniversityRanking
+     */
+    select?: UniversityRankingSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UniversityRanking
+     */
+    omit?: UniversityRankingOmit<ExtArgs> | null
+    /**
+     * The data used to update UniversityRankings.
+     */
+    data: XOR<UniversityRankingUpdateManyMutationInput, UniversityRankingUncheckedUpdateManyInput>
+    /**
+     * Filter which UniversityRankings to update
+     */
+    where?: UniversityRankingWhereInput
+    /**
+     * Limit how many UniversityRankings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UniversityRanking upsert
+   */
+  export type UniversityRankingUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UniversityRanking
+     */
+    select?: UniversityRankingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UniversityRanking
+     */
+    omit?: UniversityRankingOmit<ExtArgs> | null
+    /**
+     * The filter to search for the UniversityRanking to update in case it exists.
+     */
+    where: UniversityRankingWhereUniqueInput
+    /**
+     * In case the UniversityRanking found by the `where` argument doesn't exist, create a new UniversityRanking with this data.
+     */
+    create: XOR<UniversityRankingCreateInput, UniversityRankingUncheckedCreateInput>
+    /**
+     * In case the UniversityRanking was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UniversityRankingUpdateInput, UniversityRankingUncheckedUpdateInput>
+  }
+
+  /**
+   * UniversityRanking delete
+   */
+  export type UniversityRankingDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UniversityRanking
+     */
+    select?: UniversityRankingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UniversityRanking
+     */
+    omit?: UniversityRankingOmit<ExtArgs> | null
+    /**
+     * Filter which UniversityRanking to delete.
+     */
+    where: UniversityRankingWhereUniqueInput
+  }
+
+  /**
+   * UniversityRanking deleteMany
+   */
+  export type UniversityRankingDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UniversityRankings to delete
+     */
+    where?: UniversityRankingWhereInput
+    /**
+     * Limit how many UniversityRankings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UniversityRanking without action
+   */
+  export type UniversityRankingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UniversityRanking
+     */
+    select?: UniversityRankingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UniversityRanking
+     */
+    omit?: UniversityRankingOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AdjacentMajorOccupation
+   */
+
+  export type AggregateAdjacentMajorOccupation = {
+    _count: AdjacentMajorOccupationCountAggregateOutputType | null
+    _avg: AdjacentMajorOccupationAvgAggregateOutputType | null
+    _sum: AdjacentMajorOccupationSumAggregateOutputType | null
+    _min: AdjacentMajorOccupationMinAggregateOutputType | null
+    _max: AdjacentMajorOccupationMaxAggregateOutputType | null
+  }
+
+  export type AdjacentMajorOccupationAvgAggregateOutputType = {
+    id: number | null
+    alignBonus: number | null
+  }
+
+  export type AdjacentMajorOccupationSumAggregateOutputType = {
+    id: bigint | null
+    alignBonus: number | null
+  }
+
+  export type AdjacentMajorOccupationMinAggregateOutputType = {
+    id: bigint | null
+    categoryA: string | null
+    categoryB: string | null
+    alignBonus: number | null
+  }
+
+  export type AdjacentMajorOccupationMaxAggregateOutputType = {
+    id: bigint | null
+    categoryA: string | null
+    categoryB: string | null
+    alignBonus: number | null
+  }
+
+  export type AdjacentMajorOccupationCountAggregateOutputType = {
+    id: number
+    categoryA: number
+    categoryB: number
+    alignBonus: number
+    _all: number
+  }
+
+
+  export type AdjacentMajorOccupationAvgAggregateInputType = {
+    id?: true
+    alignBonus?: true
+  }
+
+  export type AdjacentMajorOccupationSumAggregateInputType = {
+    id?: true
+    alignBonus?: true
+  }
+
+  export type AdjacentMajorOccupationMinAggregateInputType = {
+    id?: true
+    categoryA?: true
+    categoryB?: true
+    alignBonus?: true
+  }
+
+  export type AdjacentMajorOccupationMaxAggregateInputType = {
+    id?: true
+    categoryA?: true
+    categoryB?: true
+    alignBonus?: true
+  }
+
+  export type AdjacentMajorOccupationCountAggregateInputType = {
+    id?: true
+    categoryA?: true
+    categoryB?: true
+    alignBonus?: true
+    _all?: true
+  }
+
+  export type AdjacentMajorOccupationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdjacentMajorOccupation to aggregate.
+     */
+    where?: AdjacentMajorOccupationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdjacentMajorOccupations to fetch.
+     */
+    orderBy?: AdjacentMajorOccupationOrderByWithRelationInput | AdjacentMajorOccupationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AdjacentMajorOccupationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdjacentMajorOccupations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdjacentMajorOccupations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AdjacentMajorOccupations
+    **/
+    _count?: true | AdjacentMajorOccupationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AdjacentMajorOccupationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AdjacentMajorOccupationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AdjacentMajorOccupationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AdjacentMajorOccupationMaxAggregateInputType
+  }
+
+  export type GetAdjacentMajorOccupationAggregateType<T extends AdjacentMajorOccupationAggregateArgs> = {
+        [P in keyof T & keyof AggregateAdjacentMajorOccupation]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAdjacentMajorOccupation[P]>
+      : GetScalarType<T[P], AggregateAdjacentMajorOccupation[P]>
+  }
+
+
+
+
+  export type AdjacentMajorOccupationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AdjacentMajorOccupationWhereInput
+    orderBy?: AdjacentMajorOccupationOrderByWithAggregationInput | AdjacentMajorOccupationOrderByWithAggregationInput[]
+    by: AdjacentMajorOccupationScalarFieldEnum[] | AdjacentMajorOccupationScalarFieldEnum
+    having?: AdjacentMajorOccupationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AdjacentMajorOccupationCountAggregateInputType | true
+    _avg?: AdjacentMajorOccupationAvgAggregateInputType
+    _sum?: AdjacentMajorOccupationSumAggregateInputType
+    _min?: AdjacentMajorOccupationMinAggregateInputType
+    _max?: AdjacentMajorOccupationMaxAggregateInputType
+  }
+
+  export type AdjacentMajorOccupationGroupByOutputType = {
+    id: bigint
+    categoryA: string
+    categoryB: string
+    alignBonus: number
+    _count: AdjacentMajorOccupationCountAggregateOutputType | null
+    _avg: AdjacentMajorOccupationAvgAggregateOutputType | null
+    _sum: AdjacentMajorOccupationSumAggregateOutputType | null
+    _min: AdjacentMajorOccupationMinAggregateOutputType | null
+    _max: AdjacentMajorOccupationMaxAggregateOutputType | null
+  }
+
+  type GetAdjacentMajorOccupationGroupByPayload<T extends AdjacentMajorOccupationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AdjacentMajorOccupationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AdjacentMajorOccupationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AdjacentMajorOccupationGroupByOutputType[P]>
+            : GetScalarType<T[P], AdjacentMajorOccupationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AdjacentMajorOccupationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    categoryA?: boolean
+    categoryB?: boolean
+    alignBonus?: boolean
+  }, ExtArgs["result"]["adjacentMajorOccupation"]>
+
+  export type AdjacentMajorOccupationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    categoryA?: boolean
+    categoryB?: boolean
+    alignBonus?: boolean
+  }, ExtArgs["result"]["adjacentMajorOccupation"]>
+
+  export type AdjacentMajorOccupationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    categoryA?: boolean
+    categoryB?: boolean
+    alignBonus?: boolean
+  }, ExtArgs["result"]["adjacentMajorOccupation"]>
+
+  export type AdjacentMajorOccupationSelectScalar = {
+    id?: boolean
+    categoryA?: boolean
+    categoryB?: boolean
+    alignBonus?: boolean
+  }
+
+  export type AdjacentMajorOccupationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "categoryA" | "categoryB" | "alignBonus", ExtArgs["result"]["adjacentMajorOccupation"]>
+
+  export type $AdjacentMajorOccupationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AdjacentMajorOccupation"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      categoryA: string
+      categoryB: string
+      alignBonus: number
+    }, ExtArgs["result"]["adjacentMajorOccupation"]>
+    composites: {}
+  }
+
+  type AdjacentMajorOccupationGetPayload<S extends boolean | null | undefined | AdjacentMajorOccupationDefaultArgs> = $Result.GetResult<Prisma.$AdjacentMajorOccupationPayload, S>
+
+  type AdjacentMajorOccupationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AdjacentMajorOccupationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AdjacentMajorOccupationCountAggregateInputType | true
+    }
+
+  export interface AdjacentMajorOccupationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AdjacentMajorOccupation'], meta: { name: 'AdjacentMajorOccupation' } }
+    /**
+     * Find zero or one AdjacentMajorOccupation that matches the filter.
+     * @param {AdjacentMajorOccupationFindUniqueArgs} args - Arguments to find a AdjacentMajorOccupation
+     * @example
+     * // Get one AdjacentMajorOccupation
+     * const adjacentMajorOccupation = await prisma.adjacentMajorOccupation.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AdjacentMajorOccupationFindUniqueArgs>(args: SelectSubset<T, AdjacentMajorOccupationFindUniqueArgs<ExtArgs>>): Prisma__AdjacentMajorOccupationClient<$Result.GetResult<Prisma.$AdjacentMajorOccupationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AdjacentMajorOccupation that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AdjacentMajorOccupationFindUniqueOrThrowArgs} args - Arguments to find a AdjacentMajorOccupation
+     * @example
+     * // Get one AdjacentMajorOccupation
+     * const adjacentMajorOccupation = await prisma.adjacentMajorOccupation.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AdjacentMajorOccupationFindUniqueOrThrowArgs>(args: SelectSubset<T, AdjacentMajorOccupationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AdjacentMajorOccupationClient<$Result.GetResult<Prisma.$AdjacentMajorOccupationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AdjacentMajorOccupation that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdjacentMajorOccupationFindFirstArgs} args - Arguments to find a AdjacentMajorOccupation
+     * @example
+     * // Get one AdjacentMajorOccupation
+     * const adjacentMajorOccupation = await prisma.adjacentMajorOccupation.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AdjacentMajorOccupationFindFirstArgs>(args?: SelectSubset<T, AdjacentMajorOccupationFindFirstArgs<ExtArgs>>): Prisma__AdjacentMajorOccupationClient<$Result.GetResult<Prisma.$AdjacentMajorOccupationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AdjacentMajorOccupation that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdjacentMajorOccupationFindFirstOrThrowArgs} args - Arguments to find a AdjacentMajorOccupation
+     * @example
+     * // Get one AdjacentMajorOccupation
+     * const adjacentMajorOccupation = await prisma.adjacentMajorOccupation.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AdjacentMajorOccupationFindFirstOrThrowArgs>(args?: SelectSubset<T, AdjacentMajorOccupationFindFirstOrThrowArgs<ExtArgs>>): Prisma__AdjacentMajorOccupationClient<$Result.GetResult<Prisma.$AdjacentMajorOccupationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AdjacentMajorOccupations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdjacentMajorOccupationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AdjacentMajorOccupations
+     * const adjacentMajorOccupations = await prisma.adjacentMajorOccupation.findMany()
+     * 
+     * // Get first 10 AdjacentMajorOccupations
+     * const adjacentMajorOccupations = await prisma.adjacentMajorOccupation.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const adjacentMajorOccupationWithIdOnly = await prisma.adjacentMajorOccupation.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AdjacentMajorOccupationFindManyArgs>(args?: SelectSubset<T, AdjacentMajorOccupationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdjacentMajorOccupationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AdjacentMajorOccupation.
+     * @param {AdjacentMajorOccupationCreateArgs} args - Arguments to create a AdjacentMajorOccupation.
+     * @example
+     * // Create one AdjacentMajorOccupation
+     * const AdjacentMajorOccupation = await prisma.adjacentMajorOccupation.create({
+     *   data: {
+     *     // ... data to create a AdjacentMajorOccupation
+     *   }
+     * })
+     * 
+     */
+    create<T extends AdjacentMajorOccupationCreateArgs>(args: SelectSubset<T, AdjacentMajorOccupationCreateArgs<ExtArgs>>): Prisma__AdjacentMajorOccupationClient<$Result.GetResult<Prisma.$AdjacentMajorOccupationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AdjacentMajorOccupations.
+     * @param {AdjacentMajorOccupationCreateManyArgs} args - Arguments to create many AdjacentMajorOccupations.
+     * @example
+     * // Create many AdjacentMajorOccupations
+     * const adjacentMajorOccupation = await prisma.adjacentMajorOccupation.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AdjacentMajorOccupationCreateManyArgs>(args?: SelectSubset<T, AdjacentMajorOccupationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AdjacentMajorOccupations and returns the data saved in the database.
+     * @param {AdjacentMajorOccupationCreateManyAndReturnArgs} args - Arguments to create many AdjacentMajorOccupations.
+     * @example
+     * // Create many AdjacentMajorOccupations
+     * const adjacentMajorOccupation = await prisma.adjacentMajorOccupation.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AdjacentMajorOccupations and only return the `id`
+     * const adjacentMajorOccupationWithIdOnly = await prisma.adjacentMajorOccupation.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AdjacentMajorOccupationCreateManyAndReturnArgs>(args?: SelectSubset<T, AdjacentMajorOccupationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdjacentMajorOccupationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AdjacentMajorOccupation.
+     * @param {AdjacentMajorOccupationDeleteArgs} args - Arguments to delete one AdjacentMajorOccupation.
+     * @example
+     * // Delete one AdjacentMajorOccupation
+     * const AdjacentMajorOccupation = await prisma.adjacentMajorOccupation.delete({
+     *   where: {
+     *     // ... filter to delete one AdjacentMajorOccupation
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AdjacentMajorOccupationDeleteArgs>(args: SelectSubset<T, AdjacentMajorOccupationDeleteArgs<ExtArgs>>): Prisma__AdjacentMajorOccupationClient<$Result.GetResult<Prisma.$AdjacentMajorOccupationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AdjacentMajorOccupation.
+     * @param {AdjacentMajorOccupationUpdateArgs} args - Arguments to update one AdjacentMajorOccupation.
+     * @example
+     * // Update one AdjacentMajorOccupation
+     * const adjacentMajorOccupation = await prisma.adjacentMajorOccupation.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AdjacentMajorOccupationUpdateArgs>(args: SelectSubset<T, AdjacentMajorOccupationUpdateArgs<ExtArgs>>): Prisma__AdjacentMajorOccupationClient<$Result.GetResult<Prisma.$AdjacentMajorOccupationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AdjacentMajorOccupations.
+     * @param {AdjacentMajorOccupationDeleteManyArgs} args - Arguments to filter AdjacentMajorOccupations to delete.
+     * @example
+     * // Delete a few AdjacentMajorOccupations
+     * const { count } = await prisma.adjacentMajorOccupation.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AdjacentMajorOccupationDeleteManyArgs>(args?: SelectSubset<T, AdjacentMajorOccupationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdjacentMajorOccupations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdjacentMajorOccupationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AdjacentMajorOccupations
+     * const adjacentMajorOccupation = await prisma.adjacentMajorOccupation.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AdjacentMajorOccupationUpdateManyArgs>(args: SelectSubset<T, AdjacentMajorOccupationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AdjacentMajorOccupations and returns the data updated in the database.
+     * @param {AdjacentMajorOccupationUpdateManyAndReturnArgs} args - Arguments to update many AdjacentMajorOccupations.
+     * @example
+     * // Update many AdjacentMajorOccupations
+     * const adjacentMajorOccupation = await prisma.adjacentMajorOccupation.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AdjacentMajorOccupations and only return the `id`
+     * const adjacentMajorOccupationWithIdOnly = await prisma.adjacentMajorOccupation.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AdjacentMajorOccupationUpdateManyAndReturnArgs>(args: SelectSubset<T, AdjacentMajorOccupationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AdjacentMajorOccupationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AdjacentMajorOccupation.
+     * @param {AdjacentMajorOccupationUpsertArgs} args - Arguments to update or create a AdjacentMajorOccupation.
+     * @example
+     * // Update or create a AdjacentMajorOccupation
+     * const adjacentMajorOccupation = await prisma.adjacentMajorOccupation.upsert({
+     *   create: {
+     *     // ... data to create a AdjacentMajorOccupation
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AdjacentMajorOccupation we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AdjacentMajorOccupationUpsertArgs>(args: SelectSubset<T, AdjacentMajorOccupationUpsertArgs<ExtArgs>>): Prisma__AdjacentMajorOccupationClient<$Result.GetResult<Prisma.$AdjacentMajorOccupationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AdjacentMajorOccupations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdjacentMajorOccupationCountArgs} args - Arguments to filter AdjacentMajorOccupations to count.
+     * @example
+     * // Count the number of AdjacentMajorOccupations
+     * const count = await prisma.adjacentMajorOccupation.count({
+     *   where: {
+     *     // ... the filter for the AdjacentMajorOccupations we want to count
+     *   }
+     * })
+    **/
+    count<T extends AdjacentMajorOccupationCountArgs>(
+      args?: Subset<T, AdjacentMajorOccupationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AdjacentMajorOccupationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AdjacentMajorOccupation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdjacentMajorOccupationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AdjacentMajorOccupationAggregateArgs>(args: Subset<T, AdjacentMajorOccupationAggregateArgs>): Prisma.PrismaPromise<GetAdjacentMajorOccupationAggregateType<T>>
+
+    /**
+     * Group by AdjacentMajorOccupation.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AdjacentMajorOccupationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AdjacentMajorOccupationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AdjacentMajorOccupationGroupByArgs['orderBy'] }
+        : { orderBy?: AdjacentMajorOccupationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AdjacentMajorOccupationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAdjacentMajorOccupationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AdjacentMajorOccupation model
+   */
+  readonly fields: AdjacentMajorOccupationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AdjacentMajorOccupation.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AdjacentMajorOccupationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AdjacentMajorOccupation model
+   */
+  interface AdjacentMajorOccupationFieldRefs {
+    readonly id: FieldRef<"AdjacentMajorOccupation", 'BigInt'>
+    readonly categoryA: FieldRef<"AdjacentMajorOccupation", 'String'>
+    readonly categoryB: FieldRef<"AdjacentMajorOccupation", 'String'>
+    readonly alignBonus: FieldRef<"AdjacentMajorOccupation", 'Float'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AdjacentMajorOccupation findUnique
+   */
+  export type AdjacentMajorOccupationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdjacentMajorOccupation
+     */
+    select?: AdjacentMajorOccupationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdjacentMajorOccupation
+     */
+    omit?: AdjacentMajorOccupationOmit<ExtArgs> | null
+    /**
+     * Filter, which AdjacentMajorOccupation to fetch.
+     */
+    where: AdjacentMajorOccupationWhereUniqueInput
+  }
+
+  /**
+   * AdjacentMajorOccupation findUniqueOrThrow
+   */
+  export type AdjacentMajorOccupationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdjacentMajorOccupation
+     */
+    select?: AdjacentMajorOccupationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdjacentMajorOccupation
+     */
+    omit?: AdjacentMajorOccupationOmit<ExtArgs> | null
+    /**
+     * Filter, which AdjacentMajorOccupation to fetch.
+     */
+    where: AdjacentMajorOccupationWhereUniqueInput
+  }
+
+  /**
+   * AdjacentMajorOccupation findFirst
+   */
+  export type AdjacentMajorOccupationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdjacentMajorOccupation
+     */
+    select?: AdjacentMajorOccupationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdjacentMajorOccupation
+     */
+    omit?: AdjacentMajorOccupationOmit<ExtArgs> | null
+    /**
+     * Filter, which AdjacentMajorOccupation to fetch.
+     */
+    where?: AdjacentMajorOccupationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdjacentMajorOccupations to fetch.
+     */
+    orderBy?: AdjacentMajorOccupationOrderByWithRelationInput | AdjacentMajorOccupationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdjacentMajorOccupations.
+     */
+    cursor?: AdjacentMajorOccupationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdjacentMajorOccupations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdjacentMajorOccupations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdjacentMajorOccupations.
+     */
+    distinct?: AdjacentMajorOccupationScalarFieldEnum | AdjacentMajorOccupationScalarFieldEnum[]
+  }
+
+  /**
+   * AdjacentMajorOccupation findFirstOrThrow
+   */
+  export type AdjacentMajorOccupationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdjacentMajorOccupation
+     */
+    select?: AdjacentMajorOccupationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdjacentMajorOccupation
+     */
+    omit?: AdjacentMajorOccupationOmit<ExtArgs> | null
+    /**
+     * Filter, which AdjacentMajorOccupation to fetch.
+     */
+    where?: AdjacentMajorOccupationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdjacentMajorOccupations to fetch.
+     */
+    orderBy?: AdjacentMajorOccupationOrderByWithRelationInput | AdjacentMajorOccupationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AdjacentMajorOccupations.
+     */
+    cursor?: AdjacentMajorOccupationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdjacentMajorOccupations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdjacentMajorOccupations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AdjacentMajorOccupations.
+     */
+    distinct?: AdjacentMajorOccupationScalarFieldEnum | AdjacentMajorOccupationScalarFieldEnum[]
+  }
+
+  /**
+   * AdjacentMajorOccupation findMany
+   */
+  export type AdjacentMajorOccupationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdjacentMajorOccupation
+     */
+    select?: AdjacentMajorOccupationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdjacentMajorOccupation
+     */
+    omit?: AdjacentMajorOccupationOmit<ExtArgs> | null
+    /**
+     * Filter, which AdjacentMajorOccupations to fetch.
+     */
+    where?: AdjacentMajorOccupationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AdjacentMajorOccupations to fetch.
+     */
+    orderBy?: AdjacentMajorOccupationOrderByWithRelationInput | AdjacentMajorOccupationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AdjacentMajorOccupations.
+     */
+    cursor?: AdjacentMajorOccupationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AdjacentMajorOccupations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AdjacentMajorOccupations.
+     */
+    skip?: number
+    distinct?: AdjacentMajorOccupationScalarFieldEnum | AdjacentMajorOccupationScalarFieldEnum[]
+  }
+
+  /**
+   * AdjacentMajorOccupation create
+   */
+  export type AdjacentMajorOccupationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdjacentMajorOccupation
+     */
+    select?: AdjacentMajorOccupationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdjacentMajorOccupation
+     */
+    omit?: AdjacentMajorOccupationOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AdjacentMajorOccupation.
+     */
+    data: XOR<AdjacentMajorOccupationCreateInput, AdjacentMajorOccupationUncheckedCreateInput>
+  }
+
+  /**
+   * AdjacentMajorOccupation createMany
+   */
+  export type AdjacentMajorOccupationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AdjacentMajorOccupations.
+     */
+    data: AdjacentMajorOccupationCreateManyInput | AdjacentMajorOccupationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AdjacentMajorOccupation createManyAndReturn
+   */
+  export type AdjacentMajorOccupationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdjacentMajorOccupation
+     */
+    select?: AdjacentMajorOccupationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdjacentMajorOccupation
+     */
+    omit?: AdjacentMajorOccupationOmit<ExtArgs> | null
+    /**
+     * The data used to create many AdjacentMajorOccupations.
+     */
+    data: AdjacentMajorOccupationCreateManyInput | AdjacentMajorOccupationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AdjacentMajorOccupation update
+   */
+  export type AdjacentMajorOccupationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdjacentMajorOccupation
+     */
+    select?: AdjacentMajorOccupationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdjacentMajorOccupation
+     */
+    omit?: AdjacentMajorOccupationOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AdjacentMajorOccupation.
+     */
+    data: XOR<AdjacentMajorOccupationUpdateInput, AdjacentMajorOccupationUncheckedUpdateInput>
+    /**
+     * Choose, which AdjacentMajorOccupation to update.
+     */
+    where: AdjacentMajorOccupationWhereUniqueInput
+  }
+
+  /**
+   * AdjacentMajorOccupation updateMany
+   */
+  export type AdjacentMajorOccupationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AdjacentMajorOccupations.
+     */
+    data: XOR<AdjacentMajorOccupationUpdateManyMutationInput, AdjacentMajorOccupationUncheckedUpdateManyInput>
+    /**
+     * Filter which AdjacentMajorOccupations to update
+     */
+    where?: AdjacentMajorOccupationWhereInput
+    /**
+     * Limit how many AdjacentMajorOccupations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdjacentMajorOccupation updateManyAndReturn
+   */
+  export type AdjacentMajorOccupationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdjacentMajorOccupation
+     */
+    select?: AdjacentMajorOccupationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdjacentMajorOccupation
+     */
+    omit?: AdjacentMajorOccupationOmit<ExtArgs> | null
+    /**
+     * The data used to update AdjacentMajorOccupations.
+     */
+    data: XOR<AdjacentMajorOccupationUpdateManyMutationInput, AdjacentMajorOccupationUncheckedUpdateManyInput>
+    /**
+     * Filter which AdjacentMajorOccupations to update
+     */
+    where?: AdjacentMajorOccupationWhereInput
+    /**
+     * Limit how many AdjacentMajorOccupations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdjacentMajorOccupation upsert
+   */
+  export type AdjacentMajorOccupationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdjacentMajorOccupation
+     */
+    select?: AdjacentMajorOccupationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdjacentMajorOccupation
+     */
+    omit?: AdjacentMajorOccupationOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AdjacentMajorOccupation to update in case it exists.
+     */
+    where: AdjacentMajorOccupationWhereUniqueInput
+    /**
+     * In case the AdjacentMajorOccupation found by the `where` argument doesn't exist, create a new AdjacentMajorOccupation with this data.
+     */
+    create: XOR<AdjacentMajorOccupationCreateInput, AdjacentMajorOccupationUncheckedCreateInput>
+    /**
+     * In case the AdjacentMajorOccupation was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AdjacentMajorOccupationUpdateInput, AdjacentMajorOccupationUncheckedUpdateInput>
+  }
+
+  /**
+   * AdjacentMajorOccupation delete
+   */
+  export type AdjacentMajorOccupationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdjacentMajorOccupation
+     */
+    select?: AdjacentMajorOccupationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdjacentMajorOccupation
+     */
+    omit?: AdjacentMajorOccupationOmit<ExtArgs> | null
+    /**
+     * Filter which AdjacentMajorOccupation to delete.
+     */
+    where: AdjacentMajorOccupationWhereUniqueInput
+  }
+
+  /**
+   * AdjacentMajorOccupation deleteMany
+   */
+  export type AdjacentMajorOccupationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AdjacentMajorOccupations to delete
+     */
+    where?: AdjacentMajorOccupationWhereInput
+    /**
+     * Limit how many AdjacentMajorOccupations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AdjacentMajorOccupation without action
+   */
+  export type AdjacentMajorOccupationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AdjacentMajorOccupation
+     */
+    select?: AdjacentMajorOccupationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AdjacentMajorOccupation
+     */
+    omit?: AdjacentMajorOccupationOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model VisaIncomeReference
+   */
+
+  export type AggregateVisaIncomeReference = {
+    _count: VisaIncomeReferenceCountAggregateOutputType | null
+    _avg: VisaIncomeReferenceAvgAggregateOutputType | null
+    _sum: VisaIncomeReferenceSumAggregateOutputType | null
+    _min: VisaIncomeReferenceMinAggregateOutputType | null
+    _max: VisaIncomeReferenceMaxAggregateOutputType | null
+  }
+
+  export type VisaIncomeReferenceAvgAggregateOutputType = {
+    id: number | null
+    avgAnnualIncome: number | null
+    updatedYear: number | null
+  }
+
+  export type VisaIncomeReferenceSumAggregateOutputType = {
+    id: bigint | null
+    avgAnnualIncome: number | null
+    updatedYear: number | null
+  }
+
+  export type VisaIncomeReferenceMinAggregateOutputType = {
+    id: bigint | null
+    visaCode: string | null
+    visaNameKo: string | null
+    avgAnnualIncome: number | null
+    incomeSource: string | null
+    incomeNote: string | null
+    updatedYear: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type VisaIncomeReferenceMaxAggregateOutputType = {
+    id: bigint | null
+    visaCode: string | null
+    visaNameKo: string | null
+    avgAnnualIncome: number | null
+    incomeSource: string | null
+    incomeNote: string | null
+    updatedYear: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type VisaIncomeReferenceCountAggregateOutputType = {
+    id: number
+    visaCode: number
+    visaNameKo: number
+    avgAnnualIncome: number
+    incomeSource: number
+    incomeNote: number
+    updatedYear: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type VisaIncomeReferenceAvgAggregateInputType = {
+    id?: true
+    avgAnnualIncome?: true
+    updatedYear?: true
+  }
+
+  export type VisaIncomeReferenceSumAggregateInputType = {
+    id?: true
+    avgAnnualIncome?: true
+    updatedYear?: true
+  }
+
+  export type VisaIncomeReferenceMinAggregateInputType = {
+    id?: true
+    visaCode?: true
+    visaNameKo?: true
+    avgAnnualIncome?: true
+    incomeSource?: true
+    incomeNote?: true
+    updatedYear?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type VisaIncomeReferenceMaxAggregateInputType = {
+    id?: true
+    visaCode?: true
+    visaNameKo?: true
+    avgAnnualIncome?: true
+    incomeSource?: true
+    incomeNote?: true
+    updatedYear?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type VisaIncomeReferenceCountAggregateInputType = {
+    id?: true
+    visaCode?: true
+    visaNameKo?: true
+    avgAnnualIncome?: true
+    incomeSource?: true
+    incomeNote?: true
+    updatedYear?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type VisaIncomeReferenceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which VisaIncomeReference to aggregate.
+     */
+    where?: VisaIncomeReferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VisaIncomeReferences to fetch.
+     */
+    orderBy?: VisaIncomeReferenceOrderByWithRelationInput | VisaIncomeReferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: VisaIncomeReferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VisaIncomeReferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VisaIncomeReferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned VisaIncomeReferences
+    **/
+    _count?: true | VisaIncomeReferenceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: VisaIncomeReferenceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: VisaIncomeReferenceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: VisaIncomeReferenceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: VisaIncomeReferenceMaxAggregateInputType
+  }
+
+  export type GetVisaIncomeReferenceAggregateType<T extends VisaIncomeReferenceAggregateArgs> = {
+        [P in keyof T & keyof AggregateVisaIncomeReference]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateVisaIncomeReference[P]>
+      : GetScalarType<T[P], AggregateVisaIncomeReference[P]>
+  }
+
+
+
+
+  export type VisaIncomeReferenceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: VisaIncomeReferenceWhereInput
+    orderBy?: VisaIncomeReferenceOrderByWithAggregationInput | VisaIncomeReferenceOrderByWithAggregationInput[]
+    by: VisaIncomeReferenceScalarFieldEnum[] | VisaIncomeReferenceScalarFieldEnum
+    having?: VisaIncomeReferenceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: VisaIncomeReferenceCountAggregateInputType | true
+    _avg?: VisaIncomeReferenceAvgAggregateInputType
+    _sum?: VisaIncomeReferenceSumAggregateInputType
+    _min?: VisaIncomeReferenceMinAggregateInputType
+    _max?: VisaIncomeReferenceMaxAggregateInputType
+  }
+
+  export type VisaIncomeReferenceGroupByOutputType = {
+    id: bigint
+    visaCode: string
+    visaNameKo: string
+    avgAnnualIncome: number
+    incomeSource: string
+    incomeNote: string | null
+    updatedYear: number
+    createdAt: Date
+    updatedAt: Date
+    _count: VisaIncomeReferenceCountAggregateOutputType | null
+    _avg: VisaIncomeReferenceAvgAggregateOutputType | null
+    _sum: VisaIncomeReferenceSumAggregateOutputType | null
+    _min: VisaIncomeReferenceMinAggregateOutputType | null
+    _max: VisaIncomeReferenceMaxAggregateOutputType | null
+  }
+
+  type GetVisaIncomeReferenceGroupByPayload<T extends VisaIncomeReferenceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<VisaIncomeReferenceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof VisaIncomeReferenceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], VisaIncomeReferenceGroupByOutputType[P]>
+            : GetScalarType<T[P], VisaIncomeReferenceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type VisaIncomeReferenceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    visaCode?: boolean
+    visaNameKo?: boolean
+    avgAnnualIncome?: boolean
+    incomeSource?: boolean
+    incomeNote?: boolean
+    updatedYear?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["visaIncomeReference"]>
+
+  export type VisaIncomeReferenceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    visaCode?: boolean
+    visaNameKo?: boolean
+    avgAnnualIncome?: boolean
+    incomeSource?: boolean
+    incomeNote?: boolean
+    updatedYear?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["visaIncomeReference"]>
+
+  export type VisaIncomeReferenceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    visaCode?: boolean
+    visaNameKo?: boolean
+    avgAnnualIncome?: boolean
+    incomeSource?: boolean
+    incomeNote?: boolean
+    updatedYear?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["visaIncomeReference"]>
+
+  export type VisaIncomeReferenceSelectScalar = {
+    id?: boolean
+    visaCode?: boolean
+    visaNameKo?: boolean
+    avgAnnualIncome?: boolean
+    incomeSource?: boolean
+    incomeNote?: boolean
+    updatedYear?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type VisaIncomeReferenceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "visaCode" | "visaNameKo" | "avgAnnualIncome" | "incomeSource" | "incomeNote" | "updatedYear" | "createdAt" | "updatedAt", ExtArgs["result"]["visaIncomeReference"]>
+
+  export type $VisaIncomeReferencePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "VisaIncomeReference"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      visaCode: string
+      visaNameKo: string
+      avgAnnualIncome: number
+      incomeSource: string
+      incomeNote: string | null
+      updatedYear: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["visaIncomeReference"]>
+    composites: {}
+  }
+
+  type VisaIncomeReferenceGetPayload<S extends boolean | null | undefined | VisaIncomeReferenceDefaultArgs> = $Result.GetResult<Prisma.$VisaIncomeReferencePayload, S>
+
+  type VisaIncomeReferenceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<VisaIncomeReferenceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: VisaIncomeReferenceCountAggregateInputType | true
+    }
+
+  export interface VisaIncomeReferenceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['VisaIncomeReference'], meta: { name: 'VisaIncomeReference' } }
+    /**
+     * Find zero or one VisaIncomeReference that matches the filter.
+     * @param {VisaIncomeReferenceFindUniqueArgs} args - Arguments to find a VisaIncomeReference
+     * @example
+     * // Get one VisaIncomeReference
+     * const visaIncomeReference = await prisma.visaIncomeReference.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends VisaIncomeReferenceFindUniqueArgs>(args: SelectSubset<T, VisaIncomeReferenceFindUniqueArgs<ExtArgs>>): Prisma__VisaIncomeReferenceClient<$Result.GetResult<Prisma.$VisaIncomeReferencePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one VisaIncomeReference that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {VisaIncomeReferenceFindUniqueOrThrowArgs} args - Arguments to find a VisaIncomeReference
+     * @example
+     * // Get one VisaIncomeReference
+     * const visaIncomeReference = await prisma.visaIncomeReference.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends VisaIncomeReferenceFindUniqueOrThrowArgs>(args: SelectSubset<T, VisaIncomeReferenceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__VisaIncomeReferenceClient<$Result.GetResult<Prisma.$VisaIncomeReferencePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first VisaIncomeReference that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaIncomeReferenceFindFirstArgs} args - Arguments to find a VisaIncomeReference
+     * @example
+     * // Get one VisaIncomeReference
+     * const visaIncomeReference = await prisma.visaIncomeReference.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends VisaIncomeReferenceFindFirstArgs>(args?: SelectSubset<T, VisaIncomeReferenceFindFirstArgs<ExtArgs>>): Prisma__VisaIncomeReferenceClient<$Result.GetResult<Prisma.$VisaIncomeReferencePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first VisaIncomeReference that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaIncomeReferenceFindFirstOrThrowArgs} args - Arguments to find a VisaIncomeReference
+     * @example
+     * // Get one VisaIncomeReference
+     * const visaIncomeReference = await prisma.visaIncomeReference.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends VisaIncomeReferenceFindFirstOrThrowArgs>(args?: SelectSubset<T, VisaIncomeReferenceFindFirstOrThrowArgs<ExtArgs>>): Prisma__VisaIncomeReferenceClient<$Result.GetResult<Prisma.$VisaIncomeReferencePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more VisaIncomeReferences that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaIncomeReferenceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all VisaIncomeReferences
+     * const visaIncomeReferences = await prisma.visaIncomeReference.findMany()
+     * 
+     * // Get first 10 VisaIncomeReferences
+     * const visaIncomeReferences = await prisma.visaIncomeReference.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const visaIncomeReferenceWithIdOnly = await prisma.visaIncomeReference.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends VisaIncomeReferenceFindManyArgs>(args?: SelectSubset<T, VisaIncomeReferenceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VisaIncomeReferencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a VisaIncomeReference.
+     * @param {VisaIncomeReferenceCreateArgs} args - Arguments to create a VisaIncomeReference.
+     * @example
+     * // Create one VisaIncomeReference
+     * const VisaIncomeReference = await prisma.visaIncomeReference.create({
+     *   data: {
+     *     // ... data to create a VisaIncomeReference
+     *   }
+     * })
+     * 
+     */
+    create<T extends VisaIncomeReferenceCreateArgs>(args: SelectSubset<T, VisaIncomeReferenceCreateArgs<ExtArgs>>): Prisma__VisaIncomeReferenceClient<$Result.GetResult<Prisma.$VisaIncomeReferencePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many VisaIncomeReferences.
+     * @param {VisaIncomeReferenceCreateManyArgs} args - Arguments to create many VisaIncomeReferences.
+     * @example
+     * // Create many VisaIncomeReferences
+     * const visaIncomeReference = await prisma.visaIncomeReference.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends VisaIncomeReferenceCreateManyArgs>(args?: SelectSubset<T, VisaIncomeReferenceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many VisaIncomeReferences and returns the data saved in the database.
+     * @param {VisaIncomeReferenceCreateManyAndReturnArgs} args - Arguments to create many VisaIncomeReferences.
+     * @example
+     * // Create many VisaIncomeReferences
+     * const visaIncomeReference = await prisma.visaIncomeReference.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many VisaIncomeReferences and only return the `id`
+     * const visaIncomeReferenceWithIdOnly = await prisma.visaIncomeReference.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends VisaIncomeReferenceCreateManyAndReturnArgs>(args?: SelectSubset<T, VisaIncomeReferenceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VisaIncomeReferencePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a VisaIncomeReference.
+     * @param {VisaIncomeReferenceDeleteArgs} args - Arguments to delete one VisaIncomeReference.
+     * @example
+     * // Delete one VisaIncomeReference
+     * const VisaIncomeReference = await prisma.visaIncomeReference.delete({
+     *   where: {
+     *     // ... filter to delete one VisaIncomeReference
+     *   }
+     * })
+     * 
+     */
+    delete<T extends VisaIncomeReferenceDeleteArgs>(args: SelectSubset<T, VisaIncomeReferenceDeleteArgs<ExtArgs>>): Prisma__VisaIncomeReferenceClient<$Result.GetResult<Prisma.$VisaIncomeReferencePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one VisaIncomeReference.
+     * @param {VisaIncomeReferenceUpdateArgs} args - Arguments to update one VisaIncomeReference.
+     * @example
+     * // Update one VisaIncomeReference
+     * const visaIncomeReference = await prisma.visaIncomeReference.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends VisaIncomeReferenceUpdateArgs>(args: SelectSubset<T, VisaIncomeReferenceUpdateArgs<ExtArgs>>): Prisma__VisaIncomeReferenceClient<$Result.GetResult<Prisma.$VisaIncomeReferencePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more VisaIncomeReferences.
+     * @param {VisaIncomeReferenceDeleteManyArgs} args - Arguments to filter VisaIncomeReferences to delete.
+     * @example
+     * // Delete a few VisaIncomeReferences
+     * const { count } = await prisma.visaIncomeReference.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends VisaIncomeReferenceDeleteManyArgs>(args?: SelectSubset<T, VisaIncomeReferenceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more VisaIncomeReferences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaIncomeReferenceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many VisaIncomeReferences
+     * const visaIncomeReference = await prisma.visaIncomeReference.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends VisaIncomeReferenceUpdateManyArgs>(args: SelectSubset<T, VisaIncomeReferenceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more VisaIncomeReferences and returns the data updated in the database.
+     * @param {VisaIncomeReferenceUpdateManyAndReturnArgs} args - Arguments to update many VisaIncomeReferences.
+     * @example
+     * // Update many VisaIncomeReferences
+     * const visaIncomeReference = await prisma.visaIncomeReference.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more VisaIncomeReferences and only return the `id`
+     * const visaIncomeReferenceWithIdOnly = await prisma.visaIncomeReference.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends VisaIncomeReferenceUpdateManyAndReturnArgs>(args: SelectSubset<T, VisaIncomeReferenceUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VisaIncomeReferencePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one VisaIncomeReference.
+     * @param {VisaIncomeReferenceUpsertArgs} args - Arguments to update or create a VisaIncomeReference.
+     * @example
+     * // Update or create a VisaIncomeReference
+     * const visaIncomeReference = await prisma.visaIncomeReference.upsert({
+     *   create: {
+     *     // ... data to create a VisaIncomeReference
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the VisaIncomeReference we want to update
+     *   }
+     * })
+     */
+    upsert<T extends VisaIncomeReferenceUpsertArgs>(args: SelectSubset<T, VisaIncomeReferenceUpsertArgs<ExtArgs>>): Prisma__VisaIncomeReferenceClient<$Result.GetResult<Prisma.$VisaIncomeReferencePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of VisaIncomeReferences.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaIncomeReferenceCountArgs} args - Arguments to filter VisaIncomeReferences to count.
+     * @example
+     * // Count the number of VisaIncomeReferences
+     * const count = await prisma.visaIncomeReference.count({
+     *   where: {
+     *     // ... the filter for the VisaIncomeReferences we want to count
+     *   }
+     * })
+    **/
+    count<T extends VisaIncomeReferenceCountArgs>(
+      args?: Subset<T, VisaIncomeReferenceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], VisaIncomeReferenceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a VisaIncomeReference.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaIncomeReferenceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends VisaIncomeReferenceAggregateArgs>(args: Subset<T, VisaIncomeReferenceAggregateArgs>): Prisma.PrismaPromise<GetVisaIncomeReferenceAggregateType<T>>
+
+    /**
+     * Group by VisaIncomeReference.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VisaIncomeReferenceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends VisaIncomeReferenceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: VisaIncomeReferenceGroupByArgs['orderBy'] }
+        : { orderBy?: VisaIncomeReferenceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, VisaIncomeReferenceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetVisaIncomeReferenceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the VisaIncomeReference model
+   */
+  readonly fields: VisaIncomeReferenceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for VisaIncomeReference.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__VisaIncomeReferenceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the VisaIncomeReference model
+   */
+  interface VisaIncomeReferenceFieldRefs {
+    readonly id: FieldRef<"VisaIncomeReference", 'BigInt'>
+    readonly visaCode: FieldRef<"VisaIncomeReference", 'String'>
+    readonly visaNameKo: FieldRef<"VisaIncomeReference", 'String'>
+    readonly avgAnnualIncome: FieldRef<"VisaIncomeReference", 'Int'>
+    readonly incomeSource: FieldRef<"VisaIncomeReference", 'String'>
+    readonly incomeNote: FieldRef<"VisaIncomeReference", 'String'>
+    readonly updatedYear: FieldRef<"VisaIncomeReference", 'Int'>
+    readonly createdAt: FieldRef<"VisaIncomeReference", 'DateTime'>
+    readonly updatedAt: FieldRef<"VisaIncomeReference", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * VisaIncomeReference findUnique
+   */
+  export type VisaIncomeReferenceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaIncomeReference
+     */
+    select?: VisaIncomeReferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaIncomeReference
+     */
+    omit?: VisaIncomeReferenceOmit<ExtArgs> | null
+    /**
+     * Filter, which VisaIncomeReference to fetch.
+     */
+    where: VisaIncomeReferenceWhereUniqueInput
+  }
+
+  /**
+   * VisaIncomeReference findUniqueOrThrow
+   */
+  export type VisaIncomeReferenceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaIncomeReference
+     */
+    select?: VisaIncomeReferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaIncomeReference
+     */
+    omit?: VisaIncomeReferenceOmit<ExtArgs> | null
+    /**
+     * Filter, which VisaIncomeReference to fetch.
+     */
+    where: VisaIncomeReferenceWhereUniqueInput
+  }
+
+  /**
+   * VisaIncomeReference findFirst
+   */
+  export type VisaIncomeReferenceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaIncomeReference
+     */
+    select?: VisaIncomeReferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaIncomeReference
+     */
+    omit?: VisaIncomeReferenceOmit<ExtArgs> | null
+    /**
+     * Filter, which VisaIncomeReference to fetch.
+     */
+    where?: VisaIncomeReferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VisaIncomeReferences to fetch.
+     */
+    orderBy?: VisaIncomeReferenceOrderByWithRelationInput | VisaIncomeReferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for VisaIncomeReferences.
+     */
+    cursor?: VisaIncomeReferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VisaIncomeReferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VisaIncomeReferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VisaIncomeReferences.
+     */
+    distinct?: VisaIncomeReferenceScalarFieldEnum | VisaIncomeReferenceScalarFieldEnum[]
+  }
+
+  /**
+   * VisaIncomeReference findFirstOrThrow
+   */
+  export type VisaIncomeReferenceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaIncomeReference
+     */
+    select?: VisaIncomeReferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaIncomeReference
+     */
+    omit?: VisaIncomeReferenceOmit<ExtArgs> | null
+    /**
+     * Filter, which VisaIncomeReference to fetch.
+     */
+    where?: VisaIncomeReferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VisaIncomeReferences to fetch.
+     */
+    orderBy?: VisaIncomeReferenceOrderByWithRelationInput | VisaIncomeReferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for VisaIncomeReferences.
+     */
+    cursor?: VisaIncomeReferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VisaIncomeReferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VisaIncomeReferences.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of VisaIncomeReferences.
+     */
+    distinct?: VisaIncomeReferenceScalarFieldEnum | VisaIncomeReferenceScalarFieldEnum[]
+  }
+
+  /**
+   * VisaIncomeReference findMany
+   */
+  export type VisaIncomeReferenceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaIncomeReference
+     */
+    select?: VisaIncomeReferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaIncomeReference
+     */
+    omit?: VisaIncomeReferenceOmit<ExtArgs> | null
+    /**
+     * Filter, which VisaIncomeReferences to fetch.
+     */
+    where?: VisaIncomeReferenceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of VisaIncomeReferences to fetch.
+     */
+    orderBy?: VisaIncomeReferenceOrderByWithRelationInput | VisaIncomeReferenceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing VisaIncomeReferences.
+     */
+    cursor?: VisaIncomeReferenceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` VisaIncomeReferences from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` VisaIncomeReferences.
+     */
+    skip?: number
+    distinct?: VisaIncomeReferenceScalarFieldEnum | VisaIncomeReferenceScalarFieldEnum[]
+  }
+
+  /**
+   * VisaIncomeReference create
+   */
+  export type VisaIncomeReferenceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaIncomeReference
+     */
+    select?: VisaIncomeReferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaIncomeReference
+     */
+    omit?: VisaIncomeReferenceOmit<ExtArgs> | null
+    /**
+     * The data needed to create a VisaIncomeReference.
+     */
+    data: XOR<VisaIncomeReferenceCreateInput, VisaIncomeReferenceUncheckedCreateInput>
+  }
+
+  /**
+   * VisaIncomeReference createMany
+   */
+  export type VisaIncomeReferenceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many VisaIncomeReferences.
+     */
+    data: VisaIncomeReferenceCreateManyInput | VisaIncomeReferenceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * VisaIncomeReference createManyAndReturn
+   */
+  export type VisaIncomeReferenceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaIncomeReference
+     */
+    select?: VisaIncomeReferenceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaIncomeReference
+     */
+    omit?: VisaIncomeReferenceOmit<ExtArgs> | null
+    /**
+     * The data used to create many VisaIncomeReferences.
+     */
+    data: VisaIncomeReferenceCreateManyInput | VisaIncomeReferenceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * VisaIncomeReference update
+   */
+  export type VisaIncomeReferenceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaIncomeReference
+     */
+    select?: VisaIncomeReferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaIncomeReference
+     */
+    omit?: VisaIncomeReferenceOmit<ExtArgs> | null
+    /**
+     * The data needed to update a VisaIncomeReference.
+     */
+    data: XOR<VisaIncomeReferenceUpdateInput, VisaIncomeReferenceUncheckedUpdateInput>
+    /**
+     * Choose, which VisaIncomeReference to update.
+     */
+    where: VisaIncomeReferenceWhereUniqueInput
+  }
+
+  /**
+   * VisaIncomeReference updateMany
+   */
+  export type VisaIncomeReferenceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update VisaIncomeReferences.
+     */
+    data: XOR<VisaIncomeReferenceUpdateManyMutationInput, VisaIncomeReferenceUncheckedUpdateManyInput>
+    /**
+     * Filter which VisaIncomeReferences to update
+     */
+    where?: VisaIncomeReferenceWhereInput
+    /**
+     * Limit how many VisaIncomeReferences to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * VisaIncomeReference updateManyAndReturn
+   */
+  export type VisaIncomeReferenceUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaIncomeReference
+     */
+    select?: VisaIncomeReferenceSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaIncomeReference
+     */
+    omit?: VisaIncomeReferenceOmit<ExtArgs> | null
+    /**
+     * The data used to update VisaIncomeReferences.
+     */
+    data: XOR<VisaIncomeReferenceUpdateManyMutationInput, VisaIncomeReferenceUncheckedUpdateManyInput>
+    /**
+     * Filter which VisaIncomeReferences to update
+     */
+    where?: VisaIncomeReferenceWhereInput
+    /**
+     * Limit how many VisaIncomeReferences to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * VisaIncomeReference upsert
+   */
+  export type VisaIncomeReferenceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaIncomeReference
+     */
+    select?: VisaIncomeReferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaIncomeReference
+     */
+    omit?: VisaIncomeReferenceOmit<ExtArgs> | null
+    /**
+     * The filter to search for the VisaIncomeReference to update in case it exists.
+     */
+    where: VisaIncomeReferenceWhereUniqueInput
+    /**
+     * In case the VisaIncomeReference found by the `where` argument doesn't exist, create a new VisaIncomeReference with this data.
+     */
+    create: XOR<VisaIncomeReferenceCreateInput, VisaIncomeReferenceUncheckedCreateInput>
+    /**
+     * In case the VisaIncomeReference was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<VisaIncomeReferenceUpdateInput, VisaIncomeReferenceUncheckedUpdateInput>
+  }
+
+  /**
+   * VisaIncomeReference delete
+   */
+  export type VisaIncomeReferenceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaIncomeReference
+     */
+    select?: VisaIncomeReferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaIncomeReference
+     */
+    omit?: VisaIncomeReferenceOmit<ExtArgs> | null
+    /**
+     * Filter which VisaIncomeReference to delete.
+     */
+    where: VisaIncomeReferenceWhereUniqueInput
+  }
+
+  /**
+   * VisaIncomeReference deleteMany
+   */
+  export type VisaIncomeReferenceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which VisaIncomeReferences to delete
+     */
+    where?: VisaIncomeReferenceWhereInput
+    /**
+     * Limit how many VisaIncomeReferences to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * VisaIncomeReference without action
+   */
+  export type VisaIncomeReferenceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VisaIncomeReference
+     */
+    select?: VisaIncomeReferenceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the VisaIncomeReference
+     */
+    omit?: VisaIncomeReferenceOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RediagnosisCoupon
+   */
+
+  export type AggregateRediagnosisCoupon = {
+    _count: RediagnosisCouponCountAggregateOutputType | null
+    _avg: RediagnosisCouponAvgAggregateOutputType | null
+    _sum: RediagnosisCouponSumAggregateOutputType | null
+    _min: RediagnosisCouponMinAggregateOutputType | null
+    _max: RediagnosisCouponMaxAggregateOutputType | null
+  }
+
+  export type RediagnosisCouponAvgAggregateOutputType = {
+    id: number | null
+    originalSessionId: number | null
+    usedSessionId: number | null
+  }
+
+  export type RediagnosisCouponSumAggregateOutputType = {
+    id: bigint | null
+    originalSessionId: bigint | null
+    usedSessionId: bigint | null
+  }
+
+  export type RediagnosisCouponMinAggregateOutputType = {
+    id: bigint | null
+    userId: string | null
+    originalSessionId: bigint | null
+    couponCode: string | null
+    status: string | null
+    issuedAt: Date | null
+    availableAt: Date | null
+    expiresAt: Date | null
+    usedAt: Date | null
+    usedSessionId: bigint | null
+    reminderSentAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type RediagnosisCouponMaxAggregateOutputType = {
+    id: bigint | null
+    userId: string | null
+    originalSessionId: bigint | null
+    couponCode: string | null
+    status: string | null
+    issuedAt: Date | null
+    availableAt: Date | null
+    expiresAt: Date | null
+    usedAt: Date | null
+    usedSessionId: bigint | null
+    reminderSentAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type RediagnosisCouponCountAggregateOutputType = {
+    id: number
+    userId: number
+    originalSessionId: number
+    couponCode: number
+    status: number
+    issuedAt: number
+    availableAt: number
+    expiresAt: number
+    usedAt: number
+    usedSessionId: number
+    reminderSentAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type RediagnosisCouponAvgAggregateInputType = {
+    id?: true
+    originalSessionId?: true
+    usedSessionId?: true
+  }
+
+  export type RediagnosisCouponSumAggregateInputType = {
+    id?: true
+    originalSessionId?: true
+    usedSessionId?: true
+  }
+
+  export type RediagnosisCouponMinAggregateInputType = {
+    id?: true
+    userId?: true
+    originalSessionId?: true
+    couponCode?: true
+    status?: true
+    issuedAt?: true
+    availableAt?: true
+    expiresAt?: true
+    usedAt?: true
+    usedSessionId?: true
+    reminderSentAt?: true
+    createdAt?: true
+  }
+
+  export type RediagnosisCouponMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    originalSessionId?: true
+    couponCode?: true
+    status?: true
+    issuedAt?: true
+    availableAt?: true
+    expiresAt?: true
+    usedAt?: true
+    usedSessionId?: true
+    reminderSentAt?: true
+    createdAt?: true
+  }
+
+  export type RediagnosisCouponCountAggregateInputType = {
+    id?: true
+    userId?: true
+    originalSessionId?: true
+    couponCode?: true
+    status?: true
+    issuedAt?: true
+    availableAt?: true
+    expiresAt?: true
+    usedAt?: true
+    usedSessionId?: true
+    reminderSentAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type RediagnosisCouponAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RediagnosisCoupon to aggregate.
+     */
+    where?: RediagnosisCouponWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RediagnosisCoupons to fetch.
+     */
+    orderBy?: RediagnosisCouponOrderByWithRelationInput | RediagnosisCouponOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RediagnosisCouponWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RediagnosisCoupons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RediagnosisCoupons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RediagnosisCoupons
+    **/
+    _count?: true | RediagnosisCouponCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RediagnosisCouponAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RediagnosisCouponSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RediagnosisCouponMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RediagnosisCouponMaxAggregateInputType
+  }
+
+  export type GetRediagnosisCouponAggregateType<T extends RediagnosisCouponAggregateArgs> = {
+        [P in keyof T & keyof AggregateRediagnosisCoupon]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRediagnosisCoupon[P]>
+      : GetScalarType<T[P], AggregateRediagnosisCoupon[P]>
+  }
+
+
+
+
+  export type RediagnosisCouponGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RediagnosisCouponWhereInput
+    orderBy?: RediagnosisCouponOrderByWithAggregationInput | RediagnosisCouponOrderByWithAggregationInput[]
+    by: RediagnosisCouponScalarFieldEnum[] | RediagnosisCouponScalarFieldEnum
+    having?: RediagnosisCouponScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RediagnosisCouponCountAggregateInputType | true
+    _avg?: RediagnosisCouponAvgAggregateInputType
+    _sum?: RediagnosisCouponSumAggregateInputType
+    _min?: RediagnosisCouponMinAggregateInputType
+    _max?: RediagnosisCouponMaxAggregateInputType
+  }
+
+  export type RediagnosisCouponGroupByOutputType = {
+    id: bigint
+    userId: string
+    originalSessionId: bigint
+    couponCode: string
+    status: string
+    issuedAt: Date
+    availableAt: Date
+    expiresAt: Date
+    usedAt: Date | null
+    usedSessionId: bigint | null
+    reminderSentAt: Date | null
+    createdAt: Date
+    _count: RediagnosisCouponCountAggregateOutputType | null
+    _avg: RediagnosisCouponAvgAggregateOutputType | null
+    _sum: RediagnosisCouponSumAggregateOutputType | null
+    _min: RediagnosisCouponMinAggregateOutputType | null
+    _max: RediagnosisCouponMaxAggregateOutputType | null
+  }
+
+  type GetRediagnosisCouponGroupByPayload<T extends RediagnosisCouponGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RediagnosisCouponGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RediagnosisCouponGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RediagnosisCouponGroupByOutputType[P]>
+            : GetScalarType<T[P], RediagnosisCouponGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RediagnosisCouponSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    originalSessionId?: boolean
+    couponCode?: boolean
+    status?: boolean
+    issuedAt?: boolean
+    availableAt?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    usedSessionId?: boolean
+    reminderSentAt?: boolean
+    createdAt?: boolean
+    originalSession?: boolean | DiagnosisSessionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["rediagnosisCoupon"]>
+
+  export type RediagnosisCouponSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    originalSessionId?: boolean
+    couponCode?: boolean
+    status?: boolean
+    issuedAt?: boolean
+    availableAt?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    usedSessionId?: boolean
+    reminderSentAt?: boolean
+    createdAt?: boolean
+    originalSession?: boolean | DiagnosisSessionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["rediagnosisCoupon"]>
+
+  export type RediagnosisCouponSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    originalSessionId?: boolean
+    couponCode?: boolean
+    status?: boolean
+    issuedAt?: boolean
+    availableAt?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    usedSessionId?: boolean
+    reminderSentAt?: boolean
+    createdAt?: boolean
+    originalSession?: boolean | DiagnosisSessionDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["rediagnosisCoupon"]>
+
+  export type RediagnosisCouponSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    originalSessionId?: boolean
+    couponCode?: boolean
+    status?: boolean
+    issuedAt?: boolean
+    availableAt?: boolean
+    expiresAt?: boolean
+    usedAt?: boolean
+    usedSessionId?: boolean
+    reminderSentAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type RediagnosisCouponOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "originalSessionId" | "couponCode" | "status" | "issuedAt" | "availableAt" | "expiresAt" | "usedAt" | "usedSessionId" | "reminderSentAt" | "createdAt", ExtArgs["result"]["rediagnosisCoupon"]>
+  export type RediagnosisCouponInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    originalSession?: boolean | DiagnosisSessionDefaultArgs<ExtArgs>
+  }
+  export type RediagnosisCouponIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    originalSession?: boolean | DiagnosisSessionDefaultArgs<ExtArgs>
+  }
+  export type RediagnosisCouponIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    originalSession?: boolean | DiagnosisSessionDefaultArgs<ExtArgs>
+  }
+
+  export type $RediagnosisCouponPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RediagnosisCoupon"
+    objects: {
+      originalSession: Prisma.$DiagnosisSessionPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      userId: string
+      originalSessionId: bigint
+      couponCode: string
+      status: string
+      issuedAt: Date
+      availableAt: Date
+      expiresAt: Date
+      usedAt: Date | null
+      usedSessionId: bigint | null
+      reminderSentAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["rediagnosisCoupon"]>
+    composites: {}
+  }
+
+  type RediagnosisCouponGetPayload<S extends boolean | null | undefined | RediagnosisCouponDefaultArgs> = $Result.GetResult<Prisma.$RediagnosisCouponPayload, S>
+
+  type RediagnosisCouponCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RediagnosisCouponFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RediagnosisCouponCountAggregateInputType | true
+    }
+
+  export interface RediagnosisCouponDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RediagnosisCoupon'], meta: { name: 'RediagnosisCoupon' } }
+    /**
+     * Find zero or one RediagnosisCoupon that matches the filter.
+     * @param {RediagnosisCouponFindUniqueArgs} args - Arguments to find a RediagnosisCoupon
+     * @example
+     * // Get one RediagnosisCoupon
+     * const rediagnosisCoupon = await prisma.rediagnosisCoupon.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RediagnosisCouponFindUniqueArgs>(args: SelectSubset<T, RediagnosisCouponFindUniqueArgs<ExtArgs>>): Prisma__RediagnosisCouponClient<$Result.GetResult<Prisma.$RediagnosisCouponPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RediagnosisCoupon that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RediagnosisCouponFindUniqueOrThrowArgs} args - Arguments to find a RediagnosisCoupon
+     * @example
+     * // Get one RediagnosisCoupon
+     * const rediagnosisCoupon = await prisma.rediagnosisCoupon.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RediagnosisCouponFindUniqueOrThrowArgs>(args: SelectSubset<T, RediagnosisCouponFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RediagnosisCouponClient<$Result.GetResult<Prisma.$RediagnosisCouponPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RediagnosisCoupon that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RediagnosisCouponFindFirstArgs} args - Arguments to find a RediagnosisCoupon
+     * @example
+     * // Get one RediagnosisCoupon
+     * const rediagnosisCoupon = await prisma.rediagnosisCoupon.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RediagnosisCouponFindFirstArgs>(args?: SelectSubset<T, RediagnosisCouponFindFirstArgs<ExtArgs>>): Prisma__RediagnosisCouponClient<$Result.GetResult<Prisma.$RediagnosisCouponPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RediagnosisCoupon that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RediagnosisCouponFindFirstOrThrowArgs} args - Arguments to find a RediagnosisCoupon
+     * @example
+     * // Get one RediagnosisCoupon
+     * const rediagnosisCoupon = await prisma.rediagnosisCoupon.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RediagnosisCouponFindFirstOrThrowArgs>(args?: SelectSubset<T, RediagnosisCouponFindFirstOrThrowArgs<ExtArgs>>): Prisma__RediagnosisCouponClient<$Result.GetResult<Prisma.$RediagnosisCouponPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RediagnosisCoupons that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RediagnosisCouponFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RediagnosisCoupons
+     * const rediagnosisCoupons = await prisma.rediagnosisCoupon.findMany()
+     * 
+     * // Get first 10 RediagnosisCoupons
+     * const rediagnosisCoupons = await prisma.rediagnosisCoupon.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const rediagnosisCouponWithIdOnly = await prisma.rediagnosisCoupon.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RediagnosisCouponFindManyArgs>(args?: SelectSubset<T, RediagnosisCouponFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RediagnosisCouponPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RediagnosisCoupon.
+     * @param {RediagnosisCouponCreateArgs} args - Arguments to create a RediagnosisCoupon.
+     * @example
+     * // Create one RediagnosisCoupon
+     * const RediagnosisCoupon = await prisma.rediagnosisCoupon.create({
+     *   data: {
+     *     // ... data to create a RediagnosisCoupon
+     *   }
+     * })
+     * 
+     */
+    create<T extends RediagnosisCouponCreateArgs>(args: SelectSubset<T, RediagnosisCouponCreateArgs<ExtArgs>>): Prisma__RediagnosisCouponClient<$Result.GetResult<Prisma.$RediagnosisCouponPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RediagnosisCoupons.
+     * @param {RediagnosisCouponCreateManyArgs} args - Arguments to create many RediagnosisCoupons.
+     * @example
+     * // Create many RediagnosisCoupons
+     * const rediagnosisCoupon = await prisma.rediagnosisCoupon.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RediagnosisCouponCreateManyArgs>(args?: SelectSubset<T, RediagnosisCouponCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many RediagnosisCoupons and returns the data saved in the database.
+     * @param {RediagnosisCouponCreateManyAndReturnArgs} args - Arguments to create many RediagnosisCoupons.
+     * @example
+     * // Create many RediagnosisCoupons
+     * const rediagnosisCoupon = await prisma.rediagnosisCoupon.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many RediagnosisCoupons and only return the `id`
+     * const rediagnosisCouponWithIdOnly = await prisma.rediagnosisCoupon.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends RediagnosisCouponCreateManyAndReturnArgs>(args?: SelectSubset<T, RediagnosisCouponCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RediagnosisCouponPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a RediagnosisCoupon.
+     * @param {RediagnosisCouponDeleteArgs} args - Arguments to delete one RediagnosisCoupon.
+     * @example
+     * // Delete one RediagnosisCoupon
+     * const RediagnosisCoupon = await prisma.rediagnosisCoupon.delete({
+     *   where: {
+     *     // ... filter to delete one RediagnosisCoupon
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RediagnosisCouponDeleteArgs>(args: SelectSubset<T, RediagnosisCouponDeleteArgs<ExtArgs>>): Prisma__RediagnosisCouponClient<$Result.GetResult<Prisma.$RediagnosisCouponPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RediagnosisCoupon.
+     * @param {RediagnosisCouponUpdateArgs} args - Arguments to update one RediagnosisCoupon.
+     * @example
+     * // Update one RediagnosisCoupon
+     * const rediagnosisCoupon = await prisma.rediagnosisCoupon.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RediagnosisCouponUpdateArgs>(args: SelectSubset<T, RediagnosisCouponUpdateArgs<ExtArgs>>): Prisma__RediagnosisCouponClient<$Result.GetResult<Prisma.$RediagnosisCouponPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RediagnosisCoupons.
+     * @param {RediagnosisCouponDeleteManyArgs} args - Arguments to filter RediagnosisCoupons to delete.
+     * @example
+     * // Delete a few RediagnosisCoupons
+     * const { count } = await prisma.rediagnosisCoupon.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RediagnosisCouponDeleteManyArgs>(args?: SelectSubset<T, RediagnosisCouponDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RediagnosisCoupons.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RediagnosisCouponUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RediagnosisCoupons
+     * const rediagnosisCoupon = await prisma.rediagnosisCoupon.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RediagnosisCouponUpdateManyArgs>(args: SelectSubset<T, RediagnosisCouponUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RediagnosisCoupons and returns the data updated in the database.
+     * @param {RediagnosisCouponUpdateManyAndReturnArgs} args - Arguments to update many RediagnosisCoupons.
+     * @example
+     * // Update many RediagnosisCoupons
+     * const rediagnosisCoupon = await prisma.rediagnosisCoupon.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more RediagnosisCoupons and only return the `id`
+     * const rediagnosisCouponWithIdOnly = await prisma.rediagnosisCoupon.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends RediagnosisCouponUpdateManyAndReturnArgs>(args: SelectSubset<T, RediagnosisCouponUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RediagnosisCouponPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one RediagnosisCoupon.
+     * @param {RediagnosisCouponUpsertArgs} args - Arguments to update or create a RediagnosisCoupon.
+     * @example
+     * // Update or create a RediagnosisCoupon
+     * const rediagnosisCoupon = await prisma.rediagnosisCoupon.upsert({
+     *   create: {
+     *     // ... data to create a RediagnosisCoupon
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RediagnosisCoupon we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RediagnosisCouponUpsertArgs>(args: SelectSubset<T, RediagnosisCouponUpsertArgs<ExtArgs>>): Prisma__RediagnosisCouponClient<$Result.GetResult<Prisma.$RediagnosisCouponPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RediagnosisCoupons.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RediagnosisCouponCountArgs} args - Arguments to filter RediagnosisCoupons to count.
+     * @example
+     * // Count the number of RediagnosisCoupons
+     * const count = await prisma.rediagnosisCoupon.count({
+     *   where: {
+     *     // ... the filter for the RediagnosisCoupons we want to count
+     *   }
+     * })
+    **/
+    count<T extends RediagnosisCouponCountArgs>(
+      args?: Subset<T, RediagnosisCouponCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RediagnosisCouponCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RediagnosisCoupon.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RediagnosisCouponAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RediagnosisCouponAggregateArgs>(args: Subset<T, RediagnosisCouponAggregateArgs>): Prisma.PrismaPromise<GetRediagnosisCouponAggregateType<T>>
+
+    /**
+     * Group by RediagnosisCoupon.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RediagnosisCouponGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RediagnosisCouponGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RediagnosisCouponGroupByArgs['orderBy'] }
+        : { orderBy?: RediagnosisCouponGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RediagnosisCouponGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRediagnosisCouponGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RediagnosisCoupon model
+   */
+  readonly fields: RediagnosisCouponFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RediagnosisCoupon.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RediagnosisCouponClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    originalSession<T extends DiagnosisSessionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DiagnosisSessionDefaultArgs<ExtArgs>>): Prisma__DiagnosisSessionClient<$Result.GetResult<Prisma.$DiagnosisSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RediagnosisCoupon model
+   */
+  interface RediagnosisCouponFieldRefs {
+    readonly id: FieldRef<"RediagnosisCoupon", 'BigInt'>
+    readonly userId: FieldRef<"RediagnosisCoupon", 'String'>
+    readonly originalSessionId: FieldRef<"RediagnosisCoupon", 'BigInt'>
+    readonly couponCode: FieldRef<"RediagnosisCoupon", 'String'>
+    readonly status: FieldRef<"RediagnosisCoupon", 'String'>
+    readonly issuedAt: FieldRef<"RediagnosisCoupon", 'DateTime'>
+    readonly availableAt: FieldRef<"RediagnosisCoupon", 'DateTime'>
+    readonly expiresAt: FieldRef<"RediagnosisCoupon", 'DateTime'>
+    readonly usedAt: FieldRef<"RediagnosisCoupon", 'DateTime'>
+    readonly usedSessionId: FieldRef<"RediagnosisCoupon", 'BigInt'>
+    readonly reminderSentAt: FieldRef<"RediagnosisCoupon", 'DateTime'>
+    readonly createdAt: FieldRef<"RediagnosisCoupon", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RediagnosisCoupon findUnique
+   */
+  export type RediagnosisCouponFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RediagnosisCoupon
+     */
+    select?: RediagnosisCouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RediagnosisCoupon
+     */
+    omit?: RediagnosisCouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RediagnosisCouponInclude<ExtArgs> | null
+    /**
+     * Filter, which RediagnosisCoupon to fetch.
+     */
+    where: RediagnosisCouponWhereUniqueInput
+  }
+
+  /**
+   * RediagnosisCoupon findUniqueOrThrow
+   */
+  export type RediagnosisCouponFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RediagnosisCoupon
+     */
+    select?: RediagnosisCouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RediagnosisCoupon
+     */
+    omit?: RediagnosisCouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RediagnosisCouponInclude<ExtArgs> | null
+    /**
+     * Filter, which RediagnosisCoupon to fetch.
+     */
+    where: RediagnosisCouponWhereUniqueInput
+  }
+
+  /**
+   * RediagnosisCoupon findFirst
+   */
+  export type RediagnosisCouponFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RediagnosisCoupon
+     */
+    select?: RediagnosisCouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RediagnosisCoupon
+     */
+    omit?: RediagnosisCouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RediagnosisCouponInclude<ExtArgs> | null
+    /**
+     * Filter, which RediagnosisCoupon to fetch.
+     */
+    where?: RediagnosisCouponWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RediagnosisCoupons to fetch.
+     */
+    orderBy?: RediagnosisCouponOrderByWithRelationInput | RediagnosisCouponOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RediagnosisCoupons.
+     */
+    cursor?: RediagnosisCouponWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RediagnosisCoupons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RediagnosisCoupons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RediagnosisCoupons.
+     */
+    distinct?: RediagnosisCouponScalarFieldEnum | RediagnosisCouponScalarFieldEnum[]
+  }
+
+  /**
+   * RediagnosisCoupon findFirstOrThrow
+   */
+  export type RediagnosisCouponFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RediagnosisCoupon
+     */
+    select?: RediagnosisCouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RediagnosisCoupon
+     */
+    omit?: RediagnosisCouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RediagnosisCouponInclude<ExtArgs> | null
+    /**
+     * Filter, which RediagnosisCoupon to fetch.
+     */
+    where?: RediagnosisCouponWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RediagnosisCoupons to fetch.
+     */
+    orderBy?: RediagnosisCouponOrderByWithRelationInput | RediagnosisCouponOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RediagnosisCoupons.
+     */
+    cursor?: RediagnosisCouponWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RediagnosisCoupons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RediagnosisCoupons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RediagnosisCoupons.
+     */
+    distinct?: RediagnosisCouponScalarFieldEnum | RediagnosisCouponScalarFieldEnum[]
+  }
+
+  /**
+   * RediagnosisCoupon findMany
+   */
+  export type RediagnosisCouponFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RediagnosisCoupon
+     */
+    select?: RediagnosisCouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RediagnosisCoupon
+     */
+    omit?: RediagnosisCouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RediagnosisCouponInclude<ExtArgs> | null
+    /**
+     * Filter, which RediagnosisCoupons to fetch.
+     */
+    where?: RediagnosisCouponWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RediagnosisCoupons to fetch.
+     */
+    orderBy?: RediagnosisCouponOrderByWithRelationInput | RediagnosisCouponOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RediagnosisCoupons.
+     */
+    cursor?: RediagnosisCouponWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RediagnosisCoupons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RediagnosisCoupons.
+     */
+    skip?: number
+    distinct?: RediagnosisCouponScalarFieldEnum | RediagnosisCouponScalarFieldEnum[]
+  }
+
+  /**
+   * RediagnosisCoupon create
+   */
+  export type RediagnosisCouponCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RediagnosisCoupon
+     */
+    select?: RediagnosisCouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RediagnosisCoupon
+     */
+    omit?: RediagnosisCouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RediagnosisCouponInclude<ExtArgs> | null
+    /**
+     * The data needed to create a RediagnosisCoupon.
+     */
+    data: XOR<RediagnosisCouponCreateInput, RediagnosisCouponUncheckedCreateInput>
+  }
+
+  /**
+   * RediagnosisCoupon createMany
+   */
+  export type RediagnosisCouponCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RediagnosisCoupons.
+     */
+    data: RediagnosisCouponCreateManyInput | RediagnosisCouponCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RediagnosisCoupon createManyAndReturn
+   */
+  export type RediagnosisCouponCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RediagnosisCoupon
+     */
+    select?: RediagnosisCouponSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RediagnosisCoupon
+     */
+    omit?: RediagnosisCouponOmit<ExtArgs> | null
+    /**
+     * The data used to create many RediagnosisCoupons.
+     */
+    data: RediagnosisCouponCreateManyInput | RediagnosisCouponCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RediagnosisCouponIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RediagnosisCoupon update
+   */
+  export type RediagnosisCouponUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RediagnosisCoupon
+     */
+    select?: RediagnosisCouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RediagnosisCoupon
+     */
+    omit?: RediagnosisCouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RediagnosisCouponInclude<ExtArgs> | null
+    /**
+     * The data needed to update a RediagnosisCoupon.
+     */
+    data: XOR<RediagnosisCouponUpdateInput, RediagnosisCouponUncheckedUpdateInput>
+    /**
+     * Choose, which RediagnosisCoupon to update.
+     */
+    where: RediagnosisCouponWhereUniqueInput
+  }
+
+  /**
+   * RediagnosisCoupon updateMany
+   */
+  export type RediagnosisCouponUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RediagnosisCoupons.
+     */
+    data: XOR<RediagnosisCouponUpdateManyMutationInput, RediagnosisCouponUncheckedUpdateManyInput>
+    /**
+     * Filter which RediagnosisCoupons to update
+     */
+    where?: RediagnosisCouponWhereInput
+    /**
+     * Limit how many RediagnosisCoupons to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RediagnosisCoupon updateManyAndReturn
+   */
+  export type RediagnosisCouponUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RediagnosisCoupon
+     */
+    select?: RediagnosisCouponSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the RediagnosisCoupon
+     */
+    omit?: RediagnosisCouponOmit<ExtArgs> | null
+    /**
+     * The data used to update RediagnosisCoupons.
+     */
+    data: XOR<RediagnosisCouponUpdateManyMutationInput, RediagnosisCouponUncheckedUpdateManyInput>
+    /**
+     * Filter which RediagnosisCoupons to update
+     */
+    where?: RediagnosisCouponWhereInput
+    /**
+     * Limit how many RediagnosisCoupons to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RediagnosisCouponIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * RediagnosisCoupon upsert
+   */
+  export type RediagnosisCouponUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RediagnosisCoupon
+     */
+    select?: RediagnosisCouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RediagnosisCoupon
+     */
+    omit?: RediagnosisCouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RediagnosisCouponInclude<ExtArgs> | null
+    /**
+     * The filter to search for the RediagnosisCoupon to update in case it exists.
+     */
+    where: RediagnosisCouponWhereUniqueInput
+    /**
+     * In case the RediagnosisCoupon found by the `where` argument doesn't exist, create a new RediagnosisCoupon with this data.
+     */
+    create: XOR<RediagnosisCouponCreateInput, RediagnosisCouponUncheckedCreateInput>
+    /**
+     * In case the RediagnosisCoupon was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RediagnosisCouponUpdateInput, RediagnosisCouponUncheckedUpdateInput>
+  }
+
+  /**
+   * RediagnosisCoupon delete
+   */
+  export type RediagnosisCouponDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RediagnosisCoupon
+     */
+    select?: RediagnosisCouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RediagnosisCoupon
+     */
+    omit?: RediagnosisCouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RediagnosisCouponInclude<ExtArgs> | null
+    /**
+     * Filter which RediagnosisCoupon to delete.
+     */
+    where: RediagnosisCouponWhereUniqueInput
+  }
+
+  /**
+   * RediagnosisCoupon deleteMany
+   */
+  export type RediagnosisCouponDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RediagnosisCoupons to delete
+     */
+    where?: RediagnosisCouponWhereInput
+    /**
+     * Limit how many RediagnosisCoupons to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RediagnosisCoupon without action
+   */
+  export type RediagnosisCouponDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RediagnosisCoupon
+     */
+    select?: RediagnosisCouponSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RediagnosisCoupon
+     */
+    omit?: RediagnosisCouponOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RediagnosisCouponInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PlannerRefund
+   */
+
+  export type AggregatePlannerRefund = {
+    _count: PlannerRefundCountAggregateOutputType | null
+    _avg: PlannerRefundAvgAggregateOutputType | null
+    _sum: PlannerRefundSumAggregateOutputType | null
+    _min: PlannerRefundMinAggregateOutputType | null
+    _max: PlannerRefundMaxAggregateOutputType | null
+  }
+
+  export type PlannerRefundAvgAggregateOutputType = {
+    id: number | null
+    sessionId: number | null
+    refundAmountCents: number | null
+  }
+
+  export type PlannerRefundSumAggregateOutputType = {
+    id: bigint | null
+    sessionId: bigint | null
+    refundAmountCents: number | null
+  }
+
+  export type PlannerRefundMinAggregateOutputType = {
+    id: bigint | null
+    sessionId: bigint | null
+    userId: string | null
+    status: string | null
+    reason: string | null
+    stripeRefundId: string | null
+    refundAmountCents: number | null
+    currency: string | null
+    message: string | null
+    createdAt: Date | null
+  }
+
+  export type PlannerRefundMaxAggregateOutputType = {
+    id: bigint | null
+    sessionId: bigint | null
+    userId: string | null
+    status: string | null
+    reason: string | null
+    stripeRefundId: string | null
+    refundAmountCents: number | null
+    currency: string | null
+    message: string | null
+    createdAt: Date | null
+  }
+
+  export type PlannerRefundCountAggregateOutputType = {
+    id: number
+    sessionId: number
+    userId: number
+    status: number
+    reason: number
+    stripeRefundId: number
+    refundAmountCents: number
+    currency: number
+    message: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PlannerRefundAvgAggregateInputType = {
+    id?: true
+    sessionId?: true
+    refundAmountCents?: true
+  }
+
+  export type PlannerRefundSumAggregateInputType = {
+    id?: true
+    sessionId?: true
+    refundAmountCents?: true
+  }
+
+  export type PlannerRefundMinAggregateInputType = {
+    id?: true
+    sessionId?: true
+    userId?: true
+    status?: true
+    reason?: true
+    stripeRefundId?: true
+    refundAmountCents?: true
+    currency?: true
+    message?: true
+    createdAt?: true
+  }
+
+  export type PlannerRefundMaxAggregateInputType = {
+    id?: true
+    sessionId?: true
+    userId?: true
+    status?: true
+    reason?: true
+    stripeRefundId?: true
+    refundAmountCents?: true
+    currency?: true
+    message?: true
+    createdAt?: true
+  }
+
+  export type PlannerRefundCountAggregateInputType = {
+    id?: true
+    sessionId?: true
+    userId?: true
+    status?: true
+    reason?: true
+    stripeRefundId?: true
+    refundAmountCents?: true
+    currency?: true
+    message?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PlannerRefundAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PlannerRefund to aggregate.
+     */
+    where?: PlannerRefundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlannerRefunds to fetch.
+     */
+    orderBy?: PlannerRefundOrderByWithRelationInput | PlannerRefundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PlannerRefundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlannerRefunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlannerRefunds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PlannerRefunds
+    **/
+    _count?: true | PlannerRefundCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PlannerRefundAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PlannerRefundSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PlannerRefundMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PlannerRefundMaxAggregateInputType
+  }
+
+  export type GetPlannerRefundAggregateType<T extends PlannerRefundAggregateArgs> = {
+        [P in keyof T & keyof AggregatePlannerRefund]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePlannerRefund[P]>
+      : GetScalarType<T[P], AggregatePlannerRefund[P]>
+  }
+
+
+
+
+  export type PlannerRefundGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PlannerRefundWhereInput
+    orderBy?: PlannerRefundOrderByWithAggregationInput | PlannerRefundOrderByWithAggregationInput[]
+    by: PlannerRefundScalarFieldEnum[] | PlannerRefundScalarFieldEnum
+    having?: PlannerRefundScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PlannerRefundCountAggregateInputType | true
+    _avg?: PlannerRefundAvgAggregateInputType
+    _sum?: PlannerRefundSumAggregateInputType
+    _min?: PlannerRefundMinAggregateInputType
+    _max?: PlannerRefundMaxAggregateInputType
+  }
+
+  export type PlannerRefundGroupByOutputType = {
+    id: bigint
+    sessionId: bigint
+    userId: string
+    status: string
+    reason: string
+    stripeRefundId: string | null
+    refundAmountCents: number | null
+    currency: string
+    message: string | null
+    createdAt: Date
+    _count: PlannerRefundCountAggregateOutputType | null
+    _avg: PlannerRefundAvgAggregateOutputType | null
+    _sum: PlannerRefundSumAggregateOutputType | null
+    _min: PlannerRefundMinAggregateOutputType | null
+    _max: PlannerRefundMaxAggregateOutputType | null
+  }
+
+  type GetPlannerRefundGroupByPayload<T extends PlannerRefundGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PlannerRefundGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PlannerRefundGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PlannerRefundGroupByOutputType[P]>
+            : GetScalarType<T[P], PlannerRefundGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PlannerRefundSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    userId?: boolean
+    status?: boolean
+    reason?: boolean
+    stripeRefundId?: boolean
+    refundAmountCents?: boolean
+    currency?: boolean
+    message?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["plannerRefund"]>
+
+  export type PlannerRefundSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    userId?: boolean
+    status?: boolean
+    reason?: boolean
+    stripeRefundId?: boolean
+    refundAmountCents?: boolean
+    currency?: boolean
+    message?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["plannerRefund"]>
+
+  export type PlannerRefundSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sessionId?: boolean
+    userId?: boolean
+    status?: boolean
+    reason?: boolean
+    stripeRefundId?: boolean
+    refundAmountCents?: boolean
+    currency?: boolean
+    message?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["plannerRefund"]>
+
+  export type PlannerRefundSelectScalar = {
+    id?: boolean
+    sessionId?: boolean
+    userId?: boolean
+    status?: boolean
+    reason?: boolean
+    stripeRefundId?: boolean
+    refundAmountCents?: boolean
+    currency?: boolean
+    message?: boolean
+    createdAt?: boolean
+  }
+
+  export type PlannerRefundOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "userId" | "status" | "reason" | "stripeRefundId" | "refundAmountCents" | "currency" | "message" | "createdAt", ExtArgs["result"]["plannerRefund"]>
+
+  export type $PlannerRefundPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PlannerRefund"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      sessionId: bigint
+      userId: string
+      status: string
+      reason: string
+      stripeRefundId: string | null
+      refundAmountCents: number | null
+      currency: string
+      message: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["plannerRefund"]>
+    composites: {}
+  }
+
+  type PlannerRefundGetPayload<S extends boolean | null | undefined | PlannerRefundDefaultArgs> = $Result.GetResult<Prisma.$PlannerRefundPayload, S>
+
+  type PlannerRefundCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PlannerRefundFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PlannerRefundCountAggregateInputType | true
+    }
+
+  export interface PlannerRefundDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PlannerRefund'], meta: { name: 'PlannerRefund' } }
+    /**
+     * Find zero or one PlannerRefund that matches the filter.
+     * @param {PlannerRefundFindUniqueArgs} args - Arguments to find a PlannerRefund
+     * @example
+     * // Get one PlannerRefund
+     * const plannerRefund = await prisma.plannerRefund.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PlannerRefundFindUniqueArgs>(args: SelectSubset<T, PlannerRefundFindUniqueArgs<ExtArgs>>): Prisma__PlannerRefundClient<$Result.GetResult<Prisma.$PlannerRefundPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PlannerRefund that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PlannerRefundFindUniqueOrThrowArgs} args - Arguments to find a PlannerRefund
+     * @example
+     * // Get one PlannerRefund
+     * const plannerRefund = await prisma.plannerRefund.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PlannerRefundFindUniqueOrThrowArgs>(args: SelectSubset<T, PlannerRefundFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PlannerRefundClient<$Result.GetResult<Prisma.$PlannerRefundPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PlannerRefund that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlannerRefundFindFirstArgs} args - Arguments to find a PlannerRefund
+     * @example
+     * // Get one PlannerRefund
+     * const plannerRefund = await prisma.plannerRefund.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PlannerRefundFindFirstArgs>(args?: SelectSubset<T, PlannerRefundFindFirstArgs<ExtArgs>>): Prisma__PlannerRefundClient<$Result.GetResult<Prisma.$PlannerRefundPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PlannerRefund that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlannerRefundFindFirstOrThrowArgs} args - Arguments to find a PlannerRefund
+     * @example
+     * // Get one PlannerRefund
+     * const plannerRefund = await prisma.plannerRefund.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PlannerRefundFindFirstOrThrowArgs>(args?: SelectSubset<T, PlannerRefundFindFirstOrThrowArgs<ExtArgs>>): Prisma__PlannerRefundClient<$Result.GetResult<Prisma.$PlannerRefundPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PlannerRefunds that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlannerRefundFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PlannerRefunds
+     * const plannerRefunds = await prisma.plannerRefund.findMany()
+     * 
+     * // Get first 10 PlannerRefunds
+     * const plannerRefunds = await prisma.plannerRefund.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const plannerRefundWithIdOnly = await prisma.plannerRefund.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PlannerRefundFindManyArgs>(args?: SelectSubset<T, PlannerRefundFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlannerRefundPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PlannerRefund.
+     * @param {PlannerRefundCreateArgs} args - Arguments to create a PlannerRefund.
+     * @example
+     * // Create one PlannerRefund
+     * const PlannerRefund = await prisma.plannerRefund.create({
+     *   data: {
+     *     // ... data to create a PlannerRefund
+     *   }
+     * })
+     * 
+     */
+    create<T extends PlannerRefundCreateArgs>(args: SelectSubset<T, PlannerRefundCreateArgs<ExtArgs>>): Prisma__PlannerRefundClient<$Result.GetResult<Prisma.$PlannerRefundPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PlannerRefunds.
+     * @param {PlannerRefundCreateManyArgs} args - Arguments to create many PlannerRefunds.
+     * @example
+     * // Create many PlannerRefunds
+     * const plannerRefund = await prisma.plannerRefund.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PlannerRefundCreateManyArgs>(args?: SelectSubset<T, PlannerRefundCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PlannerRefunds and returns the data saved in the database.
+     * @param {PlannerRefundCreateManyAndReturnArgs} args - Arguments to create many PlannerRefunds.
+     * @example
+     * // Create many PlannerRefunds
+     * const plannerRefund = await prisma.plannerRefund.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PlannerRefunds and only return the `id`
+     * const plannerRefundWithIdOnly = await prisma.plannerRefund.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PlannerRefundCreateManyAndReturnArgs>(args?: SelectSubset<T, PlannerRefundCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlannerRefundPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PlannerRefund.
+     * @param {PlannerRefundDeleteArgs} args - Arguments to delete one PlannerRefund.
+     * @example
+     * // Delete one PlannerRefund
+     * const PlannerRefund = await prisma.plannerRefund.delete({
+     *   where: {
+     *     // ... filter to delete one PlannerRefund
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PlannerRefundDeleteArgs>(args: SelectSubset<T, PlannerRefundDeleteArgs<ExtArgs>>): Prisma__PlannerRefundClient<$Result.GetResult<Prisma.$PlannerRefundPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PlannerRefund.
+     * @param {PlannerRefundUpdateArgs} args - Arguments to update one PlannerRefund.
+     * @example
+     * // Update one PlannerRefund
+     * const plannerRefund = await prisma.plannerRefund.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PlannerRefundUpdateArgs>(args: SelectSubset<T, PlannerRefundUpdateArgs<ExtArgs>>): Prisma__PlannerRefundClient<$Result.GetResult<Prisma.$PlannerRefundPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PlannerRefunds.
+     * @param {PlannerRefundDeleteManyArgs} args - Arguments to filter PlannerRefunds to delete.
+     * @example
+     * // Delete a few PlannerRefunds
+     * const { count } = await prisma.plannerRefund.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PlannerRefundDeleteManyArgs>(args?: SelectSubset<T, PlannerRefundDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PlannerRefunds.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlannerRefundUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PlannerRefunds
+     * const plannerRefund = await prisma.plannerRefund.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PlannerRefundUpdateManyArgs>(args: SelectSubset<T, PlannerRefundUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PlannerRefunds and returns the data updated in the database.
+     * @param {PlannerRefundUpdateManyAndReturnArgs} args - Arguments to update many PlannerRefunds.
+     * @example
+     * // Update many PlannerRefunds
+     * const plannerRefund = await prisma.plannerRefund.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PlannerRefunds and only return the `id`
+     * const plannerRefundWithIdOnly = await prisma.plannerRefund.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PlannerRefundUpdateManyAndReturnArgs>(args: SelectSubset<T, PlannerRefundUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PlannerRefundPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PlannerRefund.
+     * @param {PlannerRefundUpsertArgs} args - Arguments to update or create a PlannerRefund.
+     * @example
+     * // Update or create a PlannerRefund
+     * const plannerRefund = await prisma.plannerRefund.upsert({
+     *   create: {
+     *     // ... data to create a PlannerRefund
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PlannerRefund we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PlannerRefundUpsertArgs>(args: SelectSubset<T, PlannerRefundUpsertArgs<ExtArgs>>): Prisma__PlannerRefundClient<$Result.GetResult<Prisma.$PlannerRefundPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PlannerRefunds.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlannerRefundCountArgs} args - Arguments to filter PlannerRefunds to count.
+     * @example
+     * // Count the number of PlannerRefunds
+     * const count = await prisma.plannerRefund.count({
+     *   where: {
+     *     // ... the filter for the PlannerRefunds we want to count
+     *   }
+     * })
+    **/
+    count<T extends PlannerRefundCountArgs>(
+      args?: Subset<T, PlannerRefundCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PlannerRefundCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PlannerRefund.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlannerRefundAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PlannerRefundAggregateArgs>(args: Subset<T, PlannerRefundAggregateArgs>): Prisma.PrismaPromise<GetPlannerRefundAggregateType<T>>
+
+    /**
+     * Group by PlannerRefund.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PlannerRefundGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PlannerRefundGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PlannerRefundGroupByArgs['orderBy'] }
+        : { orderBy?: PlannerRefundGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PlannerRefundGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPlannerRefundGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PlannerRefund model
+   */
+  readonly fields: PlannerRefundFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PlannerRefund.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PlannerRefundClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PlannerRefund model
+   */
+  interface PlannerRefundFieldRefs {
+    readonly id: FieldRef<"PlannerRefund", 'BigInt'>
+    readonly sessionId: FieldRef<"PlannerRefund", 'BigInt'>
+    readonly userId: FieldRef<"PlannerRefund", 'String'>
+    readonly status: FieldRef<"PlannerRefund", 'String'>
+    readonly reason: FieldRef<"PlannerRefund", 'String'>
+    readonly stripeRefundId: FieldRef<"PlannerRefund", 'String'>
+    readonly refundAmountCents: FieldRef<"PlannerRefund", 'Int'>
+    readonly currency: FieldRef<"PlannerRefund", 'String'>
+    readonly message: FieldRef<"PlannerRefund", 'String'>
+    readonly createdAt: FieldRef<"PlannerRefund", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PlannerRefund findUnique
+   */
+  export type PlannerRefundFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlannerRefund
+     */
+    select?: PlannerRefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlannerRefund
+     */
+    omit?: PlannerRefundOmit<ExtArgs> | null
+    /**
+     * Filter, which PlannerRefund to fetch.
+     */
+    where: PlannerRefundWhereUniqueInput
+  }
+
+  /**
+   * PlannerRefund findUniqueOrThrow
+   */
+  export type PlannerRefundFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlannerRefund
+     */
+    select?: PlannerRefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlannerRefund
+     */
+    omit?: PlannerRefundOmit<ExtArgs> | null
+    /**
+     * Filter, which PlannerRefund to fetch.
+     */
+    where: PlannerRefundWhereUniqueInput
+  }
+
+  /**
+   * PlannerRefund findFirst
+   */
+  export type PlannerRefundFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlannerRefund
+     */
+    select?: PlannerRefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlannerRefund
+     */
+    omit?: PlannerRefundOmit<ExtArgs> | null
+    /**
+     * Filter, which PlannerRefund to fetch.
+     */
+    where?: PlannerRefundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlannerRefunds to fetch.
+     */
+    orderBy?: PlannerRefundOrderByWithRelationInput | PlannerRefundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PlannerRefunds.
+     */
+    cursor?: PlannerRefundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlannerRefunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlannerRefunds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PlannerRefunds.
+     */
+    distinct?: PlannerRefundScalarFieldEnum | PlannerRefundScalarFieldEnum[]
+  }
+
+  /**
+   * PlannerRefund findFirstOrThrow
+   */
+  export type PlannerRefundFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlannerRefund
+     */
+    select?: PlannerRefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlannerRefund
+     */
+    omit?: PlannerRefundOmit<ExtArgs> | null
+    /**
+     * Filter, which PlannerRefund to fetch.
+     */
+    where?: PlannerRefundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlannerRefunds to fetch.
+     */
+    orderBy?: PlannerRefundOrderByWithRelationInput | PlannerRefundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PlannerRefunds.
+     */
+    cursor?: PlannerRefundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlannerRefunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlannerRefunds.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PlannerRefunds.
+     */
+    distinct?: PlannerRefundScalarFieldEnum | PlannerRefundScalarFieldEnum[]
+  }
+
+  /**
+   * PlannerRefund findMany
+   */
+  export type PlannerRefundFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlannerRefund
+     */
+    select?: PlannerRefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlannerRefund
+     */
+    omit?: PlannerRefundOmit<ExtArgs> | null
+    /**
+     * Filter, which PlannerRefunds to fetch.
+     */
+    where?: PlannerRefundWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PlannerRefunds to fetch.
+     */
+    orderBy?: PlannerRefundOrderByWithRelationInput | PlannerRefundOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PlannerRefunds.
+     */
+    cursor?: PlannerRefundWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PlannerRefunds from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PlannerRefunds.
+     */
+    skip?: number
+    distinct?: PlannerRefundScalarFieldEnum | PlannerRefundScalarFieldEnum[]
+  }
+
+  /**
+   * PlannerRefund create
+   */
+  export type PlannerRefundCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlannerRefund
+     */
+    select?: PlannerRefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlannerRefund
+     */
+    omit?: PlannerRefundOmit<ExtArgs> | null
+    /**
+     * The data needed to create a PlannerRefund.
+     */
+    data: XOR<PlannerRefundCreateInput, PlannerRefundUncheckedCreateInput>
+  }
+
+  /**
+   * PlannerRefund createMany
+   */
+  export type PlannerRefundCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PlannerRefunds.
+     */
+    data: PlannerRefundCreateManyInput | PlannerRefundCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PlannerRefund createManyAndReturn
+   */
+  export type PlannerRefundCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlannerRefund
+     */
+    select?: PlannerRefundSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlannerRefund
+     */
+    omit?: PlannerRefundOmit<ExtArgs> | null
+    /**
+     * The data used to create many PlannerRefunds.
+     */
+    data: PlannerRefundCreateManyInput | PlannerRefundCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PlannerRefund update
+   */
+  export type PlannerRefundUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlannerRefund
+     */
+    select?: PlannerRefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlannerRefund
+     */
+    omit?: PlannerRefundOmit<ExtArgs> | null
+    /**
+     * The data needed to update a PlannerRefund.
+     */
+    data: XOR<PlannerRefundUpdateInput, PlannerRefundUncheckedUpdateInput>
+    /**
+     * Choose, which PlannerRefund to update.
+     */
+    where: PlannerRefundWhereUniqueInput
+  }
+
+  /**
+   * PlannerRefund updateMany
+   */
+  export type PlannerRefundUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PlannerRefunds.
+     */
+    data: XOR<PlannerRefundUpdateManyMutationInput, PlannerRefundUncheckedUpdateManyInput>
+    /**
+     * Filter which PlannerRefunds to update
+     */
+    where?: PlannerRefundWhereInput
+    /**
+     * Limit how many PlannerRefunds to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PlannerRefund updateManyAndReturn
+   */
+  export type PlannerRefundUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlannerRefund
+     */
+    select?: PlannerRefundSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlannerRefund
+     */
+    omit?: PlannerRefundOmit<ExtArgs> | null
+    /**
+     * The data used to update PlannerRefunds.
+     */
+    data: XOR<PlannerRefundUpdateManyMutationInput, PlannerRefundUncheckedUpdateManyInput>
+    /**
+     * Filter which PlannerRefunds to update
+     */
+    where?: PlannerRefundWhereInput
+    /**
+     * Limit how many PlannerRefunds to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PlannerRefund upsert
+   */
+  export type PlannerRefundUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlannerRefund
+     */
+    select?: PlannerRefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlannerRefund
+     */
+    omit?: PlannerRefundOmit<ExtArgs> | null
+    /**
+     * The filter to search for the PlannerRefund to update in case it exists.
+     */
+    where: PlannerRefundWhereUniqueInput
+    /**
+     * In case the PlannerRefund found by the `where` argument doesn't exist, create a new PlannerRefund with this data.
+     */
+    create: XOR<PlannerRefundCreateInput, PlannerRefundUncheckedCreateInput>
+    /**
+     * In case the PlannerRefund was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PlannerRefundUpdateInput, PlannerRefundUncheckedUpdateInput>
+  }
+
+  /**
+   * PlannerRefund delete
+   */
+  export type PlannerRefundDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlannerRefund
+     */
+    select?: PlannerRefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlannerRefund
+     */
+    omit?: PlannerRefundOmit<ExtArgs> | null
+    /**
+     * Filter which PlannerRefund to delete.
+     */
+    where: PlannerRefundWhereUniqueInput
+  }
+
+  /**
+   * PlannerRefund deleteMany
+   */
+  export type PlannerRefundDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PlannerRefunds to delete
+     */
+    where?: PlannerRefundWhereInput
+    /**
+     * Limit how many PlannerRefunds to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PlannerRefund without action
+   */
+  export type PlannerRefundDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlannerRefund
+     */
+    select?: PlannerRefundSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PlannerRefund
+     */
+    omit?: PlannerRefundOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -60748,6 +70899,16 @@ export namespace Prisma {
     koreaStayMonths: 'koreaStayMonths',
     currentEmployerMonths: 'currentEmployerMonths',
     depopulationArea: 'depopulationArea',
+    majorCategory: 'majorCategory',
+    currentRole: 'currentRole',
+    careerSummaryJson: 'careerSummaryJson',
+    koreaCareerMonths: 'koreaCareerMonths',
+    universityName: 'universityName',
+    universityNameEn: 'universityNameEn',
+    major: 'major',
+    graduationYear: 'graduationYear',
+    nationalLicenses: 'nationalLicenses',
+    internationalCerts: 'internationalCerts',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -60817,7 +70978,9 @@ export namespace Prisma {
     startDate: 'startDate',
     endDate: 'endDate',
     isCurrent: 'isCurrent',
-    description: 'description'
+    description: 'description',
+    occupationCategory: 'occupationCategory',
+    country: 'country'
   };
 
   export type ProfileCareerScalarFieldEnum = (typeof ProfileCareerScalarFieldEnum)[keyof typeof ProfileCareerScalarFieldEnum]
@@ -61372,6 +71535,15 @@ export namespace Prisma {
     cancelledAt: 'cancelledAt',
     rejectionReason: 'rejectionReason',
     resultNotifiedAt: 'resultNotifiedAt',
+    documentPassedAt: 'documentPassedAt',
+    interviewScheduledAt: 'interviewScheduledAt',
+    finalAcceptedAt: 'finalAcceptedAt',
+    rejectedAt: 'rejectedAt',
+    offeredSalary: 'offeredSalary',
+    expectedStartDate: 'expectedStartDate',
+    companyMessage: 'companyMessage',
+    visaGuideScenario: 'visaGuideScenario',
+    visaGuideGeneratedAt: 'visaGuideGeneratedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -61390,6 +71562,38 @@ export namespace Prisma {
   };
 
   export type InterviewSlotScalarFieldEnum = (typeof InterviewSlotScalarFieldEnum)[keyof typeof InterviewSlotScalarFieldEnum]
+
+
+  export const VisaChecklistTemplateScalarFieldEnum: {
+    id: 'id',
+    scenario: 'scenario',
+    visaTransition: 'visaTransition',
+    category: 'category',
+    itemOrder: 'itemOrder',
+    itemText: 'itemText',
+    isRequired: 'isRequired',
+    note: 'note',
+    isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type VisaChecklistTemplateScalarFieldEnum = (typeof VisaChecklistTemplateScalarFieldEnum)[keyof typeof VisaChecklistTemplateScalarFieldEnum]
+
+
+  export const VisaChecklistItemScalarFieldEnum: {
+    id: 'id',
+    applicationId: 'applicationId',
+    category: 'category',
+    itemText: 'itemText',
+    itemOrder: 'itemOrder',
+    isChecked: 'isChecked',
+    checkedAt: 'checkedAt',
+    checkedBy: 'checkedBy',
+    createdAt: 'createdAt'
+  };
+
+  export type VisaChecklistItemScalarFieldEnum = (typeof VisaChecklistItemScalarFieldEnum)[keyof typeof VisaChecklistItemScalarFieldEnum]
 
 
   export const JobScrapScalarFieldEnum: {
@@ -61437,6 +71641,16 @@ export namespace Prisma {
   export type ResumeScalarFieldEnum = (typeof ResumeScalarFieldEnum)[keyof typeof ResumeScalarFieldEnum]
 
 
+  export const TalentBookmarkScalarFieldEnum: {
+    id: 'id',
+    resumeId: 'resumeId',
+    userId: 'userId',
+    createdAt: 'createdAt'
+  };
+
+  export type TalentBookmarkScalarFieldEnum = (typeof TalentBookmarkScalarFieldEnum)[keyof typeof TalentBookmarkScalarFieldEnum]
+
+
   export const VisaVerificationScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -61468,6 +71682,16 @@ export namespace Prisma {
     convertedToSignup: 'convertedToSignup',
     convertedToPaid: 'convertedToPaid',
     userFeedbackScore: 'userFeedbackScore',
+    isPremium: 'isPremium',
+    isPremiumViewed: 'isPremiumViewed',
+    stripeSessionId: 'stripeSessionId',
+    stripePaidAt: 'stripePaidAt',
+    premiumResultJson: 'premiumResultJson',
+    premiumViewedAt: 'premiumViewedAt',
+    previousSessionId: 'previousSessionId',
+    refundPolicyAgreedAt: 'refundPolicyAgreedAt',
+    digitalContentAgreedAt: 'digitalContentAgreedAt',
+    privacyAgreedAt: 'privacyAgreedAt',
     createdAt: 'createdAt'
   };
 
@@ -61500,6 +71724,82 @@ export namespace Prisma {
   };
 
   export type ScoreCalibrationLogScalarFieldEnum = (typeof ScoreCalibrationLogScalarFieldEnum)[keyof typeof ScoreCalibrationLogScalarFieldEnum]
+
+
+  export const UniversityRankingScalarFieldEnum: {
+    id: 'id',
+    universityName: 'universityName',
+    universityNameEn: 'universityNameEn',
+    country: 'country',
+    qsRank: 'qsRank',
+    theRank: 'theRank',
+    rankTier: 'rankTier',
+    bonusScore: 'bonusScore',
+    updatedYear: 'updatedYear',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type UniversityRankingScalarFieldEnum = (typeof UniversityRankingScalarFieldEnum)[keyof typeof UniversityRankingScalarFieldEnum]
+
+
+  export const AdjacentMajorOccupationScalarFieldEnum: {
+    id: 'id',
+    categoryA: 'categoryA',
+    categoryB: 'categoryB',
+    alignBonus: 'alignBonus'
+  };
+
+  export type AdjacentMajorOccupationScalarFieldEnum = (typeof AdjacentMajorOccupationScalarFieldEnum)[keyof typeof AdjacentMajorOccupationScalarFieldEnum]
+
+
+  export const VisaIncomeReferenceScalarFieldEnum: {
+    id: 'id',
+    visaCode: 'visaCode',
+    visaNameKo: 'visaNameKo',
+    avgAnnualIncome: 'avgAnnualIncome',
+    incomeSource: 'incomeSource',
+    incomeNote: 'incomeNote',
+    updatedYear: 'updatedYear',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type VisaIncomeReferenceScalarFieldEnum = (typeof VisaIncomeReferenceScalarFieldEnum)[keyof typeof VisaIncomeReferenceScalarFieldEnum]
+
+
+  export const RediagnosisCouponScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    originalSessionId: 'originalSessionId',
+    couponCode: 'couponCode',
+    status: 'status',
+    issuedAt: 'issuedAt',
+    availableAt: 'availableAt',
+    expiresAt: 'expiresAt',
+    usedAt: 'usedAt',
+    usedSessionId: 'usedSessionId',
+    reminderSentAt: 'reminderSentAt',
+    createdAt: 'createdAt'
+  };
+
+  export type RediagnosisCouponScalarFieldEnum = (typeof RediagnosisCouponScalarFieldEnum)[keyof typeof RediagnosisCouponScalarFieldEnum]
+
+
+  export const PlannerRefundScalarFieldEnum: {
+    id: 'id',
+    sessionId: 'sessionId',
+    userId: 'userId',
+    status: 'status',
+    reason: 'reason',
+    stripeRefundId: 'stripeRefundId',
+    refundAmountCents: 'refundAmountCents',
+    currency: 'currency',
+    message: 'message',
+    createdAt: 'createdAt'
+  };
+
+  export type PlannerRefundScalarFieldEnum = (typeof PlannerRefundScalarFieldEnum)[keyof typeof PlannerRefundScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -62533,6 +72833,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFilter<"IndividualProfile"> | number
     currentEmployerMonths?: IntFilter<"IndividualProfile"> | number
     depopulationArea?: BoolFilter<"IndividualProfile"> | boolean
+    majorCategory?: StringNullableFilter<"IndividualProfile"> | string | null
+    currentRole?: StringNullableFilter<"IndividualProfile"> | string | null
+    careerSummaryJson?: JsonNullableFilter<"IndividualProfile">
+    koreaCareerMonths?: IntFilter<"IndividualProfile"> | number
+    universityName?: StringNullableFilter<"IndividualProfile"> | string | null
+    universityNameEn?: StringNullableFilter<"IndividualProfile"> | string | null
+    major?: StringNullableFilter<"IndividualProfile"> | string | null
+    graduationYear?: IntNullableFilter<"IndividualProfile"> | number | null
+    nationalLicenses?: JsonNullableFilter<"IndividualProfile">
+    internationalCerts?: JsonNullableFilter<"IndividualProfile">
     createdAt?: DateTimeFilter<"IndividualProfile"> | Date | string
     updatedAt?: DateTimeFilter<"IndividualProfile"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -62585,6 +72895,16 @@ export namespace Prisma {
     koreaStayMonths?: SortOrder
     currentEmployerMonths?: SortOrder
     depopulationArea?: SortOrder
+    majorCategory?: SortOrderInput | SortOrder
+    currentRole?: SortOrderInput | SortOrder
+    careerSummaryJson?: SortOrderInput | SortOrder
+    koreaCareerMonths?: SortOrder
+    universityName?: SortOrderInput | SortOrder
+    universityNameEn?: SortOrderInput | SortOrder
+    major?: SortOrderInput | SortOrder
+    graduationYear?: SortOrderInput | SortOrder
+    nationalLicenses?: SortOrderInput | SortOrder
+    internationalCerts?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -62640,6 +72960,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFilter<"IndividualProfile"> | number
     currentEmployerMonths?: IntFilter<"IndividualProfile"> | number
     depopulationArea?: BoolFilter<"IndividualProfile"> | boolean
+    majorCategory?: StringNullableFilter<"IndividualProfile"> | string | null
+    currentRole?: StringNullableFilter<"IndividualProfile"> | string | null
+    careerSummaryJson?: JsonNullableFilter<"IndividualProfile">
+    koreaCareerMonths?: IntFilter<"IndividualProfile"> | number
+    universityName?: StringNullableFilter<"IndividualProfile"> | string | null
+    universityNameEn?: StringNullableFilter<"IndividualProfile"> | string | null
+    major?: StringNullableFilter<"IndividualProfile"> | string | null
+    graduationYear?: IntNullableFilter<"IndividualProfile"> | number | null
+    nationalLicenses?: JsonNullableFilter<"IndividualProfile">
+    internationalCerts?: JsonNullableFilter<"IndividualProfile">
     createdAt?: DateTimeFilter<"IndividualProfile"> | Date | string
     updatedAt?: DateTimeFilter<"IndividualProfile"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -62692,6 +73022,16 @@ export namespace Prisma {
     koreaStayMonths?: SortOrder
     currentEmployerMonths?: SortOrder
     depopulationArea?: SortOrder
+    majorCategory?: SortOrderInput | SortOrder
+    currentRole?: SortOrderInput | SortOrder
+    careerSummaryJson?: SortOrderInput | SortOrder
+    koreaCareerMonths?: SortOrder
+    universityName?: SortOrderInput | SortOrder
+    universityNameEn?: SortOrderInput | SortOrder
+    major?: SortOrderInput | SortOrder
+    graduationYear?: SortOrderInput | SortOrder
+    nationalLicenses?: SortOrderInput | SortOrder
+    internationalCerts?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: IndividualProfileCountOrderByAggregateInput
@@ -62746,6 +73086,16 @@ export namespace Prisma {
     koreaStayMonths?: IntWithAggregatesFilter<"IndividualProfile"> | number
     currentEmployerMonths?: IntWithAggregatesFilter<"IndividualProfile"> | number
     depopulationArea?: BoolWithAggregatesFilter<"IndividualProfile"> | boolean
+    majorCategory?: StringNullableWithAggregatesFilter<"IndividualProfile"> | string | null
+    currentRole?: StringNullableWithAggregatesFilter<"IndividualProfile"> | string | null
+    careerSummaryJson?: JsonNullableWithAggregatesFilter<"IndividualProfile">
+    koreaCareerMonths?: IntWithAggregatesFilter<"IndividualProfile"> | number
+    universityName?: StringNullableWithAggregatesFilter<"IndividualProfile"> | string | null
+    universityNameEn?: StringNullableWithAggregatesFilter<"IndividualProfile"> | string | null
+    major?: StringNullableWithAggregatesFilter<"IndividualProfile"> | string | null
+    graduationYear?: IntNullableWithAggregatesFilter<"IndividualProfile"> | number | null
+    nationalLicenses?: JsonNullableWithAggregatesFilter<"IndividualProfile">
+    internationalCerts?: JsonNullableWithAggregatesFilter<"IndividualProfile">
     createdAt?: DateTimeWithAggregatesFilter<"IndividualProfile"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"IndividualProfile"> | Date | string
   }
@@ -63041,6 +73391,8 @@ export namespace Prisma {
     endDate?: DateTimeNullableFilter<"ProfileCareer"> | Date | string | null
     isCurrent?: BoolFilter<"ProfileCareer"> | boolean
     description?: StringNullableFilter<"ProfileCareer"> | string | null
+    occupationCategory?: StringNullableFilter<"ProfileCareer"> | string | null
+    country?: StringFilter<"ProfileCareer"> | string
     individual?: XOR<IndividualProfileScalarRelationFilter, IndividualProfileWhereInput>
   }
 
@@ -63054,6 +73406,8 @@ export namespace Prisma {
     endDate?: SortOrderInput | SortOrder
     isCurrent?: SortOrder
     description?: SortOrderInput | SortOrder
+    occupationCategory?: SortOrderInput | SortOrder
+    country?: SortOrder
     individual?: IndividualProfileOrderByWithRelationInput
   }
 
@@ -63070,6 +73424,8 @@ export namespace Prisma {
     endDate?: DateTimeNullableFilter<"ProfileCareer"> | Date | string | null
     isCurrent?: BoolFilter<"ProfileCareer"> | boolean
     description?: StringNullableFilter<"ProfileCareer"> | string | null
+    occupationCategory?: StringNullableFilter<"ProfileCareer"> | string | null
+    country?: StringFilter<"ProfileCareer"> | string
     individual?: XOR<IndividualProfileScalarRelationFilter, IndividualProfileWhereInput>
   }, "careerId">
 
@@ -63083,6 +73439,8 @@ export namespace Prisma {
     endDate?: SortOrderInput | SortOrder
     isCurrent?: SortOrder
     description?: SortOrderInput | SortOrder
+    occupationCategory?: SortOrderInput | SortOrder
+    country?: SortOrder
     _count?: ProfileCareerCountOrderByAggregateInput
     _avg?: ProfileCareerAvgOrderByAggregateInput
     _max?: ProfileCareerMaxOrderByAggregateInput
@@ -63103,6 +73461,8 @@ export namespace Prisma {
     endDate?: DateTimeNullableWithAggregatesFilter<"ProfileCareer"> | Date | string | null
     isCurrent?: BoolWithAggregatesFilter<"ProfileCareer"> | boolean
     description?: StringNullableWithAggregatesFilter<"ProfileCareer"> | string | null
+    occupationCategory?: StringNullableWithAggregatesFilter<"ProfileCareer"> | string | null
+    country?: StringWithAggregatesFilter<"ProfileCareer"> | string
   }
 
   export type ProfileLanguageWhereInput = {
@@ -65844,10 +76204,20 @@ export namespace Prisma {
     cancelledAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     rejectionReason?: StringNullableFilter<"JobApplication"> | string | null
     resultNotifiedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    documentPassedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewScheduledAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    finalAcceptedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    rejectedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    offeredSalary?: IntNullableFilter<"JobApplication"> | number | null
+    expectedStartDate?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    companyMessage?: StringNullableFilter<"JobApplication"> | string | null
+    visaGuideScenario?: StringNullableFilter<"JobApplication"> | string | null
+    visaGuideGeneratedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     createdAt?: DateTimeFilter<"JobApplication"> | Date | string
     updatedAt?: DateTimeFilter<"JobApplication"> | Date | string
     job?: XOR<JobPostingScalarRelationFilter, JobPostingWhereInput>
     selectedSlot?: XOR<InterviewSlotNullableScalarRelationFilter, InterviewSlotWhereInput> | null
+    checklistItems?: VisaChecklistItemListRelationFilter
   }
 
   export type JobApplicationOrderByWithRelationInput = {
@@ -65877,10 +76247,20 @@ export namespace Prisma {
     cancelledAt?: SortOrderInput | SortOrder
     rejectionReason?: SortOrderInput | SortOrder
     resultNotifiedAt?: SortOrderInput | SortOrder
+    documentPassedAt?: SortOrderInput | SortOrder
+    interviewScheduledAt?: SortOrderInput | SortOrder
+    finalAcceptedAt?: SortOrderInput | SortOrder
+    rejectedAt?: SortOrderInput | SortOrder
+    offeredSalary?: SortOrderInput | SortOrder
+    expectedStartDate?: SortOrderInput | SortOrder
+    companyMessage?: SortOrderInput | SortOrder
+    visaGuideScenario?: SortOrderInput | SortOrder
+    visaGuideGeneratedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     job?: JobPostingOrderByWithRelationInput
     selectedSlot?: InterviewSlotOrderByWithRelationInput
+    checklistItems?: VisaChecklistItemOrderByRelationAggregateInput
   }
 
   export type JobApplicationWhereUniqueInput = Prisma.AtLeast<{
@@ -65914,10 +76294,20 @@ export namespace Prisma {
     cancelledAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     rejectionReason?: StringNullableFilter<"JobApplication"> | string | null
     resultNotifiedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    documentPassedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewScheduledAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    finalAcceptedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    rejectedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    offeredSalary?: IntNullableFilter<"JobApplication"> | number | null
+    expectedStartDate?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    companyMessage?: StringNullableFilter<"JobApplication"> | string | null
+    visaGuideScenario?: StringNullableFilter<"JobApplication"> | string | null
+    visaGuideGeneratedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     createdAt?: DateTimeFilter<"JobApplication"> | Date | string
     updatedAt?: DateTimeFilter<"JobApplication"> | Date | string
     job?: XOR<JobPostingScalarRelationFilter, JobPostingWhereInput>
     selectedSlot?: XOR<InterviewSlotNullableScalarRelationFilter, InterviewSlotWhereInput> | null
+    checklistItems?: VisaChecklistItemListRelationFilter
   }, "id" | "selectedSlotId" | "jobId_applicantId">
 
   export type JobApplicationOrderByWithAggregationInput = {
@@ -65947,6 +76337,15 @@ export namespace Prisma {
     cancelledAt?: SortOrderInput | SortOrder
     rejectionReason?: SortOrderInput | SortOrder
     resultNotifiedAt?: SortOrderInput | SortOrder
+    documentPassedAt?: SortOrderInput | SortOrder
+    interviewScheduledAt?: SortOrderInput | SortOrder
+    finalAcceptedAt?: SortOrderInput | SortOrder
+    rejectedAt?: SortOrderInput | SortOrder
+    offeredSalary?: SortOrderInput | SortOrder
+    expectedStartDate?: SortOrderInput | SortOrder
+    companyMessage?: SortOrderInput | SortOrder
+    visaGuideScenario?: SortOrderInput | SortOrder
+    visaGuideGeneratedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: JobApplicationCountOrderByAggregateInput
@@ -65986,6 +76385,15 @@ export namespace Prisma {
     cancelledAt?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
     rejectionReason?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
     resultNotifiedAt?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
+    documentPassedAt?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
+    interviewScheduledAt?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
+    finalAcceptedAt?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
+    rejectedAt?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
+    offeredSalary?: IntNullableWithAggregatesFilter<"JobApplication"> | number | null
+    expectedStartDate?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
+    companyMessage?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
+    visaGuideScenario?: StringNullableWithAggregatesFilter<"JobApplication"> | string | null
+    visaGuideGeneratedAt?: DateTimeNullableWithAggregatesFilter<"JobApplication"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"JobApplication"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"JobApplication"> | Date | string
   }
@@ -66058,6 +76466,168 @@ export namespace Prisma {
     isBooked?: BoolWithAggregatesFilter<"InterviewSlot"> | boolean
     location?: StringNullableWithAggregatesFilter<"InterviewSlot"> | string | null
     notes?: StringNullableWithAggregatesFilter<"InterviewSlot"> | string | null
+  }
+
+  export type VisaChecklistTemplateWhereInput = {
+    AND?: VisaChecklistTemplateWhereInput | VisaChecklistTemplateWhereInput[]
+    OR?: VisaChecklistTemplateWhereInput[]
+    NOT?: VisaChecklistTemplateWhereInput | VisaChecklistTemplateWhereInput[]
+    id?: BigIntFilter<"VisaChecklistTemplate"> | bigint | number
+    scenario?: StringFilter<"VisaChecklistTemplate"> | string
+    visaTransition?: StringFilter<"VisaChecklistTemplate"> | string
+    category?: StringFilter<"VisaChecklistTemplate"> | string
+    itemOrder?: IntFilter<"VisaChecklistTemplate"> | number
+    itemText?: StringFilter<"VisaChecklistTemplate"> | string
+    isRequired?: BoolFilter<"VisaChecklistTemplate"> | boolean
+    note?: StringNullableFilter<"VisaChecklistTemplate"> | string | null
+    isActive?: BoolFilter<"VisaChecklistTemplate"> | boolean
+    createdAt?: DateTimeFilter<"VisaChecklistTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"VisaChecklistTemplate"> | Date | string
+  }
+
+  export type VisaChecklistTemplateOrderByWithRelationInput = {
+    id?: SortOrder
+    scenario?: SortOrder
+    visaTransition?: SortOrder
+    category?: SortOrder
+    itemOrder?: SortOrder
+    itemText?: SortOrder
+    isRequired?: SortOrder
+    note?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type VisaChecklistTemplateWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    scenario_category_itemOrder?: VisaChecklistTemplateScenarioCategoryItemOrderCompoundUniqueInput
+    AND?: VisaChecklistTemplateWhereInput | VisaChecklistTemplateWhereInput[]
+    OR?: VisaChecklistTemplateWhereInput[]
+    NOT?: VisaChecklistTemplateWhereInput | VisaChecklistTemplateWhereInput[]
+    scenario?: StringFilter<"VisaChecklistTemplate"> | string
+    visaTransition?: StringFilter<"VisaChecklistTemplate"> | string
+    category?: StringFilter<"VisaChecklistTemplate"> | string
+    itemOrder?: IntFilter<"VisaChecklistTemplate"> | number
+    itemText?: StringFilter<"VisaChecklistTemplate"> | string
+    isRequired?: BoolFilter<"VisaChecklistTemplate"> | boolean
+    note?: StringNullableFilter<"VisaChecklistTemplate"> | string | null
+    isActive?: BoolFilter<"VisaChecklistTemplate"> | boolean
+    createdAt?: DateTimeFilter<"VisaChecklistTemplate"> | Date | string
+    updatedAt?: DateTimeFilter<"VisaChecklistTemplate"> | Date | string
+  }, "id" | "scenario_category_itemOrder">
+
+  export type VisaChecklistTemplateOrderByWithAggregationInput = {
+    id?: SortOrder
+    scenario?: SortOrder
+    visaTransition?: SortOrder
+    category?: SortOrder
+    itemOrder?: SortOrder
+    itemText?: SortOrder
+    isRequired?: SortOrder
+    note?: SortOrderInput | SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: VisaChecklistTemplateCountOrderByAggregateInput
+    _avg?: VisaChecklistTemplateAvgOrderByAggregateInput
+    _max?: VisaChecklistTemplateMaxOrderByAggregateInput
+    _min?: VisaChecklistTemplateMinOrderByAggregateInput
+    _sum?: VisaChecklistTemplateSumOrderByAggregateInput
+  }
+
+  export type VisaChecklistTemplateScalarWhereWithAggregatesInput = {
+    AND?: VisaChecklistTemplateScalarWhereWithAggregatesInput | VisaChecklistTemplateScalarWhereWithAggregatesInput[]
+    OR?: VisaChecklistTemplateScalarWhereWithAggregatesInput[]
+    NOT?: VisaChecklistTemplateScalarWhereWithAggregatesInput | VisaChecklistTemplateScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"VisaChecklistTemplate"> | bigint | number
+    scenario?: StringWithAggregatesFilter<"VisaChecklistTemplate"> | string
+    visaTransition?: StringWithAggregatesFilter<"VisaChecklistTemplate"> | string
+    category?: StringWithAggregatesFilter<"VisaChecklistTemplate"> | string
+    itemOrder?: IntWithAggregatesFilter<"VisaChecklistTemplate"> | number
+    itemText?: StringWithAggregatesFilter<"VisaChecklistTemplate"> | string
+    isRequired?: BoolWithAggregatesFilter<"VisaChecklistTemplate"> | boolean
+    note?: StringNullableWithAggregatesFilter<"VisaChecklistTemplate"> | string | null
+    isActive?: BoolWithAggregatesFilter<"VisaChecklistTemplate"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"VisaChecklistTemplate"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"VisaChecklistTemplate"> | Date | string
+  }
+
+  export type VisaChecklistItemWhereInput = {
+    AND?: VisaChecklistItemWhereInput | VisaChecklistItemWhereInput[]
+    OR?: VisaChecklistItemWhereInput[]
+    NOT?: VisaChecklistItemWhereInput | VisaChecklistItemWhereInput[]
+    id?: BigIntFilter<"VisaChecklistItem"> | bigint | number
+    applicationId?: BigIntFilter<"VisaChecklistItem"> | bigint | number
+    category?: StringFilter<"VisaChecklistItem"> | string
+    itemText?: StringFilter<"VisaChecklistItem"> | string
+    itemOrder?: IntFilter<"VisaChecklistItem"> | number
+    isChecked?: BoolFilter<"VisaChecklistItem"> | boolean
+    checkedAt?: DateTimeNullableFilter<"VisaChecklistItem"> | Date | string | null
+    checkedBy?: StringNullableFilter<"VisaChecklistItem"> | string | null
+    createdAt?: DateTimeFilter<"VisaChecklistItem"> | Date | string
+    application?: XOR<JobApplicationScalarRelationFilter, JobApplicationWhereInput>
+  }
+
+  export type VisaChecklistItemOrderByWithRelationInput = {
+    id?: SortOrder
+    applicationId?: SortOrder
+    category?: SortOrder
+    itemText?: SortOrder
+    itemOrder?: SortOrder
+    isChecked?: SortOrder
+    checkedAt?: SortOrderInput | SortOrder
+    checkedBy?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    application?: JobApplicationOrderByWithRelationInput
+  }
+
+  export type VisaChecklistItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    AND?: VisaChecklistItemWhereInput | VisaChecklistItemWhereInput[]
+    OR?: VisaChecklistItemWhereInput[]
+    NOT?: VisaChecklistItemWhereInput | VisaChecklistItemWhereInput[]
+    applicationId?: BigIntFilter<"VisaChecklistItem"> | bigint | number
+    category?: StringFilter<"VisaChecklistItem"> | string
+    itemText?: StringFilter<"VisaChecklistItem"> | string
+    itemOrder?: IntFilter<"VisaChecklistItem"> | number
+    isChecked?: BoolFilter<"VisaChecklistItem"> | boolean
+    checkedAt?: DateTimeNullableFilter<"VisaChecklistItem"> | Date | string | null
+    checkedBy?: StringNullableFilter<"VisaChecklistItem"> | string | null
+    createdAt?: DateTimeFilter<"VisaChecklistItem"> | Date | string
+    application?: XOR<JobApplicationScalarRelationFilter, JobApplicationWhereInput>
+  }, "id">
+
+  export type VisaChecklistItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    applicationId?: SortOrder
+    category?: SortOrder
+    itemText?: SortOrder
+    itemOrder?: SortOrder
+    isChecked?: SortOrder
+    checkedAt?: SortOrderInput | SortOrder
+    checkedBy?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: VisaChecklistItemCountOrderByAggregateInput
+    _avg?: VisaChecklistItemAvgOrderByAggregateInput
+    _max?: VisaChecklistItemMaxOrderByAggregateInput
+    _min?: VisaChecklistItemMinOrderByAggregateInput
+    _sum?: VisaChecklistItemSumOrderByAggregateInput
+  }
+
+  export type VisaChecklistItemScalarWhereWithAggregatesInput = {
+    AND?: VisaChecklistItemScalarWhereWithAggregatesInput | VisaChecklistItemScalarWhereWithAggregatesInput[]
+    OR?: VisaChecklistItemScalarWhereWithAggregatesInput[]
+    NOT?: VisaChecklistItemScalarWhereWithAggregatesInput | VisaChecklistItemScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"VisaChecklistItem"> | bigint | number
+    applicationId?: BigIntWithAggregatesFilter<"VisaChecklistItem"> | bigint | number
+    category?: StringWithAggregatesFilter<"VisaChecklistItem"> | string
+    itemText?: StringWithAggregatesFilter<"VisaChecklistItem"> | string
+    itemOrder?: IntWithAggregatesFilter<"VisaChecklistItem"> | number
+    isChecked?: BoolWithAggregatesFilter<"VisaChecklistItem"> | boolean
+    checkedAt?: DateTimeNullableWithAggregatesFilter<"VisaChecklistItem"> | Date | string | null
+    checkedBy?: StringNullableWithAggregatesFilter<"VisaChecklistItem"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"VisaChecklistItem"> | Date | string
   }
 
   export type JobScrapWhereInput = {
@@ -66198,6 +76768,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Resume"> | Date | string
     updatedAt?: DateTimeFilter<"Resume"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    bookmarks?: TalentBookmarkListRelationFilter
   }
 
   export type ResumeOrderByWithRelationInput = {
@@ -66218,6 +76789,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
+    bookmarks?: TalentBookmarkOrderByRelationAggregateInput
   }
 
   export type ResumeWhereUniqueInput = Prisma.AtLeast<{
@@ -66241,6 +76813,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Resume"> | Date | string
     updatedAt?: DateTimeFilter<"Resume"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    bookmarks?: TalentBookmarkListRelationFilter
   }, "id" | "userId">
 
   export type ResumeOrderByWithAggregationInput = {
@@ -66287,6 +76860,59 @@ export namespace Prisma {
     isComplete?: BoolWithAggregatesFilter<"Resume"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Resume"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Resume"> | Date | string
+  }
+
+  export type TalentBookmarkWhereInput = {
+    AND?: TalentBookmarkWhereInput | TalentBookmarkWhereInput[]
+    OR?: TalentBookmarkWhereInput[]
+    NOT?: TalentBookmarkWhereInput | TalentBookmarkWhereInput[]
+    id?: BigIntFilter<"TalentBookmark"> | bigint | number
+    resumeId?: BigIntFilter<"TalentBookmark"> | bigint | number
+    userId?: StringFilter<"TalentBookmark"> | string
+    createdAt?: DateTimeFilter<"TalentBookmark"> | Date | string
+    resume?: XOR<ResumeScalarRelationFilter, ResumeWhereInput>
+  }
+
+  export type TalentBookmarkOrderByWithRelationInput = {
+    id?: SortOrder
+    resumeId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    resume?: ResumeOrderByWithRelationInput
+  }
+
+  export type TalentBookmarkWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    resumeId_userId?: TalentBookmarkResumeIdUserIdCompoundUniqueInput
+    AND?: TalentBookmarkWhereInput | TalentBookmarkWhereInput[]
+    OR?: TalentBookmarkWhereInput[]
+    NOT?: TalentBookmarkWhereInput | TalentBookmarkWhereInput[]
+    resumeId?: BigIntFilter<"TalentBookmark"> | bigint | number
+    userId?: StringFilter<"TalentBookmark"> | string
+    createdAt?: DateTimeFilter<"TalentBookmark"> | Date | string
+    resume?: XOR<ResumeScalarRelationFilter, ResumeWhereInput>
+  }, "id" | "resumeId_userId">
+
+  export type TalentBookmarkOrderByWithAggregationInput = {
+    id?: SortOrder
+    resumeId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    _count?: TalentBookmarkCountOrderByAggregateInput
+    _avg?: TalentBookmarkAvgOrderByAggregateInput
+    _max?: TalentBookmarkMaxOrderByAggregateInput
+    _min?: TalentBookmarkMinOrderByAggregateInput
+    _sum?: TalentBookmarkSumOrderByAggregateInput
+  }
+
+  export type TalentBookmarkScalarWhereWithAggregatesInput = {
+    AND?: TalentBookmarkScalarWhereWithAggregatesInput | TalentBookmarkScalarWhereWithAggregatesInput[]
+    OR?: TalentBookmarkScalarWhereWithAggregatesInput[]
+    NOT?: TalentBookmarkScalarWhereWithAggregatesInput | TalentBookmarkScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"TalentBookmark"> | bigint | number
+    resumeId?: BigIntWithAggregatesFilter<"TalentBookmark"> | bigint | number
+    userId?: StringWithAggregatesFilter<"TalentBookmark"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"TalentBookmark"> | Date | string
   }
 
   export type VisaVerificationWhereInput = {
@@ -66405,9 +77031,20 @@ export namespace Prisma {
     convertedToSignup?: BoolFilter<"DiagnosisSession"> | boolean
     convertedToPaid?: BoolFilter<"DiagnosisSession"> | boolean
     userFeedbackScore?: IntNullableFilter<"DiagnosisSession"> | number | null
+    isPremium?: BoolFilter<"DiagnosisSession"> | boolean
+    isPremiumViewed?: BoolFilter<"DiagnosisSession"> | boolean
+    stripeSessionId?: StringNullableFilter<"DiagnosisSession"> | string | null
+    stripePaidAt?: DateTimeNullableFilter<"DiagnosisSession"> | Date | string | null
+    premiumResultJson?: JsonNullableFilter<"DiagnosisSession">
+    premiumViewedAt?: DateTimeNullableFilter<"DiagnosisSession"> | Date | string | null
+    previousSessionId?: BigIntNullableFilter<"DiagnosisSession"> | bigint | number | null
+    refundPolicyAgreedAt?: DateTimeNullableFilter<"DiagnosisSession"> | Date | string | null
+    digitalContentAgreedAt?: DateTimeNullableFilter<"DiagnosisSession"> | Date | string | null
+    privacyAgreedAt?: DateTimeNullableFilter<"DiagnosisSession"> | Date | string | null
     createdAt?: DateTimeFilter<"DiagnosisSession"> | Date | string
     individual?: XOR<IndividualProfileNullableScalarRelationFilter, IndividualProfileWhereInput> | null
     clicks?: DiagnosisPathwayClickListRelationFilter
+    rediagnosisCoupon?: XOR<RediagnosisCouponNullableScalarRelationFilter, RediagnosisCouponWhereInput> | null
   }
 
   export type DiagnosisSessionOrderByWithRelationInput = {
@@ -66421,9 +77058,20 @@ export namespace Prisma {
     convertedToSignup?: SortOrder
     convertedToPaid?: SortOrder
     userFeedbackScore?: SortOrderInput | SortOrder
+    isPremium?: SortOrder
+    isPremiumViewed?: SortOrder
+    stripeSessionId?: SortOrderInput | SortOrder
+    stripePaidAt?: SortOrderInput | SortOrder
+    premiumResultJson?: SortOrderInput | SortOrder
+    premiumViewedAt?: SortOrderInput | SortOrder
+    previousSessionId?: SortOrderInput | SortOrder
+    refundPolicyAgreedAt?: SortOrderInput | SortOrder
+    digitalContentAgreedAt?: SortOrderInput | SortOrder
+    privacyAgreedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     individual?: IndividualProfileOrderByWithRelationInput
     clicks?: DiagnosisPathwayClickOrderByRelationAggregateInput
+    rediagnosisCoupon?: RediagnosisCouponOrderByWithRelationInput
   }
 
   export type DiagnosisSessionWhereUniqueInput = Prisma.AtLeast<{
@@ -66440,9 +77088,20 @@ export namespace Prisma {
     convertedToSignup?: BoolFilter<"DiagnosisSession"> | boolean
     convertedToPaid?: BoolFilter<"DiagnosisSession"> | boolean
     userFeedbackScore?: IntNullableFilter<"DiagnosisSession"> | number | null
+    isPremium?: BoolFilter<"DiagnosisSession"> | boolean
+    isPremiumViewed?: BoolFilter<"DiagnosisSession"> | boolean
+    stripeSessionId?: StringNullableFilter<"DiagnosisSession"> | string | null
+    stripePaidAt?: DateTimeNullableFilter<"DiagnosisSession"> | Date | string | null
+    premiumResultJson?: JsonNullableFilter<"DiagnosisSession">
+    premiumViewedAt?: DateTimeNullableFilter<"DiagnosisSession"> | Date | string | null
+    previousSessionId?: BigIntNullableFilter<"DiagnosisSession"> | bigint | number | null
+    refundPolicyAgreedAt?: DateTimeNullableFilter<"DiagnosisSession"> | Date | string | null
+    digitalContentAgreedAt?: DateTimeNullableFilter<"DiagnosisSession"> | Date | string | null
+    privacyAgreedAt?: DateTimeNullableFilter<"DiagnosisSession"> | Date | string | null
     createdAt?: DateTimeFilter<"DiagnosisSession"> | Date | string
     individual?: XOR<IndividualProfileNullableScalarRelationFilter, IndividualProfileWhereInput> | null
     clicks?: DiagnosisPathwayClickListRelationFilter
+    rediagnosisCoupon?: XOR<RediagnosisCouponNullableScalarRelationFilter, RediagnosisCouponWhereInput> | null
   }, "sessionId">
 
   export type DiagnosisSessionOrderByWithAggregationInput = {
@@ -66456,6 +77115,16 @@ export namespace Prisma {
     convertedToSignup?: SortOrder
     convertedToPaid?: SortOrder
     userFeedbackScore?: SortOrderInput | SortOrder
+    isPremium?: SortOrder
+    isPremiumViewed?: SortOrder
+    stripeSessionId?: SortOrderInput | SortOrder
+    stripePaidAt?: SortOrderInput | SortOrder
+    premiumResultJson?: SortOrderInput | SortOrder
+    premiumViewedAt?: SortOrderInput | SortOrder
+    previousSessionId?: SortOrderInput | SortOrder
+    refundPolicyAgreedAt?: SortOrderInput | SortOrder
+    digitalContentAgreedAt?: SortOrderInput | SortOrder
+    privacyAgreedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: DiagnosisSessionCountOrderByAggregateInput
     _avg?: DiagnosisSessionAvgOrderByAggregateInput
@@ -66478,6 +77147,16 @@ export namespace Prisma {
     convertedToSignup?: BoolWithAggregatesFilter<"DiagnosisSession"> | boolean
     convertedToPaid?: BoolWithAggregatesFilter<"DiagnosisSession"> | boolean
     userFeedbackScore?: IntNullableWithAggregatesFilter<"DiagnosisSession"> | number | null
+    isPremium?: BoolWithAggregatesFilter<"DiagnosisSession"> | boolean
+    isPremiumViewed?: BoolWithAggregatesFilter<"DiagnosisSession"> | boolean
+    stripeSessionId?: StringNullableWithAggregatesFilter<"DiagnosisSession"> | string | null
+    stripePaidAt?: DateTimeNullableWithAggregatesFilter<"DiagnosisSession"> | Date | string | null
+    premiumResultJson?: JsonNullableWithAggregatesFilter<"DiagnosisSession">
+    premiumViewedAt?: DateTimeNullableWithAggregatesFilter<"DiagnosisSession"> | Date | string | null
+    previousSessionId?: BigIntNullableWithAggregatesFilter<"DiagnosisSession"> | bigint | number | null
+    refundPolicyAgreedAt?: DateTimeNullableWithAggregatesFilter<"DiagnosisSession"> | Date | string | null
+    digitalContentAgreedAt?: DateTimeNullableWithAggregatesFilter<"DiagnosisSession"> | Date | string | null
+    privacyAgreedAt?: DateTimeNullableWithAggregatesFilter<"DiagnosisSession"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"DiagnosisSession"> | Date | string
   }
 
@@ -66620,6 +77299,386 @@ export namespace Prisma {
     evidence?: JsonNullableWithAggregatesFilter<"ScoreCalibrationLog">
     changedBy?: StringNullableWithAggregatesFilter<"ScoreCalibrationLog"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"ScoreCalibrationLog"> | Date | string
+  }
+
+  export type UniversityRankingWhereInput = {
+    AND?: UniversityRankingWhereInput | UniversityRankingWhereInput[]
+    OR?: UniversityRankingWhereInput[]
+    NOT?: UniversityRankingWhereInput | UniversityRankingWhereInput[]
+    id?: BigIntFilter<"UniversityRanking"> | bigint | number
+    universityName?: StringFilter<"UniversityRanking"> | string
+    universityNameEn?: StringFilter<"UniversityRanking"> | string
+    country?: StringFilter<"UniversityRanking"> | string
+    qsRank?: IntNullableFilter<"UniversityRanking"> | number | null
+    theRank?: IntNullableFilter<"UniversityRanking"> | number | null
+    rankTier?: StringFilter<"UniversityRanking"> | string
+    bonusScore?: FloatFilter<"UniversityRanking"> | number
+    updatedYear?: IntFilter<"UniversityRanking"> | number
+    createdAt?: DateTimeFilter<"UniversityRanking"> | Date | string
+    updatedAt?: DateTimeFilter<"UniversityRanking"> | Date | string
+  }
+
+  export type UniversityRankingOrderByWithRelationInput = {
+    id?: SortOrder
+    universityName?: SortOrder
+    universityNameEn?: SortOrder
+    country?: SortOrder
+    qsRank?: SortOrderInput | SortOrder
+    theRank?: SortOrderInput | SortOrder
+    rankTier?: SortOrder
+    bonusScore?: SortOrder
+    updatedYear?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UniversityRankingWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    universityName_country?: UniversityRankingUniversityNameCountryCompoundUniqueInput
+    AND?: UniversityRankingWhereInput | UniversityRankingWhereInput[]
+    OR?: UniversityRankingWhereInput[]
+    NOT?: UniversityRankingWhereInput | UniversityRankingWhereInput[]
+    universityName?: StringFilter<"UniversityRanking"> | string
+    universityNameEn?: StringFilter<"UniversityRanking"> | string
+    country?: StringFilter<"UniversityRanking"> | string
+    qsRank?: IntNullableFilter<"UniversityRanking"> | number | null
+    theRank?: IntNullableFilter<"UniversityRanking"> | number | null
+    rankTier?: StringFilter<"UniversityRanking"> | string
+    bonusScore?: FloatFilter<"UniversityRanking"> | number
+    updatedYear?: IntFilter<"UniversityRanking"> | number
+    createdAt?: DateTimeFilter<"UniversityRanking"> | Date | string
+    updatedAt?: DateTimeFilter<"UniversityRanking"> | Date | string
+  }, "id" | "universityName_country">
+
+  export type UniversityRankingOrderByWithAggregationInput = {
+    id?: SortOrder
+    universityName?: SortOrder
+    universityNameEn?: SortOrder
+    country?: SortOrder
+    qsRank?: SortOrderInput | SortOrder
+    theRank?: SortOrderInput | SortOrder
+    rankTier?: SortOrder
+    bonusScore?: SortOrder
+    updatedYear?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: UniversityRankingCountOrderByAggregateInput
+    _avg?: UniversityRankingAvgOrderByAggregateInput
+    _max?: UniversityRankingMaxOrderByAggregateInput
+    _min?: UniversityRankingMinOrderByAggregateInput
+    _sum?: UniversityRankingSumOrderByAggregateInput
+  }
+
+  export type UniversityRankingScalarWhereWithAggregatesInput = {
+    AND?: UniversityRankingScalarWhereWithAggregatesInput | UniversityRankingScalarWhereWithAggregatesInput[]
+    OR?: UniversityRankingScalarWhereWithAggregatesInput[]
+    NOT?: UniversityRankingScalarWhereWithAggregatesInput | UniversityRankingScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"UniversityRanking"> | bigint | number
+    universityName?: StringWithAggregatesFilter<"UniversityRanking"> | string
+    universityNameEn?: StringWithAggregatesFilter<"UniversityRanking"> | string
+    country?: StringWithAggregatesFilter<"UniversityRanking"> | string
+    qsRank?: IntNullableWithAggregatesFilter<"UniversityRanking"> | number | null
+    theRank?: IntNullableWithAggregatesFilter<"UniversityRanking"> | number | null
+    rankTier?: StringWithAggregatesFilter<"UniversityRanking"> | string
+    bonusScore?: FloatWithAggregatesFilter<"UniversityRanking"> | number
+    updatedYear?: IntWithAggregatesFilter<"UniversityRanking"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"UniversityRanking"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"UniversityRanking"> | Date | string
+  }
+
+  export type AdjacentMajorOccupationWhereInput = {
+    AND?: AdjacentMajorOccupationWhereInput | AdjacentMajorOccupationWhereInput[]
+    OR?: AdjacentMajorOccupationWhereInput[]
+    NOT?: AdjacentMajorOccupationWhereInput | AdjacentMajorOccupationWhereInput[]
+    id?: BigIntFilter<"AdjacentMajorOccupation"> | bigint | number
+    categoryA?: StringFilter<"AdjacentMajorOccupation"> | string
+    categoryB?: StringFilter<"AdjacentMajorOccupation"> | string
+    alignBonus?: FloatFilter<"AdjacentMajorOccupation"> | number
+  }
+
+  export type AdjacentMajorOccupationOrderByWithRelationInput = {
+    id?: SortOrder
+    categoryA?: SortOrder
+    categoryB?: SortOrder
+    alignBonus?: SortOrder
+  }
+
+  export type AdjacentMajorOccupationWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    categoryA_categoryB?: AdjacentMajorOccupationCategoryACategoryBCompoundUniqueInput
+    AND?: AdjacentMajorOccupationWhereInput | AdjacentMajorOccupationWhereInput[]
+    OR?: AdjacentMajorOccupationWhereInput[]
+    NOT?: AdjacentMajorOccupationWhereInput | AdjacentMajorOccupationWhereInput[]
+    categoryA?: StringFilter<"AdjacentMajorOccupation"> | string
+    categoryB?: StringFilter<"AdjacentMajorOccupation"> | string
+    alignBonus?: FloatFilter<"AdjacentMajorOccupation"> | number
+  }, "id" | "categoryA_categoryB">
+
+  export type AdjacentMajorOccupationOrderByWithAggregationInput = {
+    id?: SortOrder
+    categoryA?: SortOrder
+    categoryB?: SortOrder
+    alignBonus?: SortOrder
+    _count?: AdjacentMajorOccupationCountOrderByAggregateInput
+    _avg?: AdjacentMajorOccupationAvgOrderByAggregateInput
+    _max?: AdjacentMajorOccupationMaxOrderByAggregateInput
+    _min?: AdjacentMajorOccupationMinOrderByAggregateInput
+    _sum?: AdjacentMajorOccupationSumOrderByAggregateInput
+  }
+
+  export type AdjacentMajorOccupationScalarWhereWithAggregatesInput = {
+    AND?: AdjacentMajorOccupationScalarWhereWithAggregatesInput | AdjacentMajorOccupationScalarWhereWithAggregatesInput[]
+    OR?: AdjacentMajorOccupationScalarWhereWithAggregatesInput[]
+    NOT?: AdjacentMajorOccupationScalarWhereWithAggregatesInput | AdjacentMajorOccupationScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"AdjacentMajorOccupation"> | bigint | number
+    categoryA?: StringWithAggregatesFilter<"AdjacentMajorOccupation"> | string
+    categoryB?: StringWithAggregatesFilter<"AdjacentMajorOccupation"> | string
+    alignBonus?: FloatWithAggregatesFilter<"AdjacentMajorOccupation"> | number
+  }
+
+  export type VisaIncomeReferenceWhereInput = {
+    AND?: VisaIncomeReferenceWhereInput | VisaIncomeReferenceWhereInput[]
+    OR?: VisaIncomeReferenceWhereInput[]
+    NOT?: VisaIncomeReferenceWhereInput | VisaIncomeReferenceWhereInput[]
+    id?: BigIntFilter<"VisaIncomeReference"> | bigint | number
+    visaCode?: StringFilter<"VisaIncomeReference"> | string
+    visaNameKo?: StringFilter<"VisaIncomeReference"> | string
+    avgAnnualIncome?: IntFilter<"VisaIncomeReference"> | number
+    incomeSource?: StringFilter<"VisaIncomeReference"> | string
+    incomeNote?: StringNullableFilter<"VisaIncomeReference"> | string | null
+    updatedYear?: IntFilter<"VisaIncomeReference"> | number
+    createdAt?: DateTimeFilter<"VisaIncomeReference"> | Date | string
+    updatedAt?: DateTimeFilter<"VisaIncomeReference"> | Date | string
+  }
+
+  export type VisaIncomeReferenceOrderByWithRelationInput = {
+    id?: SortOrder
+    visaCode?: SortOrder
+    visaNameKo?: SortOrder
+    avgAnnualIncome?: SortOrder
+    incomeSource?: SortOrder
+    incomeNote?: SortOrderInput | SortOrder
+    updatedYear?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type VisaIncomeReferenceWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    visaCode?: string
+    AND?: VisaIncomeReferenceWhereInput | VisaIncomeReferenceWhereInput[]
+    OR?: VisaIncomeReferenceWhereInput[]
+    NOT?: VisaIncomeReferenceWhereInput | VisaIncomeReferenceWhereInput[]
+    visaNameKo?: StringFilter<"VisaIncomeReference"> | string
+    avgAnnualIncome?: IntFilter<"VisaIncomeReference"> | number
+    incomeSource?: StringFilter<"VisaIncomeReference"> | string
+    incomeNote?: StringNullableFilter<"VisaIncomeReference"> | string | null
+    updatedYear?: IntFilter<"VisaIncomeReference"> | number
+    createdAt?: DateTimeFilter<"VisaIncomeReference"> | Date | string
+    updatedAt?: DateTimeFilter<"VisaIncomeReference"> | Date | string
+  }, "id" | "visaCode">
+
+  export type VisaIncomeReferenceOrderByWithAggregationInput = {
+    id?: SortOrder
+    visaCode?: SortOrder
+    visaNameKo?: SortOrder
+    avgAnnualIncome?: SortOrder
+    incomeSource?: SortOrder
+    incomeNote?: SortOrderInput | SortOrder
+    updatedYear?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: VisaIncomeReferenceCountOrderByAggregateInput
+    _avg?: VisaIncomeReferenceAvgOrderByAggregateInput
+    _max?: VisaIncomeReferenceMaxOrderByAggregateInput
+    _min?: VisaIncomeReferenceMinOrderByAggregateInput
+    _sum?: VisaIncomeReferenceSumOrderByAggregateInput
+  }
+
+  export type VisaIncomeReferenceScalarWhereWithAggregatesInput = {
+    AND?: VisaIncomeReferenceScalarWhereWithAggregatesInput | VisaIncomeReferenceScalarWhereWithAggregatesInput[]
+    OR?: VisaIncomeReferenceScalarWhereWithAggregatesInput[]
+    NOT?: VisaIncomeReferenceScalarWhereWithAggregatesInput | VisaIncomeReferenceScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"VisaIncomeReference"> | bigint | number
+    visaCode?: StringWithAggregatesFilter<"VisaIncomeReference"> | string
+    visaNameKo?: StringWithAggregatesFilter<"VisaIncomeReference"> | string
+    avgAnnualIncome?: IntWithAggregatesFilter<"VisaIncomeReference"> | number
+    incomeSource?: StringWithAggregatesFilter<"VisaIncomeReference"> | string
+    incomeNote?: StringNullableWithAggregatesFilter<"VisaIncomeReference"> | string | null
+    updatedYear?: IntWithAggregatesFilter<"VisaIncomeReference"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"VisaIncomeReference"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"VisaIncomeReference"> | Date | string
+  }
+
+  export type RediagnosisCouponWhereInput = {
+    AND?: RediagnosisCouponWhereInput | RediagnosisCouponWhereInput[]
+    OR?: RediagnosisCouponWhereInput[]
+    NOT?: RediagnosisCouponWhereInput | RediagnosisCouponWhereInput[]
+    id?: BigIntFilter<"RediagnosisCoupon"> | bigint | number
+    userId?: StringFilter<"RediagnosisCoupon"> | string
+    originalSessionId?: BigIntFilter<"RediagnosisCoupon"> | bigint | number
+    couponCode?: StringFilter<"RediagnosisCoupon"> | string
+    status?: StringFilter<"RediagnosisCoupon"> | string
+    issuedAt?: DateTimeFilter<"RediagnosisCoupon"> | Date | string
+    availableAt?: DateTimeFilter<"RediagnosisCoupon"> | Date | string
+    expiresAt?: DateTimeFilter<"RediagnosisCoupon"> | Date | string
+    usedAt?: DateTimeNullableFilter<"RediagnosisCoupon"> | Date | string | null
+    usedSessionId?: BigIntNullableFilter<"RediagnosisCoupon"> | bigint | number | null
+    reminderSentAt?: DateTimeNullableFilter<"RediagnosisCoupon"> | Date | string | null
+    createdAt?: DateTimeFilter<"RediagnosisCoupon"> | Date | string
+    originalSession?: XOR<DiagnosisSessionScalarRelationFilter, DiagnosisSessionWhereInput>
+  }
+
+  export type RediagnosisCouponOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    originalSessionId?: SortOrder
+    couponCode?: SortOrder
+    status?: SortOrder
+    issuedAt?: SortOrder
+    availableAt?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrderInput | SortOrder
+    usedSessionId?: SortOrderInput | SortOrder
+    reminderSentAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    originalSession?: DiagnosisSessionOrderByWithRelationInput
+  }
+
+  export type RediagnosisCouponWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    originalSessionId?: bigint | number
+    couponCode?: string
+    AND?: RediagnosisCouponWhereInput | RediagnosisCouponWhereInput[]
+    OR?: RediagnosisCouponWhereInput[]
+    NOT?: RediagnosisCouponWhereInput | RediagnosisCouponWhereInput[]
+    userId?: StringFilter<"RediagnosisCoupon"> | string
+    status?: StringFilter<"RediagnosisCoupon"> | string
+    issuedAt?: DateTimeFilter<"RediagnosisCoupon"> | Date | string
+    availableAt?: DateTimeFilter<"RediagnosisCoupon"> | Date | string
+    expiresAt?: DateTimeFilter<"RediagnosisCoupon"> | Date | string
+    usedAt?: DateTimeNullableFilter<"RediagnosisCoupon"> | Date | string | null
+    usedSessionId?: BigIntNullableFilter<"RediagnosisCoupon"> | bigint | number | null
+    reminderSentAt?: DateTimeNullableFilter<"RediagnosisCoupon"> | Date | string | null
+    createdAt?: DateTimeFilter<"RediagnosisCoupon"> | Date | string
+    originalSession?: XOR<DiagnosisSessionScalarRelationFilter, DiagnosisSessionWhereInput>
+  }, "id" | "originalSessionId" | "couponCode">
+
+  export type RediagnosisCouponOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    originalSessionId?: SortOrder
+    couponCode?: SortOrder
+    status?: SortOrder
+    issuedAt?: SortOrder
+    availableAt?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrderInput | SortOrder
+    usedSessionId?: SortOrderInput | SortOrder
+    reminderSentAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: RediagnosisCouponCountOrderByAggregateInput
+    _avg?: RediagnosisCouponAvgOrderByAggregateInput
+    _max?: RediagnosisCouponMaxOrderByAggregateInput
+    _min?: RediagnosisCouponMinOrderByAggregateInput
+    _sum?: RediagnosisCouponSumOrderByAggregateInput
+  }
+
+  export type RediagnosisCouponScalarWhereWithAggregatesInput = {
+    AND?: RediagnosisCouponScalarWhereWithAggregatesInput | RediagnosisCouponScalarWhereWithAggregatesInput[]
+    OR?: RediagnosisCouponScalarWhereWithAggregatesInput[]
+    NOT?: RediagnosisCouponScalarWhereWithAggregatesInput | RediagnosisCouponScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"RediagnosisCoupon"> | bigint | number
+    userId?: StringWithAggregatesFilter<"RediagnosisCoupon"> | string
+    originalSessionId?: BigIntWithAggregatesFilter<"RediagnosisCoupon"> | bigint | number
+    couponCode?: StringWithAggregatesFilter<"RediagnosisCoupon"> | string
+    status?: StringWithAggregatesFilter<"RediagnosisCoupon"> | string
+    issuedAt?: DateTimeWithAggregatesFilter<"RediagnosisCoupon"> | Date | string
+    availableAt?: DateTimeWithAggregatesFilter<"RediagnosisCoupon"> | Date | string
+    expiresAt?: DateTimeWithAggregatesFilter<"RediagnosisCoupon"> | Date | string
+    usedAt?: DateTimeNullableWithAggregatesFilter<"RediagnosisCoupon"> | Date | string | null
+    usedSessionId?: BigIntNullableWithAggregatesFilter<"RediagnosisCoupon"> | bigint | number | null
+    reminderSentAt?: DateTimeNullableWithAggregatesFilter<"RediagnosisCoupon"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"RediagnosisCoupon"> | Date | string
+  }
+
+  export type PlannerRefundWhereInput = {
+    AND?: PlannerRefundWhereInput | PlannerRefundWhereInput[]
+    OR?: PlannerRefundWhereInput[]
+    NOT?: PlannerRefundWhereInput | PlannerRefundWhereInput[]
+    id?: BigIntFilter<"PlannerRefund"> | bigint | number
+    sessionId?: BigIntFilter<"PlannerRefund"> | bigint | number
+    userId?: StringFilter<"PlannerRefund"> | string
+    status?: StringFilter<"PlannerRefund"> | string
+    reason?: StringFilter<"PlannerRefund"> | string
+    stripeRefundId?: StringNullableFilter<"PlannerRefund"> | string | null
+    refundAmountCents?: IntNullableFilter<"PlannerRefund"> | number | null
+    currency?: StringFilter<"PlannerRefund"> | string
+    message?: StringNullableFilter<"PlannerRefund"> | string | null
+    createdAt?: DateTimeFilter<"PlannerRefund"> | Date | string
+  }
+
+  export type PlannerRefundOrderByWithRelationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    reason?: SortOrder
+    stripeRefundId?: SortOrderInput | SortOrder
+    refundAmountCents?: SortOrderInput | SortOrder
+    currency?: SortOrder
+    message?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PlannerRefundWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    AND?: PlannerRefundWhereInput | PlannerRefundWhereInput[]
+    OR?: PlannerRefundWhereInput[]
+    NOT?: PlannerRefundWhereInput | PlannerRefundWhereInput[]
+    sessionId?: BigIntFilter<"PlannerRefund"> | bigint | number
+    userId?: StringFilter<"PlannerRefund"> | string
+    status?: StringFilter<"PlannerRefund"> | string
+    reason?: StringFilter<"PlannerRefund"> | string
+    stripeRefundId?: StringNullableFilter<"PlannerRefund"> | string | null
+    refundAmountCents?: IntNullableFilter<"PlannerRefund"> | number | null
+    currency?: StringFilter<"PlannerRefund"> | string
+    message?: StringNullableFilter<"PlannerRefund"> | string | null
+    createdAt?: DateTimeFilter<"PlannerRefund"> | Date | string
+  }, "id">
+
+  export type PlannerRefundOrderByWithAggregationInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    reason?: SortOrder
+    stripeRefundId?: SortOrderInput | SortOrder
+    refundAmountCents?: SortOrderInput | SortOrder
+    currency?: SortOrder
+    message?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: PlannerRefundCountOrderByAggregateInput
+    _avg?: PlannerRefundAvgOrderByAggregateInput
+    _max?: PlannerRefundMaxOrderByAggregateInput
+    _min?: PlannerRefundMinOrderByAggregateInput
+    _sum?: PlannerRefundSumOrderByAggregateInput
+  }
+
+  export type PlannerRefundScalarWhereWithAggregatesInput = {
+    AND?: PlannerRefundScalarWhereWithAggregatesInput | PlannerRefundScalarWhereWithAggregatesInput[]
+    OR?: PlannerRefundScalarWhereWithAggregatesInput[]
+    NOT?: PlannerRefundScalarWhereWithAggregatesInput | PlannerRefundScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"PlannerRefund"> | bigint | number
+    sessionId?: BigIntWithAggregatesFilter<"PlannerRefund"> | bigint | number
+    userId?: StringWithAggregatesFilter<"PlannerRefund"> | string
+    status?: StringWithAggregatesFilter<"PlannerRefund"> | string
+    reason?: StringWithAggregatesFilter<"PlannerRefund"> | string
+    stripeRefundId?: StringNullableWithAggregatesFilter<"PlannerRefund"> | string | null
+    refundAmountCents?: IntNullableWithAggregatesFilter<"PlannerRefund"> | number | null
+    currency?: StringWithAggregatesFilter<"PlannerRefund"> | string
+    message?: StringNullableWithAggregatesFilter<"PlannerRefund"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"PlannerRefund"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -67127,6 +78186,16 @@ export namespace Prisma {
     koreaStayMonths?: number
     currentEmployerMonths?: number
     depopulationArea?: boolean
+    majorCategory?: string | null
+    currentRole?: string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: number
+    universityName?: string | null
+    universityNameEn?: string | null
+    major?: string | null
+    graduationYear?: number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutIndividualInput
@@ -67179,6 +78248,16 @@ export namespace Prisma {
     koreaStayMonths?: number
     currentEmployerMonths?: number
     depopulationArea?: boolean
+    majorCategory?: string | null
+    currentRole?: string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: number
+    universityName?: string | null
+    universityNameEn?: string | null
+    major?: string | null
+    graduationYear?: number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     accessLogs?: TalentAccessLogUncheckedCreateNestedManyWithoutIndividualInput
@@ -67229,6 +78308,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutIndividualNestedInput
@@ -67281,6 +78370,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accessLogs?: TalentAccessLogUncheckedUpdateManyWithoutIndividualNestedInput
@@ -67332,6 +78431,16 @@ export namespace Prisma {
     koreaStayMonths?: number
     currentEmployerMonths?: number
     depopulationArea?: boolean
+    majorCategory?: string | null
+    currentRole?: string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: number
+    universityName?: string | null
+    universityNameEn?: string | null
+    major?: string | null
+    graduationYear?: number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -67377,6 +78486,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -67423,6 +78542,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -67744,6 +78873,8 @@ export namespace Prisma {
     endDate?: Date | string | null
     isCurrent?: boolean
     description?: string | null
+    occupationCategory?: string | null
+    country?: string
     individual: IndividualProfileCreateNestedOneWithoutCareersInput
   }
 
@@ -67757,6 +78888,8 @@ export namespace Prisma {
     endDate?: Date | string | null
     isCurrent?: boolean
     description?: string | null
+    occupationCategory?: string | null
+    country?: string
   }
 
   export type ProfileCareerUpdateInput = {
@@ -67768,6 +78901,8 @@ export namespace Prisma {
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isCurrent?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    occupationCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: StringFieldUpdateOperationsInput | string
     individual?: IndividualProfileUpdateOneRequiredWithoutCareersNestedInput
   }
 
@@ -67781,6 +78916,8 @@ export namespace Prisma {
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isCurrent?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    occupationCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProfileCareerCreateManyInput = {
@@ -67793,6 +78930,8 @@ export namespace Prisma {
     endDate?: Date | string | null
     isCurrent?: boolean
     description?: string | null
+    occupationCategory?: string | null
+    country?: string
   }
 
   export type ProfileCareerUpdateManyMutationInput = {
@@ -67804,6 +78943,8 @@ export namespace Prisma {
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isCurrent?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    occupationCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProfileCareerUncheckedUpdateManyInput = {
@@ -67816,6 +78957,8 @@ export namespace Prisma {
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isCurrent?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    occupationCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProfileLanguageCreateInput = {
@@ -70952,10 +82095,20 @@ export namespace Prisma {
     cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
+    documentPassedAt?: Date | string | null
+    interviewScheduledAt?: Date | string | null
+    finalAcceptedAt?: Date | string | null
+    rejectedAt?: Date | string | null
+    offeredSalary?: number | null
+    expectedStartDate?: Date | string | null
+    companyMessage?: string | null
+    visaGuideScenario?: string | null
+    visaGuideGeneratedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     job: JobPostingCreateNestedOneWithoutApplicationsInput
     selectedSlot?: InterviewSlotCreateNestedOneWithoutBookedApplicationInput
+    checklistItems?: VisaChecklistItemCreateNestedManyWithoutApplicationInput
   }
 
   export type JobApplicationUncheckedCreateInput = {
@@ -70985,8 +82138,18 @@ export namespace Prisma {
     cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
+    documentPassedAt?: Date | string | null
+    interviewScheduledAt?: Date | string | null
+    finalAcceptedAt?: Date | string | null
+    rejectedAt?: Date | string | null
+    offeredSalary?: number | null
+    expectedStartDate?: Date | string | null
+    companyMessage?: string | null
+    visaGuideScenario?: string | null
+    visaGuideGeneratedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    checklistItems?: VisaChecklistItemUncheckedCreateNestedManyWithoutApplicationInput
   }
 
   export type JobApplicationUpdateInput = {
@@ -71014,10 +82177,20 @@ export namespace Prisma {
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documentPassedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finalAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    offeredSalary?: NullableIntFieldUpdateOperationsInput | number | null
+    expectedStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    companyMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideScenario?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobPostingUpdateOneRequiredWithoutApplicationsNestedInput
     selectedSlot?: InterviewSlotUpdateOneWithoutBookedApplicationNestedInput
+    checklistItems?: VisaChecklistItemUpdateManyWithoutApplicationNestedInput
   }
 
   export type JobApplicationUncheckedUpdateInput = {
@@ -71047,8 +82220,18 @@ export namespace Prisma {
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documentPassedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finalAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    offeredSalary?: NullableIntFieldUpdateOperationsInput | number | null
+    expectedStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    companyMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideScenario?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checklistItems?: VisaChecklistItemUncheckedUpdateManyWithoutApplicationNestedInput
   }
 
   export type JobApplicationCreateManyInput = {
@@ -71078,6 +82261,15 @@ export namespace Prisma {
     cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
+    documentPassedAt?: Date | string | null
+    interviewScheduledAt?: Date | string | null
+    finalAcceptedAt?: Date | string | null
+    rejectedAt?: Date | string | null
+    offeredSalary?: number | null
+    expectedStartDate?: Date | string | null
+    companyMessage?: string | null
+    visaGuideScenario?: string | null
+    visaGuideGeneratedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -71107,6 +82299,15 @@ export namespace Prisma {
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documentPassedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finalAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    offeredSalary?: NullableIntFieldUpdateOperationsInput | number | null
+    expectedStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    companyMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideScenario?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -71138,6 +82339,15 @@ export namespace Prisma {
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documentPassedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finalAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    offeredSalary?: NullableIntFieldUpdateOperationsInput | number | null
+    expectedStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    companyMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideScenario?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -71213,6 +82423,187 @@ export namespace Prisma {
     isBooked?: BoolFieldUpdateOperationsInput | boolean
     location?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type VisaChecklistTemplateCreateInput = {
+    id?: bigint | number
+    scenario: string
+    visaTransition: string
+    category: string
+    itemOrder: number
+    itemText: string
+    isRequired?: boolean
+    note?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type VisaChecklistTemplateUncheckedCreateInput = {
+    id?: bigint | number
+    scenario: string
+    visaTransition: string
+    category: string
+    itemOrder: number
+    itemText: string
+    isRequired?: boolean
+    note?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type VisaChecklistTemplateUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    scenario?: StringFieldUpdateOperationsInput | string
+    visaTransition?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    itemOrder?: IntFieldUpdateOperationsInput | number
+    itemText?: StringFieldUpdateOperationsInput | string
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VisaChecklistTemplateUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    scenario?: StringFieldUpdateOperationsInput | string
+    visaTransition?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    itemOrder?: IntFieldUpdateOperationsInput | number
+    itemText?: StringFieldUpdateOperationsInput | string
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VisaChecklistTemplateCreateManyInput = {
+    id?: bigint | number
+    scenario: string
+    visaTransition: string
+    category: string
+    itemOrder: number
+    itemText: string
+    isRequired?: boolean
+    note?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type VisaChecklistTemplateUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    scenario?: StringFieldUpdateOperationsInput | string
+    visaTransition?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    itemOrder?: IntFieldUpdateOperationsInput | number
+    itemText?: StringFieldUpdateOperationsInput | string
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VisaChecklistTemplateUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    scenario?: StringFieldUpdateOperationsInput | string
+    visaTransition?: StringFieldUpdateOperationsInput | string
+    category?: StringFieldUpdateOperationsInput | string
+    itemOrder?: IntFieldUpdateOperationsInput | number
+    itemText?: StringFieldUpdateOperationsInput | string
+    isRequired?: BoolFieldUpdateOperationsInput | boolean
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VisaChecklistItemCreateInput = {
+    id?: bigint | number
+    category: string
+    itemText: string
+    itemOrder: number
+    isChecked?: boolean
+    checkedAt?: Date | string | null
+    checkedBy?: string | null
+    createdAt?: Date | string
+    application: JobApplicationCreateNestedOneWithoutChecklistItemsInput
+  }
+
+  export type VisaChecklistItemUncheckedCreateInput = {
+    id?: bigint | number
+    applicationId: bigint | number
+    category: string
+    itemText: string
+    itemOrder: number
+    isChecked?: boolean
+    checkedAt?: Date | string | null
+    checkedBy?: string | null
+    createdAt?: Date | string
+  }
+
+  export type VisaChecklistItemUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    category?: StringFieldUpdateOperationsInput | string
+    itemText?: StringFieldUpdateOperationsInput | string
+    itemOrder?: IntFieldUpdateOperationsInput | number
+    isChecked?: BoolFieldUpdateOperationsInput | boolean
+    checkedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    application?: JobApplicationUpdateOneRequiredWithoutChecklistItemsNestedInput
+  }
+
+  export type VisaChecklistItemUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    applicationId?: BigIntFieldUpdateOperationsInput | bigint | number
+    category?: StringFieldUpdateOperationsInput | string
+    itemText?: StringFieldUpdateOperationsInput | string
+    itemOrder?: IntFieldUpdateOperationsInput | number
+    isChecked?: BoolFieldUpdateOperationsInput | boolean
+    checkedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VisaChecklistItemCreateManyInput = {
+    id?: bigint | number
+    applicationId: bigint | number
+    category: string
+    itemText: string
+    itemOrder: number
+    isChecked?: boolean
+    checkedAt?: Date | string | null
+    checkedBy?: string | null
+    createdAt?: Date | string
+  }
+
+  export type VisaChecklistItemUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    category?: StringFieldUpdateOperationsInput | string
+    itemText?: StringFieldUpdateOperationsInput | string
+    itemOrder?: IntFieldUpdateOperationsInput | number
+    isChecked?: BoolFieldUpdateOperationsInput | boolean
+    checkedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VisaChecklistItemUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    applicationId?: BigIntFieldUpdateOperationsInput | bigint | number
+    category?: StringFieldUpdateOperationsInput | string
+    itemText?: StringFieldUpdateOperationsInput | string
+    itemOrder?: IntFieldUpdateOperationsInput | number
+    isChecked?: BoolFieldUpdateOperationsInput | boolean
+    checkedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type JobScrapCreateInput = {
@@ -71350,6 +82741,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutResumeInput
+    bookmarks?: TalentBookmarkCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeUncheckedCreateInput = {
@@ -71369,6 +82761,7 @@ export namespace Prisma {
     isComplete?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bookmarks?: TalentBookmarkUncheckedCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeUpdateInput = {
@@ -71388,6 +82781,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutResumeNestedInput
+    bookmarks?: TalentBookmarkUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeUncheckedUpdateInput = {
@@ -71407,6 +82801,7 @@ export namespace Prisma {
     isComplete?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookmarks?: TalentBookmarkUncheckedUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeCreateManyInput = {
@@ -71463,6 +82858,54 @@ export namespace Prisma {
     isComplete?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TalentBookmarkCreateInput = {
+    id?: bigint | number
+    userId: string
+    createdAt?: Date | string
+    resume: ResumeCreateNestedOneWithoutBookmarksInput
+  }
+
+  export type TalentBookmarkUncheckedCreateInput = {
+    id?: bigint | number
+    resumeId: bigint | number
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type TalentBookmarkUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    resume?: ResumeUpdateOneRequiredWithoutBookmarksNestedInput
+  }
+
+  export type TalentBookmarkUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    resumeId?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TalentBookmarkCreateManyInput = {
+    id?: bigint | number
+    resumeId: bigint | number
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type TalentBookmarkUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TalentBookmarkUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    resumeId?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type VisaVerificationCreateInput = {
@@ -71593,9 +83036,20 @@ export namespace Prisma {
     convertedToSignup?: boolean
     convertedToPaid?: boolean
     userFeedbackScore?: number | null
+    isPremium?: boolean
+    isPremiumViewed?: boolean
+    stripeSessionId?: string | null
+    stripePaidAt?: Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: Date | string | null
+    previousSessionId?: bigint | number | null
+    refundPolicyAgreedAt?: Date | string | null
+    digitalContentAgreedAt?: Date | string | null
+    privacyAgreedAt?: Date | string | null
     createdAt?: Date | string
     individual?: IndividualProfileCreateNestedOneWithoutDiagnosisSessionsInput
     clicks?: DiagnosisPathwayClickCreateNestedManyWithoutSessionInput
+    rediagnosisCoupon?: RediagnosisCouponCreateNestedOneWithoutOriginalSessionInput
   }
 
   export type DiagnosisSessionUncheckedCreateInput = {
@@ -71609,8 +83063,19 @@ export namespace Prisma {
     convertedToSignup?: boolean
     convertedToPaid?: boolean
     userFeedbackScore?: number | null
+    isPremium?: boolean
+    isPremiumViewed?: boolean
+    stripeSessionId?: string | null
+    stripePaidAt?: Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: Date | string | null
+    previousSessionId?: bigint | number | null
+    refundPolicyAgreedAt?: Date | string | null
+    digitalContentAgreedAt?: Date | string | null
+    privacyAgreedAt?: Date | string | null
     createdAt?: Date | string
     clicks?: DiagnosisPathwayClickUncheckedCreateNestedManyWithoutSessionInput
+    rediagnosisCoupon?: RediagnosisCouponUncheckedCreateNestedOneWithoutOriginalSessionInput
   }
 
   export type DiagnosisSessionUpdateInput = {
@@ -71623,9 +83088,20 @@ export namespace Prisma {
     convertedToSignup?: BoolFieldUpdateOperationsInput | boolean
     convertedToPaid?: BoolFieldUpdateOperationsInput | boolean
     userFeedbackScore?: NullableIntFieldUpdateOperationsInput | number | null
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    isPremiumViewed?: BoolFieldUpdateOperationsInput | boolean
+    stripeSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    previousSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    refundPolicyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    digitalContentAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    privacyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     individual?: IndividualProfileUpdateOneWithoutDiagnosisSessionsNestedInput
     clicks?: DiagnosisPathwayClickUpdateManyWithoutSessionNestedInput
+    rediagnosisCoupon?: RediagnosisCouponUpdateOneWithoutOriginalSessionNestedInput
   }
 
   export type DiagnosisSessionUncheckedUpdateInput = {
@@ -71639,8 +83115,19 @@ export namespace Prisma {
     convertedToSignup?: BoolFieldUpdateOperationsInput | boolean
     convertedToPaid?: BoolFieldUpdateOperationsInput | boolean
     userFeedbackScore?: NullableIntFieldUpdateOperationsInput | number | null
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    isPremiumViewed?: BoolFieldUpdateOperationsInput | boolean
+    stripeSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    previousSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    refundPolicyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    digitalContentAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    privacyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     clicks?: DiagnosisPathwayClickUncheckedUpdateManyWithoutSessionNestedInput
+    rediagnosisCoupon?: RediagnosisCouponUncheckedUpdateOneWithoutOriginalSessionNestedInput
   }
 
   export type DiagnosisSessionCreateManyInput = {
@@ -71654,6 +83141,16 @@ export namespace Prisma {
     convertedToSignup?: boolean
     convertedToPaid?: boolean
     userFeedbackScore?: number | null
+    isPremium?: boolean
+    isPremiumViewed?: boolean
+    stripeSessionId?: string | null
+    stripePaidAt?: Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: Date | string | null
+    previousSessionId?: bigint | number | null
+    refundPolicyAgreedAt?: Date | string | null
+    digitalContentAgreedAt?: Date | string | null
+    privacyAgreedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -71667,6 +83164,16 @@ export namespace Prisma {
     convertedToSignup?: BoolFieldUpdateOperationsInput | boolean
     convertedToPaid?: BoolFieldUpdateOperationsInput | boolean
     userFeedbackScore?: NullableIntFieldUpdateOperationsInput | number | null
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    isPremiumViewed?: BoolFieldUpdateOperationsInput | boolean
+    stripeSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    previousSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    refundPolicyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    digitalContentAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    privacyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -71681,6 +83188,16 @@ export namespace Prisma {
     convertedToSignup?: BoolFieldUpdateOperationsInput | boolean
     convertedToPaid?: BoolFieldUpdateOperationsInput | boolean
     userFeedbackScore?: NullableIntFieldUpdateOperationsInput | number | null
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    isPremiumViewed?: BoolFieldUpdateOperationsInput | boolean
+    stripeSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    previousSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    refundPolicyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    digitalContentAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    privacyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -71834,6 +83351,432 @@ export namespace Prisma {
     changeReason?: StringFieldUpdateOperationsInput | string
     evidence?: NullableJsonNullValueInput | InputJsonValue
     changedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UniversityRankingCreateInput = {
+    id?: bigint | number
+    universityName: string
+    universityNameEn: string
+    country: string
+    qsRank?: number | null
+    theRank?: number | null
+    rankTier: string
+    bonusScore: number
+    updatedYear: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UniversityRankingUncheckedCreateInput = {
+    id?: bigint | number
+    universityName: string
+    universityNameEn: string
+    country: string
+    qsRank?: number | null
+    theRank?: number | null
+    rankTier: string
+    bonusScore: number
+    updatedYear: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UniversityRankingUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    universityName?: StringFieldUpdateOperationsInput | string
+    universityNameEn?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    qsRank?: NullableIntFieldUpdateOperationsInput | number | null
+    theRank?: NullableIntFieldUpdateOperationsInput | number | null
+    rankTier?: StringFieldUpdateOperationsInput | string
+    bonusScore?: FloatFieldUpdateOperationsInput | number
+    updatedYear?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UniversityRankingUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    universityName?: StringFieldUpdateOperationsInput | string
+    universityNameEn?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    qsRank?: NullableIntFieldUpdateOperationsInput | number | null
+    theRank?: NullableIntFieldUpdateOperationsInput | number | null
+    rankTier?: StringFieldUpdateOperationsInput | string
+    bonusScore?: FloatFieldUpdateOperationsInput | number
+    updatedYear?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UniversityRankingCreateManyInput = {
+    id?: bigint | number
+    universityName: string
+    universityNameEn: string
+    country: string
+    qsRank?: number | null
+    theRank?: number | null
+    rankTier: string
+    bonusScore: number
+    updatedYear: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UniversityRankingUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    universityName?: StringFieldUpdateOperationsInput | string
+    universityNameEn?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    qsRank?: NullableIntFieldUpdateOperationsInput | number | null
+    theRank?: NullableIntFieldUpdateOperationsInput | number | null
+    rankTier?: StringFieldUpdateOperationsInput | string
+    bonusScore?: FloatFieldUpdateOperationsInput | number
+    updatedYear?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UniversityRankingUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    universityName?: StringFieldUpdateOperationsInput | string
+    universityNameEn?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    qsRank?: NullableIntFieldUpdateOperationsInput | number | null
+    theRank?: NullableIntFieldUpdateOperationsInput | number | null
+    rankTier?: StringFieldUpdateOperationsInput | string
+    bonusScore?: FloatFieldUpdateOperationsInput | number
+    updatedYear?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AdjacentMajorOccupationCreateInput = {
+    id?: bigint | number
+    categoryA: string
+    categoryB: string
+    alignBonus: number
+  }
+
+  export type AdjacentMajorOccupationUncheckedCreateInput = {
+    id?: bigint | number
+    categoryA: string
+    categoryB: string
+    alignBonus: number
+  }
+
+  export type AdjacentMajorOccupationUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    categoryA?: StringFieldUpdateOperationsInput | string
+    categoryB?: StringFieldUpdateOperationsInput | string
+    alignBonus?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type AdjacentMajorOccupationUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    categoryA?: StringFieldUpdateOperationsInput | string
+    categoryB?: StringFieldUpdateOperationsInput | string
+    alignBonus?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type AdjacentMajorOccupationCreateManyInput = {
+    id?: bigint | number
+    categoryA: string
+    categoryB: string
+    alignBonus: number
+  }
+
+  export type AdjacentMajorOccupationUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    categoryA?: StringFieldUpdateOperationsInput | string
+    categoryB?: StringFieldUpdateOperationsInput | string
+    alignBonus?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type AdjacentMajorOccupationUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    categoryA?: StringFieldUpdateOperationsInput | string
+    categoryB?: StringFieldUpdateOperationsInput | string
+    alignBonus?: FloatFieldUpdateOperationsInput | number
+  }
+
+  export type VisaIncomeReferenceCreateInput = {
+    id?: bigint | number
+    visaCode: string
+    visaNameKo: string
+    avgAnnualIncome: number
+    incomeSource: string
+    incomeNote?: string | null
+    updatedYear: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type VisaIncomeReferenceUncheckedCreateInput = {
+    id?: bigint | number
+    visaCode: string
+    visaNameKo: string
+    avgAnnualIncome: number
+    incomeSource: string
+    incomeNote?: string | null
+    updatedYear: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type VisaIncomeReferenceUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    visaCode?: StringFieldUpdateOperationsInput | string
+    visaNameKo?: StringFieldUpdateOperationsInput | string
+    avgAnnualIncome?: IntFieldUpdateOperationsInput | number
+    incomeSource?: StringFieldUpdateOperationsInput | string
+    incomeNote?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedYear?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VisaIncomeReferenceUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    visaCode?: StringFieldUpdateOperationsInput | string
+    visaNameKo?: StringFieldUpdateOperationsInput | string
+    avgAnnualIncome?: IntFieldUpdateOperationsInput | number
+    incomeSource?: StringFieldUpdateOperationsInput | string
+    incomeNote?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedYear?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VisaIncomeReferenceCreateManyInput = {
+    id?: bigint | number
+    visaCode: string
+    visaNameKo: string
+    avgAnnualIncome: number
+    incomeSource: string
+    incomeNote?: string | null
+    updatedYear: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type VisaIncomeReferenceUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    visaCode?: StringFieldUpdateOperationsInput | string
+    visaNameKo?: StringFieldUpdateOperationsInput | string
+    avgAnnualIncome?: IntFieldUpdateOperationsInput | number
+    incomeSource?: StringFieldUpdateOperationsInput | string
+    incomeNote?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedYear?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VisaIncomeReferenceUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    visaCode?: StringFieldUpdateOperationsInput | string
+    visaNameKo?: StringFieldUpdateOperationsInput | string
+    avgAnnualIncome?: IntFieldUpdateOperationsInput | number
+    incomeSource?: StringFieldUpdateOperationsInput | string
+    incomeNote?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedYear?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RediagnosisCouponCreateInput = {
+    id?: bigint | number
+    userId: string
+    couponCode: string
+    status?: string
+    issuedAt?: Date | string
+    availableAt: Date | string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    usedSessionId?: bigint | number | null
+    reminderSentAt?: Date | string | null
+    createdAt?: Date | string
+    originalSession: DiagnosisSessionCreateNestedOneWithoutRediagnosisCouponInput
+  }
+
+  export type RediagnosisCouponUncheckedCreateInput = {
+    id?: bigint | number
+    userId: string
+    originalSessionId: bigint | number
+    couponCode: string
+    status?: string
+    issuedAt?: Date | string
+    availableAt: Date | string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    usedSessionId?: bigint | number | null
+    reminderSentAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type RediagnosisCouponUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    couponCode?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    usedSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    reminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    originalSession?: DiagnosisSessionUpdateOneRequiredWithoutRediagnosisCouponNestedInput
+  }
+
+  export type RediagnosisCouponUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    originalSessionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    couponCode?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    usedSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    reminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RediagnosisCouponCreateManyInput = {
+    id?: bigint | number
+    userId: string
+    originalSessionId: bigint | number
+    couponCode: string
+    status?: string
+    issuedAt?: Date | string
+    availableAt: Date | string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    usedSessionId?: bigint | number | null
+    reminderSentAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type RediagnosisCouponUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    couponCode?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    usedSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    reminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RediagnosisCouponUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    originalSessionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    couponCode?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    usedSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    reminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlannerRefundCreateInput = {
+    id?: bigint | number
+    sessionId: bigint | number
+    userId: string
+    status: string
+    reason: string
+    stripeRefundId?: string | null
+    refundAmountCents?: number | null
+    currency?: string
+    message?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PlannerRefundUncheckedCreateInput = {
+    id?: bigint | number
+    sessionId: bigint | number
+    userId: string
+    status: string
+    reason: string
+    stripeRefundId?: string | null
+    refundAmountCents?: number | null
+    currency?: string
+    message?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PlannerRefundUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    sessionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    stripeRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmountCents?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlannerRefundUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    sessionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    stripeRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmountCents?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlannerRefundCreateManyInput = {
+    id?: bigint | number
+    sessionId: bigint | number
+    userId: string
+    status: string
+    reason: string
+    stripeRefundId?: string | null
+    refundAmountCents?: number | null
+    currency?: string
+    message?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PlannerRefundUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    sessionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    stripeRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmountCents?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PlannerRefundUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    sessionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    stripeRefundId?: NullableStringFieldUpdateOperationsInput | string | null
+    refundAmountCents?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    message?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -72507,6 +84450,16 @@ export namespace Prisma {
     koreaStayMonths?: SortOrder
     currentEmployerMonths?: SortOrder
     depopulationArea?: SortOrder
+    majorCategory?: SortOrder
+    currentRole?: SortOrder
+    careerSummaryJson?: SortOrder
+    koreaCareerMonths?: SortOrder
+    universityName?: SortOrder
+    universityNameEn?: SortOrder
+    major?: SortOrder
+    graduationYear?: SortOrder
+    nationalLicenses?: SortOrder
+    internationalCerts?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -72524,6 +84477,8 @@ export namespace Prisma {
     violationCount?: SortOrder
     koreaStayMonths?: SortOrder
     currentEmployerMonths?: SortOrder
+    koreaCareerMonths?: SortOrder
+    graduationYear?: SortOrder
   }
 
   export type IndividualProfileMaxOrderByAggregateInput = {
@@ -72567,6 +84522,13 @@ export namespace Prisma {
     koreaStayMonths?: SortOrder
     currentEmployerMonths?: SortOrder
     depopulationArea?: SortOrder
+    majorCategory?: SortOrder
+    currentRole?: SortOrder
+    koreaCareerMonths?: SortOrder
+    universityName?: SortOrder
+    universityNameEn?: SortOrder
+    major?: SortOrder
+    graduationYear?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -72612,6 +84574,13 @@ export namespace Prisma {
     koreaStayMonths?: SortOrder
     currentEmployerMonths?: SortOrder
     depopulationArea?: SortOrder
+    majorCategory?: SortOrder
+    currentRole?: SortOrder
+    koreaCareerMonths?: SortOrder
+    universityName?: SortOrder
+    universityNameEn?: SortOrder
+    major?: SortOrder
+    graduationYear?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -72629,6 +84598,8 @@ export namespace Prisma {
     violationCount?: SortOrder
     koreaStayMonths?: SortOrder
     currentEmployerMonths?: SortOrder
+    koreaCareerMonths?: SortOrder
+    graduationYear?: SortOrder
   }
 
   export type EnumGenderWithAggregatesFilter<$PrismaModel = never> = {
@@ -73051,6 +85022,8 @@ export namespace Prisma {
     endDate?: SortOrder
     isCurrent?: SortOrder
     description?: SortOrder
+    occupationCategory?: SortOrder
+    country?: SortOrder
   }
 
   export type ProfileCareerAvgOrderByAggregateInput = {
@@ -73068,6 +85041,8 @@ export namespace Prisma {
     endDate?: SortOrder
     isCurrent?: SortOrder
     description?: SortOrder
+    occupationCategory?: SortOrder
+    country?: SortOrder
   }
 
   export type ProfileCareerMinOrderByAggregateInput = {
@@ -73080,6 +85055,8 @@ export namespace Prisma {
     endDate?: SortOrder
     isCurrent?: SortOrder
     description?: SortOrder
+    occupationCategory?: SortOrder
+    country?: SortOrder
   }
 
   export type ProfileCareerSumOrderByAggregateInput = {
@@ -75370,6 +87347,16 @@ export namespace Prisma {
     isNot?: InterviewSlotWhereInput | null
   }
 
+  export type VisaChecklistItemListRelationFilter = {
+    every?: VisaChecklistItemWhereInput
+    some?: VisaChecklistItemWhereInput
+    none?: VisaChecklistItemWhereInput
+  }
+
+  export type VisaChecklistItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type JobApplicationJobIdApplicantIdCompoundUniqueInput = {
     jobId: bigint | number
     applicantId: string
@@ -75402,6 +87389,15 @@ export namespace Prisma {
     cancelledAt?: SortOrder
     rejectionReason?: SortOrder
     resultNotifiedAt?: SortOrder
+    documentPassedAt?: SortOrder
+    interviewScheduledAt?: SortOrder
+    finalAcceptedAt?: SortOrder
+    rejectedAt?: SortOrder
+    offeredSalary?: SortOrder
+    expectedStartDate?: SortOrder
+    companyMessage?: SortOrder
+    visaGuideScenario?: SortOrder
+    visaGuideGeneratedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -75411,6 +87407,7 @@ export namespace Prisma {
     jobId?: SortOrder
     selectedSlotId?: SortOrder
     interviewRoundTrips?: SortOrder
+    offeredSalary?: SortOrder
   }
 
   export type JobApplicationMaxOrderByAggregateInput = {
@@ -75440,6 +87437,15 @@ export namespace Prisma {
     cancelledAt?: SortOrder
     rejectionReason?: SortOrder
     resultNotifiedAt?: SortOrder
+    documentPassedAt?: SortOrder
+    interviewScheduledAt?: SortOrder
+    finalAcceptedAt?: SortOrder
+    rejectedAt?: SortOrder
+    offeredSalary?: SortOrder
+    expectedStartDate?: SortOrder
+    companyMessage?: SortOrder
+    visaGuideScenario?: SortOrder
+    visaGuideGeneratedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -75471,6 +87477,15 @@ export namespace Prisma {
     cancelledAt?: SortOrder
     rejectionReason?: SortOrder
     resultNotifiedAt?: SortOrder
+    documentPassedAt?: SortOrder
+    interviewScheduledAt?: SortOrder
+    finalAcceptedAt?: SortOrder
+    rejectedAt?: SortOrder
+    offeredSalary?: SortOrder
+    expectedStartDate?: SortOrder
+    companyMessage?: SortOrder
+    visaGuideScenario?: SortOrder
+    visaGuideGeneratedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -75480,6 +87495,7 @@ export namespace Prisma {
     jobId?: SortOrder
     selectedSlotId?: SortOrder
     interviewRoundTrips?: SortOrder
+    offeredSalary?: SortOrder
   }
 
   export type EnumApplicationStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -75555,6 +87571,117 @@ export namespace Prisma {
   export type InterviewSlotSumOrderByAggregateInput = {
     id?: SortOrder
     jobId?: SortOrder
+  }
+
+  export type VisaChecklistTemplateScenarioCategoryItemOrderCompoundUniqueInput = {
+    scenario: string
+    category: string
+    itemOrder: number
+  }
+
+  export type VisaChecklistTemplateCountOrderByAggregateInput = {
+    id?: SortOrder
+    scenario?: SortOrder
+    visaTransition?: SortOrder
+    category?: SortOrder
+    itemOrder?: SortOrder
+    itemText?: SortOrder
+    isRequired?: SortOrder
+    note?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type VisaChecklistTemplateAvgOrderByAggregateInput = {
+    id?: SortOrder
+    itemOrder?: SortOrder
+  }
+
+  export type VisaChecklistTemplateMaxOrderByAggregateInput = {
+    id?: SortOrder
+    scenario?: SortOrder
+    visaTransition?: SortOrder
+    category?: SortOrder
+    itemOrder?: SortOrder
+    itemText?: SortOrder
+    isRequired?: SortOrder
+    note?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type VisaChecklistTemplateMinOrderByAggregateInput = {
+    id?: SortOrder
+    scenario?: SortOrder
+    visaTransition?: SortOrder
+    category?: SortOrder
+    itemOrder?: SortOrder
+    itemText?: SortOrder
+    isRequired?: SortOrder
+    note?: SortOrder
+    isActive?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type VisaChecklistTemplateSumOrderByAggregateInput = {
+    id?: SortOrder
+    itemOrder?: SortOrder
+  }
+
+  export type JobApplicationScalarRelationFilter = {
+    is?: JobApplicationWhereInput
+    isNot?: JobApplicationWhereInput
+  }
+
+  export type VisaChecklistItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    applicationId?: SortOrder
+    category?: SortOrder
+    itemText?: SortOrder
+    itemOrder?: SortOrder
+    isChecked?: SortOrder
+    checkedAt?: SortOrder
+    checkedBy?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type VisaChecklistItemAvgOrderByAggregateInput = {
+    id?: SortOrder
+    applicationId?: SortOrder
+    itemOrder?: SortOrder
+  }
+
+  export type VisaChecklistItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    applicationId?: SortOrder
+    category?: SortOrder
+    itemText?: SortOrder
+    itemOrder?: SortOrder
+    isChecked?: SortOrder
+    checkedAt?: SortOrder
+    checkedBy?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type VisaChecklistItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    applicationId?: SortOrder
+    category?: SortOrder
+    itemText?: SortOrder
+    itemOrder?: SortOrder
+    isChecked?: SortOrder
+    checkedAt?: SortOrder
+    checkedBy?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type VisaChecklistItemSumOrderByAggregateInput = {
+    id?: SortOrder
+    applicationId?: SortOrder
+    itemOrder?: SortOrder
   }
 
   export type JobScrapJobIdUserIdCompoundUniqueInput = {
@@ -75648,6 +87775,16 @@ export namespace Prisma {
     _max?: NestedEnumAdminActionTypeFilter<$PrismaModel>
   }
 
+  export type TalentBookmarkListRelationFilter = {
+    every?: TalentBookmarkWhereInput
+    some?: TalentBookmarkWhereInput
+    none?: TalentBookmarkWhereInput
+  }
+
+  export type TalentBookmarkOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ResumeCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -75705,6 +87842,47 @@ export namespace Prisma {
     topikLevel?: SortOrder
     kiipLevel?: SortOrder
     preferredSalary?: SortOrder
+  }
+
+  export type ResumeScalarRelationFilter = {
+    is?: ResumeWhereInput
+    isNot?: ResumeWhereInput
+  }
+
+  export type TalentBookmarkResumeIdUserIdCompoundUniqueInput = {
+    resumeId: bigint | number
+    userId: string
+  }
+
+  export type TalentBookmarkCountOrderByAggregateInput = {
+    id?: SortOrder
+    resumeId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TalentBookmarkAvgOrderByAggregateInput = {
+    id?: SortOrder
+    resumeId?: SortOrder
+  }
+
+  export type TalentBookmarkMaxOrderByAggregateInput = {
+    id?: SortOrder
+    resumeId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TalentBookmarkMinOrderByAggregateInput = {
+    id?: SortOrder
+    resumeId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TalentBookmarkSumOrderByAggregateInput = {
+    id?: SortOrder
+    resumeId?: SortOrder
   }
 
   export type EnumVisaVerifyMethodFilter<$PrismaModel = never> = {
@@ -75827,6 +88005,11 @@ export namespace Prisma {
     none?: DiagnosisPathwayClickWhereInput
   }
 
+  export type RediagnosisCouponNullableScalarRelationFilter = {
+    is?: RediagnosisCouponWhereInput | null
+    isNot?: RediagnosisCouponWhereInput | null
+  }
+
   export type DiagnosisPathwayClickOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -75842,6 +88025,16 @@ export namespace Prisma {
     convertedToSignup?: SortOrder
     convertedToPaid?: SortOrder
     userFeedbackScore?: SortOrder
+    isPremium?: SortOrder
+    isPremiumViewed?: SortOrder
+    stripeSessionId?: SortOrder
+    stripePaidAt?: SortOrder
+    premiumResultJson?: SortOrder
+    premiumViewedAt?: SortOrder
+    previousSessionId?: SortOrder
+    refundPolicyAgreedAt?: SortOrder
+    digitalContentAgreedAt?: SortOrder
+    privacyAgreedAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -75849,6 +88042,7 @@ export namespace Prisma {
     sessionId?: SortOrder
     pathwayCount?: SortOrder
     userFeedbackScore?: SortOrder
+    previousSessionId?: SortOrder
   }
 
   export type DiagnosisSessionMaxOrderByAggregateInput = {
@@ -75860,6 +88054,15 @@ export namespace Prisma {
     convertedToSignup?: SortOrder
     convertedToPaid?: SortOrder
     userFeedbackScore?: SortOrder
+    isPremium?: SortOrder
+    isPremiumViewed?: SortOrder
+    stripeSessionId?: SortOrder
+    stripePaidAt?: SortOrder
+    premiumViewedAt?: SortOrder
+    previousSessionId?: SortOrder
+    refundPolicyAgreedAt?: SortOrder
+    digitalContentAgreedAt?: SortOrder
+    privacyAgreedAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -75872,6 +88075,15 @@ export namespace Prisma {
     convertedToSignup?: SortOrder
     convertedToPaid?: SortOrder
     userFeedbackScore?: SortOrder
+    isPremium?: SortOrder
+    isPremiumViewed?: SortOrder
+    stripeSessionId?: SortOrder
+    stripePaidAt?: SortOrder
+    premiumViewedAt?: SortOrder
+    previousSessionId?: SortOrder
+    refundPolicyAgreedAt?: SortOrder
+    digitalContentAgreedAt?: SortOrder
+    privacyAgreedAt?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -75879,6 +88091,7 @@ export namespace Prisma {
     sessionId?: SortOrder
     pathwayCount?: SortOrder
     userFeedbackScore?: SortOrder
+    previousSessionId?: SortOrder
   }
   export type JsonWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -75998,6 +88211,288 @@ export namespace Prisma {
     logId?: SortOrder
     oldScore?: SortOrder
     newScore?: SortOrder
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type UniversityRankingUniversityNameCountryCompoundUniqueInput = {
+    universityName: string
+    country: string
+  }
+
+  export type UniversityRankingCountOrderByAggregateInput = {
+    id?: SortOrder
+    universityName?: SortOrder
+    universityNameEn?: SortOrder
+    country?: SortOrder
+    qsRank?: SortOrder
+    theRank?: SortOrder
+    rankTier?: SortOrder
+    bonusScore?: SortOrder
+    updatedYear?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UniversityRankingAvgOrderByAggregateInput = {
+    id?: SortOrder
+    qsRank?: SortOrder
+    theRank?: SortOrder
+    bonusScore?: SortOrder
+    updatedYear?: SortOrder
+  }
+
+  export type UniversityRankingMaxOrderByAggregateInput = {
+    id?: SortOrder
+    universityName?: SortOrder
+    universityNameEn?: SortOrder
+    country?: SortOrder
+    qsRank?: SortOrder
+    theRank?: SortOrder
+    rankTier?: SortOrder
+    bonusScore?: SortOrder
+    updatedYear?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UniversityRankingMinOrderByAggregateInput = {
+    id?: SortOrder
+    universityName?: SortOrder
+    universityNameEn?: SortOrder
+    country?: SortOrder
+    qsRank?: SortOrder
+    theRank?: SortOrder
+    rankTier?: SortOrder
+    bonusScore?: SortOrder
+    updatedYear?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UniversityRankingSumOrderByAggregateInput = {
+    id?: SortOrder
+    qsRank?: SortOrder
+    theRank?: SortOrder
+    bonusScore?: SortOrder
+    updatedYear?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type AdjacentMajorOccupationCategoryACategoryBCompoundUniqueInput = {
+    categoryA: string
+    categoryB: string
+  }
+
+  export type AdjacentMajorOccupationCountOrderByAggregateInput = {
+    id?: SortOrder
+    categoryA?: SortOrder
+    categoryB?: SortOrder
+    alignBonus?: SortOrder
+  }
+
+  export type AdjacentMajorOccupationAvgOrderByAggregateInput = {
+    id?: SortOrder
+    alignBonus?: SortOrder
+  }
+
+  export type AdjacentMajorOccupationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    categoryA?: SortOrder
+    categoryB?: SortOrder
+    alignBonus?: SortOrder
+  }
+
+  export type AdjacentMajorOccupationMinOrderByAggregateInput = {
+    id?: SortOrder
+    categoryA?: SortOrder
+    categoryB?: SortOrder
+    alignBonus?: SortOrder
+  }
+
+  export type AdjacentMajorOccupationSumOrderByAggregateInput = {
+    id?: SortOrder
+    alignBonus?: SortOrder
+  }
+
+  export type VisaIncomeReferenceCountOrderByAggregateInput = {
+    id?: SortOrder
+    visaCode?: SortOrder
+    visaNameKo?: SortOrder
+    avgAnnualIncome?: SortOrder
+    incomeSource?: SortOrder
+    incomeNote?: SortOrder
+    updatedYear?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type VisaIncomeReferenceAvgOrderByAggregateInput = {
+    id?: SortOrder
+    avgAnnualIncome?: SortOrder
+    updatedYear?: SortOrder
+  }
+
+  export type VisaIncomeReferenceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    visaCode?: SortOrder
+    visaNameKo?: SortOrder
+    avgAnnualIncome?: SortOrder
+    incomeSource?: SortOrder
+    incomeNote?: SortOrder
+    updatedYear?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type VisaIncomeReferenceMinOrderByAggregateInput = {
+    id?: SortOrder
+    visaCode?: SortOrder
+    visaNameKo?: SortOrder
+    avgAnnualIncome?: SortOrder
+    incomeSource?: SortOrder
+    incomeNote?: SortOrder
+    updatedYear?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type VisaIncomeReferenceSumOrderByAggregateInput = {
+    id?: SortOrder
+    avgAnnualIncome?: SortOrder
+    updatedYear?: SortOrder
+  }
+
+  export type RediagnosisCouponCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    originalSessionId?: SortOrder
+    couponCode?: SortOrder
+    status?: SortOrder
+    issuedAt?: SortOrder
+    availableAt?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrder
+    usedSessionId?: SortOrder
+    reminderSentAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RediagnosisCouponAvgOrderByAggregateInput = {
+    id?: SortOrder
+    originalSessionId?: SortOrder
+    usedSessionId?: SortOrder
+  }
+
+  export type RediagnosisCouponMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    originalSessionId?: SortOrder
+    couponCode?: SortOrder
+    status?: SortOrder
+    issuedAt?: SortOrder
+    availableAt?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrder
+    usedSessionId?: SortOrder
+    reminderSentAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RediagnosisCouponMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    originalSessionId?: SortOrder
+    couponCode?: SortOrder
+    status?: SortOrder
+    issuedAt?: SortOrder
+    availableAt?: SortOrder
+    expiresAt?: SortOrder
+    usedAt?: SortOrder
+    usedSessionId?: SortOrder
+    reminderSentAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type RediagnosisCouponSumOrderByAggregateInput = {
+    id?: SortOrder
+    originalSessionId?: SortOrder
+    usedSessionId?: SortOrder
+  }
+
+  export type PlannerRefundCountOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    reason?: SortOrder
+    stripeRefundId?: SortOrder
+    refundAmountCents?: SortOrder
+    currency?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PlannerRefundAvgOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    refundAmountCents?: SortOrder
+  }
+
+  export type PlannerRefundMaxOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    reason?: SortOrder
+    stripeRefundId?: SortOrder
+    refundAmountCents?: SortOrder
+    currency?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PlannerRefundMinOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    userId?: SortOrder
+    status?: SortOrder
+    reason?: SortOrder
+    stripeRefundId?: SortOrder
+    refundAmountCents?: SortOrder
+    currency?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PlannerRefundSumOrderByAggregateInput = {
+    id?: SortOrder
+    sessionId?: SortOrder
+    refundAmountCents?: SortOrder
   }
 
   export type CorporateProfileCreateNestedOneWithoutUserInput = {
@@ -77925,6 +90420,20 @@ export namespace Prisma {
     connect?: InterviewSlotWhereUniqueInput
   }
 
+  export type VisaChecklistItemCreateNestedManyWithoutApplicationInput = {
+    create?: XOR<VisaChecklistItemCreateWithoutApplicationInput, VisaChecklistItemUncheckedCreateWithoutApplicationInput> | VisaChecklistItemCreateWithoutApplicationInput[] | VisaChecklistItemUncheckedCreateWithoutApplicationInput[]
+    connectOrCreate?: VisaChecklistItemCreateOrConnectWithoutApplicationInput | VisaChecklistItemCreateOrConnectWithoutApplicationInput[]
+    createMany?: VisaChecklistItemCreateManyApplicationInputEnvelope
+    connect?: VisaChecklistItemWhereUniqueInput | VisaChecklistItemWhereUniqueInput[]
+  }
+
+  export type VisaChecklistItemUncheckedCreateNestedManyWithoutApplicationInput = {
+    create?: XOR<VisaChecklistItemCreateWithoutApplicationInput, VisaChecklistItemUncheckedCreateWithoutApplicationInput> | VisaChecklistItemCreateWithoutApplicationInput[] | VisaChecklistItemUncheckedCreateWithoutApplicationInput[]
+    connectOrCreate?: VisaChecklistItemCreateOrConnectWithoutApplicationInput | VisaChecklistItemCreateOrConnectWithoutApplicationInput[]
+    createMany?: VisaChecklistItemCreateManyApplicationInputEnvelope
+    connect?: VisaChecklistItemWhereUniqueInput | VisaChecklistItemWhereUniqueInput[]
+  }
+
   export type EnumApplicationStatusFieldUpdateOperationsInput = {
     set?: $Enums.ApplicationStatus
   }
@@ -77953,6 +90462,34 @@ export namespace Prisma {
     delete?: InterviewSlotWhereInput | boolean
     connect?: InterviewSlotWhereUniqueInput
     update?: XOR<XOR<InterviewSlotUpdateToOneWithWhereWithoutBookedApplicationInput, InterviewSlotUpdateWithoutBookedApplicationInput>, InterviewSlotUncheckedUpdateWithoutBookedApplicationInput>
+  }
+
+  export type VisaChecklistItemUpdateManyWithoutApplicationNestedInput = {
+    create?: XOR<VisaChecklistItemCreateWithoutApplicationInput, VisaChecklistItemUncheckedCreateWithoutApplicationInput> | VisaChecklistItemCreateWithoutApplicationInput[] | VisaChecklistItemUncheckedCreateWithoutApplicationInput[]
+    connectOrCreate?: VisaChecklistItemCreateOrConnectWithoutApplicationInput | VisaChecklistItemCreateOrConnectWithoutApplicationInput[]
+    upsert?: VisaChecklistItemUpsertWithWhereUniqueWithoutApplicationInput | VisaChecklistItemUpsertWithWhereUniqueWithoutApplicationInput[]
+    createMany?: VisaChecklistItemCreateManyApplicationInputEnvelope
+    set?: VisaChecklistItemWhereUniqueInput | VisaChecklistItemWhereUniqueInput[]
+    disconnect?: VisaChecklistItemWhereUniqueInput | VisaChecklistItemWhereUniqueInput[]
+    delete?: VisaChecklistItemWhereUniqueInput | VisaChecklistItemWhereUniqueInput[]
+    connect?: VisaChecklistItemWhereUniqueInput | VisaChecklistItemWhereUniqueInput[]
+    update?: VisaChecklistItemUpdateWithWhereUniqueWithoutApplicationInput | VisaChecklistItemUpdateWithWhereUniqueWithoutApplicationInput[]
+    updateMany?: VisaChecklistItemUpdateManyWithWhereWithoutApplicationInput | VisaChecklistItemUpdateManyWithWhereWithoutApplicationInput[]
+    deleteMany?: VisaChecklistItemScalarWhereInput | VisaChecklistItemScalarWhereInput[]
+  }
+
+  export type VisaChecklistItemUncheckedUpdateManyWithoutApplicationNestedInput = {
+    create?: XOR<VisaChecklistItemCreateWithoutApplicationInput, VisaChecklistItemUncheckedCreateWithoutApplicationInput> | VisaChecklistItemCreateWithoutApplicationInput[] | VisaChecklistItemUncheckedCreateWithoutApplicationInput[]
+    connectOrCreate?: VisaChecklistItemCreateOrConnectWithoutApplicationInput | VisaChecklistItemCreateOrConnectWithoutApplicationInput[]
+    upsert?: VisaChecklistItemUpsertWithWhereUniqueWithoutApplicationInput | VisaChecklistItemUpsertWithWhereUniqueWithoutApplicationInput[]
+    createMany?: VisaChecklistItemCreateManyApplicationInputEnvelope
+    set?: VisaChecklistItemWhereUniqueInput | VisaChecklistItemWhereUniqueInput[]
+    disconnect?: VisaChecklistItemWhereUniqueInput | VisaChecklistItemWhereUniqueInput[]
+    delete?: VisaChecklistItemWhereUniqueInput | VisaChecklistItemWhereUniqueInput[]
+    connect?: VisaChecklistItemWhereUniqueInput | VisaChecklistItemWhereUniqueInput[]
+    update?: VisaChecklistItemUpdateWithWhereUniqueWithoutApplicationInput | VisaChecklistItemUpdateWithWhereUniqueWithoutApplicationInput[]
+    updateMany?: VisaChecklistItemUpdateManyWithWhereWithoutApplicationInput | VisaChecklistItemUpdateManyWithWhereWithoutApplicationInput[]
+    deleteMany?: VisaChecklistItemScalarWhereInput | VisaChecklistItemScalarWhereInput[]
   }
 
   export type JobPostingCreateNestedOneWithoutInterviewSlotsInput = {
@@ -78001,6 +90538,20 @@ export namespace Prisma {
     update?: XOR<XOR<JobApplicationUpdateToOneWithWhereWithoutSelectedSlotInput, JobApplicationUpdateWithoutSelectedSlotInput>, JobApplicationUncheckedUpdateWithoutSelectedSlotInput>
   }
 
+  export type JobApplicationCreateNestedOneWithoutChecklistItemsInput = {
+    create?: XOR<JobApplicationCreateWithoutChecklistItemsInput, JobApplicationUncheckedCreateWithoutChecklistItemsInput>
+    connectOrCreate?: JobApplicationCreateOrConnectWithoutChecklistItemsInput
+    connect?: JobApplicationWhereUniqueInput
+  }
+
+  export type JobApplicationUpdateOneRequiredWithoutChecklistItemsNestedInput = {
+    create?: XOR<JobApplicationCreateWithoutChecklistItemsInput, JobApplicationUncheckedCreateWithoutChecklistItemsInput>
+    connectOrCreate?: JobApplicationCreateOrConnectWithoutChecklistItemsInput
+    upsert?: JobApplicationUpsertWithoutChecklistItemsInput
+    connect?: JobApplicationWhereUniqueInput
+    update?: XOR<XOR<JobApplicationUpdateToOneWithWhereWithoutChecklistItemsInput, JobApplicationUpdateWithoutChecklistItemsInput>, JobApplicationUncheckedUpdateWithoutChecklistItemsInput>
+  }
+
   export type JobPostingCreateNestedOneWithoutScrapsInput = {
     create?: XOR<JobPostingCreateWithoutScrapsInput, JobPostingUncheckedCreateWithoutScrapsInput>
     connectOrCreate?: JobPostingCreateOrConnectWithoutScrapsInput
@@ -78037,6 +90588,20 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type TalentBookmarkCreateNestedManyWithoutResumeInput = {
+    create?: XOR<TalentBookmarkCreateWithoutResumeInput, TalentBookmarkUncheckedCreateWithoutResumeInput> | TalentBookmarkCreateWithoutResumeInput[] | TalentBookmarkUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: TalentBookmarkCreateOrConnectWithoutResumeInput | TalentBookmarkCreateOrConnectWithoutResumeInput[]
+    createMany?: TalentBookmarkCreateManyResumeInputEnvelope
+    connect?: TalentBookmarkWhereUniqueInput | TalentBookmarkWhereUniqueInput[]
+  }
+
+  export type TalentBookmarkUncheckedCreateNestedManyWithoutResumeInput = {
+    create?: XOR<TalentBookmarkCreateWithoutResumeInput, TalentBookmarkUncheckedCreateWithoutResumeInput> | TalentBookmarkCreateWithoutResumeInput[] | TalentBookmarkUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: TalentBookmarkCreateOrConnectWithoutResumeInput | TalentBookmarkCreateOrConnectWithoutResumeInput[]
+    createMany?: TalentBookmarkCreateManyResumeInputEnvelope
+    connect?: TalentBookmarkWhereUniqueInput | TalentBookmarkWhereUniqueInput[]
+  }
+
   export type ResumeUpdatepreferredJobTypesInput = {
     set?: string[]
     push?: string | string[]
@@ -78058,6 +90623,48 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutResumeInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutResumeInput, UserUpdateWithoutResumeInput>, UserUncheckedUpdateWithoutResumeInput>
+  }
+
+  export type TalentBookmarkUpdateManyWithoutResumeNestedInput = {
+    create?: XOR<TalentBookmarkCreateWithoutResumeInput, TalentBookmarkUncheckedCreateWithoutResumeInput> | TalentBookmarkCreateWithoutResumeInput[] | TalentBookmarkUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: TalentBookmarkCreateOrConnectWithoutResumeInput | TalentBookmarkCreateOrConnectWithoutResumeInput[]
+    upsert?: TalentBookmarkUpsertWithWhereUniqueWithoutResumeInput | TalentBookmarkUpsertWithWhereUniqueWithoutResumeInput[]
+    createMany?: TalentBookmarkCreateManyResumeInputEnvelope
+    set?: TalentBookmarkWhereUniqueInput | TalentBookmarkWhereUniqueInput[]
+    disconnect?: TalentBookmarkWhereUniqueInput | TalentBookmarkWhereUniqueInput[]
+    delete?: TalentBookmarkWhereUniqueInput | TalentBookmarkWhereUniqueInput[]
+    connect?: TalentBookmarkWhereUniqueInput | TalentBookmarkWhereUniqueInput[]
+    update?: TalentBookmarkUpdateWithWhereUniqueWithoutResumeInput | TalentBookmarkUpdateWithWhereUniqueWithoutResumeInput[]
+    updateMany?: TalentBookmarkUpdateManyWithWhereWithoutResumeInput | TalentBookmarkUpdateManyWithWhereWithoutResumeInput[]
+    deleteMany?: TalentBookmarkScalarWhereInput | TalentBookmarkScalarWhereInput[]
+  }
+
+  export type TalentBookmarkUncheckedUpdateManyWithoutResumeNestedInput = {
+    create?: XOR<TalentBookmarkCreateWithoutResumeInput, TalentBookmarkUncheckedCreateWithoutResumeInput> | TalentBookmarkCreateWithoutResumeInput[] | TalentBookmarkUncheckedCreateWithoutResumeInput[]
+    connectOrCreate?: TalentBookmarkCreateOrConnectWithoutResumeInput | TalentBookmarkCreateOrConnectWithoutResumeInput[]
+    upsert?: TalentBookmarkUpsertWithWhereUniqueWithoutResumeInput | TalentBookmarkUpsertWithWhereUniqueWithoutResumeInput[]
+    createMany?: TalentBookmarkCreateManyResumeInputEnvelope
+    set?: TalentBookmarkWhereUniqueInput | TalentBookmarkWhereUniqueInput[]
+    disconnect?: TalentBookmarkWhereUniqueInput | TalentBookmarkWhereUniqueInput[]
+    delete?: TalentBookmarkWhereUniqueInput | TalentBookmarkWhereUniqueInput[]
+    connect?: TalentBookmarkWhereUniqueInput | TalentBookmarkWhereUniqueInput[]
+    update?: TalentBookmarkUpdateWithWhereUniqueWithoutResumeInput | TalentBookmarkUpdateWithWhereUniqueWithoutResumeInput[]
+    updateMany?: TalentBookmarkUpdateManyWithWhereWithoutResumeInput | TalentBookmarkUpdateManyWithWhereWithoutResumeInput[]
+    deleteMany?: TalentBookmarkScalarWhereInput | TalentBookmarkScalarWhereInput[]
+  }
+
+  export type ResumeCreateNestedOneWithoutBookmarksInput = {
+    create?: XOR<ResumeCreateWithoutBookmarksInput, ResumeUncheckedCreateWithoutBookmarksInput>
+    connectOrCreate?: ResumeCreateOrConnectWithoutBookmarksInput
+    connect?: ResumeWhereUniqueInput
+  }
+
+  export type ResumeUpdateOneRequiredWithoutBookmarksNestedInput = {
+    create?: XOR<ResumeCreateWithoutBookmarksInput, ResumeUncheckedCreateWithoutBookmarksInput>
+    connectOrCreate?: ResumeCreateOrConnectWithoutBookmarksInput
+    upsert?: ResumeUpsertWithoutBookmarksInput
+    connect?: ResumeWhereUniqueInput
+    update?: XOR<XOR<ResumeUpdateToOneWithWhereWithoutBookmarksInput, ResumeUpdateWithoutBookmarksInput>, ResumeUncheckedUpdateWithoutBookmarksInput>
   }
 
   export type UserCreateNestedOneWithoutVisaVerificationInput = {
@@ -78095,11 +90702,23 @@ export namespace Prisma {
     connect?: DiagnosisPathwayClickWhereUniqueInput | DiagnosisPathwayClickWhereUniqueInput[]
   }
 
+  export type RediagnosisCouponCreateNestedOneWithoutOriginalSessionInput = {
+    create?: XOR<RediagnosisCouponCreateWithoutOriginalSessionInput, RediagnosisCouponUncheckedCreateWithoutOriginalSessionInput>
+    connectOrCreate?: RediagnosisCouponCreateOrConnectWithoutOriginalSessionInput
+    connect?: RediagnosisCouponWhereUniqueInput
+  }
+
   export type DiagnosisPathwayClickUncheckedCreateNestedManyWithoutSessionInput = {
     create?: XOR<DiagnosisPathwayClickCreateWithoutSessionInput, DiagnosisPathwayClickUncheckedCreateWithoutSessionInput> | DiagnosisPathwayClickCreateWithoutSessionInput[] | DiagnosisPathwayClickUncheckedCreateWithoutSessionInput[]
     connectOrCreate?: DiagnosisPathwayClickCreateOrConnectWithoutSessionInput | DiagnosisPathwayClickCreateOrConnectWithoutSessionInput[]
     createMany?: DiagnosisPathwayClickCreateManySessionInputEnvelope
     connect?: DiagnosisPathwayClickWhereUniqueInput | DiagnosisPathwayClickWhereUniqueInput[]
+  }
+
+  export type RediagnosisCouponUncheckedCreateNestedOneWithoutOriginalSessionInput = {
+    create?: XOR<RediagnosisCouponCreateWithoutOriginalSessionInput, RediagnosisCouponUncheckedCreateWithoutOriginalSessionInput>
+    connectOrCreate?: RediagnosisCouponCreateOrConnectWithoutOriginalSessionInput
+    connect?: RediagnosisCouponWhereUniqueInput
   }
 
   export type IndividualProfileUpdateOneWithoutDiagnosisSessionsNestedInput = {
@@ -78126,6 +90745,16 @@ export namespace Prisma {
     deleteMany?: DiagnosisPathwayClickScalarWhereInput | DiagnosisPathwayClickScalarWhereInput[]
   }
 
+  export type RediagnosisCouponUpdateOneWithoutOriginalSessionNestedInput = {
+    create?: XOR<RediagnosisCouponCreateWithoutOriginalSessionInput, RediagnosisCouponUncheckedCreateWithoutOriginalSessionInput>
+    connectOrCreate?: RediagnosisCouponCreateOrConnectWithoutOriginalSessionInput
+    upsert?: RediagnosisCouponUpsertWithoutOriginalSessionInput
+    disconnect?: RediagnosisCouponWhereInput | boolean
+    delete?: RediagnosisCouponWhereInput | boolean
+    connect?: RediagnosisCouponWhereUniqueInput
+    update?: XOR<XOR<RediagnosisCouponUpdateToOneWithWhereWithoutOriginalSessionInput, RediagnosisCouponUpdateWithoutOriginalSessionInput>, RediagnosisCouponUncheckedUpdateWithoutOriginalSessionInput>
+  }
+
   export type DiagnosisPathwayClickUncheckedUpdateManyWithoutSessionNestedInput = {
     create?: XOR<DiagnosisPathwayClickCreateWithoutSessionInput, DiagnosisPathwayClickUncheckedCreateWithoutSessionInput> | DiagnosisPathwayClickCreateWithoutSessionInput[] | DiagnosisPathwayClickUncheckedCreateWithoutSessionInput[]
     connectOrCreate?: DiagnosisPathwayClickCreateOrConnectWithoutSessionInput | DiagnosisPathwayClickCreateOrConnectWithoutSessionInput[]
@@ -78140,6 +90769,16 @@ export namespace Prisma {
     deleteMany?: DiagnosisPathwayClickScalarWhereInput | DiagnosisPathwayClickScalarWhereInput[]
   }
 
+  export type RediagnosisCouponUncheckedUpdateOneWithoutOriginalSessionNestedInput = {
+    create?: XOR<RediagnosisCouponCreateWithoutOriginalSessionInput, RediagnosisCouponUncheckedCreateWithoutOriginalSessionInput>
+    connectOrCreate?: RediagnosisCouponCreateOrConnectWithoutOriginalSessionInput
+    upsert?: RediagnosisCouponUpsertWithoutOriginalSessionInput
+    disconnect?: RediagnosisCouponWhereInput | boolean
+    delete?: RediagnosisCouponWhereInput | boolean
+    connect?: RediagnosisCouponWhereUniqueInput
+    update?: XOR<XOR<RediagnosisCouponUpdateToOneWithWhereWithoutOriginalSessionInput, RediagnosisCouponUpdateWithoutOriginalSessionInput>, RediagnosisCouponUncheckedUpdateWithoutOriginalSessionInput>
+  }
+
   export type DiagnosisSessionCreateNestedOneWithoutClicksInput = {
     create?: XOR<DiagnosisSessionCreateWithoutClicksInput, DiagnosisSessionUncheckedCreateWithoutClicksInput>
     connectOrCreate?: DiagnosisSessionCreateOrConnectWithoutClicksInput
@@ -78152,6 +90791,28 @@ export namespace Prisma {
     upsert?: DiagnosisSessionUpsertWithoutClicksInput
     connect?: DiagnosisSessionWhereUniqueInput
     update?: XOR<XOR<DiagnosisSessionUpdateToOneWithWhereWithoutClicksInput, DiagnosisSessionUpdateWithoutClicksInput>, DiagnosisSessionUncheckedUpdateWithoutClicksInput>
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type DiagnosisSessionCreateNestedOneWithoutRediagnosisCouponInput = {
+    create?: XOR<DiagnosisSessionCreateWithoutRediagnosisCouponInput, DiagnosisSessionUncheckedCreateWithoutRediagnosisCouponInput>
+    connectOrCreate?: DiagnosisSessionCreateOrConnectWithoutRediagnosisCouponInput
+    connect?: DiagnosisSessionWhereUniqueInput
+  }
+
+  export type DiagnosisSessionUpdateOneRequiredWithoutRediagnosisCouponNestedInput = {
+    create?: XOR<DiagnosisSessionCreateWithoutRediagnosisCouponInput, DiagnosisSessionUncheckedCreateWithoutRediagnosisCouponInput>
+    connectOrCreate?: DiagnosisSessionCreateOrConnectWithoutRediagnosisCouponInput
+    upsert?: DiagnosisSessionUpsertWithoutRediagnosisCouponInput
+    connect?: DiagnosisSessionWhereUniqueInput
+    update?: XOR<XOR<DiagnosisSessionUpdateToOneWithWhereWithoutRediagnosisCouponInput, DiagnosisSessionUpdateWithoutRediagnosisCouponInput>, DiagnosisSessionUncheckedUpdateWithoutRediagnosisCouponInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -79133,6 +91794,22 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type CorporateProfileCreateWithoutUserInput = {
     companyId?: bigint | number
     bizRegNumber?: string | null
@@ -79257,6 +91934,16 @@ export namespace Prisma {
     koreaStayMonths?: number
     currentEmployerMonths?: number
     depopulationArea?: boolean
+    majorCategory?: string | null
+    currentRole?: string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: number
+    universityName?: string | null
+    universityNameEn?: string | null
+    major?: string | null
+    graduationYear?: number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     accessLogs?: TalentAccessLogCreateNestedManyWithoutIndividualInput
@@ -79307,6 +91994,16 @@ export namespace Prisma {
     koreaStayMonths?: number
     currentEmployerMonths?: number
     depopulationArea?: boolean
+    majorCategory?: string | null
+    currentRole?: string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: number
+    universityName?: string | null
+    universityNameEn?: string | null
+    major?: string | null
+    graduationYear?: number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     accessLogs?: TalentAccessLogUncheckedCreateNestedManyWithoutIndividualInput
@@ -79367,6 +92064,7 @@ export namespace Prisma {
     isComplete?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bookmarks?: TalentBookmarkCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeUncheckedCreateWithoutUserInput = {
@@ -79385,6 +92083,7 @@ export namespace Prisma {
     isComplete?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    bookmarks?: TalentBookmarkUncheckedCreateNestedManyWithoutResumeInput
   }
 
   export type ResumeCreateOrConnectWithoutUserInput = {
@@ -79570,6 +92269,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accessLogs?: TalentAccessLogUpdateManyWithoutIndividualNestedInput
@@ -79620,6 +92329,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accessLogs?: TalentAccessLogUncheckedUpdateManyWithoutIndividualNestedInput
@@ -79686,6 +92405,7 @@ export namespace Prisma {
     isComplete?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookmarks?: TalentBookmarkUpdateManyWithoutResumeNestedInput
   }
 
   export type ResumeUncheckedUpdateWithoutUserInput = {
@@ -79704,6 +92424,7 @@ export namespace Prisma {
     isComplete?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    bookmarks?: TalentBookmarkUncheckedUpdateManyWithoutResumeNestedInput
   }
 
   export type VisaVerificationUpsertWithoutUserInput = {
@@ -80065,6 +92786,8 @@ export namespace Prisma {
     endDate?: Date | string | null
     isCurrent?: boolean
     description?: string | null
+    occupationCategory?: string | null
+    country?: string
   }
 
   export type ProfileCareerUncheckedCreateWithoutIndividualInput = {
@@ -80076,6 +92799,8 @@ export namespace Prisma {
     endDate?: Date | string | null
     isCurrent?: boolean
     description?: string | null
+    occupationCategory?: string | null
+    country?: string
   }
 
   export type ProfileCareerCreateOrConnectWithoutIndividualInput = {
@@ -80128,8 +92853,19 @@ export namespace Prisma {
     convertedToSignup?: boolean
     convertedToPaid?: boolean
     userFeedbackScore?: number | null
+    isPremium?: boolean
+    isPremiumViewed?: boolean
+    stripeSessionId?: string | null
+    stripePaidAt?: Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: Date | string | null
+    previousSessionId?: bigint | number | null
+    refundPolicyAgreedAt?: Date | string | null
+    digitalContentAgreedAt?: Date | string | null
+    privacyAgreedAt?: Date | string | null
     createdAt?: Date | string
     clicks?: DiagnosisPathwayClickCreateNestedManyWithoutSessionInput
+    rediagnosisCoupon?: RediagnosisCouponCreateNestedOneWithoutOriginalSessionInput
   }
 
   export type DiagnosisSessionUncheckedCreateWithoutIndividualInput = {
@@ -80142,8 +92878,19 @@ export namespace Prisma {
     convertedToSignup?: boolean
     convertedToPaid?: boolean
     userFeedbackScore?: number | null
+    isPremium?: boolean
+    isPremiumViewed?: boolean
+    stripeSessionId?: string | null
+    stripePaidAt?: Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: Date | string | null
+    previousSessionId?: bigint | number | null
+    refundPolicyAgreedAt?: Date | string | null
+    digitalContentAgreedAt?: Date | string | null
+    privacyAgreedAt?: Date | string | null
     createdAt?: Date | string
     clicks?: DiagnosisPathwayClickUncheckedCreateNestedManyWithoutSessionInput
+    rediagnosisCoupon?: RediagnosisCouponUncheckedCreateNestedOneWithoutOriginalSessionInput
   }
 
   export type DiagnosisSessionCreateOrConnectWithoutIndividualInput = {
@@ -80307,6 +93054,8 @@ export namespace Prisma {
     endDate?: DateTimeNullableFilter<"ProfileCareer"> | Date | string | null
     isCurrent?: BoolFilter<"ProfileCareer"> | boolean
     description?: StringNullableFilter<"ProfileCareer"> | string | null
+    occupationCategory?: StringNullableFilter<"ProfileCareer"> | string | null
+    country?: StringFilter<"ProfileCareer"> | string
   }
 
   export type ProfileLanguageUpsertWithWhereUniqueWithoutIndividualInput = {
@@ -80369,6 +93118,16 @@ export namespace Prisma {
     convertedToSignup?: BoolFilter<"DiagnosisSession"> | boolean
     convertedToPaid?: BoolFilter<"DiagnosisSession"> | boolean
     userFeedbackScore?: IntNullableFilter<"DiagnosisSession"> | number | null
+    isPremium?: BoolFilter<"DiagnosisSession"> | boolean
+    isPremiumViewed?: BoolFilter<"DiagnosisSession"> | boolean
+    stripeSessionId?: StringNullableFilter<"DiagnosisSession"> | string | null
+    stripePaidAt?: DateTimeNullableFilter<"DiagnosisSession"> | Date | string | null
+    premiumResultJson?: JsonNullableFilter<"DiagnosisSession">
+    premiumViewedAt?: DateTimeNullableFilter<"DiagnosisSession"> | Date | string | null
+    previousSessionId?: BigIntNullableFilter<"DiagnosisSession"> | bigint | number | null
+    refundPolicyAgreedAt?: DateTimeNullableFilter<"DiagnosisSession"> | Date | string | null
+    digitalContentAgreedAt?: DateTimeNullableFilter<"DiagnosisSession"> | Date | string | null
+    privacyAgreedAt?: DateTimeNullableFilter<"DiagnosisSession"> | Date | string | null
     createdAt?: DateTimeFilter<"DiagnosisSession"> | Date | string
   }
 
@@ -80496,6 +93255,16 @@ export namespace Prisma {
     koreaStayMonths?: number
     currentEmployerMonths?: number
     depopulationArea?: boolean
+    majorCategory?: string | null
+    currentRole?: string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: number
+    universityName?: string | null
+    universityNameEn?: string | null
+    major?: string | null
+    graduationYear?: number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutIndividualInput
@@ -80547,6 +93316,16 @@ export namespace Prisma {
     koreaStayMonths?: number
     currentEmployerMonths?: number
     depopulationArea?: boolean
+    majorCategory?: string | null
+    currentRole?: string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: number
+    universityName?: string | null
+    universityNameEn?: string | null
+    major?: string | null
+    graduationYear?: number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     educations?: ProfileEducationUncheckedCreateNestedManyWithoutIndividualInput
@@ -80701,6 +93480,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutIndividualNestedInput
@@ -80752,6 +93541,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     educations?: ProfileEducationUncheckedUpdateManyWithoutIndividualNestedInput
@@ -80865,6 +93664,16 @@ export namespace Prisma {
     koreaStayMonths?: number
     currentEmployerMonths?: number
     depopulationArea?: boolean
+    majorCategory?: string | null
+    currentRole?: string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: number
+    universityName?: string | null
+    universityNameEn?: string | null
+    major?: string | null
+    graduationYear?: number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutIndividualInput
@@ -80916,6 +93725,16 @@ export namespace Prisma {
     koreaStayMonths?: number
     currentEmployerMonths?: number
     depopulationArea?: boolean
+    majorCategory?: string | null
+    currentRole?: string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: number
+    universityName?: string | null
+    universityNameEn?: string | null
+    major?: string | null
+    graduationYear?: number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     accessLogs?: TalentAccessLogUncheckedCreateNestedManyWithoutIndividualInput
@@ -81020,6 +93839,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutIndividualNestedInput
@@ -81071,6 +93900,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accessLogs?: TalentAccessLogUncheckedUpdateManyWithoutIndividualNestedInput
@@ -81165,6 +94004,16 @@ export namespace Prisma {
     koreaStayMonths?: number
     currentEmployerMonths?: number
     depopulationArea?: boolean
+    majorCategory?: string | null
+    currentRole?: string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: number
+    universityName?: string | null
+    universityNameEn?: string | null
+    major?: string | null
+    graduationYear?: number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutIndividualInput
@@ -81216,6 +94065,16 @@ export namespace Prisma {
     koreaStayMonths?: number
     currentEmployerMonths?: number
     depopulationArea?: boolean
+    majorCategory?: string | null
+    currentRole?: string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: number
+    universityName?: string | null
+    universityNameEn?: string | null
+    major?: string | null
+    graduationYear?: number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     accessLogs?: TalentAccessLogUncheckedCreateNestedManyWithoutIndividualInput
@@ -81281,6 +94140,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutIndividualNestedInput
@@ -81332,6 +94201,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accessLogs?: TalentAccessLogUncheckedUpdateManyWithoutIndividualNestedInput
@@ -81381,6 +94260,16 @@ export namespace Prisma {
     koreaStayMonths?: number
     currentEmployerMonths?: number
     depopulationArea?: boolean
+    majorCategory?: string | null
+    currentRole?: string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: number
+    universityName?: string | null
+    universityNameEn?: string | null
+    major?: string | null
+    graduationYear?: number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutIndividualInput
@@ -81432,6 +94321,16 @@ export namespace Prisma {
     koreaStayMonths?: number
     currentEmployerMonths?: number
     depopulationArea?: boolean
+    majorCategory?: string | null
+    currentRole?: string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: number
+    universityName?: string | null
+    universityNameEn?: string | null
+    major?: string | null
+    graduationYear?: number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     accessLogs?: TalentAccessLogUncheckedCreateNestedManyWithoutIndividualInput
@@ -81497,6 +94396,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutIndividualNestedInput
@@ -81548,6 +94457,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accessLogs?: TalentAccessLogUncheckedUpdateManyWithoutIndividualNestedInput
@@ -84800,9 +97719,19 @@ export namespace Prisma {
     cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
+    documentPassedAt?: Date | string | null
+    interviewScheduledAt?: Date | string | null
+    finalAcceptedAt?: Date | string | null
+    rejectedAt?: Date | string | null
+    offeredSalary?: number | null
+    expectedStartDate?: Date | string | null
+    companyMessage?: string | null
+    visaGuideScenario?: string | null
+    visaGuideGeneratedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     selectedSlot?: InterviewSlotCreateNestedOneWithoutBookedApplicationInput
+    checklistItems?: VisaChecklistItemCreateNestedManyWithoutApplicationInput
   }
 
   export type JobApplicationUncheckedCreateWithoutJobInput = {
@@ -84831,8 +97760,18 @@ export namespace Prisma {
     cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
+    documentPassedAt?: Date | string | null
+    interviewScheduledAt?: Date | string | null
+    finalAcceptedAt?: Date | string | null
+    rejectedAt?: Date | string | null
+    offeredSalary?: number | null
+    expectedStartDate?: Date | string | null
+    companyMessage?: string | null
+    visaGuideScenario?: string | null
+    visaGuideGeneratedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    checklistItems?: VisaChecklistItemUncheckedCreateNestedManyWithoutApplicationInput
   }
 
   export type JobApplicationCreateOrConnectWithoutJobInput = {
@@ -84994,6 +97933,15 @@ export namespace Prisma {
     cancelledAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     rejectionReason?: StringNullableFilter<"JobApplication"> | string | null
     resultNotifiedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    documentPassedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    interviewScheduledAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    finalAcceptedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    rejectedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    offeredSalary?: IntNullableFilter<"JobApplication"> | number | null
+    expectedStartDate?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
+    companyMessage?: StringNullableFilter<"JobApplication"> | string | null
+    visaGuideScenario?: StringNullableFilter<"JobApplication"> | string | null
+    visaGuideGeneratedAt?: DateTimeNullableFilter<"JobApplication"> | Date | string | null
     createdAt?: DateTimeFilter<"JobApplication"> | Date | string
     updatedAt?: DateTimeFilter<"JobApplication"> | Date | string
   }
@@ -85616,6 +98564,38 @@ export namespace Prisma {
     create: XOR<InterviewSlotCreateWithoutBookedApplicationInput, InterviewSlotUncheckedCreateWithoutBookedApplicationInput>
   }
 
+  export type VisaChecklistItemCreateWithoutApplicationInput = {
+    id?: bigint | number
+    category: string
+    itemText: string
+    itemOrder: number
+    isChecked?: boolean
+    checkedAt?: Date | string | null
+    checkedBy?: string | null
+    createdAt?: Date | string
+  }
+
+  export type VisaChecklistItemUncheckedCreateWithoutApplicationInput = {
+    id?: bigint | number
+    category: string
+    itemText: string
+    itemOrder: number
+    isChecked?: boolean
+    checkedAt?: Date | string | null
+    checkedBy?: string | null
+    createdAt?: Date | string
+  }
+
+  export type VisaChecklistItemCreateOrConnectWithoutApplicationInput = {
+    where: VisaChecklistItemWhereUniqueInput
+    create: XOR<VisaChecklistItemCreateWithoutApplicationInput, VisaChecklistItemUncheckedCreateWithoutApplicationInput>
+  }
+
+  export type VisaChecklistItemCreateManyApplicationInputEnvelope = {
+    data: VisaChecklistItemCreateManyApplicationInput | VisaChecklistItemCreateManyApplicationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type JobPostingUpsertWithoutApplicationsInput = {
     update: XOR<JobPostingUpdateWithoutApplicationsInput, JobPostingUncheckedUpdateWithoutApplicationsInput>
     create: XOR<JobPostingCreateWithoutApplicationsInput, JobPostingUncheckedCreateWithoutApplicationsInput>
@@ -85764,6 +98744,37 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type VisaChecklistItemUpsertWithWhereUniqueWithoutApplicationInput = {
+    where: VisaChecklistItemWhereUniqueInput
+    update: XOR<VisaChecklistItemUpdateWithoutApplicationInput, VisaChecklistItemUncheckedUpdateWithoutApplicationInput>
+    create: XOR<VisaChecklistItemCreateWithoutApplicationInput, VisaChecklistItemUncheckedCreateWithoutApplicationInput>
+  }
+
+  export type VisaChecklistItemUpdateWithWhereUniqueWithoutApplicationInput = {
+    where: VisaChecklistItemWhereUniqueInput
+    data: XOR<VisaChecklistItemUpdateWithoutApplicationInput, VisaChecklistItemUncheckedUpdateWithoutApplicationInput>
+  }
+
+  export type VisaChecklistItemUpdateManyWithWhereWithoutApplicationInput = {
+    where: VisaChecklistItemScalarWhereInput
+    data: XOR<VisaChecklistItemUpdateManyMutationInput, VisaChecklistItemUncheckedUpdateManyWithoutApplicationInput>
+  }
+
+  export type VisaChecklistItemScalarWhereInput = {
+    AND?: VisaChecklistItemScalarWhereInput | VisaChecklistItemScalarWhereInput[]
+    OR?: VisaChecklistItemScalarWhereInput[]
+    NOT?: VisaChecklistItemScalarWhereInput | VisaChecklistItemScalarWhereInput[]
+    id?: BigIntFilter<"VisaChecklistItem"> | bigint | number
+    applicationId?: BigIntFilter<"VisaChecklistItem"> | bigint | number
+    category?: StringFilter<"VisaChecklistItem"> | string
+    itemText?: StringFilter<"VisaChecklistItem"> | string
+    itemOrder?: IntFilter<"VisaChecklistItem"> | number
+    isChecked?: BoolFilter<"VisaChecklistItem"> | boolean
+    checkedAt?: DateTimeNullableFilter<"VisaChecklistItem"> | Date | string | null
+    checkedBy?: StringNullableFilter<"VisaChecklistItem"> | string | null
+    createdAt?: DateTimeFilter<"VisaChecklistItem"> | Date | string
+  }
+
   export type JobPostingCreateWithoutInterviewSlotsInput = {
     id?: bigint | number
     corporateId: bigint | number
@@ -85900,9 +98911,19 @@ export namespace Prisma {
     cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
+    documentPassedAt?: Date | string | null
+    interviewScheduledAt?: Date | string | null
+    finalAcceptedAt?: Date | string | null
+    rejectedAt?: Date | string | null
+    offeredSalary?: number | null
+    expectedStartDate?: Date | string | null
+    companyMessage?: string | null
+    visaGuideScenario?: string | null
+    visaGuideGeneratedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     job: JobPostingCreateNestedOneWithoutApplicationsInput
+    checklistItems?: VisaChecklistItemCreateNestedManyWithoutApplicationInput
   }
 
   export type JobApplicationUncheckedCreateWithoutSelectedSlotInput = {
@@ -85931,8 +98952,18 @@ export namespace Prisma {
     cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
+    documentPassedAt?: Date | string | null
+    interviewScheduledAt?: Date | string | null
+    finalAcceptedAt?: Date | string | null
+    rejectedAt?: Date | string | null
+    offeredSalary?: number | null
+    expectedStartDate?: Date | string | null
+    companyMessage?: string | null
+    visaGuideScenario?: string | null
+    visaGuideGeneratedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    checklistItems?: VisaChecklistItemUncheckedCreateNestedManyWithoutApplicationInput
   }
 
   export type JobApplicationCreateOrConnectWithoutSelectedSlotInput = {
@@ -86093,9 +99124,19 @@ export namespace Prisma {
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documentPassedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finalAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    offeredSalary?: NullableIntFieldUpdateOperationsInput | number | null
+    expectedStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    companyMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideScenario?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobPostingUpdateOneRequiredWithoutApplicationsNestedInput
+    checklistItems?: VisaChecklistItemUpdateManyWithoutApplicationNestedInput
   }
 
   export type JobApplicationUncheckedUpdateWithoutSelectedSlotInput = {
@@ -86124,6 +99165,192 @@ export namespace Prisma {
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documentPassedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finalAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    offeredSalary?: NullableIntFieldUpdateOperationsInput | number | null
+    expectedStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    companyMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideScenario?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checklistItems?: VisaChecklistItemUncheckedUpdateManyWithoutApplicationNestedInput
+  }
+
+  export type JobApplicationCreateWithoutChecklistItemsInput = {
+    id?: bigint | number
+    applicantId: string
+    applicationMethod: $Enums.ApplicationMethod
+    status?: $Enums.ApplicationStatus
+    coverLetter?: string | null
+    resumeSnapshot?: string | null
+    proposedBy?: $Enums.ActorType | null
+    proposedTime?: Date | string | null
+    selfReportedAt?: Date | string | null
+    interviewDate?: Date | string | null
+    interviewNote?: string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
+    interviewDirections?: string | null
+    interviewWhatToBring?: string | null
+    cancelReason?: string | null
+    cancelledBy?: $Enums.ActorType | null
+    cancelledAt?: Date | string | null
+    rejectionReason?: string | null
+    resultNotifiedAt?: Date | string | null
+    documentPassedAt?: Date | string | null
+    interviewScheduledAt?: Date | string | null
+    finalAcceptedAt?: Date | string | null
+    rejectedAt?: Date | string | null
+    offeredSalary?: number | null
+    expectedStartDate?: Date | string | null
+    companyMessage?: string | null
+    visaGuideScenario?: string | null
+    visaGuideGeneratedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    job: JobPostingCreateNestedOneWithoutApplicationsInput
+    selectedSlot?: InterviewSlotCreateNestedOneWithoutBookedApplicationInput
+  }
+
+  export type JobApplicationUncheckedCreateWithoutChecklistItemsInput = {
+    id?: bigint | number
+    jobId: bigint | number
+    applicantId: string
+    applicationMethod: $Enums.ApplicationMethod
+    status?: $Enums.ApplicationStatus
+    coverLetter?: string | null
+    resumeSnapshot?: string | null
+    selectedSlotId?: bigint | number | null
+    proposedBy?: $Enums.ActorType | null
+    proposedTime?: Date | string | null
+    selfReportedAt?: Date | string | null
+    interviewDate?: Date | string | null
+    interviewNote?: string | null
+    interviewMethod?: $Enums.InterviewType | null
+    interviewFirstChoice?: Date | string | null
+    interviewSecondChoice?: Date | string | null
+    interviewLocation?: string | null
+    interviewLink?: string | null
+    interviewRoundTrips?: number
+    interviewDirections?: string | null
+    interviewWhatToBring?: string | null
+    cancelReason?: string | null
+    cancelledBy?: $Enums.ActorType | null
+    cancelledAt?: Date | string | null
+    rejectionReason?: string | null
+    resultNotifiedAt?: Date | string | null
+    documentPassedAt?: Date | string | null
+    interviewScheduledAt?: Date | string | null
+    finalAcceptedAt?: Date | string | null
+    rejectedAt?: Date | string | null
+    offeredSalary?: number | null
+    expectedStartDate?: Date | string | null
+    companyMessage?: string | null
+    visaGuideScenario?: string | null
+    visaGuideGeneratedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type JobApplicationCreateOrConnectWithoutChecklistItemsInput = {
+    where: JobApplicationWhereUniqueInput
+    create: XOR<JobApplicationCreateWithoutChecklistItemsInput, JobApplicationUncheckedCreateWithoutChecklistItemsInput>
+  }
+
+  export type JobApplicationUpsertWithoutChecklistItemsInput = {
+    update: XOR<JobApplicationUpdateWithoutChecklistItemsInput, JobApplicationUncheckedUpdateWithoutChecklistItemsInput>
+    create: XOR<JobApplicationCreateWithoutChecklistItemsInput, JobApplicationUncheckedCreateWithoutChecklistItemsInput>
+    where?: JobApplicationWhereInput
+  }
+
+  export type JobApplicationUpdateToOneWithWhereWithoutChecklistItemsInput = {
+    where?: JobApplicationWhereInput
+    data: XOR<JobApplicationUpdateWithoutChecklistItemsInput, JobApplicationUncheckedUpdateWithoutChecklistItemsInput>
+  }
+
+  export type JobApplicationUpdateWithoutChecklistItemsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    applicantId?: StringFieldUpdateOperationsInput | string
+    applicationMethod?: EnumApplicationMethodFieldUpdateOperationsInput | $Enums.ApplicationMethod
+    status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    coverLetter?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
+    interviewDirections?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewWhatToBring?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documentPassedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finalAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    offeredSalary?: NullableIntFieldUpdateOperationsInput | number | null
+    expectedStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    companyMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideScenario?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    job?: JobPostingUpdateOneRequiredWithoutApplicationsNestedInput
+    selectedSlot?: InterviewSlotUpdateOneWithoutBookedApplicationNestedInput
+  }
+
+  export type JobApplicationUncheckedUpdateWithoutChecklistItemsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    jobId?: BigIntFieldUpdateOperationsInput | bigint | number
+    applicantId?: StringFieldUpdateOperationsInput | string
+    applicationMethod?: EnumApplicationMethodFieldUpdateOperationsInput | $Enums.ApplicationMethod
+    status?: EnumApplicationStatusFieldUpdateOperationsInput | $Enums.ApplicationStatus
+    coverLetter?: NullableStringFieldUpdateOperationsInput | string | null
+    resumeSnapshot?: NullableStringFieldUpdateOperationsInput | string | null
+    selectedSlotId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    proposedBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    proposedTime?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    selfReportedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewNote?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewMethod?: NullableEnumInterviewTypeFieldUpdateOperationsInput | $Enums.InterviewType | null
+    interviewFirstChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewSecondChoice?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewLocation?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewLink?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewRoundTrips?: IntFieldUpdateOperationsInput | number
+    interviewDirections?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewWhatToBring?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelReason?: NullableStringFieldUpdateOperationsInput | string | null
+    cancelledBy?: NullableEnumActorTypeFieldUpdateOperationsInput | $Enums.ActorType | null
+    cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documentPassedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finalAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    offeredSalary?: NullableIntFieldUpdateOperationsInput | number | null
+    expectedStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    companyMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideScenario?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -86417,6 +99644,28 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutResumeInput, UserUncheckedCreateWithoutResumeInput>
   }
 
+  export type TalentBookmarkCreateWithoutResumeInput = {
+    id?: bigint | number
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type TalentBookmarkUncheckedCreateWithoutResumeInput = {
+    id?: bigint | number
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type TalentBookmarkCreateOrConnectWithoutResumeInput = {
+    where: TalentBookmarkWhereUniqueInput
+    create: XOR<TalentBookmarkCreateWithoutResumeInput, TalentBookmarkUncheckedCreateWithoutResumeInput>
+  }
+
+  export type TalentBookmarkCreateManyResumeInputEnvelope = {
+    data: TalentBookmarkCreateManyResumeInput | TalentBookmarkCreateManyResumeInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutResumeInput = {
     update: XOR<UserUpdateWithoutResumeInput, UserUncheckedUpdateWithoutResumeInput>
     create: XOR<UserCreateWithoutResumeInput, UserUncheckedCreateWithoutResumeInput>
@@ -86482,6 +99731,124 @@ export namespace Prisma {
     individual?: IndividualProfileUncheckedUpdateOneWithoutUserNestedInput
     supportTickets?: SupportTicketUncheckedUpdateManyWithoutUserNestedInput
     visaVerification?: VisaVerificationUncheckedUpdateOneWithoutUserNestedInput
+  }
+
+  export type TalentBookmarkUpsertWithWhereUniqueWithoutResumeInput = {
+    where: TalentBookmarkWhereUniqueInput
+    update: XOR<TalentBookmarkUpdateWithoutResumeInput, TalentBookmarkUncheckedUpdateWithoutResumeInput>
+    create: XOR<TalentBookmarkCreateWithoutResumeInput, TalentBookmarkUncheckedCreateWithoutResumeInput>
+  }
+
+  export type TalentBookmarkUpdateWithWhereUniqueWithoutResumeInput = {
+    where: TalentBookmarkWhereUniqueInput
+    data: XOR<TalentBookmarkUpdateWithoutResumeInput, TalentBookmarkUncheckedUpdateWithoutResumeInput>
+  }
+
+  export type TalentBookmarkUpdateManyWithWhereWithoutResumeInput = {
+    where: TalentBookmarkScalarWhereInput
+    data: XOR<TalentBookmarkUpdateManyMutationInput, TalentBookmarkUncheckedUpdateManyWithoutResumeInput>
+  }
+
+  export type TalentBookmarkScalarWhereInput = {
+    AND?: TalentBookmarkScalarWhereInput | TalentBookmarkScalarWhereInput[]
+    OR?: TalentBookmarkScalarWhereInput[]
+    NOT?: TalentBookmarkScalarWhereInput | TalentBookmarkScalarWhereInput[]
+    id?: BigIntFilter<"TalentBookmark"> | bigint | number
+    resumeId?: BigIntFilter<"TalentBookmark"> | bigint | number
+    userId?: StringFilter<"TalentBookmark"> | string
+    createdAt?: DateTimeFilter<"TalentBookmark"> | Date | string
+  }
+
+  export type ResumeCreateWithoutBookmarksInput = {
+    id?: bigint | number
+    nationality: string
+    birthDate?: Date | string | null
+    educations?: NullableJsonNullValueInput | InputJsonValue
+    workExperiences?: NullableJsonNullValueInput | InputJsonValue
+    topikLevel?: number | null
+    kiipLevel?: number | null
+    certificates?: NullableJsonNullValueInput | InputJsonValue
+    preferredJobTypes?: ResumeCreatepreferredJobTypesInput | string[]
+    preferredRegions?: ResumeCreatepreferredRegionsInput | string[]
+    preferredSalary?: number | null
+    preferredEmploymentTypes?: ResumeCreatepreferredEmploymentTypesInput | string[]
+    isComplete?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutResumeInput
+  }
+
+  export type ResumeUncheckedCreateWithoutBookmarksInput = {
+    id?: bigint | number
+    userId: string
+    nationality: string
+    birthDate?: Date | string | null
+    educations?: NullableJsonNullValueInput | InputJsonValue
+    workExperiences?: NullableJsonNullValueInput | InputJsonValue
+    topikLevel?: number | null
+    kiipLevel?: number | null
+    certificates?: NullableJsonNullValueInput | InputJsonValue
+    preferredJobTypes?: ResumeCreatepreferredJobTypesInput | string[]
+    preferredRegions?: ResumeCreatepreferredRegionsInput | string[]
+    preferredSalary?: number | null
+    preferredEmploymentTypes?: ResumeCreatepreferredEmploymentTypesInput | string[]
+    isComplete?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ResumeCreateOrConnectWithoutBookmarksInput = {
+    where: ResumeWhereUniqueInput
+    create: XOR<ResumeCreateWithoutBookmarksInput, ResumeUncheckedCreateWithoutBookmarksInput>
+  }
+
+  export type ResumeUpsertWithoutBookmarksInput = {
+    update: XOR<ResumeUpdateWithoutBookmarksInput, ResumeUncheckedUpdateWithoutBookmarksInput>
+    create: XOR<ResumeCreateWithoutBookmarksInput, ResumeUncheckedCreateWithoutBookmarksInput>
+    where?: ResumeWhereInput
+  }
+
+  export type ResumeUpdateToOneWithWhereWithoutBookmarksInput = {
+    where?: ResumeWhereInput
+    data: XOR<ResumeUpdateWithoutBookmarksInput, ResumeUncheckedUpdateWithoutBookmarksInput>
+  }
+
+  export type ResumeUpdateWithoutBookmarksInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    nationality?: StringFieldUpdateOperationsInput | string
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    educations?: NullableJsonNullValueInput | InputJsonValue
+    workExperiences?: NullableJsonNullValueInput | InputJsonValue
+    topikLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    kiipLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    certificates?: NullableJsonNullValueInput | InputJsonValue
+    preferredJobTypes?: ResumeUpdatepreferredJobTypesInput | string[]
+    preferredRegions?: ResumeUpdatepreferredRegionsInput | string[]
+    preferredSalary?: NullableIntFieldUpdateOperationsInput | number | null
+    preferredEmploymentTypes?: ResumeUpdatepreferredEmploymentTypesInput | string[]
+    isComplete?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutResumeNestedInput
+  }
+
+  export type ResumeUncheckedUpdateWithoutBookmarksInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    nationality?: StringFieldUpdateOperationsInput | string
+    birthDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    educations?: NullableJsonNullValueInput | InputJsonValue
+    workExperiences?: NullableJsonNullValueInput | InputJsonValue
+    topikLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    kiipLevel?: NullableIntFieldUpdateOperationsInput | number | null
+    certificates?: NullableJsonNullValueInput | InputJsonValue
+    preferredJobTypes?: ResumeUpdatepreferredJobTypesInput | string[]
+    preferredRegions?: ResumeUpdatepreferredRegionsInput | string[]
+    preferredSalary?: NullableIntFieldUpdateOperationsInput | number | null
+    preferredEmploymentTypes?: ResumeUpdatepreferredEmploymentTypesInput | string[]
+    isComplete?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserCreateWithoutVisaVerificationInput = {
@@ -86653,6 +100020,16 @@ export namespace Prisma {
     koreaStayMonths?: number
     currentEmployerMonths?: number
     depopulationArea?: boolean
+    majorCategory?: string | null
+    currentRole?: string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: number
+    universityName?: string | null
+    universityNameEn?: string | null
+    major?: string | null
+    graduationYear?: number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutIndividualInput
@@ -86704,6 +100081,16 @@ export namespace Prisma {
     koreaStayMonths?: number
     currentEmployerMonths?: number
     depopulationArea?: boolean
+    majorCategory?: string | null
+    currentRole?: string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: number
+    universityName?: string | null
+    universityNameEn?: string | null
+    major?: string | null
+    graduationYear?: number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     accessLogs?: TalentAccessLogUncheckedCreateNestedManyWithoutIndividualInput
@@ -86741,6 +100128,39 @@ export namespace Prisma {
   export type DiagnosisPathwayClickCreateManySessionInputEnvelope = {
     data: DiagnosisPathwayClickCreateManySessionInput | DiagnosisPathwayClickCreateManySessionInput[]
     skipDuplicates?: boolean
+  }
+
+  export type RediagnosisCouponCreateWithoutOriginalSessionInput = {
+    id?: bigint | number
+    userId: string
+    couponCode: string
+    status?: string
+    issuedAt?: Date | string
+    availableAt: Date | string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    usedSessionId?: bigint | number | null
+    reminderSentAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type RediagnosisCouponUncheckedCreateWithoutOriginalSessionInput = {
+    id?: bigint | number
+    userId: string
+    couponCode: string
+    status?: string
+    issuedAt?: Date | string
+    availableAt: Date | string
+    expiresAt: Date | string
+    usedAt?: Date | string | null
+    usedSessionId?: bigint | number | null
+    reminderSentAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type RediagnosisCouponCreateOrConnectWithoutOriginalSessionInput = {
+    where: RediagnosisCouponWhereUniqueInput
+    create: XOR<RediagnosisCouponCreateWithoutOriginalSessionInput, RediagnosisCouponUncheckedCreateWithoutOriginalSessionInput>
   }
 
   export type IndividualProfileUpsertWithoutDiagnosisSessionsInput = {
@@ -86795,6 +100215,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutIndividualNestedInput
@@ -86846,6 +100276,16 @@ export namespace Prisma {
     koreaStayMonths?: IntFieldUpdateOperationsInput | number
     currentEmployerMonths?: IntFieldUpdateOperationsInput | number
     depopulationArea?: BoolFieldUpdateOperationsInput | boolean
+    majorCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    currentRole?: NullableStringFieldUpdateOperationsInput | string | null
+    careerSummaryJson?: NullableJsonNullValueInput | InputJsonValue
+    koreaCareerMonths?: IntFieldUpdateOperationsInput | number
+    universityName?: NullableStringFieldUpdateOperationsInput | string | null
+    universityNameEn?: NullableStringFieldUpdateOperationsInput | string | null
+    major?: NullableStringFieldUpdateOperationsInput | string | null
+    graduationYear?: NullableIntFieldUpdateOperationsInput | number | null
+    nationalLicenses?: NullableJsonNullValueInput | InputJsonValue
+    internationalCerts?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accessLogs?: TalentAccessLogUncheckedUpdateManyWithoutIndividualNestedInput
@@ -86882,6 +100322,45 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"DiagnosisPathwayClick"> | Date | string
   }
 
+  export type RediagnosisCouponUpsertWithoutOriginalSessionInput = {
+    update: XOR<RediagnosisCouponUpdateWithoutOriginalSessionInput, RediagnosisCouponUncheckedUpdateWithoutOriginalSessionInput>
+    create: XOR<RediagnosisCouponCreateWithoutOriginalSessionInput, RediagnosisCouponUncheckedCreateWithoutOriginalSessionInput>
+    where?: RediagnosisCouponWhereInput
+  }
+
+  export type RediagnosisCouponUpdateToOneWithWhereWithoutOriginalSessionInput = {
+    where?: RediagnosisCouponWhereInput
+    data: XOR<RediagnosisCouponUpdateWithoutOriginalSessionInput, RediagnosisCouponUncheckedUpdateWithoutOriginalSessionInput>
+  }
+
+  export type RediagnosisCouponUpdateWithoutOriginalSessionInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    couponCode?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    usedSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    reminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type RediagnosisCouponUncheckedUpdateWithoutOriginalSessionInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    couponCode?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    issuedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    availableAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    usedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    usedSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    reminderSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type DiagnosisSessionCreateWithoutClicksInput = {
     sessionId?: bigint | number
     anonymousId?: string | null
@@ -86892,8 +100371,19 @@ export namespace Prisma {
     convertedToSignup?: boolean
     convertedToPaid?: boolean
     userFeedbackScore?: number | null
+    isPremium?: boolean
+    isPremiumViewed?: boolean
+    stripeSessionId?: string | null
+    stripePaidAt?: Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: Date | string | null
+    previousSessionId?: bigint | number | null
+    refundPolicyAgreedAt?: Date | string | null
+    digitalContentAgreedAt?: Date | string | null
+    privacyAgreedAt?: Date | string | null
     createdAt?: Date | string
     individual?: IndividualProfileCreateNestedOneWithoutDiagnosisSessionsInput
+    rediagnosisCoupon?: RediagnosisCouponCreateNestedOneWithoutOriginalSessionInput
   }
 
   export type DiagnosisSessionUncheckedCreateWithoutClicksInput = {
@@ -86907,7 +100397,18 @@ export namespace Prisma {
     convertedToSignup?: boolean
     convertedToPaid?: boolean
     userFeedbackScore?: number | null
+    isPremium?: boolean
+    isPremiumViewed?: boolean
+    stripeSessionId?: string | null
+    stripePaidAt?: Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: Date | string | null
+    previousSessionId?: bigint | number | null
+    refundPolicyAgreedAt?: Date | string | null
+    digitalContentAgreedAt?: Date | string | null
+    privacyAgreedAt?: Date | string | null
     createdAt?: Date | string
+    rediagnosisCoupon?: RediagnosisCouponUncheckedCreateNestedOneWithoutOriginalSessionInput
   }
 
   export type DiagnosisSessionCreateOrConnectWithoutClicksInput = {
@@ -86936,8 +100437,19 @@ export namespace Prisma {
     convertedToSignup?: BoolFieldUpdateOperationsInput | boolean
     convertedToPaid?: BoolFieldUpdateOperationsInput | boolean
     userFeedbackScore?: NullableIntFieldUpdateOperationsInput | number | null
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    isPremiumViewed?: BoolFieldUpdateOperationsInput | boolean
+    stripeSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    previousSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    refundPolicyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    digitalContentAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    privacyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     individual?: IndividualProfileUpdateOneWithoutDiagnosisSessionsNestedInput
+    rediagnosisCoupon?: RediagnosisCouponUpdateOneWithoutOriginalSessionNestedInput
   }
 
   export type DiagnosisSessionUncheckedUpdateWithoutClicksInput = {
@@ -86951,7 +100463,134 @@ export namespace Prisma {
     convertedToSignup?: BoolFieldUpdateOperationsInput | boolean
     convertedToPaid?: BoolFieldUpdateOperationsInput | boolean
     userFeedbackScore?: NullableIntFieldUpdateOperationsInput | number | null
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    isPremiumViewed?: BoolFieldUpdateOperationsInput | boolean
+    stripeSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    previousSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    refundPolicyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    digitalContentAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    privacyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    rediagnosisCoupon?: RediagnosisCouponUncheckedUpdateOneWithoutOriginalSessionNestedInput
+  }
+
+  export type DiagnosisSessionCreateWithoutRediagnosisCouponInput = {
+    sessionId?: bigint | number
+    anonymousId?: string | null
+    inputSnapshot: JsonNullValueInput | InputJsonValue
+    resultsSnapshot: JsonNullValueInput | InputJsonValue
+    topPathwayId?: string | null
+    pathwayCount?: number
+    convertedToSignup?: boolean
+    convertedToPaid?: boolean
+    userFeedbackScore?: number | null
+    isPremium?: boolean
+    isPremiumViewed?: boolean
+    stripeSessionId?: string | null
+    stripePaidAt?: Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: Date | string | null
+    previousSessionId?: bigint | number | null
+    refundPolicyAgreedAt?: Date | string | null
+    digitalContentAgreedAt?: Date | string | null
+    privacyAgreedAt?: Date | string | null
+    createdAt?: Date | string
+    individual?: IndividualProfileCreateNestedOneWithoutDiagnosisSessionsInput
+    clicks?: DiagnosisPathwayClickCreateNestedManyWithoutSessionInput
+  }
+
+  export type DiagnosisSessionUncheckedCreateWithoutRediagnosisCouponInput = {
+    sessionId?: bigint | number
+    userId?: string | null
+    anonymousId?: string | null
+    inputSnapshot: JsonNullValueInput | InputJsonValue
+    resultsSnapshot: JsonNullValueInput | InputJsonValue
+    topPathwayId?: string | null
+    pathwayCount?: number
+    convertedToSignup?: boolean
+    convertedToPaid?: boolean
+    userFeedbackScore?: number | null
+    isPremium?: boolean
+    isPremiumViewed?: boolean
+    stripeSessionId?: string | null
+    stripePaidAt?: Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: Date | string | null
+    previousSessionId?: bigint | number | null
+    refundPolicyAgreedAt?: Date | string | null
+    digitalContentAgreedAt?: Date | string | null
+    privacyAgreedAt?: Date | string | null
+    createdAt?: Date | string
+    clicks?: DiagnosisPathwayClickUncheckedCreateNestedManyWithoutSessionInput
+  }
+
+  export type DiagnosisSessionCreateOrConnectWithoutRediagnosisCouponInput = {
+    where: DiagnosisSessionWhereUniqueInput
+    create: XOR<DiagnosisSessionCreateWithoutRediagnosisCouponInput, DiagnosisSessionUncheckedCreateWithoutRediagnosisCouponInput>
+  }
+
+  export type DiagnosisSessionUpsertWithoutRediagnosisCouponInput = {
+    update: XOR<DiagnosisSessionUpdateWithoutRediagnosisCouponInput, DiagnosisSessionUncheckedUpdateWithoutRediagnosisCouponInput>
+    create: XOR<DiagnosisSessionCreateWithoutRediagnosisCouponInput, DiagnosisSessionUncheckedCreateWithoutRediagnosisCouponInput>
+    where?: DiagnosisSessionWhereInput
+  }
+
+  export type DiagnosisSessionUpdateToOneWithWhereWithoutRediagnosisCouponInput = {
+    where?: DiagnosisSessionWhereInput
+    data: XOR<DiagnosisSessionUpdateWithoutRediagnosisCouponInput, DiagnosisSessionUncheckedUpdateWithoutRediagnosisCouponInput>
+  }
+
+  export type DiagnosisSessionUpdateWithoutRediagnosisCouponInput = {
+    sessionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    anonymousId?: NullableStringFieldUpdateOperationsInput | string | null
+    inputSnapshot?: JsonNullValueInput | InputJsonValue
+    resultsSnapshot?: JsonNullValueInput | InputJsonValue
+    topPathwayId?: NullableStringFieldUpdateOperationsInput | string | null
+    pathwayCount?: IntFieldUpdateOperationsInput | number
+    convertedToSignup?: BoolFieldUpdateOperationsInput | boolean
+    convertedToPaid?: BoolFieldUpdateOperationsInput | boolean
+    userFeedbackScore?: NullableIntFieldUpdateOperationsInput | number | null
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    isPremiumViewed?: BoolFieldUpdateOperationsInput | boolean
+    stripeSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    previousSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    refundPolicyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    digitalContentAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    privacyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    individual?: IndividualProfileUpdateOneWithoutDiagnosisSessionsNestedInput
+    clicks?: DiagnosisPathwayClickUpdateManyWithoutSessionNestedInput
+  }
+
+  export type DiagnosisSessionUncheckedUpdateWithoutRediagnosisCouponInput = {
+    sessionId?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    anonymousId?: NullableStringFieldUpdateOperationsInput | string | null
+    inputSnapshot?: JsonNullValueInput | InputJsonValue
+    resultsSnapshot?: JsonNullValueInput | InputJsonValue
+    topPathwayId?: NullableStringFieldUpdateOperationsInput | string | null
+    pathwayCount?: IntFieldUpdateOperationsInput | number
+    convertedToSignup?: BoolFieldUpdateOperationsInput | boolean
+    convertedToPaid?: BoolFieldUpdateOperationsInput | boolean
+    userFeedbackScore?: NullableIntFieldUpdateOperationsInput | number | null
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    isPremiumViewed?: BoolFieldUpdateOperationsInput | boolean
+    stripeSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    previousSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    refundPolicyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    digitalContentAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    privacyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clicks?: DiagnosisPathwayClickUncheckedUpdateManyWithoutSessionNestedInput
   }
 
   export type SupportTicketCreateManyUserInput = {
@@ -87052,6 +100691,8 @@ export namespace Prisma {
     endDate?: Date | string | null
     isCurrent?: boolean
     description?: string | null
+    occupationCategory?: string | null
+    country?: string
   }
 
   export type ProfileLanguageCreateManyIndividualInput = {
@@ -87074,6 +100715,16 @@ export namespace Prisma {
     convertedToSignup?: boolean
     convertedToPaid?: boolean
     userFeedbackScore?: number | null
+    isPremium?: boolean
+    isPremiumViewed?: boolean
+    stripeSessionId?: string | null
+    stripePaidAt?: Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: Date | string | null
+    previousSessionId?: bigint | number | null
+    refundPolicyAgreedAt?: Date | string | null
+    digitalContentAgreedAt?: Date | string | null
+    privacyAgreedAt?: Date | string | null
     createdAt?: Date | string
   }
 
@@ -87161,6 +100812,8 @@ export namespace Prisma {
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isCurrent?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    occupationCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProfileCareerUncheckedUpdateWithoutIndividualInput = {
@@ -87172,6 +100825,8 @@ export namespace Prisma {
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isCurrent?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    occupationCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProfileCareerUncheckedUpdateManyWithoutIndividualInput = {
@@ -87183,6 +100838,8 @@ export namespace Prisma {
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isCurrent?: BoolFieldUpdateOperationsInput | boolean
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    occupationCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    country?: StringFieldUpdateOperationsInput | string
   }
 
   export type ProfileLanguageUpdateWithoutIndividualInput = {
@@ -87225,8 +100882,19 @@ export namespace Prisma {
     convertedToSignup?: BoolFieldUpdateOperationsInput | boolean
     convertedToPaid?: BoolFieldUpdateOperationsInput | boolean
     userFeedbackScore?: NullableIntFieldUpdateOperationsInput | number | null
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    isPremiumViewed?: BoolFieldUpdateOperationsInput | boolean
+    stripeSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    previousSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    refundPolicyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    digitalContentAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    privacyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     clicks?: DiagnosisPathwayClickUpdateManyWithoutSessionNestedInput
+    rediagnosisCoupon?: RediagnosisCouponUpdateOneWithoutOriginalSessionNestedInput
   }
 
   export type DiagnosisSessionUncheckedUpdateWithoutIndividualInput = {
@@ -87239,8 +100907,19 @@ export namespace Prisma {
     convertedToSignup?: BoolFieldUpdateOperationsInput | boolean
     convertedToPaid?: BoolFieldUpdateOperationsInput | boolean
     userFeedbackScore?: NullableIntFieldUpdateOperationsInput | number | null
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    isPremiumViewed?: BoolFieldUpdateOperationsInput | boolean
+    stripeSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    previousSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    refundPolicyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    digitalContentAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    privacyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     clicks?: DiagnosisPathwayClickUncheckedUpdateManyWithoutSessionNestedInput
+    rediagnosisCoupon?: RediagnosisCouponUncheckedUpdateOneWithoutOriginalSessionNestedInput
   }
 
   export type DiagnosisSessionUncheckedUpdateManyWithoutIndividualInput = {
@@ -87253,6 +100932,16 @@ export namespace Prisma {
     convertedToSignup?: BoolFieldUpdateOperationsInput | boolean
     convertedToPaid?: BoolFieldUpdateOperationsInput | boolean
     userFeedbackScore?: NullableIntFieldUpdateOperationsInput | number | null
+    isPremium?: BoolFieldUpdateOperationsInput | boolean
+    isPremiumViewed?: BoolFieldUpdateOperationsInput | boolean
+    stripeSessionId?: NullableStringFieldUpdateOperationsInput | string | null
+    stripePaidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    premiumResultJson?: NullableJsonNullValueInput | InputJsonValue
+    premiumViewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    previousSessionId?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    refundPolicyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    digitalContentAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    privacyAgreedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -88157,6 +101846,15 @@ export namespace Prisma {
     cancelledAt?: Date | string | null
     rejectionReason?: string | null
     resultNotifiedAt?: Date | string | null
+    documentPassedAt?: Date | string | null
+    interviewScheduledAt?: Date | string | null
+    finalAcceptedAt?: Date | string | null
+    rejectedAt?: Date | string | null
+    offeredSalary?: number | null
+    expectedStartDate?: Date | string | null
+    companyMessage?: string | null
+    visaGuideScenario?: string | null
+    visaGuideGeneratedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -88221,9 +101919,19 @@ export namespace Prisma {
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documentPassedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finalAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    offeredSalary?: NullableIntFieldUpdateOperationsInput | number | null
+    expectedStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    companyMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideScenario?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     selectedSlot?: InterviewSlotUpdateOneWithoutBookedApplicationNestedInput
+    checklistItems?: VisaChecklistItemUpdateManyWithoutApplicationNestedInput
   }
 
   export type JobApplicationUncheckedUpdateWithoutJobInput = {
@@ -88252,8 +101960,18 @@ export namespace Prisma {
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documentPassedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finalAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    offeredSalary?: NullableIntFieldUpdateOperationsInput | number | null
+    expectedStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    companyMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideScenario?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checklistItems?: VisaChecklistItemUncheckedUpdateManyWithoutApplicationNestedInput
   }
 
   export type JobApplicationUncheckedUpdateManyWithoutJobInput = {
@@ -88282,6 +102000,15 @@ export namespace Prisma {
     cancelledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     resultNotifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    documentPassedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    interviewScheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    finalAcceptedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    rejectedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    offeredSalary?: NullableIntFieldUpdateOperationsInput | number | null
+    expectedStartDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    companyMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideScenario?: NullableStringFieldUpdateOperationsInput | string | null
+    visaGuideGeneratedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -88299,6 +102026,74 @@ export namespace Prisma {
   }
 
   export type JobScrapUncheckedUpdateManyWithoutJobInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VisaChecklistItemCreateManyApplicationInput = {
+    id?: bigint | number
+    category: string
+    itemText: string
+    itemOrder: number
+    isChecked?: boolean
+    checkedAt?: Date | string | null
+    checkedBy?: string | null
+    createdAt?: Date | string
+  }
+
+  export type VisaChecklistItemUpdateWithoutApplicationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    category?: StringFieldUpdateOperationsInput | string
+    itemText?: StringFieldUpdateOperationsInput | string
+    itemOrder?: IntFieldUpdateOperationsInput | number
+    isChecked?: BoolFieldUpdateOperationsInput | boolean
+    checkedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VisaChecklistItemUncheckedUpdateWithoutApplicationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    category?: StringFieldUpdateOperationsInput | string
+    itemText?: StringFieldUpdateOperationsInput | string
+    itemOrder?: IntFieldUpdateOperationsInput | number
+    isChecked?: BoolFieldUpdateOperationsInput | boolean
+    checkedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type VisaChecklistItemUncheckedUpdateManyWithoutApplicationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    category?: StringFieldUpdateOperationsInput | string
+    itemText?: StringFieldUpdateOperationsInput | string
+    itemOrder?: IntFieldUpdateOperationsInput | number
+    isChecked?: BoolFieldUpdateOperationsInput | boolean
+    checkedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    checkedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TalentBookmarkCreateManyResumeInput = {
+    id?: bigint | number
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type TalentBookmarkUpdateWithoutResumeInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TalentBookmarkUncheckedUpdateWithoutResumeInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TalentBookmarkUncheckedUpdateManyWithoutResumeInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

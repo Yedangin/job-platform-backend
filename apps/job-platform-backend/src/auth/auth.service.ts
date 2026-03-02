@@ -389,18 +389,36 @@ export class AuthService implements OnModuleInit {
   ): Promise<LoginSuccessResponse> {
     const { email, password, memberType } = request as any;
 
+    // 계정 잠금 확인: 5회 연속 실패 시 15분 잠금
+    // Account lockout check: 15-minute lock after 5 consecutive failures
+    const lockoutKey = `login_lockout:${email}`;
+    const isLocked = await this.redisService.get(lockoutKey);
+    if (isLocked) {
+      throw new UnauthorizedException(
+        '로그인 시도 횟수를 초과했습니다. 15분 후 다시 시도해주세요. / Too many login attempts. Please try again in 15 minutes.',
+      );
+    }
+
     const user = await this.prisma.user.findFirst({
       where: { email },
     });
 
     if (!user || !user.password) {
+      // 실패 횟수 증가 (존재하지 않는 계정도 타이밍 일관성 유지)
+      // Increment fail count (consistent timing for non-existent accounts)
+      await this.incrementLoginFailCount(email);
       throw new UnauthorizedException('Invalid credentials');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
+      // 실패 횟수 증가 / Increment login fail count
+      await this.incrementLoginFailCount(email);
       throw new UnauthorizedException('Invalid credentials');
     }
+
+    // 로그인 성공 시 실패 카운터 초기화 / Clear fail counter on successful login
+    await this.redisService.del(`login_fail:${email}`);
 
     // 탭별 회원 유형 검증 (ADMIN은 모든 탭에서 로그인 가능)
     if (memberType && user.userType !== 'ADMIN') {
@@ -523,8 +541,106 @@ export class AuthService implements OnModuleInit {
       }
     } catch {}
 
+    // 로그아웃 시 세션 추적 set에서도 제거 / Also remove from session tracking set
+    try {
+      const sessionDataStr2 = await this.redisService.get(
+        `session:${sessionId}`,
+      );
+      if (sessionDataStr2) {
+        const sd2 = JSON.parse(sessionDataStr2) as SessionData;
+        await this.redisService.zrem(`user_sessions:${sd2.userId}`, sessionId);
+      }
+    } catch {}
+
     await this.redisService.del(`session:${sessionId}`);
     return { success: true, message: 'Logout successful' };
+  }
+
+  // --- 6-2. 활성 세션 목록 조회 ---
+  // Get list of active sessions for the current user
+  async getActiveSessions(sessionId: string) {
+    const userId = await this.getSessionUserId(sessionId);
+    const setKey = `user_sessions:${userId}`;
+
+    // sorted set에서 모든 세션 ID 조회 / Get all session IDs from sorted set
+    const sessionIds = await this.redisService.zrange(setKey, 0, -1);
+
+    const sessions: {
+      sessionId: string;
+      isCurrent: boolean;
+      createdAt: number;
+    }[] = [];
+
+    for (const sid of sessionIds) {
+      // Redis에 실제 세션이 남아있는지 확인 / Verify session still exists in Redis
+      const exists = await this.redisService.exists(`session:${sid}`);
+      if (!exists) {
+        // 만료된 세션은 set에서 제거 / Remove expired sessions from set
+        await this.redisService.zrem(setKey, sid);
+        continue;
+      }
+      sessions.push({
+        sessionId: sid.substring(0, 20) + '...', // 보안상 일부만 노출 / Partial exposure for security
+        isCurrent: sid === sessionId,
+        createdAt: 0, // sorted set score에서 가져올 수 있지만 현재는 미사용 / Could get from score
+      });
+    }
+
+    return {
+      success: true,
+      activeSessions: sessions,
+      totalCount: sessions.length,
+      maxAllowed: 3,
+    };
+  }
+
+  // --- 6-3. 특정 세션 강제 종료 ---
+  // Force terminate a specific session (not current)
+  async terminateSession(currentSessionId: string, targetSessionId: string) {
+    const userId = await this.getSessionUserId(currentSessionId);
+    const setKey = `user_sessions:${userId}`;
+
+    // 본인 세션만 관리 가능 — 대상 세션이 본인 것인지 확인
+    // Can only manage own sessions — verify target session belongs to same user
+    const targetDataStr = await this.redisService.get(
+      `session:${targetSessionId}`,
+    );
+    if (!targetDataStr) {
+      throw new NotFoundException(
+        '세션을 찾을 수 없습니다. / Session not found',
+      );
+    }
+
+    const targetData = JSON.parse(targetDataStr) as SessionData;
+    if (targetData.userId !== userId) {
+      throw new UnauthorizedException(
+        "다른 사용자의 세션을 종료할 수 없습니다. / Cannot terminate another user's session",
+      );
+    }
+
+    if (targetSessionId === currentSessionId) {
+      throw new BadRequestException(
+        '현재 세션은 종료할 수 없습니다. 로그아웃을 사용하세요. / Cannot terminate current session. Use logout instead.',
+      );
+    }
+
+    // 세션 삭제 / Delete session
+    await this.redisService.del(`session:${targetSessionId}`);
+    await this.redisService.zrem(setKey, targetSessionId);
+
+    await this.logActivity(
+      userId,
+      null,
+      null,
+      null,
+      'SESSION_TERMINATE',
+      '다른 기기 세션 강제 종료 / Terminated session on another device',
+    );
+
+    return {
+      success: true,
+      message: '세션이 종료되었습니다. / Session terminated',
+    };
   }
 
   // --- 7. 소셜 로그인 (★ 핵심 로직) ---
@@ -946,6 +1062,96 @@ export class AuthService implements OnModuleInit {
     };
   }
 
+  /**
+   * 로그인 실패 횟수 증가 + 5회 초과 시 15분 잠금
+   * Increment login fail count + lock account for 15 minutes after 5 failures
+   */
+  private async incrementLoginFailCount(email: string): Promise<void> {
+    const failKey = `login_fail:${email}`;
+    const lockoutKey = `login_lockout:${email}`;
+    const MAX_ATTEMPTS = 5;
+    const LOCKOUT_SECONDS = 15 * 60; // 15분 / 15 minutes
+    const FAIL_WINDOW_SECONDS = 15 * 60; // 15분 내 시도 횟수 / Attempts within 15 min window
+
+    try {
+      const count = await this.redisService.incr(failKey);
+
+      // 첫 실패 시 윈도우 TTL 설정 / Set window TTL on first failure
+      if (count === 1) {
+        await this.redisService.expire(failKey, FAIL_WINDOW_SECONDS);
+      }
+
+      if (count >= MAX_ATTEMPTS) {
+        // 15분 잠금 설정 / Set 15-minute lockout
+        await this.redisService.set(lockoutKey, 'locked', LOCKOUT_SECONDS);
+        // 실패 카운터 초기화 / Reset fail counter
+        await this.redisService.del(failKey);
+        this.logger.warn(
+          `[계정 잠금] ${email} - ${MAX_ATTEMPTS}회 실패로 ${LOCKOUT_SECONDS / 60}분 잠금 / [Account locked] ${email} - locked for ${LOCKOUT_SECONDS / 60} min after ${MAX_ATTEMPTS} failures`,
+        );
+      }
+    } catch (error) {
+      // 잠금 실패는 로그인을 차단하지 않음 / Lockout failure should not block login flow
+      this.logger.warn(
+        `[잠금 카운터 오류] / [Lockout counter error]: ${error.message}`,
+      );
+    }
+  }
+
+  /**
+   * 파일 Magic Bytes 검증: 실제 파일 헤더를 확인하여 위조 방지
+   * File Magic Bytes validation: verify actual file header to prevent forgery
+   */
+  private validateFileMagicBytes(filePath: string): void {
+    const MAGIC_BYTES: Record<string, Buffer[]> = {
+      // JPEG: FF D8 FF
+      '.jpg': [Buffer.from([0xff, 0xd8, 0xff])],
+      '.jpeg': [Buffer.from([0xff, 0xd8, 0xff])],
+      // PNG: 89 50 4E 47
+      '.png': [Buffer.from([0x89, 0x50, 0x4e, 0x47])],
+      // PDF: 25 50 44 46 (%PDF)
+      '.pdf': [Buffer.from([0x25, 0x50, 0x44, 0x46])],
+    };
+
+    const ext = path.extname(filePath).toLowerCase();
+    const expectedMagic = MAGIC_BYTES[ext];
+
+    if (!expectedMagic) {
+      // 알 수 없는 확장자 → 차단 / Unknown extension → block
+      throw new BadRequestException(
+        '허용되지 않는 파일 형식입니다. / Unsupported file type.',
+      );
+    }
+
+    try {
+      // 파일 헤더 읽기 (최대 8바이트면 충분) / Read file header (8 bytes is sufficient)
+      const fd = fs.openSync(filePath, 'r');
+      const headerBuf = Buffer.alloc(8);
+      fs.readSync(fd, headerBuf, 0, 8, 0);
+      fs.closeSync(fd);
+
+      const isValid = expectedMagic.some((magic) =>
+        headerBuf.subarray(0, magic.length).equals(magic),
+      );
+
+      if (!isValid) {
+        // 위조된 파일 삭제 후 에러 / Delete forged file and throw
+        fs.unlinkSync(filePath);
+        this.logger.warn(
+          `[Magic Bytes 불일치] 파일 삭제: ${filePath} (확장자: ${ext}) / [Magic Bytes mismatch] File deleted`,
+        );
+        throw new BadRequestException(
+          '파일 내용이 확장자와 일치하지 않습니다. 올바른 파일을 업로드해주세요. / File content does not match extension.',
+        );
+      }
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      this.logger.warn(
+        `[Magic Bytes 검증 오류] / [Magic Bytes validation error]: ${error.message}`,
+      );
+    }
+  }
+
   // 인증된 사용자 ID를 세션에서 직접 추출하는 헬퍼
   // Helper to extract userId from Redis session directly
   private async getSessionUserId(sessionId: string): Promise<string> {
@@ -1084,11 +1290,21 @@ export class AuthService implements OnModuleInit {
     };
   }
 
-  // --- 11-2. 내 프로필 업데이트 (이름, 프로필 이미지) ---
-  // Update my profile (name, profile image)
+  // --- 11-2. 내 프로필 업데이트 (이름, 프로필 이미지, 비자/인적사항) ---
+  // Update my profile (name, profile image, visa/identity info)
   async updateMyProfile(
     sessionId: string,
-    data: { fullName?: string; profileImageUrl?: string },
+    data: {
+      fullName?: string;
+      profileImageUrl?: string;
+      visaType?: string;
+      visaSubType?: string;
+      visaExpiryDate?: string;
+      nationality?: string;
+      gender?: string;
+      birthDate?: string;
+      addressRoad?: string;
+    },
   ) {
     const userId = await this.getSessionUserId(sessionId);
     const user = await this.prisma.user.findUnique({
@@ -1098,8 +1314,8 @@ export class AuthService implements OnModuleInit {
     if (!user) throw new NotFoundException('User not found');
 
     if (user.userType === 'INDIVIDUAL') {
-      // 개인회원: individualProfile.realName, profileImageUrl 업데이트
-      // Individual: update realName and profileImageUrl in individualProfile
+      // 개인회원: individualProfile 업데이트
+      // Individual: update individualProfile fields
       if (!user.individual)
         throw new NotFoundException('Individual profile not found');
       const updateData: Record<string, unknown> = {};
@@ -1107,6 +1323,22 @@ export class AuthService implements OnModuleInit {
         updateData['realName'] = data.fullName.trim();
       if (data.profileImageUrl !== undefined)
         updateData['profileImageUrl'] = data.profileImageUrl;
+      // 비자 정보 / Visa info
+      if (data.visaType !== undefined) updateData['visaType'] = data.visaType;
+      if (data.visaSubType !== undefined)
+        updateData['visaSubType'] = data.visaSubType;
+      if (data.visaExpiryDate !== undefined)
+        updateData['visaExpiryDate'] = new Date(data.visaExpiryDate);
+      // 인적사항 / Identity info
+      if (data.nationality !== undefined)
+        updateData['nationality'] = data.nationality;
+      if (data.gender !== undefined)
+        updateData['gender'] =
+          data.gender === 'M' ? 'M' : data.gender === 'F' ? 'F' : undefined;
+      if (data.birthDate !== undefined)
+        updateData['birthDate'] = new Date(data.birthDate);
+      if (data.addressRoad !== undefined)
+        updateData['addressRoad'] = data.addressRoad;
       await this.prisma.individualProfile.update({
         where: { authId: userId },
         data: updateData,
@@ -1607,6 +1839,10 @@ export class AuthService implements OnModuleInit {
       throw new UnauthorizedException('기업 회원만 접근 가능합니다.');
     }
 
+    // Magic Bytes 검증: 파일 확장자 외에 실제 파일 헤더 확인
+    // Magic Bytes validation: verify actual file header beyond extension
+    this.validateFileMagicBytes(file.path);
+
     // 파일을 userId별 디렉토리로 이동
     const targetDir = path.join(
       process.cwd(),
@@ -1872,19 +2108,26 @@ export class AuthService implements OnModuleInit {
       throw new UnauthorizedException('이미 인증이 완료되었습니다.');
     }
 
-    // OCR 검증 (사업자등록증 이미지가 있는 경우)
+    // OCR 검증 (사업자등록증 이미지가 있는 경우) — 실패해도 인증 제출은 진행
+    // OCR verification (if biz reg image exists) — failure does not block submission
     let ocrVerified = false;
     let ocrExtractedBizNo: string | null = null;
     if (data.bizRegDocPath) {
-      ocrExtractedBizNo = await this.ocrExtractBizNumber(data.bizRegDocPath);
-      if (ocrExtractedBizNo) {
-        const cleanInputBizNo = data.bizRegNumber.replace(/[^0-9]/g, '');
-        ocrVerified = ocrExtractedBizNo === cleanInputBizNo;
-        this.logger.log('[OCR 검증]', {
-          extracted: ocrExtractedBizNo,
-          input: cleanInputBizNo,
-          match: ocrVerified,
-        });
+      try {
+        ocrExtractedBizNo = await this.ocrExtractBizNumber(data.bizRegDocPath);
+        if (ocrExtractedBizNo) {
+          const cleanInputBizNo = data.bizRegNumber.replace(/[^0-9]/g, '');
+          ocrVerified = ocrExtractedBizNo === cleanInputBizNo;
+          this.logger.log('[OCR 검증]', {
+            extracted: ocrExtractedBizNo,
+            input: cleanInputBizNo,
+            match: ocrVerified,
+          });
+        }
+      } catch (ocrError) {
+        this.logger.warn(
+          `[OCR 검증 실패] OCR 오류지만 인증 제출은 계속 / [OCR failed] Continuing submission: ${ocrError.message}`,
+        );
       }
     }
 
@@ -1992,6 +2235,7 @@ export class AuthService implements OnModuleInit {
     userId: string,
     action: 'APPROVE' | 'REJECT',
     reason?: string,
+    rejectionDetails?: Record<string, string>,
   ) {
     // Admin 확인
     const profile = await this.getProfile(adminSessionId);
@@ -2011,6 +2255,7 @@ export class AuthService implements OnModuleInit {
           verificationStatus: 'APPROVED',
           isBizVerified: true,
           approvedAt: new Date(),
+          lastRejectionReason: null,
         },
       });
       // 활동 로그: 관리자 승인
@@ -2025,14 +2270,22 @@ export class AuthService implements OnModuleInit {
       return { success: true, message: '기업 인증이 승인되었습니다.' };
     } else {
       // REJECT → PENDING으로 되돌림 + 거절 사유 저장
+      // REJECT → reset to PENDING + save rejection reason
       if (!reason) {
         throw new UnauthorizedException('거절 시 사유를 입력해주세요.');
       }
+
+      // 필드별 반려 사유가 있으면 JSON으로 저장, 없으면 단일 사유만 저장
+      // Save field-level details as JSON if provided, otherwise just the reason
+      const rejectionReasonStr = rejectionDetails
+        ? JSON.stringify({ summary: reason, fields: rejectionDetails })
+        : reason;
+
       await this.prisma.corporateProfile.update({
         where: { authId: userId },
         data: {
           verificationStatus: 'PENDING',
-          lastRejectionReason: reason,
+          lastRejectionReason: rejectionReasonStr,
           submittedAt: null,
         },
       });

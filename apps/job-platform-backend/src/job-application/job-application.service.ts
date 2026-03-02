@@ -26,6 +26,7 @@ import {
   AcceptInterviewDto,
   CancelInterviewDto,
 } from './dto';
+import { VisaScenarioService } from './visa-scenario.service';
 
 @Injectable()
 export class JobApplicationService {
@@ -36,6 +37,7 @@ export class JobApplicationService {
     private readonly prisma: AuthPrismaService,
     private readonly notificationPrisma: NotificationPrismaService,
     private readonly redis: RedisService,
+    private readonly visaScenarioService: VisaScenarioService,
   ) {
     this.sesClient = new SESClient({
       region: process.env.AWS_REGION || 'ap-northeast-2',
@@ -322,11 +324,34 @@ export class JobApplicationService {
       throw new ForbiddenException('Not the owner');
     }
 
-    // 상태 전이 검증 / Validate status transition
+    // 상태 전이 검증 (spec 08 §3-2 기반) / Validate status transition
     const validTransitions: Record<string, string[]> = {
-      PENDING: ['REVIEWING', 'INTERVIEW_SCHEDULED', 'REJECTED'],
-      REVIEWING: ['INTERVIEW_SCHEDULED', 'ACCEPTED', 'REJECTED'],
-      INTERVIEW_SCHEDULED: ['ACCEPTED', 'REJECTED'],
+      PENDING: [
+        'REVIEWING',
+        'DOCUMENT_PASSED',
+        'INTERVIEW_SCHEDULED',
+        'REJECTED',
+      ],
+      REVIEWING: [
+        'DOCUMENT_PASSED',
+        'INTERVIEW_SCHEDULED',
+        'ACCEPTED',
+        'REJECTED',
+      ],
+      DOCUMENT_PASSED: ['INTERVIEW_SCHEDULED', 'FINAL_ACCEPTED', 'REJECTED'],
+      INTERVIEW_REQUESTED: [
+        'INTERVIEW_SCHEDULED',
+        'COORDINATION_NEEDED',
+        'REJECTED',
+      ],
+      INTERVIEW_SCHEDULED: [
+        'CONFIRMED',
+        'FINAL_ACCEPTED',
+        'ACCEPTED',
+        'REJECTED',
+      ],
+      COORDINATION_NEEDED: ['INTERVIEW_SCHEDULED', 'REJECTED'],
+      CONFIRMED: ['FINAL_ACCEPTED', 'ACCEPTED', 'REJECTED'],
     };
     const allowed = validTransitions[app.status] || [];
     if (!allowed.includes(dto.status)) {
@@ -345,8 +370,29 @@ export class JobApplicationService {
     if (dto.rejectionReason) {
       updateData.rejectionReason = dto.rejectionReason;
     }
+    if (dto.companyMessage) {
+      updateData.companyMessage = dto.companyMessage;
+    }
+
+    // 단계별 타임스탬프 / Stage timestamps
+    if (dto.status === 'DOCUMENT_PASSED') {
+      updateData.documentPassedAt = new Date();
+    }
+    if (dto.status === 'INTERVIEW_SCHEDULED') {
+      updateData.interviewScheduledAt = new Date();
+    }
     if (dto.status === 'REJECTED') {
+      updateData.rejectedAt = new Date();
       updateData.resultNotifiedAt = new Date();
+    }
+
+    // 최종 합격 처리 (spec 08 §4) / Final acceptance handling
+    if (dto.status === 'FINAL_ACCEPTED') {
+      updateData.finalAcceptedAt = new Date();
+      updateData.resultNotifiedAt = new Date();
+      if (dto.offeredSalary) updateData.offeredSalary = dto.offeredSalary;
+      if (dto.expectedStartDate)
+        updateData.expectedStartDate = new Date(dto.expectedStartDate);
     }
 
     const updated = await this.prisma.jobApplication.update({
@@ -366,7 +412,48 @@ export class JobApplicationService {
       });
     }
 
-    return { success: true, status: updated.status };
+    // FINAL_ACCEPTED → 비자 시나리오 판별 + 체크리스트 생성 / Visa scenario + checklist
+    let visaGuide: any = null;
+    if (dto.status === 'FINAL_ACCEPTED') {
+      try {
+        const eligibleVisas = app.job.allowedVisas
+          ? app.job.allowedVisas.split(',').map((v: string) => v.trim())
+          : [];
+
+        const scenario = await this.visaScenarioService.determineScenario(
+          app.applicantId,
+          dto.offeredSalary,
+          eligibleVisas,
+        );
+
+        // 시나리오 저장 / Save scenario
+        await this.prisma.jobApplication.update({
+          where: { id: BigInt(applicationId) },
+          data: {
+            visaGuideScenario: scenario.scenario,
+            visaGuideGeneratedAt: new Date(),
+          },
+        });
+
+        // 체크리스트 생성 / Generate checklist
+        const itemCount = await this.visaScenarioService.generateChecklist(
+          BigInt(applicationId),
+          scenario.scenario,
+        );
+
+        this.logger.log(
+          `비자 가이드 생성: app=${applicationId}, scenario=${scenario.scenario}, items=${itemCount} / Visa guide generated`,
+        );
+
+        visaGuide = { ...scenario, checklistItemCount: itemCount };
+      } catch (err) {
+        this.logger.error(
+          `비자 시나리오 판별 실패: ${err} / Visa scenario failed`,
+        );
+      }
+    }
+
+    return { success: true, status: updated.status, visaGuide };
   }
 
   // ========================================

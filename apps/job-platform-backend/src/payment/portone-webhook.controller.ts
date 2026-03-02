@@ -13,6 +13,7 @@ import { Request, Response } from 'express';
 import { createHmac } from 'crypto';
 import { PortoneService } from './portone.service';
 import { PaymentService } from './payment.service';
+import { SkipCsrf } from 'libs/common/src';
 
 /**
  * 포트원 웹훅 수신 전용 컨트롤러
@@ -52,6 +53,7 @@ export class PortoneWebhookController {
    * No auth (signature verification instead)
    */
   @Post('webhook')
+  @SkipCsrf()
   @ApiOperation({ summary: '포트원 웹훅 수신 / PortOne webhook receiver' })
   async handleWebhook(
     @Req() req: RawBodyRequest<Request>,

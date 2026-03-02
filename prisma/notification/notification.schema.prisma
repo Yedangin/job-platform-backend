@@ -13,6 +13,7 @@ generator notiClient {
 }
 
 enum NotificationType {
+  // 기존 유형 / Existing types
   APPLICATION_ALERT
   INTERVIEW_UPDATE
   REMINDER
@@ -20,6 +21,55 @@ enum NotificationType {
   EMAIL_VERIFICATION
   FINANCIAL_ALERT
   STATUS_ALERT
+
+  // 기업인증 / Corporate verification (N-01~05)
+  CORP_VERIFY_SUBMITTED
+  CORP_VERIFY_APPROVED
+  CORP_VERIFY_REJECTED
+  CORP_VERIFY_NEW_ADMIN
+  CORP_VERIFY_SLA_ADMIN
+
+  // 개인 온보딩 / Individual onboarding (N-06~11)
+  VISA_VERIFY_APPROVED
+  VISA_VERIFY_REJECTED
+  PROFILE_REMINDER
+  PROFILE_COMPLETE
+  VISA_VERIFY_REMINDER
+  VISA_EXPIRY_WARNING
+
+  // 비자 플래너 / Visa planner (N-12~14)
+  COUPON_ACTIVATED
+  COUPON_EXPIRY_WARNING
+  PLANNER_PAYMENT_CONFIRM
+
+  // 인재풀 / Talent pool (N-15~16)
+  RESUME_VIEWED
+  SCOUT_CONSENT
+
+  // 공고 / Job posting (N-17~20)
+  JOB_ACTIVATED
+  JOB_EXPIRY_WARNING
+  JOB_SUSPENDED
+  JOB_UNSUSPENDED
+
+  // 채용 프로세스 / Hiring process (N-21~27, N-31)
+  NEW_APPLICANT
+  DOCUMENT_PASSED
+  INTERVIEW_CONFIRMED
+  INTERVIEW_REMINDER
+  FINAL_ACCEPTED
+  HIRING_REJECTED
+  APPLICATION_CANCELLED
+  APPLICATION_EXPIRED
+
+  // 공통 / General (N-28~30)
+  SUPPORT_REPLIED
+  PREMIUM_EXPIRY_WARNING
+  PREMIUM_REMOVED
+
+  // 쿠폰 / Coupons (N-32~33)
+  GENERAL_COUPON_ISSUED
+  GENERAL_COUPON_EXPIRY
 }
 
 enum NotificationStatus {
@@ -30,9 +80,11 @@ enum NotificationStatus {
 }
 
 enum NotificationChannel {
-  EMAIL
-  PUSH
-  BOTH
+  PLATFORM   // 웹/앱 내 알림센터만 / In-app notification center only
+  EMAIL      // 이메일만 / Email only
+  PUSH       // 앱 푸시만 / App push notification only (legacy alias)
+  BOTH       // 이메일+플랫폼 / Email + Platform (legacy alias)
+  ALL        // 전 채널 / All channels
 }
 
 model Notification {
@@ -46,7 +98,7 @@ model Notification {
   priority           Int?
   attempts           Int?
   maxAttempts        Int?               @map("max_attempts")
-  metadata           String?            @notiDB.VarChar(255)
+  metadata           String?            @notiDB.Text
   isRead             Boolean?           @map("is_read")
   relatedInterviewId String?            @map("related_interview_id")
   relatedJobPostId   String?            @map("related_job_post_id")
@@ -57,12 +109,20 @@ model Notification {
   readAt             DateTime?          @map("read_at")
   errorMessage       String?            @map("error_message") @notiDB.Text
 
+  // 확장 필드 / Extended fields (Phase H)
+  eventCode          String?            @map("event_code") @notiDB.VarChar(10) // N-01 ~ N-33
+  templateCode       String?            @map("template_code") @notiDB.VarChar(40) // WELCOME, CORP_VERIFY_SUBMITTED, etc.
+  channelsSent       String?            @map("channels_sent") @notiDB.VarChar(100) // JSON array of actually sent channels / 실제 발송된 채널 JSON
+  scheduledAt        DateTime?          @map("scheduled_at") // Cron 예약 발송 시간 / Scheduled send time
+  deepLink           String?            @map("deep_link") @notiDB.VarChar(255) // 알림 클릭 시 이동 URL / Click destination URL
+
   @@index([userId])
   @@index([email])
   @@index([subject])
   @@index([notificationType])
-  @@index([metadata])
   @@index([status])
+  @@index([eventCode])
+  @@index([scheduledAt])
   @@map("notifications")
 }
 

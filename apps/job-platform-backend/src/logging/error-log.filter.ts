@@ -41,21 +41,39 @@ export class ErrorLogFilter implements ExceptionFilter {
       errorType = exception.constructor.name;
       stack = exception.stack;
 
-      // 기존 HttpException 응답 포맷 유지 / Preserve original HttpException response
+      // 기존 HttpException 응답 포맷 유지 + errorCode 추가
+      // Preserve original HttpException response + add errorCode
       if (typeof exResponse === 'string') {
         message = exResponse;
-        responseBody = { statusCode, message, error: errorType };
+        responseBody = {
+          statusCode,
+          message,
+          error: errorType,
+          errorCode: this.toErrorCode(errorType),
+        };
       } else {
         message = (exResponse as any)?.message || exception.message;
-        responseBody = exResponse;
+        responseBody = {
+          ...(typeof exResponse === 'object' ? exResponse : {}),
+          errorCode:
+            (exResponse as any)?.errorCode || this.toErrorCode(errorType),
+        };
       }
     } else if (exception instanceof Error) {
       message = exception.message;
       errorType = exception.constructor.name;
       stack = exception.stack;
-      responseBody = { statusCode, message: 'Internal server error' };
+      responseBody = {
+        statusCode,
+        message: 'Internal server error',
+        errorCode: 'INTERNAL_ERROR',
+      };
     } else {
-      responseBody = { statusCode, message: 'Internal server error' };
+      responseBody = {
+        statusCode,
+        message: 'Internal server error',
+        errorCode: 'UNKNOWN_ERROR',
+      };
     }
 
     // 민감정보 마스킹 (stack에서 password 등 제거)
@@ -91,5 +109,16 @@ export class ErrorLogFilter implements ExceptionFilter {
 
     // 기존 응답 포맷 그대로 전송 / Send original response format
     response.status(statusCode).json(responseBody);
+  }
+
+  /**
+   * 예외 클래스명 → errorCode 변환 / Convert exception class name to errorCode
+   * UnauthorizedException → UNAUTHORIZED, BadRequestException → BAD_REQUEST 등
+   */
+  private toErrorCode(errorType: string): string {
+    return errorType
+      .replace(/Exception$/, '')
+      .replace(/([a-z])([A-Z])/g, '$1_$2')
+      .toUpperCase();
   }
 }

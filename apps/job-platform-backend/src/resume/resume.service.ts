@@ -291,6 +291,142 @@ export class ResumeService {
     return { message: '이력서가 삭제되었습니다 / Resume deleted' };
   }
 
+  // ──── 북마크 / Bookmark ────
+
+  /**
+   * 인재 북마크 추가 / Add talent bookmark
+   */
+  async addBookmark(sessionId: string, resumeId: number) {
+    const userId = await this.getUserIdFromSession(sessionId);
+
+    // 이력서 존재 확인 / Check resume exists
+    const resume = await this.authPrisma.resume.findFirst({
+      where: { id: BigInt(resumeId) },
+    });
+    if (!resume) {
+      throw new NotFoundException(
+        '이력서를 찾을 수 없습니다 / Resume not found',
+      );
+    }
+
+    // 본인 이력서 북마크 방지 / Prevent bookmarking own resume
+    if (resume.userId === userId) {
+      throw new BadRequestException(
+        '본인 이력서는 북마크할 수 없습니다 / Cannot bookmark your own resume',
+      );
+    }
+
+    try {
+      await this.authPrisma.talentBookmark.create({
+        data: {
+          resumeId: BigInt(resumeId),
+          userId,
+        },
+      });
+    } catch (err: any) {
+      // 중복 북마크 무시 (unique constraint) / Ignore duplicate
+      if (err?.code === 'P2002') {
+        this.logger.debug(
+          `이미 북마크됨: resumeId=${resumeId} / Already bookmarked`,
+        );
+        return { bookmarked: true };
+      }
+      throw err;
+    }
+
+    this.logger.log(
+      `인재 북마크 추가: userId=${userId}, resumeId=${resumeId} / Bookmark added`,
+    );
+    return { bookmarked: true };
+  }
+
+  /**
+   * 인재 북마크 제거 / Remove talent bookmark
+   */
+  async removeBookmark(sessionId: string, resumeId: number) {
+    const userId = await this.getUserIdFromSession(sessionId);
+
+    await this.authPrisma.talentBookmark.deleteMany({
+      where: { resumeId: BigInt(resumeId), userId },
+    });
+
+    this.logger.log(
+      `인재 북마크 제거: userId=${userId}, resumeId=${resumeId} / Bookmark removed`,
+    );
+    return { bookmarked: false };
+  }
+
+  /**
+   * 북마크 목록 조회 / Get bookmarked talents
+   */
+  async getBookmarks(sessionId: string, page: number = 1) {
+    const userId = await this.getUserIdFromSession(sessionId);
+    const limit = 20;
+    const skip = (page - 1) * limit;
+
+    const [bookmarks, total] = await Promise.all([
+      this.authPrisma.talentBookmark.findMany({
+        where: { userId },
+        include: { resume: true },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      this.authPrisma.talentBookmark.count({ where: { userId } }),
+    ]);
+
+    return {
+      talents: bookmarks.map((b) => ({
+        bookmarkId: Number(b.id),
+        resumeId: Number(b.resume.id),
+        nationality: b.resume.nationality,
+        topikLevel: b.resume.topikLevel,
+        kiipLevel: b.resume.kiipLevel,
+        preferredJobTypes: b.resume.preferredJobTypes,
+        preferredRegions: b.resume.preferredRegions,
+        workExperienceCount: Array.isArray(b.resume.workExperiences)
+          ? (b.resume.workExperiences as any[]).length
+          : 0,
+        bookmarkedAt: b.createdAt,
+        updatedAt: b.resume.updatedAt,
+      })),
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  /**
+   * 북마크 여부 확인 / Check if bookmarked
+   */
+  async isBookmarked(sessionId: string, resumeId: number) {
+    const userId = await this.getUserIdFromSession(sessionId);
+
+    const bookmark = await this.authPrisma.talentBookmark.findUnique({
+      where: { resumeId_userId: { resumeId: BigInt(resumeId), userId } },
+    });
+
+    return { bookmarked: !!bookmark };
+  }
+
+  /**
+   * 북마크 ID 목록 조회 (검색 결과에서 북마크 상태 표시용)
+   * Get bookmarked resume IDs (for displaying bookmark status in search results)
+   */
+  async getBookmarkedIds(sessionId: string): Promise<number[]> {
+    const userId = await this.getUserIdFromSession(sessionId);
+
+    const bookmarks = await this.authPrisma.talentBookmark.findMany({
+      where: { userId },
+      select: { resumeId: true },
+    });
+
+    return bookmarks.map((b) => Number(b.resumeId));
+  }
+
   // ──── 헬퍼 / Helpers ────
 
   private checkCompleteness(dto: Partial<CreateResumeDto>): boolean {

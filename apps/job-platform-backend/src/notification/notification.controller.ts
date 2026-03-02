@@ -4,6 +4,7 @@ import {
   Body,
   Param,
   Patch,
+  Put,
   Post,
   Query,
   HttpException,
@@ -13,7 +14,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
 import { firstValueFrom } from 'rxjs';
 import {
   NOTIFICATION_PACKAGE_NAME,
@@ -28,7 +29,9 @@ import {
   Roles,
   CurrentSession,
   grpcToHttpStatus,
+  AuthPrismaService,
 } from 'libs/common/src';
+import { NotificationTriggerService } from './notification-trigger.service';
 
 @ApiTags('Notifications')
 @Controller('notifications')
@@ -36,7 +39,11 @@ import {
 export class NotificationController implements OnModuleInit {
   private notificationService: NotificationServiceClient;
 
-  constructor(@Inject(NOTIFICATION_PACKAGE_NAME) private client: ClientGrpc) {}
+  constructor(
+    @Inject(NOTIFICATION_PACKAGE_NAME) private client: ClientGrpc,
+    private readonly prisma: AuthPrismaService,
+    private readonly trigger: NotificationTriggerService,
+  ) {}
 
   onModuleInit() {
     this.notificationService =
@@ -309,5 +316,136 @@ export class NotificationController implements OnModuleInit {
         grpcToHttpStatus(error.code) || HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  // ──── 알림 설정 / Notification preferences ────
+
+  /**
+   * 알림 설정 조회 / Get notification preferences
+   */
+  @Get('preferences')
+  @ApiOperation({ summary: '알림 설정 조회 / Get notification preferences' })
+  @ApiResponse({ status: 200, description: 'Preferences retrieved.' })
+  async getPreferences(@CurrentSession() session: any) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: session.userId },
+      select: {
+        notifSms: true,
+        notifEmail: true,
+        notifKakao: true,
+        notifEnabledAt: true,
+        notifSmsEnabledAt: true,
+        notifEmailEnabledAt: true,
+        notifKakaoEnabledAt: true,
+        marketingConsent: true,
+        marketingConsentAt: true,
+      },
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    return user;
+  }
+
+  /**
+   * 알림 설정 변경 / Update notification preferences
+   */
+  @Put('preferences')
+  @ApiOperation({ summary: '알림 설정 변경 / Update notification preferences' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        notifSms: {
+          type: 'boolean',
+          description: 'SMS 수신 동의 / SMS notifications',
+        },
+        notifEmail: {
+          type: 'boolean',
+          description: '이메일 수신 동의 / Email notifications',
+        },
+        notifKakao: {
+          type: 'boolean',
+          description: '카카오톡 수신 동의 / KakaoTalk notifications',
+        },
+        marketingConsent: {
+          type: 'boolean',
+          description: '마케팅 수신 동의 / Marketing consent',
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 200, description: 'Preferences updated.' })
+  async updatePreferences(
+    @CurrentSession() session: any,
+    @Body()
+    body: {
+      notifSms?: boolean;
+      notifEmail?: boolean;
+      notifKakao?: boolean;
+      marketingConsent?: boolean;
+    },
+  ) {
+    const now = new Date();
+    const updateData: Record<string, unknown> = {};
+
+    // 각 채널별 동의 시간 관리 / Manage per-channel consent timestamps
+    if (body.notifSms !== undefined) {
+      updateData.notifSms = body.notifSms;
+      if (body.notifSms) updateData.notifSmsEnabledAt = now;
+    }
+    if (body.notifEmail !== undefined) {
+      updateData.notifEmail = body.notifEmail;
+      if (body.notifEmail) updateData.notifEmailEnabledAt = now;
+    }
+    if (body.notifKakao !== undefined) {
+      updateData.notifKakao = body.notifKakao;
+      if (body.notifKakao) updateData.notifKakaoEnabledAt = now;
+    }
+    if (body.marketingConsent !== undefined) {
+      updateData.marketingConsent = body.marketingConsent;
+      if (body.marketingConsent) updateData.marketingConsentAt = now;
+    }
+
+    // 하나라도 활성화 시 notifEnabledAt 갱신 / Update notifEnabledAt if any channel enabled
+    const anyEnabled = body.notifSms || body.notifEmail || body.notifKakao;
+    if (anyEnabled) {
+      updateData.notifEnabledAt = now;
+    }
+
+    const user = await this.prisma.user.update({
+      where: { id: session.userId },
+      data: updateData,
+      select: {
+        notifSms: true,
+        notifEmail: true,
+        notifKakao: true,
+        notifEnabledAt: true,
+        notifSmsEnabledAt: true,
+        notifEmailEnabledAt: true,
+        notifKakaoEnabledAt: true,
+        marketingConsent: true,
+        marketingConsentAt: true,
+      },
+    });
+
+    return user;
+  }
+
+  /**
+   * 이벤트 카탈로그 조회 (어드민) / Get event catalog (admin)
+   */
+  @Get('event-catalog')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN')
+  @ApiOperation({
+    summary:
+      '알림 이벤트 카탈로그 조회 / Get notification event catalog (admin)',
+  })
+  @ApiResponse({ status: 200, description: 'Event catalog retrieved.' })
+  async getEventCatalog() {
+    return this.trigger.getEventCatalog();
   }
 }

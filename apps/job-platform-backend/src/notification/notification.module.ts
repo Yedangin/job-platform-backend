@@ -4,8 +4,11 @@ import { join } from 'path';
 import { NOTIFICATION_PACKAGE_NAME } from 'types/notification/notification';
 import { COMMON_BASIC_QUERY_PACKAGE_NAME } from 'types/common/basic-query';
 import { COMMON_BASIC_USAGE_PACKAGE_NAME } from 'types/common/basic';
+import { AuthPrismaService } from 'libs/common/src';
 import { NotificationController } from './notification.controller';
 import { NotificationGateway } from './notification.gateway';
+import { NotificationTriggerService } from './notification-trigger.service';
+import { NotificationCronService } from './notification-cron.service';
 
 @Module({
   imports: [
@@ -39,6 +42,12 @@ import { NotificationGateway } from './notification.gateway';
     ]),
   ],
   controllers: [NotificationController],
-  providers: [NotificationGateway],
+  providers: [
+    NotificationGateway,
+    NotificationTriggerService,
+    NotificationCronService,
+    AuthPrismaService,
+  ],
+  exports: [NotificationTriggerService],
 })
 export class NotificationModule {}

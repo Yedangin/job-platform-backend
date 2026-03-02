@@ -3,10 +3,13 @@ import {
   Get,
   Post,
   Put,
+  Patch,
   Body,
   Param,
   Query,
   UseGuards,
+  NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -21,8 +24,10 @@ import {
   CurrentSession,
   Roles,
   SessionData,
+  AuthPrismaService,
 } from 'libs/common/src';
 import { JobApplicationService } from './job-application.service';
+import { VisaScenarioService } from './visa-scenario.service';
 import {
   ApplyToJobDto,
   GetMyApplicationsQueryDto,
@@ -42,7 +47,11 @@ import {
 @UseGuards(SessionAuthGuard, RolesGuard)
 @Controller('applications')
 export class JobApplicationController {
-  constructor(private readonly jobApplicationService: JobApplicationService) {}
+  constructor(
+    private readonly jobApplicationService: JobApplicationService,
+    private readonly visaScenarioService: VisaScenarioService,
+    private readonly prisma: AuthPrismaService,
+  ) {}
 
   // ========================================
   // Applicant (INDIVIDUAL) endpoints
@@ -355,5 +364,181 @@ export class JobApplicationController {
       'APPLICANT',
       session.userId,
     );
+  }
+
+  // ========================================
+  // 비자 가이드 + 체크리스트 (spec 08)
+  // Visa guide + checklist endpoints
+  // ========================================
+
+  @Get(':id/visa-guide')
+  @ApiOperation({
+    summary: '비자 준비 가이드 조회 / Get visa preparation guide',
+  })
+  @ApiParam({ name: 'id', description: 'Application ID' })
+  @ApiResponse({ status: 200, description: 'Visa guide retrieved' })
+  async getVisaGuide(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+  ) {
+    const app = await this.prisma.jobApplication.findUnique({
+      where: { id: BigInt(id) },
+      include: {
+        job: {
+          select: {
+            title: true,
+            corporateId: true,
+            allowedVisas: true,
+          },
+        },
+        checklistItems: {
+          orderBy: [{ category: 'asc' }, { itemOrder: 'asc' }],
+        },
+      },
+    });
+    if (!app) throw new NotFoundException('Application not found');
+
+    // 접근 권한 확인: 구직자 본인 또는 해당 기업 / Access check
+    const corp = await this.prisma.corporateProfile.findUnique({
+      where: { authId: session.userId },
+    });
+    const isApplicant = app.applicantId === session.userId;
+    const isCompany = corp && app.job.corporateId === corp.companyId;
+    if (!isApplicant && !isCompany) {
+      throw new ForbiddenException('Access denied');
+    }
+
+    // 구직자 프로필 조회 / Fetch applicant profile
+    const profile = await this.prisma.individualProfile.findUnique({
+      where: { authId: app.applicantId },
+      select: {
+        realName: true,
+        visaType: true,
+        visaExpiryDate: true,
+        nationality: true,
+      },
+    });
+
+    // 기업 프로필 조회 / Fetch company profile
+    const company = await this.prisma.corporateProfile.findUnique({
+      where: { companyId: app.job.corporateId },
+      select: { brandName: true, companyNameOfficial: true },
+    });
+
+    // 체크리스트를 카테고리별로 분리 / Split checklist by category
+    const companyItems = app.checklistItems.filter(
+      (i) => i.category === 'COMPANY',
+    );
+    const applicantItems = app.checklistItems.filter(
+      (i) => i.category === 'APPLICANT',
+    );
+    const totalItems = app.checklistItems.length;
+    const checkedItems = app.checklistItems.filter((i) => i.isChecked).length;
+
+    return {
+      applicationId: app.id.toString(),
+      status: app.status,
+      scenario: app.visaGuideScenario,
+      visaGuideGeneratedAt: app.visaGuideGeneratedAt,
+      offeredSalary: app.offeredSalary,
+      expectedStartDate: app.expectedStartDate,
+      companyMessage: app.companyMessage,
+      applicant: {
+        name: profile?.realName,
+        currentVisa: profile?.visaType,
+        visaExpiryDate: profile?.visaExpiryDate,
+        nationality: profile?.nationality,
+      },
+      company: {
+        name: company?.brandName || company?.companyNameOfficial,
+      },
+      job: {
+        title: app.job.title,
+      },
+      checklist: {
+        company: companyItems.map((i) => ({
+          id: i.id.toString(),
+          text: i.itemText,
+          order: i.itemOrder,
+          isChecked: i.isChecked,
+          checkedAt: i.checkedAt,
+        })),
+        applicant: applicantItems.map((i) => ({
+          id: i.id.toString(),
+          text: i.itemText,
+          order: i.itemOrder,
+          isChecked: i.isChecked,
+          checkedAt: i.checkedAt,
+        })),
+        progress: {
+          total: totalItems,
+          checked: checkedItems,
+          percentage:
+            totalItems > 0 ? Math.round((checkedItems / totalItems) * 100) : 0,
+        },
+      },
+    };
+  }
+
+  @Patch(':id/checklist/:itemId')
+  @ApiOperation({
+    summary: '체크리스트 항목 체크/해제 / Toggle checklist item',
+  })
+  @ApiParam({ name: 'id', description: 'Application ID' })
+  @ApiParam({ name: 'itemId', description: 'Checklist item ID' })
+  @ApiResponse({ status: 200, description: 'Checklist item updated' })
+  async toggleChecklistItem(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+    @Param('itemId') itemId: string,
+  ) {
+    // 지원 조회 / Fetch application
+    const app = await this.prisma.jobApplication.findUnique({
+      where: { id: BigInt(id) },
+      include: { job: { select: { corporateId: true } } },
+    });
+    if (!app) throw new NotFoundException('Application not found');
+
+    // 체크리스트 아이템 조회 / Fetch checklist item
+    const item = await this.prisma.visaChecklistItem.findUnique({
+      where: { id: BigInt(itemId) },
+    });
+    if (!item || item.applicationId !== BigInt(id)) {
+      throw new NotFoundException('Checklist item not found');
+    }
+
+    // 접근 권한: COMPANY 카테고리 → 기업만, APPLICANT → 구직자만 / Access check
+    const corp = await this.prisma.corporateProfile.findUnique({
+      where: { authId: session.userId },
+    });
+    const isApplicant = app.applicantId === session.userId;
+    const isCompany = corp && app.job.corporateId === corp.companyId;
+
+    if (item.category === 'COMPANY' && !isCompany) {
+      throw new ForbiddenException(
+        '기업만 기업 체크리스트를 수정할 수 있습니다 / Only company can check company items',
+      );
+    }
+    if (item.category === 'APPLICANT' && !isApplicant) {
+      throw new ForbiddenException(
+        '구직자만 본인 체크리스트를 수정할 수 있습니다 / Only applicant can check applicant items',
+      );
+    }
+
+    // 토글 / Toggle
+    const updated = await this.prisma.visaChecklistItem.update({
+      where: { id: BigInt(itemId) },
+      data: {
+        isChecked: !item.isChecked,
+        checkedAt: !item.isChecked ? new Date() : null,
+        checkedBy: !item.isChecked ? session.userId : null,
+      },
+    });
+
+    return {
+      id: updated.id.toString(),
+      isChecked: updated.isChecked,
+      checkedAt: updated.checkedAt,
+    };
   }
 }
