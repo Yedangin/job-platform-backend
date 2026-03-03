@@ -891,10 +891,7 @@ export class AuthController {
 
       // 웹: 메인 페이지로 리다이렉트 (쿠키 기반, URL에 sessionId 노출 금지)
       // Web: Redirect to main page (cookie-based, never expose sessionId in URL)
-      const baseUrl =
-        process.env.NODE_ENV === 'production'
-          ? 'http://jobchaja.com'
-          : 'http://localhost:3000';
+      const baseUrl = process.env.CLIENT_URL || 'http://localhost:3000';
 
       // 프론트엔드에서 읽을 수 있도록 짧은 수명의 세션 초기화 쿠키 설정
       // Set short-lived session init cookie readable by frontend JS

@@ -16,6 +16,9 @@ services:
       LOG_MONGODB_URL: mongodb://mongodb:27017/logs
       REDIS_HOST: redis
       NOTIFICATION_SERVICE_URL: notification-service:8004
+      # OAuth 콜백 + 최종 리다이렉트 URL (프론트엔드 주소)
+      # OAuth callback + final redirect URL (frontend address)
+      CLIENT_URL: http://jobchaja.com
     depends_on:
       - postgres
       - mongodb

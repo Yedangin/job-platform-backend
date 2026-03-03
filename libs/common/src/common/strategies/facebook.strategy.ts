@@ -9,7 +9,9 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     super({
       clientID: process.env.FACEBOOK_APP_ID,
       clientSecret: process.env.FACEBOOK_APP_SECRET,
-      callbackURL: process.env.FACEBOOK_CALLBACK_URL,
+      // OAuth 콜백은 프론트엔드(CLIENT_URL)를 경유 → 프록시가 백엔드로 전달
+      // OAuth callback routes through frontend (CLIENT_URL) → proxy forwards to backend
+      callbackURL: `${process.env.CLIENT_URL || 'http://localhost:3000'}/api/auth/facebook/callback`,
       profileFields: ['id', 'emails', 'name'],
       passReqToCallback: false, // Explicitly set this
     });
