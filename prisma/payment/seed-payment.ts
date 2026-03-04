@@ -139,7 +139,7 @@ async function main() {
       price: 1000,
       description: '인재 이력서 1건 열람',
       isActive: true,
-      metadata: JSON.stringify({ credits: 1, validDays: 30 }),
+      metadata: JSON.stringify({ credits: 1, validDays: 90 }),
     },
     {
       code: 'VIEW_5',
@@ -149,7 +149,7 @@ async function main() {
       price: 4500,
       description: '인재 이력서 5건 열람 (10% 할인)',
       isActive: true,
-      metadata: JSON.stringify({ credits: 5, validDays: 30 }),
+      metadata: JSON.stringify({ credits: 5, validDays: 90 }),
     },
     {
       code: 'VIEW_10',
@@ -159,7 +159,7 @@ async function main() {
       price: 8000,
       description: '인재 이력서 10건 열람 (20% 할인)',
       isActive: true,
-      metadata: JSON.stringify({ credits: 10, validDays: 60 }),
+      metadata: JSON.stringify({ credits: 10, validDays: 90 }),
     },
     {
       code: 'VIEW_30',
@@ -189,7 +189,7 @@ async function main() {
       price: 50000,
       description: '인재 이력서 100건 열람 (50% 할인)',
       isActive: true,
-      metadata: JSON.stringify({ credits: 100, validDays: 120 }),
+      metadata: JSON.stringify({ credits: 100, validDays: 90 }),
     },
 
     // 부가 노출 상품 (Phase 2 — 비활성) / Addon products (Phase 2 — inactive)

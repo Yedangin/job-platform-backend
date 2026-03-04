@@ -50,11 +50,12 @@ model User {
   marketingConsentAt  DateTime?     @map("marketing_consent_at")
 
   // [관계]
-  corporate         CorporateProfile?
-  individual        IndividualProfile?
-  supportTickets    SupportTicket[]
-  resume            Resume?
-  visaVerification  VisaVerification?
+  corporate              CorporateProfile?
+  individual             IndividualProfile?
+  supportTickets         SupportTicket[]
+  resume                 Resume?
+  visaVerification       VisaVerification?
+  identityVerification   IdentityVerification?
 
   @@unique([socialProvider, socialProviderId])
   @@index([email])
