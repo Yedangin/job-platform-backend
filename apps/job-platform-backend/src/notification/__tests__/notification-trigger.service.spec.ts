@@ -12,10 +12,14 @@
  * @lastVerified 2026-03-04
  */
 // 생성된 타입 모킹 (jest.mock 호이스팅) / Mock generated type modules (hoisted by jest)
-jest.mock('types/notification/notification', () => ({
-  NOTIFICATION_PACKAGE_NAME: 'NOTIFICATION_PACKAGE_NAME',
-  NOTIFICATION_SERVICE_NAME: 'NotificationService',
-}), { virtual: true });
+jest.mock(
+  'types/notification/notification',
+  () => ({
+    NOTIFICATION_PACKAGE_NAME: 'NOTIFICATION_PACKAGE_NAME',
+    NOTIFICATION_SERVICE_NAME: 'NotificationService',
+  }),
+  { virtual: true },
+);
 
 // libs/common barrel 모킹 (uuid ESM 문제 방지) / Mock libs/common barrel to avoid uuid ESM issue
 jest.mock('libs/common/src', () => {
@@ -42,7 +46,9 @@ interface MockNotifUser {
 }
 
 /** 기본 모의 사용자 생성 / Create default mock user for notifications */
-const createMockNotifUser = (overrides?: Partial<MockNotifUser>): MockNotifUser => ({
+const createMockNotifUser = (
+  overrides?: Partial<MockNotifUser>,
+): MockNotifUser => ({
   email: 'worker@example.com',
   notifEmail: true,
   marketingConsent: true,
@@ -80,7 +86,9 @@ describe('NotificationTriggerService', () => {
       ],
     }).compile();
 
-    service = module.get<NotificationTriggerService>(NotificationTriggerService);
+    service = module.get<NotificationTriggerService>(
+      NotificationTriggerService,
+    );
 
     // onModuleInit 수동 호출 (gRPC 서비스 초기화)
     // Manually call onModuleInit to initialize gRPC service
@@ -106,7 +114,9 @@ describe('NotificationTriggerService', () => {
       // 성공 확인 / Verify success
       expect(result.success).toBe(true);
       // gRPC 호출 확인 / Verify gRPC was called
-      expect(mockNotificationServiceClient.sendNotification).toHaveBeenCalledWith(
+      expect(
+        mockNotificationServiceClient.sendNotification,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           userId: 'user-001',
           notificationType: 'CORP_VERIFY_SUBMITTED',
@@ -121,7 +131,9 @@ describe('NotificationTriggerService', () => {
       expect(result.success).toBe(false);
       expect(result.message).toContain('Unknown event code');
       // gRPC 호출 안 됨 / gRPC should not be called
-      expect(mockNotificationServiceClient.sendNotification).not.toHaveBeenCalled();
+      expect(
+        mockNotificationServiceClient.sendNotification,
+      ).not.toHaveBeenCalled();
     });
 
     it('사용자를 찾을 수 없어도 gRPC 발송을 시도한다 / should attempt gRPC send even if user not found', async () => {
@@ -136,7 +148,9 @@ describe('NotificationTriggerService', () => {
 
       expect(result.success).toBe(true);
       // gRPC 호출 시 email은 undefined / Email should be undefined in gRPC call
-      expect(mockNotificationServiceClient.sendNotification).toHaveBeenCalledWith(
+      expect(
+        mockNotificationServiceClient.sendNotification,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           userId: 'nonexistent-user',
         }),
@@ -160,9 +174,11 @@ describe('NotificationTriggerService', () => {
       // 사용자 조회 / Find user
       mockPrisma.user.findUnique.mockResolvedValueOnce(createMockNotifUser());
       // gRPC 예외 / gRPC throws exception
-      mockNotificationServiceClient.sendNotification.mockImplementationOnce(() => {
-        throw new Error('Connection refused');
-      });
+      mockNotificationServiceClient.sendNotification.mockImplementationOnce(
+        () => {
+          throw new Error('Connection refused');
+        },
+      );
 
       const result = await service.fire('N-01', 'user-001');
 
@@ -189,7 +205,9 @@ describe('NotificationTriggerService', () => {
       await service.fire('N-32', 'user-001', { couponName: 'Test Coupon' });
 
       // PLATFORM 채널로 발송 확인 / Verify sent via PLATFORM channel
-      expect(mockNotificationServiceClient.sendNotification).toHaveBeenCalledWith(
+      expect(
+        mockNotificationServiceClient.sendNotification,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           channel: 'PLATFORM',
         }),
@@ -208,7 +226,9 @@ describe('NotificationTriggerService', () => {
 
       await service.fire('N-32', 'user-001', { couponName: 'Test Coupon' });
 
-      expect(mockNotificationServiceClient.sendNotification).toHaveBeenCalledWith(
+      expect(
+        mockNotificationServiceClient.sendNotification,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           channel: 'BOTH',
         }),
@@ -234,7 +254,9 @@ describe('NotificationTriggerService', () => {
       await service.fire('N-08', 'user-001');
 
       // PLATFORM으로 대체 확인 / Verify fallback to PLATFORM
-      expect(mockNotificationServiceClient.sendNotification).toHaveBeenCalledWith(
+      expect(
+        mockNotificationServiceClient.sendNotification,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           channel: 'PLATFORM',
         }),
@@ -254,7 +276,9 @@ describe('NotificationTriggerService', () => {
       // N-01은 BOTH 채널 / N-01 has BOTH channel
       await service.fire('N-01', 'user-001');
 
-      expect(mockNotificationServiceClient.sendNotification).toHaveBeenCalledWith(
+      expect(
+        mockNotificationServiceClient.sendNotification,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           channel: 'BOTH',
         }),
@@ -339,11 +363,18 @@ describe('NotificationTriggerService', () => {
         of({ success: true, message: 'Sent' }),
       );
 
-      await service.fire('N-01', 'user-001', {}, {
-        email: 'override@example.com',
-      });
+      await service.fire(
+        'N-01',
+        'user-001',
+        {},
+        {
+          email: 'override@example.com',
+        },
+      );
 
-      expect(mockNotificationServiceClient.sendNotification).toHaveBeenCalledWith(
+      expect(
+        mockNotificationServiceClient.sendNotification,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           email: 'override@example.com',
         }),
@@ -356,12 +387,19 @@ describe('NotificationTriggerService', () => {
         of({ success: true, message: 'Sent' }),
       );
 
-      await service.fire('N-21', 'user-001', { title: 'Backend Dev' }, {
-        priority: 1,
-        relatedJobPostId: 'job-123',
-      });
+      await service.fire(
+        'N-21',
+        'user-001',
+        { title: 'Backend Dev' },
+        {
+          priority: 1,
+          relatedJobPostId: 'job-123',
+        },
+      );
 
-      expect(mockNotificationServiceClient.sendNotification).toHaveBeenCalledWith(
+      expect(
+        mockNotificationServiceClient.sendNotification,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           priority: 1,
           relatedJobPostId: 'job-123',
@@ -384,7 +422,9 @@ describe('NotificationTriggerService', () => {
 
       // gRPC 호출에서 content에 title이 포함되었는지 확인
       // Verify the content in the gRPC call includes the title
-      expect(mockNotificationServiceClient.sendNotification).toHaveBeenCalledWith(
+      expect(
+        mockNotificationServiceClient.sendNotification,
+      ).toHaveBeenCalledWith(
         expect.objectContaining({
           content: expect.stringContaining('Backend Developer'),
         }),

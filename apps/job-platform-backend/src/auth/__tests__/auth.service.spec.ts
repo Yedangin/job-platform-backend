@@ -11,15 +11,37 @@
  * @lastVerified 2026-03-04
  */
 // 생성된 타입 모킹 (jest.mock 호이스팅) / Mock generated type modules (hoisted by jest)
-jest.mock('types/auth/auth', () => ({
-  UserRole: { INDIVIDUAL: 'INDIVIDUAL', CORPORATE: 'CORPORATE', ADMIN: 'ADMIN' },
-  UserStatus: { ACTIVE: 'ACTIVE', INACTIVE: 'INACTIVE', DELETED: 'DELETED' },
-}), { virtual: true });
+jest.mock(
+  'types/auth/auth',
+  () => ({
+    UserRole: {
+      INDIVIDUAL: 'INDIVIDUAL',
+      CORPORATE: 'CORPORATE',
+      ADMIN: 'ADMIN',
+    },
+    UserStatus: { ACTIVE: 'ACTIVE', INACTIVE: 'INACTIVE', DELETED: 'DELETED' },
+  }),
+  { virtual: true },
+);
 
-jest.mock('generated/prisma-user', () => ({
-  SocialProvider: { NONE: 'NONE', GOOGLE: 'GOOGLE', KAKAO: 'KAKAO', NAVER: 'NAVER', APPLE: 'APPLE' },
-  UserType: { INDIVIDUAL: 'INDIVIDUAL', CORPORATE: 'CORPORATE', ADMIN: 'ADMIN' },
-}), { virtual: true });
+jest.mock(
+  'generated/prisma-user',
+  () => ({
+    SocialProvider: {
+      NONE: 'NONE',
+      GOOGLE: 'GOOGLE',
+      KAKAO: 'KAKAO',
+      NAVER: 'NAVER',
+      APPLE: 'APPLE',
+    },
+    UserType: {
+      INDIVIDUAL: 'INDIVIDUAL',
+      CORPORATE: 'CORPORATE',
+      ADMIN: 'ADMIN',
+    },
+  }),
+  { virtual: true },
+);
 
 // libs/common barrel 모킹 (uuid ESM 문제 방지) / Mock libs/common barrel to avoid uuid ESM issue
 jest.mock('libs/common/src', () => {
@@ -73,7 +95,9 @@ jest.mock('crypto', () => ({
 jest.mock('dns/promises', () => ({
   Resolver: jest.fn().mockImplementation(() => ({
     setServers: jest.fn(),
-    resolveMx: jest.fn().mockResolvedValue([{ exchange: 'mx.example.com', priority: 10 }]),
+    resolveMx: jest
+      .fn()
+      .mockResolvedValue([{ exchange: 'mx.example.com', priority: 10 }]),
   })),
 }));
 
@@ -222,7 +246,9 @@ describe('AuthService', () => {
       expect(result.success).toBe(true);
       expect(result.message).toBe('User registered successfully');
       // 인증 티켓 확인 호출 / Verified ticket check was called
-      expect(mockRedisService.get).toHaveBeenCalledWith('verified_ticket:new@example.com');
+      expect(mockRedisService.get).toHaveBeenCalledWith(
+        'verified_ticket:new@example.com',
+      );
     });
 
     it('중복 이메일이면 ConflictException을 던진다 / should throw ConflictException for duplicate email', async () => {
@@ -269,7 +295,9 @@ describe('AuthService', () => {
       await service.register(corpRequest);
 
       // 환영 쿠폰 발급 확인 / Verify welcome coupons granted
-      expect(mockCouponService.grantWelcomeCoupons).toHaveBeenCalledWith('corp-user-id');
+      expect(mockCouponService.grantWelcomeCoupons).toHaveBeenCalledWith(
+        'corp-user-id',
+      );
     });
   });
 
@@ -392,7 +420,9 @@ describe('AuthService', () => {
       );
 
       // incr 호출 확인 (incrementLoginFailCount 내부) / Verify incr was called
-      expect(mockRedisService.incr).toHaveBeenCalledWith('login_fail:test@example.com');
+      expect(mockRedisService.incr).toHaveBeenCalledWith(
+        'login_fail:test@example.com',
+      );
     });
 
     it('로그인 성공 시 실패 카운터를 초기화한다 / should reset fail counter on successful login', async () => {
@@ -418,7 +448,9 @@ describe('AuthService', () => {
       });
 
       // 실패 카운터 삭제 확인 / Verify fail counter was deleted
-      expect(mockRedisService.del).toHaveBeenCalledWith('login_fail:test@example.com');
+      expect(mockRedisService.del).toHaveBeenCalledWith(
+        'login_fail:test@example.com',
+      );
     });
 
     it('잠금 상태에서 로그인을 거부한다 / should reject login during lockout', async () => {
@@ -487,7 +519,9 @@ describe('AuthService', () => {
 
       expect(result.success).toBe(true);
       expect(result.message).toBe('Logout successful');
-      expect(mockRedisService.del).toHaveBeenCalledWith('session:valid-session-id');
+      expect(mockRedisService.del).toHaveBeenCalledWith(
+        'session:valid-session-id',
+      );
     });
 
     it('유효하지 않은 세션으로 로그아웃 시 UnauthorizedException을 던진다 / should throw UnauthorizedException for invalid session logout', async () => {
@@ -681,7 +715,10 @@ describe('AuthService', () => {
       // 활동 로그 / Activity log
       mockPrisma.activityLog.create.mockResolvedValue({});
 
-      const result = await service.resetPassword('valid-token', 'NewPassword123!');
+      const result = await service.resetPassword(
+        'valid-token',
+        'NewPassword123!',
+      );
 
       expect(result.success).toBe(true);
       expect(mockRedisService.del).toHaveBeenCalledWith('pw_reset:valid-token');
@@ -736,7 +773,11 @@ describe('AuthService', () => {
       (bcrypt.compare as jest.Mock).mockResolvedValueOnce(false);
 
       await expect(
-        service.changePassword('valid-session', 'WrongPassword!', 'NewPassword!'),
+        service.changePassword(
+          'valid-session',
+          'WrongPassword!',
+          'NewPassword!',
+        ),
       ).rejects.toThrow(BadRequestException);
     });
   });

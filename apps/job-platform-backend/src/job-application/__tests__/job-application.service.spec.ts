@@ -23,14 +23,18 @@ jest.mock('libs/common/src', () => {
 });
 
 // 생성된 Prisma 타입 모킹 / Mock generated Prisma types
-jest.mock('generated/prisma-notification', () => ({
-  NotificationType: {
-    APPLICATION_STATUS: 'APPLICATION_STATUS',
-    NEW_APPLICATION: 'NEW_APPLICATION',
-    INTERVIEW: 'INTERVIEW',
-    SYSTEM: 'SYSTEM',
-  },
-}), { virtual: true });
+jest.mock(
+  'generated/prisma-notification',
+  () => ({
+    NotificationType: {
+      APPLICATION_STATUS: 'APPLICATION_STATUS',
+      NEW_APPLICATION: 'NEW_APPLICATION',
+      INTERVIEW: 'INTERVIEW',
+      SYSTEM: 'SYSTEM',
+    },
+  }),
+  { virtual: true },
+);
 
 // AWS SES 모킹 / Mock AWS SES
 jest.mock('@aws-sdk/client-ses', () => ({
@@ -102,7 +106,9 @@ interface MockApplication {
 }
 
 /** 기본 모의 공고 생성 / Create default mock job posting */
-const createMockJob = (overrides?: Partial<MockJobPosting>): MockJobPosting => ({
+const createMockJob = (
+  overrides?: Partial<MockJobPosting>,
+): MockJobPosting => ({
   id: BigInt(100),
   title: 'Backend Developer',
   status: 'ACTIVE',
@@ -222,7 +228,10 @@ describe('JobApplicationService', () => {
       providers: [
         JobApplicationService,
         { provide: AuthPrismaService, useValue: mockPrisma },
-        { provide: NotificationPrismaService, useValue: mockNotificationPrisma },
+        {
+          provide: NotificationPrismaService,
+          useValue: mockNotificationPrisma,
+        },
         { provide: RedisService, useValue: mockRedis },
         { provide: VisaScenarioService, useValue: mockVisaScenarioService },
       ],
@@ -307,9 +316,9 @@ describe('JobApplicationService', () => {
         userType: 'CORPORATE',
       });
 
-      await expect(
-        service.applyToJob('corp-user', '100', {}),
-      ).rejects.toThrow(ForbiddenException);
+      await expect(service.applyToJob('corp-user', '100', {})).rejects.toThrow(
+        ForbiddenException,
+      );
     });
 
     it('비활성 공고에 지원하면 BadRequestException을 던진다 / should throw BadRequestException for inactive job posting', async () => {
@@ -332,9 +341,9 @@ describe('JobApplicationService', () => {
       // 사용자 없음 / User not found
       mockPrisma.user.findUnique.mockResolvedValueOnce(null);
 
-      await expect(
-        service.applyToJob('ghost-user', '100', {}),
-      ).rejects.toThrow(NotFoundException);
+      await expect(service.applyToJob('ghost-user', '100', {})).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('존재하지 않는 공고는 NotFoundException을 던진다 / should throw NotFoundException for non-existent job', async () => {
