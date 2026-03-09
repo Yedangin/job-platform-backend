@@ -55,7 +55,6 @@ model User {
   supportTickets         SupportTicket[]
   resume                 Resume?
   visaVerification       VisaVerification?
-  identityVerification   IdentityVerification?
 
   @@unique([socialProvider, socialProviderId])
   @@index([email])
