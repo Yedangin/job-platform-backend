@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
+import * as Sentry from '@sentry/nestjs';
 import { LoggingService } from './logging.service';
 
 /**
@@ -81,6 +82,13 @@ export class ErrorLogFilter implements ExceptionFilter {
       method,
       statusCode,
     });
+
+    // Sentry에 예외 전송 / Send exception to Sentry
+    if (statusCode >= 500 && exception instanceof Error) {
+      Sentry.captureException(exception, {
+        extra: { userId, path, method, statusCode },
+      });
+    }
 
     // 500 에러는 콘솔에도 출력 / Log 500 errors to console too
     if (statusCode >= 500) {

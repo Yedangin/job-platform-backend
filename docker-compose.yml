@@ -2,9 +2,13 @@ services:
   backend-service:
     build: .
     container_name: job-backend
+    # 포트 8000은 nginx-proxy(app-network)를 통해 SSL로 노출됩니다.
+    # Port 8000 is exposed via nginx-proxy (app-network) with SSL termination.
+    # 직접 HTTP 노출을 제거하여 HTTPS만 허용 / Removed direct HTTP exposure to enforce HTTPS only.
+    expose:
+      - "8000"
     ports:
-      - "8000:8000"
-      - "8001:8001"  
+      - "8001:8001"
     restart: always
     env_file:
       - .env
@@ -22,10 +26,12 @@ services:
       - redis
       - notification-postgres
       - notification-service
-      
+    networks:
+      - default
+      - app-network
     command: >
-             sh -c "npx prisma db push --schema=./prisma/user/user.schema.prisma && 
-             npx nest start auth-service & 
+             sh -c "npx prisma db push --schema=./prisma/user/user.schema.prisma &&
+             npx nest start auth-service &
              npx nest start job-platform-backend"
 
   postgres:
@@ -104,3 +110,9 @@ volumes:
   postgres-data:
   mongo-data:
   notification-postgres-data:
+
+networks:
+  # app-network는 nginx-proxy(job-chaja-website)와 공유되는 외부 네트워크입니다.
+  # app-network is the external network shared with nginx-proxy in job-chaja-website.
+  app-network:
+    external: true

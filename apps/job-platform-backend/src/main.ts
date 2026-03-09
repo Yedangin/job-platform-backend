@@ -1,4 +1,8 @@
+// Sentry must be imported before all other modules
+import './instrument';
+
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -11,9 +15,14 @@ import helmet from 'helmet';
 };
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     rawBody: true, // 웹훅 서명 검증용 / For webhook signature verification
   });
+
+  // nginx 리버스 프록시 신뢰 설정 / Trust nginx reverse proxy
+  // X-Forwarded-Proto: https 헤더를 신뢰하여 리다이렉트 URL이 https://로 생성되도록 합니다.
+  // Trusts X-Forwarded-Proto so redirect URLs (e.g. Swagger /api-docs → /api-docs/) use https://.
+  app.set('trust proxy', 1);
 
   app.use(helmet());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));

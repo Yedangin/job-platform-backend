@@ -26,10 +26,7 @@ export class TranslationService {
       'AZURE_TRANSLATOR_KEY',
       '',
     );
-    this.region = this.configService.get<string>(
-      'AZURE_TRANSLATOR_REGION',
-      '',
-    );
+    this.region = this.configService.get<string>('AZURE_TRANSLATOR_REGION', '');
 
     if (!this.subscriptionKey || !this.endpoint) {
       this.logger.warn(
