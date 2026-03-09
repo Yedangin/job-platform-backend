@@ -42,6 +42,7 @@ import { NotificationModule } from './notification/notification.module';
 import { InfoBoardModule } from './info-board/info-board.module';
 import { PlatformConfigModule } from './platform-config/platform-config.module';
 import { VisaPlannerModule } from './visa-planner/visa-planner.module';
+import { TranslationModule } from './translation/translation.module';
 import { HealthController } from './health.controller';
 
 @Module({
@@ -130,6 +131,7 @@ import { HealthController } from './health.controller';
     InfoBoardModule,
     PlatformConfigModule,
     VisaPlannerModule,
+    TranslationModule,
   ],
   controllers: [HealthController],
   providers: [
