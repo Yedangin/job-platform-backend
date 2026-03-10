@@ -68,10 +68,13 @@ export class CsrfGuard implements CanActivate {
     // 내부 서비스 호출 (Origin 없음, Authorization 헤더 사용)은 통과
     // Internal service calls (no Origin, using Authorization header) pass through
     if (!origin && !referer) {
-      // Bearer 토큰이 있으면 API 직접 호출로 간주 / If Bearer token present, treat as direct API call
+      // JWT Bearer 토큰(header.payload.signature)만 직접 API 호출로 간주
+      // Only JWT Bearer tokens (3-part dot-separated) bypass CSRF — session UUIDs do not
       const authHeader = request.headers?.authorization;
       if (authHeader?.startsWith('Bearer ')) {
-        return true;
+        const token = authHeader.slice(7);
+        const isJwt = token.split('.').length === 3;
+        if (isJwt) return true;
       }
 
       // 쿠키 기반 요청에 Origin/Referer 없으면 의심 → 차단

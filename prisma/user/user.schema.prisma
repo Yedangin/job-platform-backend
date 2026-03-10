@@ -1303,7 +1303,7 @@ model JobAttributesFulltime {
 model JobApplication {
   id              BigInt            @id @default(autoincrement()) @map("app_id")
   jobId           BigInt            @map("job_id")
-  job             JobPosting        @relation(fields: [jobId], references: [id])
+  job             JobPosting        @relation(fields: [jobId], references: [id], onDelete: Cascade)
   applicantId     String            @map("applicant_id")
 
   applicationMethod ApplicationMethod @map("application_method")

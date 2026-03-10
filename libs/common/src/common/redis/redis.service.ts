@@ -152,4 +152,17 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async incr(key: string): Promise<number> {
     return await this.client.incr(key);
   }
+
+  /**
+   * Lua 스크립트 원자적 실행 / Execute Lua script atomically
+   * 분산 락 해제 등 원자성이 필요한 연산에 사용
+   * Use for atomic operations like safe lock release
+   */
+  async eval(
+    script: string,
+    keys: string[],
+    args: string[],
+  ): Promise<unknown> {
+    return await this.client.eval(script, { keys, arguments: args });
+  }
 }

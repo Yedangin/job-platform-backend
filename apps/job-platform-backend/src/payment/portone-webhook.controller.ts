@@ -13,7 +13,7 @@ import { Request, Response } from 'express';
 import { createHmac } from 'crypto';
 import { PortoneService } from './portone.service';
 import { PaymentService } from './payment.service';
-import { SkipCsrf } from 'libs/common/src';
+import { RedisService, SkipCsrf } from 'libs/common/src';
 
 /**
  * 포트원 웹훅 수신 전용 컨트롤러
@@ -33,6 +33,7 @@ export class PortoneWebhookController {
     private readonly configService: ConfigService,
     private readonly portoneService: PortoneService,
     private readonly paymentService: PaymentService,
+    private readonly redis: RedisService,
   ) {
     this.webhookSecret = this.configService.get<string>(
       'PORTONE_WEBHOOK_SECRET',
@@ -81,7 +82,21 @@ export class PortoneWebhookController {
         return res.status(400).json({ error: 'Invalid signature' });
       }
 
-      // 2. 타임스탬프 검증 (±5분) / Timestamp validation (±5 min)
+      // 2. 웹훅 중복 처리 방지 (idempotency) / Prevent duplicate webhook processing
+      if (webhookId) {
+        const idempotencyKey = `webhook:portone:${webhookId}`;
+        const alreadyProcessed = await this.redis.get(idempotencyKey);
+        if (alreadyProcessed) {
+          this.logger.log(
+            `[Webhook] 중복 웹훅 무시: ${webhookId} / Duplicate webhook ignored`,
+          );
+          return res.status(200).json({ ok: true, duplicate: true });
+        }
+        // Mark as processed with 24h TTL before processing (to handle crashes)
+        await this.redis.set(idempotencyKey, '1', 86400);
+      }
+
+      // 3. 타임스탬프 검증 (±5분) / Timestamp validation (±5 min)
       const ts = parseInt(webhookTimestamp, 10);
       const now = Math.floor(Date.now() / 1000);
       if (Math.abs(now - ts) > 300) {
@@ -89,7 +104,7 @@ export class PortoneWebhookController {
         return res.status(400).json({ error: 'Timestamp expired' });
       }
 
-      // 3. 이벤트 파싱 / Parse event
+      // 4. 이벤트 파싱 / Parse event
       const body =
         typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
       const eventType = body.type;

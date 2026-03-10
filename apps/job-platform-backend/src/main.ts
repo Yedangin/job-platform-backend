@@ -15,6 +15,7 @@ async function bootstrap() {
     rawBody: true, // 웹훅 서명 검증용 / For webhook signature verification
   });
 
+  app.enableShutdownHooks(); // Ensures PrismaService/RedisService onModuleDestroy fires on SIGTERM
   app.use(helmet());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.use(cookieParser());

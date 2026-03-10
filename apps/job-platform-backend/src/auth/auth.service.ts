@@ -2742,6 +2742,55 @@ export class AuthService implements OnModuleInit {
     return roleMap[role] || UserRole.USER_ROLE_UNSPECIFIED;
   }
 
+  // --- GDPR: 내 데이터 내보내기 (Article 20 Data Portability) ---
+  async exportMyData(sessionId: string) {
+    const userId = await this.getSessionUserId(sessionId);
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        email: true,
+        userType: true,
+        joinedAt: true,
+        lastLoginAt: true,
+      },
+    });
+    if (!user) throw new NotFoundException('User not found');
+
+    const [individualProfile, corporateProfile, resumes, applications, visaVerifications] =
+      await Promise.all([
+        this.prisma.individualProfile.findUnique({
+          where: { authId: userId },
+        }).catch(() => null),
+        this.prisma.corporateProfile.findUnique({
+          where: { authId: userId },
+        }).catch(() => null),
+        this.prisma.resume.findMany({
+          where: { userId },
+          select: { id: true, nationality: true, isComplete: true, createdAt: true, updatedAt: true },
+        }).catch(() => []),
+        this.prisma.jobApplication.findMany({
+          where: { applicantId: userId },
+          select: { id: true, jobId: true, status: true, createdAt: true },
+        }).catch(() => []),
+        this.prisma.visaVerification.findUnique({
+          where: { userId },
+          select: { id: true, verificationStatus: true, visaCode: true, createdAt: true },
+        }).catch(() => null),
+      ]);
+
+    return {
+      exportedAt: new Date().toISOString(),
+      user,
+      individualProfile,
+      corporateProfile,
+      resumes,
+      applications,
+      visaVerification: visaVerifications,
+    };
+  }
+
   private mapProtoToPrismaSocialProvider(
     protoProvider: ProtoSocialProvider,
   ): PrismaSocialProvider {

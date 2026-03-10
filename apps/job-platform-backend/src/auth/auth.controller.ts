@@ -687,6 +687,8 @@ export class AuthController {
 
   // --- 21. Admin: 기업 인증 승인/거절 ---
   @Put('admin/corporate-verifications/:userId')
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiOperation({ summary: 'Approve or reject corporate verification (admin)' })
   @ApiBody({
     schema: {
@@ -723,6 +725,8 @@ export class AuthController {
   // --- 23. Admin: 비자인증 승인/거절 ---
   // --- 23. Admin: Approve or reject visa verification ---
   @Put('admin/visa-verification/:id')
+  @UseGuards(SessionAuthGuard, RolesGuard)
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiOperation({ summary: 'Approve or reject visa verification (admin)' })
   @ApiBody({
     schema: {
@@ -896,7 +900,7 @@ export class AuthController {
       // 프론트엔드에서 읽을 수 있도록 짧은 수명의 세션 초기화 쿠키 설정
       // Set short-lived session init cookie readable by frontend JS
       res.cookie('session_init', result.sessionId, {
-        httpOnly: false,
+        httpOnly: true,
         secure: isProduction,
         sameSite: isProduction ? 'strict' : 'lax',
         maxAge: 60 * 1000, // 1분 후 자동 만료 / Expires in 1 minute
@@ -915,5 +919,13 @@ export class AuthController {
       });
       throw error;
     }
+  }
+
+  // --- GDPR: 내 데이터 내보내기 (Article 20 - Data Portability) ---
+  @Get('my-data')
+  @UseGuards(SessionAuthGuard)
+  @ApiOperation({ summary: 'Export all personal data as JSON (GDPR Article 20)' })
+  async exportMyData(@Session() sessionId: string) {
+    return await this.authService.exportMyData(sessionId);
   }
 }

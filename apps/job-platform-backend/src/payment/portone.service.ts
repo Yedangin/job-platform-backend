@@ -56,6 +56,31 @@ export class PortoneService {
   }
 
   /**
+   * 지수 백오프 재시도 헬퍼 (3회, 1s/2s/4s)
+   * Exponential backoff retry helper (3 attempts, 1s/2s/4s)
+   */
+  private async withRetry<T>(
+    label: string,
+    fn: () => Promise<T>,
+    attempts = 3,
+  ): Promise<T> {
+    for (let i = 0; i < attempts; i++) {
+      try {
+        return await fn();
+      } catch (err) {
+        const isLast = i === attempts - 1;
+        if (isLast) throw err;
+        const delayMs = 1000 * Math.pow(2, i); // 1s, 2s, 4s
+        this.logger.warn(
+          `[PortOne] ${label} 실패 (시도 ${i + 1}/${attempts}), ${delayMs}ms 후 재시도 / Retry in ${delayMs}ms`,
+        );
+        await new Promise((r) => setTimeout(r, delayMs));
+      }
+    }
+    throw new Error('unreachable');
+  }
+
+  /**
    * 결제 조회 / Get payment details
    * GET /payments/{paymentId}
    */
@@ -63,45 +88,47 @@ export class PortoneService {
     const url = `${this.baseUrl}/payments/${encodeURIComponent(paymentId)}`;
     this.logger.log(`[PortOne] GET ${url}`);
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 60_000); // 60초 타임아웃
+    return this.withRetry(`getPayment(${paymentId})`, async () => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 60_000);
 
-    try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          Authorization: `PortOne ${this.apiSecret}`,
-          'Content-Type': 'application/json',
-        },
-        signal: controller.signal,
-      });
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            Authorization: `PortOne ${this.apiSecret}`,
+            'Content-Type': 'application/json',
+          },
+          signal: controller.signal,
+        });
 
-      if (!response.ok) {
-        const errorBody = await response.text();
-        this.logger.error(
-          `[PortOne] GET failed: ${response.status} — ${errorBody}`,
-        );
+        if (!response.ok) {
+          const errorBody = await response.text();
+          this.logger.error(
+            `[PortOne] GET failed: ${response.status} — ${errorBody}`,
+          );
+          throw new InternalServerErrorException(
+            `포트원 결제 조회 실패 / PortOne payment query failed: ${response.status}`,
+          );
+        }
+
+        const data = await response.json();
+        return data as PortonePaymentResponse;
+      } catch (error) {
+        if (error instanceof InternalServerErrorException) throw error;
+        if ((error as NodeJS.ErrnoException).name === 'AbortError') {
+          throw new InternalServerErrorException(
+            '포트원 API 타임아웃 / PortOne API timeout (60s)',
+          );
+        }
+        this.logger.error(`[PortOne] GET error: ${(error as Error).message}`);
         throw new InternalServerErrorException(
-          `포트원 결제 조회 실패 / PortOne payment query failed: ${response.status}`,
+          `포트원 API 호출 실패 / PortOne API call failed: ${(error as Error).message}`,
         );
+      } finally {
+        clearTimeout(timeout);
       }
-
-      const data = await response.json();
-      return data as PortonePaymentResponse;
-    } catch (error) {
-      if (error instanceof InternalServerErrorException) throw error;
-      if (error.name === 'AbortError') {
-        throw new InternalServerErrorException(
-          '포트원 API 타임아웃 / PortOne API timeout (60s)',
-        );
-      }
-      this.logger.error(`[PortOne] GET error: ${error.message}`);
-      throw new InternalServerErrorException(
-        `포트원 API 호출 실패 / PortOne API call failed: ${error.message}`,
-      );
-    } finally {
-      clearTimeout(timeout);
-    }
+    });
   }
 
   /**
@@ -160,57 +187,59 @@ export class PortoneService {
       `[PortOne] POST ${url} — reason: ${reason}${isPartial ? `, partialAmount: ${amount}` : ' (전액취소/full)'}`,
     );
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 60_000);
-
     // 요청 바디 구성 (부분 취소 시 amount 포함) / Build request body (include amount for partial cancel)
     const requestBody: { reason: string; amount?: number } = { reason };
     if (isPartial && amount !== undefined) {
       requestBody.amount = amount;
     }
 
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          Authorization: `PortOne ${this.apiSecret}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-        signal: controller.signal,
-      });
+    return this.withRetry(`cancelPayment(${paymentId})`, async () => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 60_000);
 
-      if (!response.ok) {
-        const errorBody = await response.text();
-        this.logger.error(
-          `[PortOne] Cancel failed: ${response.status} — ${errorBody}`,
-        );
-        throw new InternalServerErrorException(
-          `포트원 결제 취소 실패 / PortOne cancel failed: ${response.status}`,
-        );
-      }
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            Authorization: `PortOne ${this.apiSecret}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+          signal: controller.signal,
+        });
 
-      const data = await response.json();
-      this.logger.log(
-        `[PortOne] 결제 취소 성공: ${paymentId}, 취소금액=${data.cancellation?.totalAmount}`,
-      );
-      return {
-        status: data.cancellation?.status || 'CANCELLED',
-        cancelledAmount: data.cancellation?.totalAmount || 0,
-      };
-    } catch (error) {
-      if (error instanceof InternalServerErrorException) throw error;
-      if ((error as NodeJS.ErrnoException).name === 'AbortError') {
-        throw new InternalServerErrorException(
-          '포트원 API 타임아웃 / PortOne API timeout (60s)',
+        if (!response.ok) {
+          const errorBody = await response.text();
+          this.logger.error(
+            `[PortOne] Cancel failed: ${response.status} — ${errorBody}`,
+          );
+          throw new InternalServerErrorException(
+            `포트원 결제 취소 실패 / PortOne cancel failed: ${response.status}`,
+          );
+        }
+
+        const data = await response.json();
+        this.logger.log(
+          `[PortOne] 결제 취소 성공: ${paymentId}, 취소금액=${data.cancellation?.totalAmount}`,
         );
+        return {
+          status: data.cancellation?.status || 'CANCELLED',
+          cancelledAmount: data.cancellation?.totalAmount || 0,
+        };
+      } catch (error) {
+        if (error instanceof InternalServerErrorException) throw error;
+        if ((error as NodeJS.ErrnoException).name === 'AbortError') {
+          throw new InternalServerErrorException(
+            '포트원 API 타임아웃 / PortOne API timeout (60s)',
+          );
+        }
+        this.logger.error(`[PortOne] Cancel error: ${(error as Error).message}`);
+        throw new InternalServerErrorException(
+          `포트원 취소 API 호출 실패 / PortOne cancel API failed: ${(error as Error).message}`,
+        );
+      } finally {
+        clearTimeout(timeout);
       }
-      this.logger.error(`[PortOne] Cancel error: ${(error as Error).message}`);
-      throw new InternalServerErrorException(
-        `포트원 취소 API 호출 실패 / PortOne cancel API failed: ${(error as Error).message}`,
-      );
-    } finally {
-      clearTimeout(timeout);
-    }
+    });
   }
 }

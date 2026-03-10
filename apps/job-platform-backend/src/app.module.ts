@@ -54,6 +54,25 @@ import { HealthController } from './health.controller';
       isGlobal: true,
       envFilePath: '.env',
       cache: true,
+      validate: (config: Record<string, unknown>) => {
+        const required = [
+          'DATABASE_URL',
+          'PORTONE_V2_API_SECRET',
+          'PORTONE_WEBHOOK_SECRET',
+          'REDIS_HOST',
+          'ADMIN_EMAIL',
+          'ADMIN_PASSWORD',
+          'JWT_SECRET',
+          'CLIENT_URL',
+        ];
+        const missing = required.filter((k) => !config[k]);
+        if (missing.length > 0) {
+          throw new Error(
+            `Missing required environment variables: ${missing.join(', ')}`,
+          );
+        }
+        return config;
+      },
     }),
     CacheModule.registerAsync({
       isGlobal: true,

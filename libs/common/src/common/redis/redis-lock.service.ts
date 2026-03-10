@@ -53,12 +53,13 @@ export class RedisLockService {
    * @param lockValue acquireLock에서 반환된 값 / Value returned from acquireLock
    */
   async releaseLock(lockKey: string, lockValue: string): Promise<void> {
-    const currentValue = await this.redis.get(lockKey);
-
-    // 소유자 확인 후 삭제 / Verify ownership before deleting
-    if (currentValue === lockValue) {
-      await this.redis.del(lockKey);
-      this.logger.debug(`락 해제 완료 / Lock released: key=${lockKey}`);
+    // Lua script: atomic compare-and-delete (prevents releasing another owner's lock)
+    // GET + DEL 비원자성 문제 해결 / Fixes non-atomic get+del race condition
+    const luaScript =
+      'if redis.call("get", KEYS[1]) == ARGV[1] then return redis.call("del", KEYS[1]) else return 0 end';
+    const released = await this.redis.eval(luaScript, [lockKey], [lockValue]);
+    if (released) {
+      this.logger.debug(`락 해제 완료 (Lua) / Lock released (Lua): key=${lockKey}`);
     }
   }
 
