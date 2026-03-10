@@ -924,7 +924,9 @@ export class AuthController {
   // --- GDPR: 내 데이터 내보내기 (Article 20 - Data Portability) ---
   @Get('my-data')
   @UseGuards(SessionAuthGuard)
-  @ApiOperation({ summary: 'Export all personal data as JSON (GDPR Article 20)' })
+  @ApiOperation({
+    summary: 'Export all personal data as JSON (GDPR Article 20)',
+  })
   async exportMyData(@Session() sessionId: string) {
     return await this.authService.exportMyData(sessionId);
   }

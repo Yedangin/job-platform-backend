@@ -59,7 +59,9 @@ export class RedisLockService {
       'if redis.call("get", KEYS[1]) == ARGV[1] then return redis.call("del", KEYS[1]) else return 0 end';
     const released = await this.redis.eval(luaScript, [lockKey], [lockValue]);
     if (released) {
-      this.logger.debug(`락 해제 완료 (Lua) / Lock released (Lua): key=${lockKey}`);
+      this.logger.debug(
+        `락 해제 완료 (Lua) / Lock released (Lua): key=${lockKey}`,
+      );
     }
   }
 

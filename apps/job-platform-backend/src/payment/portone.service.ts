@@ -233,7 +233,9 @@ export class PortoneService {
             '포트원 API 타임아웃 / PortOne API timeout (60s)',
           );
         }
-        this.logger.error(`[PortOne] Cancel error: ${(error as Error).message}`);
+        this.logger.error(
+          `[PortOne] Cancel error: ${(error as Error).message}`,
+        );
         throw new InternalServerErrorException(
           `포트원 취소 API 호출 실패 / PortOne cancel API failed: ${(error as Error).message}`,
         );

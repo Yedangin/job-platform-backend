@@ -2758,27 +2758,53 @@ export class AuthService implements OnModuleInit {
     });
     if (!user) throw new NotFoundException('User not found');
 
-    const [individualProfile, corporateProfile, resumes, applications, visaVerifications] =
-      await Promise.all([
-        this.prisma.individualProfile.findUnique({
+    const [
+      individualProfile,
+      corporateProfile,
+      resumes,
+      applications,
+      visaVerifications,
+    ] = await Promise.all([
+      this.prisma.individualProfile
+        .findUnique({
           where: { authId: userId },
-        }).catch(() => null),
-        this.prisma.corporateProfile.findUnique({
+        })
+        .catch(() => null),
+      this.prisma.corporateProfile
+        .findUnique({
           where: { authId: userId },
-        }).catch(() => null),
-        this.prisma.resume.findMany({
+        })
+        .catch(() => null),
+      this.prisma.resume
+        .findMany({
           where: { userId },
-          select: { id: true, nationality: true, isComplete: true, createdAt: true, updatedAt: true },
-        }).catch(() => []),
-        this.prisma.jobApplication.findMany({
+          select: {
+            id: true,
+            nationality: true,
+            isComplete: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        })
+        .catch(() => []),
+      this.prisma.jobApplication
+        .findMany({
           where: { applicantId: userId },
           select: { id: true, jobId: true, status: true, createdAt: true },
-        }).catch(() => []),
-        this.prisma.visaVerification.findUnique({
+        })
+        .catch(() => []),
+      this.prisma.visaVerification
+        .findUnique({
           where: { userId },
-          select: { id: true, verificationStatus: true, visaCode: true, createdAt: true },
-        }).catch(() => null),
-      ]);
+          select: {
+            id: true,
+            verificationStatus: true,
+            visaCode: true,
+            createdAt: true,
+          },
+        })
+        .catch(() => null),
+    ]);
 
     return {
       exportedAt: new Date().toISOString(),
