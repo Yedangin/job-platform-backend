@@ -17,8 +17,11 @@ import {
   PaginationResult,
   PaginationService,
 } from 'libs/common/src';
-import { CreateApplyDto } from './dto/apply.dto';
-import { Prisma } from '../../../../../generated/prisma-job/index';
+import { CorporateUpdateApplyDto, CreateApplyDto } from './dto/apply.dto';
+import {
+  ApplyActionType,
+  Prisma,
+} from '../../../../../generated/prisma-job/index';
 import { Multer } from 'multer';
 import { successResponse } from 'libs/common/src/common/interceptor/response';
 
@@ -33,7 +36,15 @@ export class ApplyJobServices {
     try {
       const { title } = data;
 
-      const existingjobPost = await this.prisma.applyJob.findFirst({
+      const existingApplyjobPost = await this.prisma.applyJob.findFirst({
+        where: {
+          title: title,
+          userId: BigInt(data?.userId),
+          jobId: BigInt(data?.jobId),
+        },
+      });
+
+      const existingjobPosting = await this.prisma.jobPosting.findFirst({
         where: {
           title: title,
           userId: BigInt(data?.userId),
@@ -43,8 +54,12 @@ export class ApplyJobServices {
 
       // console.log('CORPORATE', corporateId);
 
-      if (existingjobPost) {
+      if (existingApplyjobPost) {
         throw new HttpException('Apply already exit', HttpStatus.CONFLICT);
+      }
+
+      if (!existingjobPosting) {
+        throw new HttpException('Job Posting Not Found', HttpStatus.NOT_FOUND);
       }
 
       // console.log('INSITE', data.fileUrl);
@@ -56,6 +71,8 @@ export class ApplyJobServices {
         description: data.description,
         interviewDate: data.interviewDate ? new Date(data.interviewDate) : null,
         resumeFile: data.resumeFile ?? undefined,
+        corporateId: BigInt(existingjobPosting?.corporateId),
+        applyActionType: ApplyActionType.PENDING,
       };
 
       // console.log('DATA', createData);
@@ -98,6 +115,59 @@ export class ApplyJobServices {
       //   createJobPost: serializedJobPost,
       //   message: 'Created successfully',
       // };
+    } catch (error) {
+      console.error('CREATE JOB ERROR', error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(
+        'Internal server error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async corporateActionByApplyId(
+    id: string,
+    data: CorporateUpdateApplyDto,
+    res?: Response,
+  ) {
+    try {
+      let applyId: bigint;
+      try {
+        applyId = BigInt(id);
+      } catch {
+        throw new HttpException('Invalid job ID', HttpStatus.BAD_REQUEST);
+      }
+      const existingApplyJob = await this.prisma.applyJob.findFirst({
+        where: { applyId },
+      });
+
+      // console.log('HELLO', existingJobPost);
+
+      if (!existingApplyJob) {
+        throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+      }
+
+      const { interviewDate, ...rest } = data;
+
+      const updateData: Prisma.ApplyJobUpdateInput = {
+        ...rest,
+        ...(interviewDate !== undefined && {
+          interviewDate: new Date(interviewDate),
+        }),
+      };
+
+      const applyUpdate = await this.prisma.applyJob.update({
+        where: { applyId },
+        data: updateData,
+      });
+
+      return successResponse({
+        res,
+        message: 'Apply Job updated by corporate successfully',
+        data: applyUpdate,
+      });
     } catch (error) {
       console.error('CREATE JOB ERROR', error);
       if (error instanceof HttpException) {

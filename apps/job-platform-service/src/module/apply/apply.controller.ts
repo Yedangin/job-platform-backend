@@ -13,13 +13,8 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { ApplyJobServices } from './apply.service';
-import { CreateApplyDto } from './dto/apply.dto';
-import {
-  Pagination,
-  PaginationParams,
-} from 'libs/common/src/common/decorator/get-pagination-data.decorator';
+import { CorporateUpdateApplyDto, CreateApplyDto } from './dto/apply.dto';
 import { GrpcMethod, RpcException } from '@nestjs/microservices';
-import { Response as ExpressResponse } from 'express';
 import { FileService } from 'libs/common/src/common/file/file.service';
 import { ApiConsumes } from '@nestjs/swagger';
 
@@ -41,7 +36,7 @@ export class ApplyJobController {
   ) {
     const resumeFile = file ? await this.fileService.saveFile(file) : undefined;
 
-    console.log('FILE URL', resumeFile);
+    // console.log('FILE URL', resumeFile);
 
     const dataWithFile: CreateApplyDto & { resumeFile?: string } = {
       ...createApplyDto,
@@ -51,42 +46,17 @@ export class ApplyJobController {
     return await this.applyJobService.create(dataWithFile, res);
   }
 
-  //   @GrpcMethod('JobPostService', 'GetAllJobPosts')
-  //   @Get('/list')
-  //   async getAllJobPost(
-  //     @PaginationParams() paginationParams: Pagination,
-  //     @Res()
-  //     res: any,
-  //     @Query('search') search: string,
-  //   ) {
-  //     return await this.applyJobService.findAll(
-  //       paginationParams,
-  //       search?.trim() || '',
-  //       res,
-  //     );
-  //   }
-
-  //   @GrpcMethod('JobPostService', 'GetAJobPost')
-  //   @Get('/:id')
-  //   async getAJobPost(@Param('id') id: string, @Res() res: any) {
-  //     return await this.applyJobService.findOne(id, res);
-  //   }
-
-  //   @Patch('/status/:id')
-  //   async updateJobPostingStatus(@Param('id') id: string) {
-  //     return await this.applyJobService.updateStatus(id);
-  //   }
-
-  //   @GrpcMethod('JobPostService', 'UpdateJobPosts')
-  //   @Patch('/update/:id')
-  //   @UseInterceptors(FileInterceptor('image'))
-  //   @ApiConsumes('multipart/form-data')
-  //   async updateJobPost(
-  //     @Param('id') id: string,
-  //     @Body() updateJobPost: UpdateJobDto,
-  //     @UploadedFile() file: any,
-  //     @Res() res: any,
-  //   ) {
-  //     return await this.applyJobService.updateJobPost(id, updateJobPost, file, res);
-  //   }
+  @GrpcMethod('ApplyJobService', 'UpdateApplyJob')
+  @Patch('/update/by-corporate/:id')
+  async updateJobPost(
+    @Param('id') id: string,
+    @Body() corporateUpdateApplyJobPost: CorporateUpdateApplyDto,
+    @Res() res: any,
+  ) {
+    return await this.applyJobService.corporateActionByApplyId(
+      id,
+      corporateUpdateApplyJobPost,
+      res,
+    );
+  }
 }

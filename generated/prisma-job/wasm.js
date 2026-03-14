@@ -196,11 +196,13 @@ exports.Prisma.ApplyJobScalarFieldEnum = {
   applyId: 'applyId',
   userId: 'userId',
   jobId: 'jobId',
+  corporateId: 'corporateId',
   interviewDate: 'interviewDate',
   title: 'title',
   description: 'description',
   resumeFile: 'resumeFile',
   applyType: 'applyType',
+  applyActionType: 'applyActionType',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -269,6 +271,12 @@ exports.ActorType = exports.$Enums.ActorType = {
 exports.ApplyType = exports.$Enums.ApplyType = {
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED'
+};
+
+exports.ApplyActionType = exports.$Enums.ApplyActionType = {
+  SUCCESSFUL: 'SUCCESSFUL',
+  PENDING: 'PENDING',
+  CANCEL: 'CANCEL'
 };
 
 exports.Prisma.ModelName = {

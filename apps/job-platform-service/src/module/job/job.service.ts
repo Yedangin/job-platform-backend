@@ -57,27 +57,143 @@ export class JobServices {
         throw new HttpException('Job Post already exit', HttpStatus.CONFLICT);
       }
 
+      const result = await this.prisma.$transaction(async (tx) => {
+        const createJobPost = await tx.jobPosting.create({
+          data: {
+            corporateId: BigInt(data.corporateId),
+            title: data.title,
+            description: data.description,
+            boardType: data.boardType,
+            displayAddress: data.displayAddress ?? '',
+            actualAddress: data.actualAddress ?? '',
+            allowedVisas: data.allowedVisas ?? '',
+            contactName: data.contactName ?? '',
+            contactPhone: data.contactPhone ?? '',
+            closingDate: data.closingDate ? new Date(data.closingDate) : null,
+            workContentImg: data.fileUrl ?? undefined,
+          },
+        });
+
+        // PART TIME
+        if (data.boardType === 'PART_TIME') {
+          await tx.jobAttributesAlba.create({
+            data: {
+              job: {
+                connect: { jobId: createJobPost.jobId },
+              },
+              hourlyWage: Number(data.hourlyWage),
+              workPeriod: data.workPeriod ?? '',
+              workDaysMask: data.workDaysMask ?? '',
+              workTimeStart: data.workTimeStart
+                ? new Date(data.workTimeStart)
+                : undefined,
+              workTimeEnd: data.workTimeEnd
+                ? new Date(data.workTimeEnd)
+                : undefined,
+            },
+          });
+        }
+
+        // FULL TIME
+        if (data.boardType === 'FULL_TIME') {
+          await tx.jobAttributesFulltime.create({
+            data: {
+              job: {
+                connect: { jobId: createJobPost.jobId },
+              },
+              salaryMin: data.salaryMin ? Number(data.salaryMin) : null,
+              salaryMax: data.salaryMax ? Number(data.salaryMax) : null,
+              experienceLevel: data.experienceLevel ?? '',
+              educationLevel: data.educationLevel ?? '',
+            },
+          });
+        }
+
+        // Interview slot
+        if (data.startTime && data.endTime) {
+          await tx.interviewSlot.create({
+            data: {
+              job: {
+                connect: { jobId: createJobPost.jobId },
+              },
+              startTime: new Date(data.startTime),
+              endTime: new Date(data.endTime),
+            },
+          });
+        }
+
+        return createJobPost;
+      });
+
       // console.log('INSITE', data.fileUrl);
 
-      const createData: Prisma.JobPostingCreateInput = {
-        corporateId: BigInt(data.corporateId), // always exists
-        title: data.title,
-        description: data.description,
-        boardType: data.boardType,
-        displayAddress: data.displayAddress ?? '',
-        actualAddress: data.actualAddress ?? '',
-        allowedVisas: data.allowedVisas ?? '',
-        contactName: data.contactName ?? '',
-        contactPhone: data.contactPhone ?? '',
-        closingDate: data.closingDate ? new Date(data.closingDate) : null,
-        workContentImg: data.fileUrl ?? undefined,
-      };
+      // const createData: Prisma.JobPostingCreateInput = {
+      //   corporateId: BigInt(data.corporateId), // always exists
+      //   title: data.title,
+      //   description: data.description,
+      //   boardType: data.boardType,
+      //   displayAddress: data.displayAddress ?? '',
+      //   actualAddress: data.actualAddress ?? '',
+      //   allowedVisas: data.allowedVisas ?? '',
+      //   contactName: data.contactName ?? '',
+      //   contactPhone: data.contactPhone ?? '',
+      //   closingDate: data.closingDate ? new Date(data.closingDate) : null,
+      //   workContentImg: data.fileUrl ?? undefined,
+      // };
 
-      // console.log('DATA', createData);
+      // // console.log('DATA', createData);
 
-      const createJobPost = await this.prisma.jobPosting.create({
-        data: createData,
-      });
+      // const createJobPost = await this.prisma.jobPosting.create({
+      //   data: createData,
+      // });
+
+      // const createJobAttributesAlba: Prisma.JobAttributesAlbaCreateInput = {
+      //   job: {
+      //     connect: {
+      //       jobId: createJobPost.jobId,
+      //     },
+      //   },
+      //   hourlyWage: Number(data.hourlyWage),
+      //   workPeriod: data.workPeriod,
+      //   workDaysMask: data.boardType,
+      //   workTimeStart: data.displayAddress ?? '',
+      //   workTimeEnd: data.actualAddress ?? '',
+      // };
+
+      // const createJobAttributesFullTime: Prisma.JobAttributesFulltimeCreateInput =
+      //   {
+      //     job: {
+      //       connect: {
+      //         jobId: createJobPost.jobId,
+      //       },
+      //     },
+      //     salaryMin: Number(data.salaryMin),
+      //     salaryMax: Number(data.salaryMax),
+      //     experienceLevel: String(data.experienceLevel),
+      //     educationLevel: data.educationLevel ?? '',
+      //   };
+
+      // const createInterviewSlot: Prisma.InterviewSlotCreateInput = {
+      //   job: {
+      //     connect: {
+      //       jobId: createJobPost.jobId,
+      //     },
+      //   },
+      //   startTime: data.startTime ?? '',
+      //   endTime: data.endTime ?? '',
+      // };
+
+      // await this.prisma.jobAttributesAlba.create({
+      //   data: createJobAttributesAlba,
+      // });
+
+      // await this.prisma.jobAttributesFulltime.create({
+      //   data: createJobAttributesFullTime,
+      // });
+
+      // await this.prisma.interviewSlot.create({
+      //   data: createInterviewSlot,
+      // });
 
       // console.log('CREATE', createJobPost);
 
@@ -98,9 +214,9 @@ export class JobServices {
       // }
 
       const serializedJobPost = {
-        ...createJobPost,
-        jobId: createJobPost.jobId.toString(),
-        corporateId: createJobPost.corporateId.toString(),
+        ...result,
+        jobId: result.jobId.toString(),
+        corporateId: result.corporateId.toString(),
       };
 
       // if (images.length > 0) {
@@ -263,25 +379,79 @@ export class JobServices {
       }
 
       // Transform fields if necessary
-      const { corporateId, closingDate, ...rest } = data;
+      const {
+        corporateId,
+        closingDate,
+        hourlyWage,
+        workPeriod,
+        workDaysMask,
+        workTimeStart,
+        workTimeEnd,
+        salaryMin,
+        salaryMax,
+        experienceLevel,
+        educationLevel,
+        startTime,
+        endTime,
+        ...jobPostingFields
+      } = data;
 
-      const updateData: Prisma.JobPostingUpdateInput = {
-        ...rest,
-        ...(corporateId !== undefined && { corporateId: BigInt(corporateId) }),
-        ...(closingDate !== undefined && {
-          closingDate: new Date(closingDate),
-        }),
-      };
+      const result = await this.prisma.$transaction(async (tx) => {
+        const jobPost = await tx.jobPosting.update({
+          where: { jobId },
+          data: {
+            ...jobPostingFields,
+            ...(corporateId && { corporateId: BigInt(corporateId) }),
+            ...(closingDate && { closingDate: new Date(closingDate) }),
+          },
+        });
 
-      const jobPost = await this.prisma.jobPosting.update({
-        where: { jobId },
-        data: updateData,
+        if (data.boardType === 'PART_TIME') {
+          await tx.jobAttributesAlba.update({
+            where: { jobId },
+            data: {
+              hourlyWage: data.hourlyWage ? Number(data.hourlyWage) : undefined,
+              workPeriod: data.workPeriod,
+              workDaysMask: data.workDaysMask,
+              workTimeStart: data.workTimeStart
+                ? new Date(data.workTimeStart)
+                : undefined,
+              workTimeEnd: data.workTimeEnd
+                ? new Date(data.workTimeEnd)
+                : undefined,
+            },
+          });
+        }
+
+        if (data.boardType === 'FULL_TIME') {
+          await tx.jobAttributesFulltime.update({
+            where: { jobId },
+            data: {
+              salaryMin: data.salaryMin,
+              salaryMax: data.salaryMax,
+              experienceLevel: data.experienceLevel,
+              educationLevel: data.educationLevel,
+            },
+          });
+        }
+
+        if (data.startTime && data.endTime) {
+          await tx.interviewSlot.updateMany({
+            where: { jobId },
+            data: {
+              startTime: new Date(data.startTime),
+              endTime: new Date(data.endTime),
+            },
+          });
+        }
+
+        return jobPost;
       });
 
       const serializedJobPost = {
-        ...jobPost,
-        jobId: jobPost.jobId.toString(),
-        corporateId: jobPost.corporateId.toString(),
+        ...result,
+        jobId: result.jobId.toString(),
+        corporateId: result.corporateId.toString(),
       };
 
       // if (file) {

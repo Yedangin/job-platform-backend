@@ -113,6 +113,15 @@ export const ApplyType: {
 
 export type ApplyType = (typeof ApplyType)[keyof typeof ApplyType]
 
+
+export const ApplyActionType: {
+  SUCCESSFUL: 'SUCCESSFUL',
+  PENDING: 'PENDING',
+  CANCEL: 'CANCEL'
+};
+
+export type ApplyActionType = (typeof ApplyActionType)[keyof typeof ApplyActionType]
+
 }
 
 export type BoardType = $Enums.BoardType
@@ -142,6 +151,10 @@ export const ActorType: typeof $Enums.ActorType
 export type ApplyType = $Enums.ApplyType
 
 export const ApplyType: typeof $Enums.ApplyType
+
+export type ApplyActionType = $Enums.ApplyActionType
+
+export const ApplyActionType: typeof $Enums.ApplyActionType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -8483,23 +8496,27 @@ export namespace Prisma {
     applyId: number | null
     userId: number | null
     jobId: number | null
+    corporateId: number | null
   }
 
   export type ApplyJobSumAggregateOutputType = {
     applyId: bigint | null
     userId: bigint | null
     jobId: bigint | null
+    corporateId: bigint | null
   }
 
   export type ApplyJobMinAggregateOutputType = {
     applyId: bigint | null
     userId: bigint | null
     jobId: bigint | null
+    corporateId: bigint | null
     interviewDate: Date | null
     title: string | null
     description: string | null
     resumeFile: string | null
     applyType: $Enums.ApplyType | null
+    applyActionType: $Enums.ApplyActionType | null
     status: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -8509,11 +8526,13 @@ export namespace Prisma {
     applyId: bigint | null
     userId: bigint | null
     jobId: bigint | null
+    corporateId: bigint | null
     interviewDate: Date | null
     title: string | null
     description: string | null
     resumeFile: string | null
     applyType: $Enums.ApplyType | null
+    applyActionType: $Enums.ApplyActionType | null
     status: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -8523,11 +8542,13 @@ export namespace Prisma {
     applyId: number
     userId: number
     jobId: number
+    corporateId: number
     interviewDate: number
     title: number
     description: number
     resumeFile: number
     applyType: number
+    applyActionType: number
     status: number
     createdAt: number
     updatedAt: number
@@ -8539,23 +8560,27 @@ export namespace Prisma {
     applyId?: true
     userId?: true
     jobId?: true
+    corporateId?: true
   }
 
   export type ApplyJobSumAggregateInputType = {
     applyId?: true
     userId?: true
     jobId?: true
+    corporateId?: true
   }
 
   export type ApplyJobMinAggregateInputType = {
     applyId?: true
     userId?: true
     jobId?: true
+    corporateId?: true
     interviewDate?: true
     title?: true
     description?: true
     resumeFile?: true
     applyType?: true
+    applyActionType?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -8565,11 +8590,13 @@ export namespace Prisma {
     applyId?: true
     userId?: true
     jobId?: true
+    corporateId?: true
     interviewDate?: true
     title?: true
     description?: true
     resumeFile?: true
     applyType?: true
+    applyActionType?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -8579,11 +8606,13 @@ export namespace Prisma {
     applyId?: true
     userId?: true
     jobId?: true
+    corporateId?: true
     interviewDate?: true
     title?: true
     description?: true
     resumeFile?: true
     applyType?: true
+    applyActionType?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -8680,11 +8709,13 @@ export namespace Prisma {
     applyId: bigint
     userId: bigint
     jobId: bigint
+    corporateId: bigint
     interviewDate: Date | null
     title: string
     description: string
     resumeFile: string | null
     applyType: $Enums.ApplyType | null
+    applyActionType: $Enums.ApplyActionType | null
     status: boolean
     createdAt: Date
     updatedAt: Date
@@ -8713,11 +8744,13 @@ export namespace Prisma {
     applyId?: boolean
     userId?: boolean
     jobId?: boolean
+    corporateId?: boolean
     interviewDate?: boolean
     title?: boolean
     description?: boolean
     resumeFile?: boolean
     applyType?: boolean
+    applyActionType?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -8727,11 +8760,13 @@ export namespace Prisma {
     applyId?: boolean
     userId?: boolean
     jobId?: boolean
+    corporateId?: boolean
     interviewDate?: boolean
     title?: boolean
     description?: boolean
     resumeFile?: boolean
     applyType?: boolean
+    applyActionType?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -8741,11 +8776,13 @@ export namespace Prisma {
     applyId?: boolean
     userId?: boolean
     jobId?: boolean
+    corporateId?: boolean
     interviewDate?: boolean
     title?: boolean
     description?: boolean
     resumeFile?: boolean
     applyType?: boolean
+    applyActionType?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -8755,17 +8792,19 @@ export namespace Prisma {
     applyId?: boolean
     userId?: boolean
     jobId?: boolean
+    corporateId?: boolean
     interviewDate?: boolean
     title?: boolean
     description?: boolean
     resumeFile?: boolean
     applyType?: boolean
+    applyActionType?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ApplyJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"applyId" | "userId" | "jobId" | "interviewDate" | "title" | "description" | "resumeFile" | "applyType" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["applyJob"]>
+  export type ApplyJobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"applyId" | "userId" | "jobId" | "corporateId" | "interviewDate" | "title" | "description" | "resumeFile" | "applyType" | "applyActionType" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["applyJob"]>
 
   export type $ApplyJobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "ApplyJob"
@@ -8774,11 +8813,13 @@ export namespace Prisma {
       applyId: bigint
       userId: bigint
       jobId: bigint
+      corporateId: bigint
       interviewDate: Date | null
       title: string
       description: string
       resumeFile: string | null
       applyType: $Enums.ApplyType | null
+      applyActionType: $Enums.ApplyActionType | null
       status: boolean
       createdAt: Date
       updatedAt: Date
@@ -9208,11 +9249,13 @@ export namespace Prisma {
     readonly applyId: FieldRef<"ApplyJob", 'BigInt'>
     readonly userId: FieldRef<"ApplyJob", 'BigInt'>
     readonly jobId: FieldRef<"ApplyJob", 'BigInt'>
+    readonly corporateId: FieldRef<"ApplyJob", 'BigInt'>
     readonly interviewDate: FieldRef<"ApplyJob", 'DateTime'>
     readonly title: FieldRef<"ApplyJob", 'String'>
     readonly description: FieldRef<"ApplyJob", 'String'>
     readonly resumeFile: FieldRef<"ApplyJob", 'String'>
     readonly applyType: FieldRef<"ApplyJob", 'ApplyType'>
+    readonly applyActionType: FieldRef<"ApplyJob", 'ApplyActionType'>
     readonly status: FieldRef<"ApplyJob", 'Boolean'>
     readonly createdAt: FieldRef<"ApplyJob", 'DateTime'>
     readonly updatedAt: FieldRef<"ApplyJob", 'DateTime'>
@@ -9690,11 +9733,13 @@ export namespace Prisma {
     applyId: 'applyId',
     userId: 'userId',
     jobId: 'jobId',
+    corporateId: 'corporateId',
     interviewDate: 'interviewDate',
     title: 'title',
     description: 'description',
     resumeFile: 'resumeFile',
     applyType: 'applyType',
+    applyActionType: 'applyActionType',
     status: 'status',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -9921,6 +9966,20 @@ export namespace Prisma {
    * Reference to a field of type 'ApplyType[]'
    */
   export type ListEnumApplyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApplyType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApplyActionType'
+   */
+  export type EnumApplyActionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApplyActionType'>
+    
+
+
+  /**
+   * Reference to a field of type 'ApplyActionType[]'
+   */
+  export type ListEnumApplyActionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApplyActionType[]'>
     
 
 
@@ -10417,11 +10476,13 @@ export namespace Prisma {
     applyId?: BigIntFilter<"ApplyJob"> | bigint | number
     userId?: BigIntFilter<"ApplyJob"> | bigint | number
     jobId?: BigIntFilter<"ApplyJob"> | bigint | number
+    corporateId?: BigIntFilter<"ApplyJob"> | bigint | number
     interviewDate?: DateTimeNullableFilter<"ApplyJob"> | Date | string | null
     title?: StringFilter<"ApplyJob"> | string
     description?: StringFilter<"ApplyJob"> | string
     resumeFile?: StringNullableFilter<"ApplyJob"> | string | null
     applyType?: EnumApplyTypeNullableFilter<"ApplyJob"> | $Enums.ApplyType | null
+    applyActionType?: EnumApplyActionTypeNullableFilter<"ApplyJob"> | $Enums.ApplyActionType | null
     status?: BoolFilter<"ApplyJob"> | boolean
     createdAt?: DateTimeFilter<"ApplyJob"> | Date | string
     updatedAt?: DateTimeFilter<"ApplyJob"> | Date | string
@@ -10431,11 +10492,13 @@ export namespace Prisma {
     applyId?: SortOrder
     userId?: SortOrder
     jobId?: SortOrder
+    corporateId?: SortOrder
     interviewDate?: SortOrderInput | SortOrder
     title?: SortOrder
     description?: SortOrder
     resumeFile?: SortOrderInput | SortOrder
     applyType?: SortOrderInput | SortOrder
+    applyActionType?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -10448,11 +10511,13 @@ export namespace Prisma {
     NOT?: ApplyJobWhereInput | ApplyJobWhereInput[]
     userId?: BigIntFilter<"ApplyJob"> | bigint | number
     jobId?: BigIntFilter<"ApplyJob"> | bigint | number
+    corporateId?: BigIntFilter<"ApplyJob"> | bigint | number
     interviewDate?: DateTimeNullableFilter<"ApplyJob"> | Date | string | null
     title?: StringFilter<"ApplyJob"> | string
     description?: StringFilter<"ApplyJob"> | string
     resumeFile?: StringNullableFilter<"ApplyJob"> | string | null
     applyType?: EnumApplyTypeNullableFilter<"ApplyJob"> | $Enums.ApplyType | null
+    applyActionType?: EnumApplyActionTypeNullableFilter<"ApplyJob"> | $Enums.ApplyActionType | null
     status?: BoolFilter<"ApplyJob"> | boolean
     createdAt?: DateTimeFilter<"ApplyJob"> | Date | string
     updatedAt?: DateTimeFilter<"ApplyJob"> | Date | string
@@ -10462,11 +10527,13 @@ export namespace Prisma {
     applyId?: SortOrder
     userId?: SortOrder
     jobId?: SortOrder
+    corporateId?: SortOrder
     interviewDate?: SortOrderInput | SortOrder
     title?: SortOrder
     description?: SortOrder
     resumeFile?: SortOrderInput | SortOrder
     applyType?: SortOrderInput | SortOrder
+    applyActionType?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -10484,11 +10551,13 @@ export namespace Prisma {
     applyId?: BigIntWithAggregatesFilter<"ApplyJob"> | bigint | number
     userId?: BigIntWithAggregatesFilter<"ApplyJob"> | bigint | number
     jobId?: BigIntWithAggregatesFilter<"ApplyJob"> | bigint | number
+    corporateId?: BigIntWithAggregatesFilter<"ApplyJob"> | bigint | number
     interviewDate?: DateTimeNullableWithAggregatesFilter<"ApplyJob"> | Date | string | null
     title?: StringWithAggregatesFilter<"ApplyJob"> | string
     description?: StringWithAggregatesFilter<"ApplyJob"> | string
     resumeFile?: StringNullableWithAggregatesFilter<"ApplyJob"> | string | null
     applyType?: EnumApplyTypeNullableWithAggregatesFilter<"ApplyJob"> | $Enums.ApplyType | null
+    applyActionType?: EnumApplyActionTypeNullableWithAggregatesFilter<"ApplyJob"> | $Enums.ApplyActionType | null
     status?: BoolWithAggregatesFilter<"ApplyJob"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"ApplyJob"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ApplyJob"> | Date | string
@@ -11011,11 +11080,13 @@ export namespace Prisma {
     applyId?: bigint | number
     userId: bigint | number
     jobId: bigint | number
+    corporateId: bigint | number
     interviewDate?: Date | string | null
     title: string
     description: string
     resumeFile?: string | null
     applyType?: $Enums.ApplyType | null
+    applyActionType?: $Enums.ApplyActionType | null
     status?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11025,11 +11096,13 @@ export namespace Prisma {
     applyId?: bigint | number
     userId: bigint | number
     jobId: bigint | number
+    corporateId: bigint | number
     interviewDate?: Date | string | null
     title: string
     description: string
     resumeFile?: string | null
     applyType?: $Enums.ApplyType | null
+    applyActionType?: $Enums.ApplyActionType | null
     status?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11039,11 +11112,13 @@ export namespace Prisma {
     applyId?: BigIntFieldUpdateOperationsInput | bigint | number
     userId?: BigIntFieldUpdateOperationsInput | bigint | number
     jobId?: BigIntFieldUpdateOperationsInput | bigint | number
+    corporateId?: BigIntFieldUpdateOperationsInput | bigint | number
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     resumeFile?: NullableStringFieldUpdateOperationsInput | string | null
     applyType?: NullableEnumApplyTypeFieldUpdateOperationsInput | $Enums.ApplyType | null
+    applyActionType?: NullableEnumApplyActionTypeFieldUpdateOperationsInput | $Enums.ApplyActionType | null
     status?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11053,11 +11128,13 @@ export namespace Prisma {
     applyId?: BigIntFieldUpdateOperationsInput | bigint | number
     userId?: BigIntFieldUpdateOperationsInput | bigint | number
     jobId?: BigIntFieldUpdateOperationsInput | bigint | number
+    corporateId?: BigIntFieldUpdateOperationsInput | bigint | number
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     resumeFile?: NullableStringFieldUpdateOperationsInput | string | null
     applyType?: NullableEnumApplyTypeFieldUpdateOperationsInput | $Enums.ApplyType | null
+    applyActionType?: NullableEnumApplyActionTypeFieldUpdateOperationsInput | $Enums.ApplyActionType | null
     status?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11067,11 +11144,13 @@ export namespace Prisma {
     applyId?: bigint | number
     userId: bigint | number
     jobId: bigint | number
+    corporateId: bigint | number
     interviewDate?: Date | string | null
     title: string
     description: string
     resumeFile?: string | null
     applyType?: $Enums.ApplyType | null
+    applyActionType?: $Enums.ApplyActionType | null
     status?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11081,11 +11160,13 @@ export namespace Prisma {
     applyId?: BigIntFieldUpdateOperationsInput | bigint | number
     userId?: BigIntFieldUpdateOperationsInput | bigint | number
     jobId?: BigIntFieldUpdateOperationsInput | bigint | number
+    corporateId?: BigIntFieldUpdateOperationsInput | bigint | number
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     resumeFile?: NullableStringFieldUpdateOperationsInput | string | null
     applyType?: NullableEnumApplyTypeFieldUpdateOperationsInput | $Enums.ApplyType | null
+    applyActionType?: NullableEnumApplyActionTypeFieldUpdateOperationsInput | $Enums.ApplyActionType | null
     status?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11095,11 +11176,13 @@ export namespace Prisma {
     applyId?: BigIntFieldUpdateOperationsInput | bigint | number
     userId?: BigIntFieldUpdateOperationsInput | bigint | number
     jobId?: BigIntFieldUpdateOperationsInput | bigint | number
+    corporateId?: BigIntFieldUpdateOperationsInput | bigint | number
     interviewDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     resumeFile?: NullableStringFieldUpdateOperationsInput | string | null
     applyType?: NullableEnumApplyTypeFieldUpdateOperationsInput | $Enums.ApplyType | null
+    applyActionType?: NullableEnumApplyActionTypeFieldUpdateOperationsInput | $Enums.ApplyActionType | null
     status?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11825,15 +11908,24 @@ export namespace Prisma {
     not?: NestedEnumApplyTypeNullableFilter<$PrismaModel> | $Enums.ApplyType | null
   }
 
+  export type EnumApplyActionTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApplyActionType | EnumApplyActionTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ApplyActionType[] | ListEnumApplyActionTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ApplyActionType[] | ListEnumApplyActionTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumApplyActionTypeNullableFilter<$PrismaModel> | $Enums.ApplyActionType | null
+  }
+
   export type ApplyJobCountOrderByAggregateInput = {
     applyId?: SortOrder
     userId?: SortOrder
     jobId?: SortOrder
+    corporateId?: SortOrder
     interviewDate?: SortOrder
     title?: SortOrder
     description?: SortOrder
     resumeFile?: SortOrder
     applyType?: SortOrder
+    applyActionType?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -11843,17 +11935,20 @@ export namespace Prisma {
     applyId?: SortOrder
     userId?: SortOrder
     jobId?: SortOrder
+    corporateId?: SortOrder
   }
 
   export type ApplyJobMaxOrderByAggregateInput = {
     applyId?: SortOrder
     userId?: SortOrder
     jobId?: SortOrder
+    corporateId?: SortOrder
     interviewDate?: SortOrder
     title?: SortOrder
     description?: SortOrder
     resumeFile?: SortOrder
     applyType?: SortOrder
+    applyActionType?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -11863,11 +11958,13 @@ export namespace Prisma {
     applyId?: SortOrder
     userId?: SortOrder
     jobId?: SortOrder
+    corporateId?: SortOrder
     interviewDate?: SortOrder
     title?: SortOrder
     description?: SortOrder
     resumeFile?: SortOrder
     applyType?: SortOrder
+    applyActionType?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -11877,6 +11974,7 @@ export namespace Prisma {
     applyId?: SortOrder
     userId?: SortOrder
     jobId?: SortOrder
+    corporateId?: SortOrder
   }
 
   export type EnumApplyTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -11887,6 +11985,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumApplyTypeNullableFilter<$PrismaModel>
     _max?: NestedEnumApplyTypeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumApplyActionTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApplyActionType | EnumApplyActionTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ApplyActionType[] | ListEnumApplyActionTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ApplyActionType[] | ListEnumApplyActionTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumApplyActionTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.ApplyActionType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumApplyActionTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumApplyActionTypeNullableFilter<$PrismaModel>
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -12171,6 +12279,10 @@ export namespace Prisma {
 
   export type NullableEnumApplyTypeFieldUpdateOperationsInput = {
     set?: $Enums.ApplyType | null
+  }
+
+  export type NullableEnumApplyActionTypeFieldUpdateOperationsInput = {
+    set?: $Enums.ApplyActionType | null
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -12560,6 +12672,13 @@ export namespace Prisma {
     not?: NestedEnumApplyTypeNullableFilter<$PrismaModel> | $Enums.ApplyType | null
   }
 
+  export type NestedEnumApplyActionTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApplyActionType | EnumApplyActionTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ApplyActionType[] | ListEnumApplyActionTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ApplyActionType[] | ListEnumApplyActionTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumApplyActionTypeNullableFilter<$PrismaModel> | $Enums.ApplyActionType | null
+  }
+
   export type NestedEnumApplyTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.ApplyType | EnumApplyTypeFieldRefInput<$PrismaModel> | null
     in?: $Enums.ApplyType[] | ListEnumApplyTypeFieldRefInput<$PrismaModel> | null
@@ -12568,6 +12687,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumApplyTypeNullableFilter<$PrismaModel>
     _max?: NestedEnumApplyTypeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumApplyActionTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ApplyActionType | EnumApplyActionTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ApplyActionType[] | ListEnumApplyActionTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ApplyActionType[] | ListEnumApplyActionTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumApplyActionTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.ApplyActionType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumApplyActionTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumApplyActionTypeNullableFilter<$PrismaModel>
   }
 
   export type JobAttributesAlbaCreateWithoutJobInput = {

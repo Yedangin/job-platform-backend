@@ -117,6 +117,7 @@ model ApplyJob {
   applyId          BigInt        @id @default(autoincrement()) @map("apply_id")
   userId           BigInt        @map("user_id")
   jobId            BigInt        @map("job_id")
+  corporateId      BigInt        @map("corporate_id")
   // job              JobPosting        @relation(fields: [jobId], references: [jobId])
   
   interviewDate    DateTime?     @map("interview_date")
@@ -125,6 +126,7 @@ model ApplyJob {
   resumeFile       String?       @map("resume_file")
 
   applyType        ApplyType?     @map("apply_type")
+  applyActionType  ApplyActionType?     @map("appl_action_type")
   
   status           Boolean       @default(false)
 
@@ -166,4 +168,10 @@ enum ActorType {
 enum ApplyType { 
   APPROVED
   REJECTED
+ }
+
+ enum ApplyActionType { 
+  SUCCESSFUL
+  PENDING
+  CANCEL
  }

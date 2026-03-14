@@ -6,6 +6,7 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Pagination } from 'libs/common/src/common/decorator/get-pagination-data.decorator';
+import { ApplyActionType, ApplyType } from 'generated/prisma-job';
 
 export class CreateApplyDto {
   @ApiProperty({
@@ -50,6 +51,30 @@ export class CreateApplyDto {
     example: '/uploads/67b3bd50-f265-4a84-9360-f61578ed6be2-Azerbaijan.png',
   })
   resumeFile?: string;
+}
+
+export class CorporateUpdateApplyDto {
+  @IsString()
+  @ApiProperty({
+    description: 'Apply Type ENUM  APPROVED, REJECTED  ',
+    example: 'APPROVED',
+  })
+  applyType!: ApplyType;
+
+  @IsString()
+  @ApiProperty({
+    description: 'Apply Action Type ENUM  SUCCESSFUL, PENDING, CANCEL  ',
+    example: 'SUCCESSFUL',
+  })
+  applyActionType!: ApplyActionType;
+
+  @IsDateString()
+  @IsOptional()
+  @ApiProperty({
+    description: 'Interview Date',
+    example: '',
+  })
+  interviewDate!: string;
 }
 
 export class QueryCartDto extends Pagination {}
