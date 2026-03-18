@@ -36,12 +36,12 @@ jobs:
         run: npm install
 
       - name: Generate Prisma Client
-        run: npx prisma generate
+        run: npm run prisma:generate
 
       - name: Push Prisma schema to MongoDB
         env:
-          DATABASE_URL: mongodb://koko:admin@localhost:27017/elearning?authSource=admin
-        run: npx prisma db push
+          LOG_MONGODB_URL: mongodb://koko:admin@localhost:27017/logs?authSource=admin
+        run: npm run prisma:push:log
 
       - name: Build NestJS app
         run: npm run build
