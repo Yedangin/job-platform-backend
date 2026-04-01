@@ -42,9 +42,7 @@ import { NotificationModule } from './notification/notification.module';
 import { InfoBoardModule } from './info-board/info-board.module';
 import { PlatformConfigModule } from './platform-config/platform-config.module';
 import { VisaPlannerModule } from './visa-planner/visa-planner.module';
-// TranslationModule 비활성화: JobPrismaService 의존 → Jobs DB 미존재 시 서버 크래시
-// TranslationModule disabled: depends on JobPrismaService → crashes if Jobs DB unavailable
-// import { TranslationModule } from './translation/translation.module';
+import { TranslationModule } from './translation/translation.module';
 import { HealthController } from './health.controller';
 
 @Module({
@@ -152,7 +150,7 @@ import { HealthController } from './health.controller';
     InfoBoardModule,
     PlatformConfigModule,
     VisaPlannerModule,
-    // TranslationModule, // 비활성화: JobPrismaService 의존 / Disabled: depends on JobPrismaService
+    TranslationModule,
   ],
   controllers: [HealthController],
   providers: [

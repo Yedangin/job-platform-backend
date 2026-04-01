@@ -1,9 +1,19 @@
+import * as Sentry from '@sentry/node';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+
+// Sentry 에러 추적 초기화 / Sentry error tracking initialisation
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.NODE_ENV ?? 'development',
+    tracesSampleRate: 0.1,
+  });
+}
 
 // BigInt JSON serialization safety net
 (BigInt.prototype as any).toJSON = function () {
