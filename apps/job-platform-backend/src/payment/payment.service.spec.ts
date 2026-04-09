@@ -358,10 +358,9 @@ describe('PaymentService', () => {
 
       const result = await service.cancelPayment(2, 'user-1', '환불 요청');
       expect(result.status).toBe('CANCELLED');
-      expect(mockViewingCreditService.calculateCreditRefund).toHaveBeenCalledWith(
-        'user-1',
-        'VIEW_10',
-      );
+      expect(
+        mockViewingCreditService.calculateCreditRefund,
+      ).toHaveBeenCalledWith('user-1', 'VIEW_10');
     });
 
     it('타인 주문 취소 거부 / should reject cancelling another user order', async () => {
