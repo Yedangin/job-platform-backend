@@ -22,6 +22,8 @@ class MockAuthPrismaService {}
 jest.mock('libs/common/src', () => ({
   PaymentPrismaService: MockPaymentPrismaService,
   AuthPrismaService: MockAuthPrismaService,
+  RedisService: class MockRedisService {},
+  SkipCsrf: () => () => undefined,
 }));
 
 import { PaymentService } from './payment.service';
@@ -30,6 +32,7 @@ import { ProductService } from './product.service';
 import { CouponService } from './coupon.service';
 import { ViewingCreditService } from './viewing-credit.service';
 import { PortoneWebhookController } from './portone-webhook.controller';
+import { RedisService } from 'libs/common/src';
 
 // ──── 상품 Fixtures / Product fixtures ────
 const PRODUCTS = {
@@ -75,7 +78,11 @@ describe('E2E 시나리오 1: 프리미엄 업그레이드 / Premium upgrade', (
     mockPaymentPrisma = {
       order: { create: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
       payment: { create: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
-      $transaction: jest.fn((arr) => Promise.resolve(arr.map(() => ({})))),
+      $transaction: jest.fn(async (arg) =>
+        typeof arg === 'function'
+          ? arg(mockPaymentPrisma)
+          : Promise.resolve(arg.map(() => ({}))),
+      ),
     };
     mockAuthPrisma = {
       jobPosting: { findUnique: jest.fn(), update: jest.fn() },
@@ -208,7 +215,11 @@ describe('E2E 시나리오 2: 인재 열람 / Talent viewing', () => {
         delete: jest.fn(),
       },
       viewingLog: { findFirst: jest.fn(), create: jest.fn() },
-      $transaction: jest.fn((arr) => Promise.resolve(arr.map(() => ({})))),
+      $transaction: jest.fn(async (arg) =>
+        typeof arg === 'function'
+          ? arg(mockPaymentPrisma)
+          : Promise.resolve(arg.map(() => ({}))),
+      ),
     };
     mockAuthPrisma = {
       jobPosting: { findUnique: jest.fn(), update: jest.fn() },
@@ -274,7 +285,11 @@ describe('E2E 시나리오 2: 인재 열람 / Talent viewing', () => {
       amount: { total: 60000 },
       method: { type: 'Card' },
     });
-    mockPaymentPrisma.$transaction.mockResolvedValue([{}, {}]);
+    mockPaymentPrisma.$transaction.mockImplementation(async (arg) =>
+      typeof arg === 'function'
+        ? arg(mockPaymentPrisma)
+        : Promise.resolve(arg.map(() => ({}))),
+    );
     mockPaymentPrisma.viewingCredit.create.mockResolvedValue({
       id: 1,
       totalCredits: 30,
@@ -302,6 +317,14 @@ describe('E2E 시나리오 2: 인재 열람 / Talent viewing', () => {
           id: 1,
           totalCredits: 30,
           usedCredits: 0,
+          expiresAt: new Date('2027-01-01'),
+        },
+      ])
+      .mockResolvedValueOnce([
+        {
+          id: 1,
+          totalCredits: 30,
+          usedCredits: 1,
           expiresAt: new Date('2027-01-01'),
         },
       ])
@@ -392,7 +415,11 @@ describe('E2E 시나리오 3: 쿠폰 / Coupons', () => {
         delete: jest.fn(),
       },
       viewingLog: { findFirst: jest.fn(), create: jest.fn() },
-      $transaction: jest.fn((arr) => Promise.resolve(arr.map(() => ({})))),
+      $transaction: jest.fn(async (arg) =>
+        typeof arg === 'function'
+          ? arg(mockPaymentPrisma)
+          : Promise.resolve(arg.map(() => ({}))),
+      ),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -514,7 +541,11 @@ describe('E2E 시나리오 4: 환불 / Refund', () => {
     mockPaymentPrisma = {
       order: { create: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
       payment: { create: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
-      $transaction: jest.fn((arr) => Promise.resolve(arr.map(() => ({})))),
+      $transaction: jest.fn(async (arg) =>
+        typeof arg === 'function'
+          ? arg(mockPaymentPrisma)
+          : Promise.resolve(arg.map(() => ({}))),
+      ),
     };
     mockAuthPrisma = {
       jobPosting: { findUnique: jest.fn(), update: jest.fn() },
@@ -586,6 +617,7 @@ describe('E2E 시나리오 4: 환불 / Refund', () => {
     expect(mockPortoneService.cancelPayment).toHaveBeenCalledWith(
       'portone_refund_1',
       '서비스 불만족',
+      undefined,
     );
 
     // tier 롤백 확인 / Verify tier rollback
@@ -636,6 +668,10 @@ describe('E2E 시나리오 5: 웹훅 / Webhook', () => {
       handleWebhookCancelled: jest.fn().mockResolvedValue(undefined),
       handleWebhookFailed: jest.fn().mockResolvedValue(undefined),
     };
+    const mockRedis = {
+      get: jest.fn().mockResolvedValue(null),
+      set: jest.fn().mockResolvedValue('OK'),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PortoneWebhookController],
@@ -651,6 +687,7 @@ describe('E2E 시나리오 5: 웹훅 / Webhook', () => {
         },
         { provide: PortoneService, useValue: mockPortoneService },
         { provide: PaymentService, useValue: mockPaymentService },
+        { provide: RedisService, useValue: mockRedis },
       ],
     }).compile();
 

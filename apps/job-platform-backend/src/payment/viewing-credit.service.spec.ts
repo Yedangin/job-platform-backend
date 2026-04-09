@@ -31,7 +31,7 @@ describe('ViewingCreditService', () => {
         create: jest.fn(),
         count: jest.fn(),
       },
-      $transaction: jest.fn((arr) => Promise.resolve(arr.map(() => ({})))),
+      $transaction: jest.fn(async (callback) => callback(mockPaymentPrisma)),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -139,7 +139,8 @@ describe('ViewingCreditService', () => {
 
       const result = await service.useCredit('user-1', 100);
       expect(result.success).toBe(true);
-      expect(mockPaymentPrisma.$transaction).not.toHaveBeenCalled();
+      expect(mockPaymentPrisma.viewingCredit.update).not.toHaveBeenCalled();
+      expect(mockPaymentPrisma.viewingLog.create).not.toHaveBeenCalled();
     });
 
     it('열람권 부족 시 에러 / should throw when insufficient credits', async () => {

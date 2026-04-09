@@ -72,7 +72,7 @@ describe('PortoneService', () => {
     it('타임아웃 시 InternalServerError / should throw on timeout (AbortError)', async () => {
       const abortError = new Error('The operation was aborted');
       abortError.name = 'AbortError';
-      mockFetch.mockRejectedValueOnce(abortError);
+      mockFetch.mockRejectedValue(abortError);
 
       try {
         await service.getPayment('payment_123');

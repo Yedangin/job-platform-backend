@@ -126,6 +126,8 @@ describe('PaymentService', () => {
     mockViewingCreditService = {
       grantCredits: jest.fn(),
       rollbackCredits: jest.fn(),
+      calculateCreditRefund: jest.fn(),
+      executeRefund: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -319,6 +321,7 @@ describe('PaymentService', () => {
       expect(mockPortoneService.cancelPayment).toHaveBeenCalledWith(
         'pay_123',
         '단순 변심',
+        undefined,
       );
       expect(mockAuthPrisma.jobPosting.update).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -345,11 +348,17 @@ describe('PaymentService', () => {
         cancelledAmount: 25000,
       });
       mockPaymentPrisma.$transaction.mockResolvedValue([{}, {}]);
-      mockViewingCreditService.rollbackCredits.mockResolvedValue({});
+      mockViewingCreditService.calculateCreditRefund.mockResolvedValue({
+        creditId: 1,
+        totalCredits: 10,
+        usedCredits: 0,
+        refundableCredits: 10,
+        canFullRefund: true,
+      });
 
       const result = await service.cancelPayment(2, 'user-1', '환불 요청');
       expect(result.status).toBe('CANCELLED');
-      expect(mockViewingCreditService.rollbackCredits).toHaveBeenCalledWith(
+      expect(mockViewingCreditService.calculateCreditRefund).toHaveBeenCalledWith(
         'user-1',
         'VIEW_10',
       );

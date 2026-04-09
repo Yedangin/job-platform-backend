@@ -9,17 +9,21 @@ jest.mock('libs/common/src', () => {
   return {
     PaymentPrismaService: _PaymentPrismaService,
     AuthPrismaService: _AuthPrismaService,
+    RedisService: class _RedisService {},
+    SkipCsrf: () => () => undefined,
   };
 });
 
 import { PortoneWebhookController } from './portone-webhook.controller';
 import { PortoneService } from './portone.service';
 import { PaymentService } from './payment.service';
+import { RedisService } from 'libs/common/src';
 
 describe('PortoneWebhookController', () => {
   let controller: PortoneWebhookController;
   let mockPortoneService: any;
   let mockPaymentService: any;
+  let mockRedis: any;
 
   // 테스트용 웹훅 시크릿 (base64) / Test webhook secret
   const rawSecret = Buffer.from('test-webhook-secret-key-1234');
@@ -73,6 +77,10 @@ describe('PortoneWebhookController', () => {
       handleWebhookCancelled: jest.fn().mockResolvedValue(undefined),
       handleWebhookFailed: jest.fn().mockResolvedValue(undefined),
     };
+    mockRedis = {
+      get: jest.fn().mockResolvedValue(null),
+      set: jest.fn().mockResolvedValue('OK'),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PortoneWebhookController],
@@ -88,6 +96,7 @@ describe('PortoneWebhookController', () => {
         },
         { provide: PortoneService, useValue: mockPortoneService },
         { provide: PaymentService, useValue: mockPaymentService },
+        { provide: RedisService, useValue: mockRedis },
       ],
     }).compile();
 
