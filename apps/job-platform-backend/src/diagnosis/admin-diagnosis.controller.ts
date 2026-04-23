@@ -196,7 +196,11 @@ export class AdminDiagnosisController {
   ) {
     const adminId = await this.requireAdmin(sessionId);
     try {
-      return await this.diagnosisEngine.updatePathway(pathwayId, dto as any, adminId);
+      return await this.diagnosisEngine.updatePathway(
+        pathwayId,
+        dto as any,
+        adminId,
+      );
     } catch (err) {
       throw new BadRequestException((err as Error).message);
     }

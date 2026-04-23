@@ -661,7 +661,9 @@ export class DiagnosisEngineService {
     });
 
     if (!existing) {
-      throw new Error(`경로를 찾을 수 없습니다 / Pathway not found: ${pathwayId}`);
+      throw new Error(
+        `경로를 찾을 수 없습니다 / Pathway not found: ${pathwayId}`,
+      );
     }
 
     const updateData: Record<string, unknown> = {};
