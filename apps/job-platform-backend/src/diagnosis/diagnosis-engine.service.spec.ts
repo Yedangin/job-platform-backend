@@ -11,6 +11,10 @@ import {
   DiagnosisInput,
   DiagnosisResult,
 } from './diagnosis-engine.service';
+import {
+  DEFAULT_DIAGNOSIS_PATHWAYS,
+  DIAGNOSIS_REFERENCE_MATRIX,
+} from './diagnosis-reference.data';
 import { AuthPrismaService } from 'libs/common/src';
 
 describe('DiagnosisEngineService', () => {
@@ -24,6 +28,25 @@ describe('DiagnosisEngineService', () => {
         findUnique: jest.fn(),
         findMany: jest.fn(),
         count: jest.fn(),
+      },
+      diagnosisPathway: {
+        findMany: jest.fn().mockResolvedValue(
+          DEFAULT_DIAGNOSIS_PATHWAYS.map((pathway) => ({
+            ...pathway,
+            id: 1n,
+            isActive: true,
+            lastUpdatedAt: new Date(DIAGNOSIS_REFERENCE_MATRIX.updatedAt),
+            lastUpdatedReason: '초기 시드',
+            createdAt: new Date('2026-02-17T00:00:00.000Z'),
+            updatedAt: new Date('2026-02-17T00:00:00.000Z'),
+          })),
+        ),
+        findUnique: jest.fn(),
+        update: jest.fn(),
+      },
+      diagnosisPathwayChangelog: {
+        create: jest.fn(),
+        findMany: jest.fn(),
       },
       diagnosisPathwayClick: {
         create: jest.fn().mockResolvedValue({ clickId: 1n }),
@@ -309,8 +332,8 @@ describe('DiagnosisEngineService', () => {
   // 매트릭스 접근 / Matrix access
   // ============================================================
   describe('매트릭스 접근 / Matrix access', () => {
-    it('getMatrix: 매트릭스 반환 / should return matrix data', () => {
-      const matrix = service.getMatrix();
+    it('getMatrix: 매트릭스 반환 / should return matrix data', async () => {
+      const matrix = await service.getMatrix();
       expect(matrix).toBeDefined();
       expect(matrix.pathways).toBeDefined();
       expect(matrix.pathways.length).toBe(15);

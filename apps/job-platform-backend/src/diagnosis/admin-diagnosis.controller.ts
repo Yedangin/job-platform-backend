@@ -9,7 +9,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { IsIn, IsNumber, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsIn,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Session } from 'libs/common/src';
 import { RedisService, SessionData } from 'libs/common/src';
 import { DiagnosisEngineService } from './diagnosis-engine.service';
@@ -30,6 +36,84 @@ class UpdateMatrixScoreDto {
 
   @IsString()
   changeReason: string;
+}
+
+class UpdateDiagnosisPathwayDto {
+  @IsOptional()
+  @IsString()
+  nameKo?: string;
+
+  @IsOptional()
+  @IsString()
+  nameEn?: string;
+
+  @IsOptional()
+  @IsString()
+  pathwayType?: string;
+
+  @IsOptional()
+  @IsNumber()
+  ageMin?: number;
+
+  @IsOptional()
+  @IsNumber()
+  ageMax?: number;
+
+  @IsOptional()
+  @IsString()
+  minEducation?: string;
+
+  @IsOptional()
+  @IsString()
+  allowedNationalityType?: string;
+
+  @IsOptional()
+  @IsNumber()
+  topikMin?: number;
+
+  @IsOptional()
+  @IsNumber()
+  minFund?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  requiresEthnicKorean?: boolean;
+
+  @IsOptional()
+  @IsString()
+  visaChain?: string;
+
+  @IsOptional()
+  @IsNumber()
+  estimatedMonths?: number;
+
+  @IsOptional()
+  @IsNumber()
+  estimatedCostWon?: number;
+
+  @IsOptional()
+  @IsString()
+  platformSupport?: string;
+
+  @IsOptional()
+  @IsNumber()
+  baseScore?: number;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
+
+  @IsOptional()
+  @IsString()
+  lastUpdatedAt?: string;
+
+  @IsOptional()
+  @IsString()
+  lastUpdatedReason?: string;
 }
 
 /**
@@ -66,6 +150,56 @@ export class AdminDiagnosisController {
   async getMatrix(@Session() sessionId: string) {
     await this.requireAdmin(sessionId);
     return this.diagnosisEngine.getMatrix();
+  }
+
+  @Get('pathways')
+  @ApiOperation({
+    summary: '비자 경로 목록 조회 / Get diagnosis pathways',
+  })
+  @ApiQuery({
+    name: 'includeInactive',
+    required: false,
+    description: '비활성 경로 포함 여부 / Include inactive pathways',
+  })
+  async getPathways(
+    @Session() sessionId: string,
+    @Query('includeInactive') includeInactive?: string,
+  ) {
+    await this.requireAdmin(sessionId);
+    return this.diagnosisEngine.listPathways(includeInactive === 'true');
+  }
+
+  @Get('pathways/:pathwayId/changelog')
+  @ApiOperation({
+    summary: '비자 경로 변경 이력 조회 / Get pathway changelog',
+  })
+  @ApiParam({ name: 'pathwayId', example: 'PW-003' })
+  async getPathwayChangelog(
+    @Session() sessionId: string,
+    @Param('pathwayId') pathwayId: string,
+    @Query('limit') limit?: string,
+  ) {
+    await this.requireAdmin(sessionId);
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit ?? '20', 10)));
+    return this.diagnosisEngine.getPathwayChangelog(pathwayId, limitNum);
+  }
+
+  @Patch('pathways/:pathwayId')
+  @ApiOperation({
+    summary: '비자 경로 수정 / Update diagnosis pathway',
+  })
+  @ApiParam({ name: 'pathwayId', example: 'PW-003' })
+  async updatePathway(
+    @Session() sessionId: string,
+    @Param('pathwayId') pathwayId: string,
+    @Body() dto: UpdateDiagnosisPathwayDto,
+  ) {
+    const adminId = await this.requireAdmin(sessionId);
+    try {
+      return await this.diagnosisEngine.updatePathway(pathwayId, dto as any, adminId);
+    } catch (err) {
+      throw new BadRequestException((err as Error).message);
+    }
   }
 
   // ============================================================

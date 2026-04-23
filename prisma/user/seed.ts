@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { EDUCATIONAL_INSTITUTIONS } from './seeds/educational-institutions.seed';
 import { EXTENDED_UNIVERSITIES, EXTENDED_LANGUAGE_INSTITUTES } from './seeds/educational-institutions-extended.seed';
 import { ADDITIONAL_COLLEGES, ADDITIONAL_UNIVERSITIES, ADDITIONAL_LANGUAGE_INSTITUTES } from './seeds/educational-institutions-additional.seed';
+import { seedDiagnosisPathways } from './seed-diagnosis-pathways';
 
 const prisma = new PrismaClient();
 
@@ -39,7 +40,12 @@ async function main() {
   await seedEducationalInstitutions();
 
   // ============================
-  // 3. 리브소프트 샘플 공고 생성
+  // 3. 비자 진단 경로 데이터 생성
+  // ============================
+  await seedDiagnosisPathways();
+
+  // ============================
+  // 4. 리브소프트 샘플 공고 생성
   // ============================
   await seedLivesoftJobPostings();
 }

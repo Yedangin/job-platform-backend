@@ -892,6 +892,43 @@ exports.Prisma.DiagnosisSessionScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.DiagnosisPathwayScalarFieldEnum = {
+  id: 'id',
+  pathwayId: 'pathwayId',
+  nameKo: 'nameKo',
+  nameEn: 'nameEn',
+  pathwayType: 'pathwayType',
+  ageMin: 'ageMin',
+  ageMax: 'ageMax',
+  minEducation: 'minEducation',
+  allowedNationalityType: 'allowedNationalityType',
+  topikMin: 'topikMin',
+  minFund: 'minFund',
+  requiresEthnicKorean: 'requiresEthnicKorean',
+  visaChain: 'visaChain',
+  estimatedMonths: 'estimatedMonths',
+  estimatedCostWon: 'estimatedCostWon',
+  platformSupport: 'platformSupport',
+  baseScore: 'baseScore',
+  note: 'note',
+  isActive: 'isActive',
+  lastUpdatedAt: 'lastUpdatedAt',
+  lastUpdatedReason: 'lastUpdatedReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DiagnosisPathwayChangelogScalarFieldEnum = {
+  id: 'id',
+  pathwayId: 'pathwayId',
+  fieldChanged: 'fieldChanged',
+  oldValue: 'oldValue',
+  newValue: 'newValue',
+  reason: 'reason',
+  changedBy: 'changedBy',
+  changedAt: 'changedAt'
+};
+
 exports.Prisma.DiagnosisPathwayClickScalarFieldEnum = {
   clickId: 'clickId',
   sessionId: 'sessionId',
@@ -1285,6 +1322,8 @@ exports.Prisma.ModelName = {
   TalentBookmark: 'TalentBookmark',
   VisaVerification: 'VisaVerification',
   DiagnosisSession: 'DiagnosisSession',
+  DiagnosisPathway: 'DiagnosisPathway',
+  DiagnosisPathwayChangelog: 'DiagnosisPathwayChangelog',
   DiagnosisPathwayClick: 'DiagnosisPathwayClick',
   ScoreCalibrationLog: 'ScoreCalibrationLog',
   UniversityRanking: 'UniversityRanking',

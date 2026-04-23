@@ -1,7 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AuthPrismaService } from 'libs/common/src';
-// 정적 JSON import (webpack 번들링 호환) / Static JSON import (webpack bundling compatible)
-import * as diagnosisMatrixData from '../data/diagnosis-matrix.json';
+import {
+  DEFAULT_DIAGNOSIS_PATHWAYS,
+  DIAGNOSIS_REFERENCE_MATRIX,
+} from './diagnosis-reference.data';
 
 // ============================================================
 // 입력/출력 인터페이스 / Input/Output interfaces
@@ -70,11 +72,14 @@ export interface RecommendedPathway {
   milestones: Milestone[];
   nextSteps: NextStep[];
   note: string;
+  lastUpdatedAt?: string | null;
+  lastUpdatedReason?: string | null;
 }
 
 /** 진단 결과 / Diagnosis result */
 export interface DiagnosisResult {
   pathways: RecommendedPathway[];
+  sessionId?: string;
   meta: {
     totalPathwaysEvaluated: number;
     hardFilteredOut: number;
@@ -104,6 +109,9 @@ interface PathwayDef {
   platformSupport: string;
   baseScore: number;
   note: string;
+  isActive?: boolean;
+  lastUpdatedAt?: Date | string | null;
+  lastUpdatedReason?: string | null;
 }
 
 interface NationalityInfo {
@@ -121,8 +129,7 @@ interface NationalityInfo {
 @Injectable()
 export class DiagnosisEngineService {
   private readonly logger = new Logger(DiagnosisEngineService.name);
-  // 정적 import로 변경 (webpack 호환) / Changed to static import (webpack compatible)
-  private readonly matrix: any = diagnosisMatrixData;
+  private readonly matrix: any = DIAGNOSIS_REFERENCE_MATRIX;
 
   constructor(private readonly prisma: AuthPrismaService) {}
 
@@ -140,7 +147,7 @@ export class DiagnosisEngineService {
     userId?: string,
     anonymousId?: string,
   ): Promise<DiagnosisResult> {
-    const pathways: PathwayDef[] = this.matrix.pathways;
+    const pathways = await this.getActivePathways();
     const natInfo = this.getNationalityInfo(input.nationality);
     const natTier = natInfo?.tier ?? 'B'; // 미등록 국적 기본 B등급 / Default B tier for unlisted
 
@@ -185,6 +192,8 @@ export class DiagnosisEngineService {
         milestones,
         nextSteps,
         note: pw.note,
+        lastUpdatedAt: this.formatPathwayDate(pw.lastUpdatedAt),
+        lastUpdatedReason: pw.lastUpdatedReason ?? null,
       });
     }
 
@@ -220,7 +229,7 @@ export class DiagnosisEngineService {
         }
       }
 
-      await this.prisma.diagnosisSession.create({
+      const createdSession = await this.prisma.diagnosisSession.create({
         data: {
           userId: validUserId,
           anonymousId: anonymousId ?? null,
@@ -230,6 +239,7 @@ export class DiagnosisEngineService {
           pathwayCount: topPathways.length,
         },
       });
+      result.sessionId = createdSession.sessionId.toString();
     } catch (err) {
       this.logger.warn(
         `진단 세션 저장 실패 / Failed to save diagnosis session: ${err}`,
@@ -426,6 +436,56 @@ export class DiagnosisEngineService {
     return this.matrix.milestones?.[pathwayId] ?? [];
   }
 
+  private async getActivePathways(): Promise<PathwayDef[]> {
+    const rows = await this.prisma.diagnosisPathway.findMany({
+      where: { isActive: true },
+      orderBy: { pathwayId: 'asc' },
+    });
+
+    if (rows.length === 0) {
+      this.logger.warn(
+        'DiagnosisPathway DB rows not found. Falling back to bundled defaults.',
+      );
+      const fallbackDate = new Date(this.matrix.updatedAt);
+      return DEFAULT_DIAGNOSIS_PATHWAYS.map((pathway) => ({
+        ...pathway,
+        isActive: true,
+        lastUpdatedAt: fallbackDate,
+        lastUpdatedReason: '기본 번들 데이터',
+      }));
+    }
+
+    return rows.map((row) => ({
+      pathwayId: row.pathwayId,
+      nameKo: row.nameKo,
+      nameEn: row.nameEn,
+      pathwayType: row.pathwayType,
+      ageMin: row.ageMin,
+      ageMax: row.ageMax,
+      minEducation: row.minEducation,
+      allowedNationalityType: row.allowedNationalityType,
+      topikMin: row.topikMin,
+      minFund: row.minFund,
+      requiresEthnicKorean: row.requiresEthnicKorean,
+      visaChain: row.visaChain,
+      estimatedMonths: row.estimatedMonths,
+      estimatedCostWon: row.estimatedCostWon,
+      platformSupport: row.platformSupport,
+      baseScore: row.baseScore,
+      note: row.note,
+      isActive: row.isActive,
+      lastUpdatedAt: row.lastUpdatedAt,
+      lastUpdatedReason: row.lastUpdatedReason,
+    }));
+  }
+
+  private formatPathwayDate(value?: Date | string | null): string | null {
+    if (!value) return null;
+    const date = value instanceof Date ? value : new Date(value);
+    if (Number.isNaN(date.getTime())) return null;
+    return date.toISOString().slice(0, 10);
+  }
+
   /** 다음 액션 생성 / Generate next steps based on pathway and input */
   private generateNextSteps(pw: PathwayDef, input: DiagnosisInput): NextStep[] {
     const steps: NextStep[] = [];
@@ -550,8 +610,207 @@ export class DiagnosisEngineService {
   // ============================================================
 
   /** 현재 매트릭스 반환 / Return current matrix */
-  getMatrix() {
-    return this.matrix;
+  async getMatrix() {
+    return {
+      ...this.matrix,
+      pathways: await this.listPathways(true),
+    };
+  }
+
+  async listPathways(includeInactive: boolean = false) {
+    const where = includeInactive ? {} : { isActive: true };
+    const pathways = await this.prisma.diagnosisPathway.findMany({
+      where,
+      orderBy: { pathwayId: 'asc' },
+    });
+
+    return pathways.map((pathway) => ({
+      id: pathway.id.toString(),
+      pathwayId: pathway.pathwayId,
+      nameKo: pathway.nameKo,
+      nameEn: pathway.nameEn,
+      pathwayType: pathway.pathwayType,
+      ageMin: pathway.ageMin,
+      ageMax: pathway.ageMax,
+      minEducation: pathway.minEducation,
+      allowedNationalityType: pathway.allowedNationalityType,
+      topikMin: pathway.topikMin,
+      minFund: pathway.minFund,
+      requiresEthnicKorean: pathway.requiresEthnicKorean,
+      visaChain: pathway.visaChain,
+      estimatedMonths: pathway.estimatedMonths,
+      estimatedCostWon: pathway.estimatedCostWon,
+      platformSupport: pathway.platformSupport,
+      baseScore: pathway.baseScore,
+      note: pathway.note,
+      isActive: pathway.isActive,
+      lastUpdatedAt: this.formatPathwayDate(pathway.lastUpdatedAt),
+      lastUpdatedReason: pathway.lastUpdatedReason,
+      createdAt: pathway.createdAt.toISOString(),
+      updatedAt: pathway.updatedAt.toISOString(),
+    }));
+  }
+
+  async updatePathway(
+    pathwayId: string,
+    updates: Partial<PathwayDef>,
+    changedBy?: string,
+  ) {
+    const existing = await this.prisma.diagnosisPathway.findUnique({
+      where: { pathwayId },
+    });
+
+    if (!existing) {
+      throw new Error(`경로를 찾을 수 없습니다 / Pathway not found: ${pathwayId}`);
+    }
+
+    const updateData: Record<string, unknown> = {};
+    const changelogEntries: Array<{
+      fieldChanged: string;
+      oldValue: string | null;
+      newValue: string | null;
+    }> = [];
+
+    const allowedFields: Array<keyof PathwayDef> = [
+      'nameKo',
+      'nameEn',
+      'pathwayType',
+      'ageMin',
+      'ageMax',
+      'minEducation',
+      'allowedNationalityType',
+      'topikMin',
+      'minFund',
+      'requiresEthnicKorean',
+      'visaChain',
+      'estimatedMonths',
+      'estimatedCostWon',
+      'platformSupport',
+      'baseScore',
+      'note',
+      'isActive',
+      'lastUpdatedAt',
+      'lastUpdatedReason',
+    ];
+
+    for (const field of allowedFields) {
+      if (updates[field] === undefined) continue;
+
+      const nextValue =
+        field === 'lastUpdatedAt' && updates[field]
+          ? new Date(updates[field] as string | Date)
+          : updates[field];
+      const prevValue = (existing as any)[field];
+
+      const prevSerialized = this.serializePathwayValue(prevValue);
+      const nextSerialized = this.serializePathwayValue(nextValue);
+      if (prevSerialized === nextSerialized) continue;
+
+      updateData[field] = nextValue as unknown;
+      changelogEntries.push({
+        fieldChanged: field,
+        oldValue: prevSerialized,
+        newValue: nextSerialized,
+      });
+    }
+
+    if (changelogEntries.length === 0) {
+      return {
+        pathwayId,
+        updated: false,
+        pathway: await this.listSinglePathway(pathwayId),
+      };
+    }
+
+    const reason =
+      (updateData.lastUpdatedReason as string | undefined) ??
+      updates.lastUpdatedReason ??
+      '관리자 수정';
+
+    await this.prisma.diagnosisPathway.update({
+      where: { pathwayId },
+      data: updateData,
+    });
+
+    for (const entry of changelogEntries) {
+      await this.prisma.diagnosisPathwayChangelog.create({
+        data: {
+          pathwayId,
+          fieldChanged: entry.fieldChanged,
+          oldValue: entry.oldValue,
+          newValue: entry.newValue,
+          reason,
+          changedBy: changedBy ?? null,
+        },
+      });
+    }
+
+    return {
+      pathwayId,
+      updated: true,
+      pathway: await this.listSinglePathway(pathwayId),
+    };
+  }
+
+  async getPathwayChangelog(pathwayId: string, limit: number = 20) {
+    const items = await this.prisma.diagnosisPathwayChangelog.findMany({
+      where: { pathwayId },
+      orderBy: { changedAt: 'desc' },
+      take: Math.min(Math.max(limit, 1), 100),
+    });
+
+    return items.map((item) => ({
+      id: item.id.toString(),
+      pathwayId: item.pathwayId,
+      fieldChanged: item.fieldChanged,
+      oldValue: item.oldValue,
+      newValue: item.newValue,
+      reason: item.reason,
+      changedBy: item.changedBy,
+      changedAt: item.changedAt.toISOString(),
+    }));
+  }
+
+  private async listSinglePathway(pathwayId: string) {
+    const [pathway] = await this.prisma.diagnosisPathway.findMany({
+      where: { pathwayId },
+      take: 1,
+    });
+
+    if (!pathway) return null;
+
+    return {
+      id: pathway.id.toString(),
+      pathwayId: pathway.pathwayId,
+      nameKo: pathway.nameKo,
+      nameEn: pathway.nameEn,
+      pathwayType: pathway.pathwayType,
+      ageMin: pathway.ageMin,
+      ageMax: pathway.ageMax,
+      minEducation: pathway.minEducation,
+      allowedNationalityType: pathway.allowedNationalityType,
+      topikMin: pathway.topikMin,
+      minFund: pathway.minFund,
+      requiresEthnicKorean: pathway.requiresEthnicKorean,
+      visaChain: pathway.visaChain,
+      estimatedMonths: pathway.estimatedMonths,
+      estimatedCostWon: pathway.estimatedCostWon,
+      platformSupport: pathway.platformSupport,
+      baseScore: pathway.baseScore,
+      note: pathway.note,
+      isActive: pathway.isActive,
+      lastUpdatedAt: this.formatPathwayDate(pathway.lastUpdatedAt),
+      lastUpdatedReason: pathway.lastUpdatedReason,
+      createdAt: pathway.createdAt.toISOString(),
+      updatedAt: pathway.updatedAt.toISOString(),
+    };
+  }
+
+  private serializePathwayValue(value: unknown): string | null {
+    if (value === null || value === undefined) return null;
+    if (value instanceof Date) return value.toISOString();
+    if (typeof value === 'object') return JSON.stringify(value);
+    return String(value);
   }
 
   /**

@@ -1665,6 +1665,63 @@ model DiagnosisSession {
 }
 
 // ========================================
+// [진단 경로] 비자 플래너 경로 관리 데이터
+// Diagnosis pathway: visa planner pathway configuration
+// ========================================
+model DiagnosisPathway {
+  id                  BigInt                     @id @default(autoincrement()) @map("id")
+  pathwayId           String                     @unique @map("pathway_id")
+  nameKo              String                     @map("name_ko")
+  nameEn              String                     @map("name_en")
+  pathwayType         String                     @map("pathway_type")
+  ageMin              Int                        @map("age_min")
+  ageMax              Int                        @map("age_max")
+  minEducation        String                     @map("min_education")
+  allowedNationalityType String                  @map("allowed_nationality_type")
+  topikMin            Int                        @default(0) @map("topik_min")
+  minFund             Int                        @default(0) @map("min_fund")
+  requiresEthnicKorean Boolean                   @default(false) @map("requires_ethnic_korean")
+  visaChain           String                     @map("visa_chain")
+  estimatedMonths     Int                        @map("estimated_months")
+  estimatedCostWon    Int                        @map("estimated_cost_won")
+  platformSupport     String                     @map("platform_support")
+  baseScore           Int                        @map("base_score")
+  note                String                     @db.Text
+  isActive            Boolean                    @default(true) @map("is_active")
+  lastUpdatedAt       DateTime?                  @map("last_updated_at")
+  lastUpdatedReason   String?                    @map("last_updated_reason") @db.Text
+  createdAt           DateTime                   @default(now()) @map("created_at")
+  updatedAt           DateTime                   @updatedAt @map("updated_at")
+
+  changelogEntries    DiagnosisPathwayChangelog[]
+
+  @@index([isActive])
+  @@index([lastUpdatedAt])
+  @@map("diagnosis_pathways")
+}
+
+// ========================================
+// [진단 경로 변경 이력] 비자 플래너 경로 수정 로그
+// Diagnosis pathway changelog: pathway update history
+// ========================================
+model DiagnosisPathwayChangelog {
+  id                  BigInt            @id @default(autoincrement()) @map("id")
+  pathwayId           String            @map("pathway_id")
+  fieldChanged        String            @map("field_changed")
+  oldValue            String?           @map("old_value") @db.Text
+  newValue            String?           @map("new_value") @db.Text
+  reason              String            @db.Text
+  changedBy           String?           @map("changed_by")
+  changedAt           DateTime          @default(now()) @map("changed_at")
+
+  pathway             DiagnosisPathway  @relation(fields: [pathwayId], references: [pathwayId], onDelete: Cascade)
+
+  @@index([pathwayId, changedAt])
+  @@index([changedBy])
+  @@map("diagnosis_pathway_changelogs")
+}
+
+// ========================================
 // [경로 클릭 추적] 진단 결과 내 경로 클릭 기록
 // Diagnosis pathway click: tracks user interactions with recommended pathways
 // ========================================

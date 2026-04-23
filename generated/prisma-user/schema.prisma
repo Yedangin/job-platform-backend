@@ -228,6 +228,19 @@ model IndividualProfile {
   currentEmployerMonths   Int       @default(0) @map("current_employer_months") // 현 직장 근속(월) / Current employer tenure (months)
   depopulationArea        Boolean   @default(false) @map("depopulation_area") // 인구감소지역 거주 / Depopulation area resident
 
+  // ── [9. 비자 플래너 정밀 분석용 (Spec 02)] ──
+  // ── Visa planner premium analysis fields (Spec 02) ──
+  majorCategory      String? @map("major_category") // 전공 카테고리 — 학력-경력 매칭용 / Major category for alignment
+  currentRole        String? @map("current_role") // 현재 역할 (교수/연구원/외국어강사 등) / Current role for E-1~E-5
+  careerSummaryJson  Json?   @map("career_summary_json") // 직종별 경력 합산 캐시 / Career aggregation cache JSON
+  koreaCareerMonths  Int     @default(0) @map("korea_career_months") // 한국 경력 합산(월) / Korea career total (months)
+  universityName     String? @map("university_name") // 대학명 / University name
+  universityNameEn   String? @map("university_name_en") // 대학명(영문) / University name (English)
+  major              String? @map("major") // 전공명 / Major name
+  graduationYear     Int?    @map("graduation_year") // 졸업년도 / Graduation year
+  nationalLicenses   Json?   @map("national_licenses") // 한국 국가기술자격증 JSON / Korean national licenses
+  internationalCerts Json?   @map("international_certs") // 국제 자격증 JSON / International certifications
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -277,6 +290,9 @@ model TalentAccessLog {
   accessedAt   DateTime          @default(now()) @map("accessed_at")
 
   @@unique([corporateId, individualId])
+  @@index([corporateId])
+  @@index([individualId])
+  @@index([accessedAt])
   @@map("talent_access_logs")
 }
 
@@ -387,6 +403,16 @@ model ProfileCareer {
   isCurrent Boolean   @default(false) @map("is_current")
 
   description String? @map("description") @db.Text
+
+  // [신규] 직종 카테고리 — 경력 합산 핵심 / Occupation category for career aggregation
+  occupationCategory String? @map("occupation_category")
+  // IT_SW / ELEC / MECH / CHEM / CONST / BIZ / EDU / LAW /
+  // MED / SCIENCE / DESIGN_ART / LANG / AGRI / SHIP /
+  // ENV / FOOD_HOTEL / MANUFACT / LOGISTICS / OTHER
+
+  // [신규] 근무 국가 — 한국 경력 가산점 판정 / Work country for Korea career bonus
+  country String @default("KR") @map("country") @db.VarChar(3)
+  // ISO 3166-1 alpha-2 (KR, VN, US, JP 등)
 
   @@map("profile_careers")
 }
@@ -1202,8 +1228,11 @@ model JobPosting {
   scraps             JobScrap[]
 
   @@index([corporateId])
+  @@index([corporateId, status])
   @@index([boardType, tierType, status])
+  @@index([boardType, status])
   @@index([status, createdAt])
+  @@index([status, expiresAt])
   @@map("job_postings")
 }
 
@@ -1273,7 +1302,7 @@ model JobAttributesFulltime {
 model JobApplication {
   id          BigInt     @id @default(autoincrement()) @map("app_id")
   jobId       BigInt     @map("job_id")
-  job         JobPosting @relation(fields: [jobId], references: [id])
+  job         JobPosting @relation(fields: [jobId], references: [id], onDelete: Cascade)
   applicantId String     @map("applicant_id")
 
   applicationMethod ApplicationMethod @map("application_method")
@@ -1311,11 +1340,31 @@ model JobApplication {
   rejectionReason  String?   @map("rejection_reason")
   resultNotifiedAt DateTime? @map("result_notified_at")
 
+  // 단계별 타임스탬프 (spec 08 §7) / Stage timestamps
+  documentPassedAt     DateTime? @map("document_passed_at")
+  interviewScheduledAt DateTime? @map("interview_scheduled_at")
+  finalAcceptedAt      DateTime? @map("final_accepted_at")
+  rejectedAt           DateTime? @map("rejected_at")
+
+  // 최종 합격 정보 (spec 08 §4-1) / Final acceptance info
+  offeredSalary     Int?      @map("offered_salary") // 제시 연봉 (만원 단위) / Offered salary (10K KRW units)
+  expectedStartDate DateTime? @map("expected_start_date") // 입사 예정일 / Expected start date
+  companyMessage    String?   @map("company_message") @db.Text // 기업 메시지 / Company message
+
+  // 비자 안내 (spec 08 §4-2) / Visa guide info
+  visaGuideScenario    String?   @map("visa_guide_scenario") // A | B | D | E | F / Scenario code
+  visaGuideGeneratedAt DateTime? @map("visa_guide_generated_at") // 비자 안내 생성 시점 / Guide generation time
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  // 관계 / Relations
+  checklistItems VisaChecklistItem[]
+
   @@unique([jobId, applicantId])
   @@index([applicantId])
+  @@index([applicantId, status])
+  @@index([jobId, status])
   @@index([status])
   @@map("job_applications")
 }
@@ -1341,20 +1390,68 @@ model InterviewSlot {
 }
 
 enum ApplicationStatus {
-  PENDING
-  REVIEWING
-  INTERVIEW_REQUESTED
-  INTERVIEW_SCHEDULED
-  COORDINATION_NEEDED
-  CONFIRMED
-  ACCEPTED
-  REJECTED
-  CANCELLED
+  PENDING // 지원 접수 / Applied (= APPLIED in spec 08)
+  REVIEWING // 서류 심사 중 / Reviewing
+  DOCUMENT_PASSED // 서류 합격 / Document passed (spec 08 §3-2)
+  INTERVIEW_REQUESTED // 면접 제안 / Interview proposed
+  INTERVIEW_SCHEDULED // 면접 일정 확정 / Interview scheduled
+  COORDINATION_NEEDED // 일정 조율 필요 / Needs coordination
+  CONFIRMED // 면접 확인 / Interview confirmed
+  FINAL_ACCEPTED // 최종 합격 / Final accepted (spec 08 §3-2) ← ★ 비자 안내 트리거
+  ACCEPTED // 합격 (레거시 호환) / Accepted (legacy compat)
+  REJECTED // 불합격 / Rejected
+  CANCELLED // 채용 취소 (기업) / Cancelled by company
+  WITHDRAWN // 지원 취소 (구직자) / Withdrawn by applicant (spec 08 §7)
+  APPLICATION_EXPIRED // 자동 만료 / Auto-expired (spec 08 §10-A-2)
 }
 
 enum ActorType {
   EMPLOYER
   APPLICANT
+}
+
+// ========================================
+// [비자 체크리스트 템플릿] 어드민 관리 (spec 08 §7)
+// Visa checklist template (admin-managed)
+// ========================================
+model VisaChecklistTemplate {
+  id             BigInt  @id @default(autoincrement()) @map("template_id")
+  scenario       String  @db.VarChar(10) // A | B | D | E | F / Scenario code
+  visaTransition String  @map("visa_transition") @db.VarChar(50) // 예: "D-10 → E-7" / Visa transition type
+  category       String  @db.VarChar(20) // COMPANY | APPLICANT
+  itemOrder      Int     @map("item_order") // 항목 표시 순서 / Display order
+  itemText       String  @map("item_text") // 체크리스트 항목 텍스트 / Checklist item text
+  isRequired     Boolean @default(true) @map("is_required") // 필수 여부 / Required
+  note           String? @db.Text // 보충 설명 / Supplementary note
+  isActive       Boolean @default(true) @map("is_active") // 비활성화 시 새 생성에서 제외 / Active flag
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([scenario, category, itemOrder])
+  @@index([scenario, isActive])
+  @@map("visa_checklist_templates")
+}
+
+// ========================================
+// [비자 체크리스트 아이템] 지원별 인스턴스 (spec 08 §7)
+// Visa checklist item per application
+// ========================================
+model VisaChecklistItem {
+  id            BigInt         @id @default(autoincrement()) @map("item_id")
+  applicationId BigInt         @map("application_id")
+  application   JobApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  category      String         @db.VarChar(20) // COMPANY | APPLICANT
+  itemText      String         @map("item_text") // 체크리스트 항목 / Checklist item
+  itemOrder     Int            @map("item_order") // 표시 순서 / Display order
+  isChecked     Boolean        @default(false) @map("is_checked")
+  checkedAt     DateTime?      @map("checked_at")
+  checkedBy     String?        @map("checked_by") // 체크한 사용자 authId / Checked by user authId
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([applicationId, category])
+  @@map("visa_checklist_items")
 }
 
 // ========================================
@@ -1444,7 +1541,27 @@ model Resume {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  // [북마크 역참조 / Bookmark reverse relation]
+  bookmarks TalentBookmark[]
+
   @@map("resumes")
+}
+
+// ========================================
+// [인재 북마크 / Talent Bookmark]
+// 기업회원이 관심 인재를 저장
+// Corporate users bookmark interesting talents
+// ========================================
+model TalentBookmark {
+  id        BigInt   @id @default(autoincrement()) @map("bookmark_id")
+  resumeId  BigInt   @map("resume_id")
+  resume    Resume   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([resumeId, userId])
+  @@index([userId])
+  @@map("talent_bookmarks")
 }
 
 // ========================================
@@ -1516,17 +1633,91 @@ model DiagnosisSession {
   convertedToPaid   Boolean @default(false) @map("converted_to_paid")
   userFeedbackScore Int?    @map("user_feedback_score") // 1-5점
 
+  // ── 유료 플래너 (Spec 02) / Premium planner fields ──
+  isPremium         Boolean   @default(false) @map("is_premium")
+  isPremiumViewed   Boolean   @default(false) @map("is_premium_viewed")
+  stripeSessionId   String?   @map("stripe_session_id")
+  stripePaidAt      DateTime? @map("stripe_paid_at")
+  premiumResultJson Json?     @map("premium_result_json")
+  premiumViewedAt   DateTime? @map("premium_viewed_at")
+
+  // ── 재진단 / Rediagnosis fields ──
+  previousSessionId BigInt? @map("previous_session_id")
+
+  // ── 동의 기록 (분쟁 대비) / Consent timestamps ──
+  refundPolicyAgreedAt   DateTime? @map("refund_policy_agreed_at")
+  digitalContentAgreedAt DateTime? @map("digital_content_agreed_at")
+  privacyAgreedAt        DateTime? @map("privacy_agreed_at")
+
   createdAt DateTime @default(now()) @map("created_at")
 
   // 관계 / Relations
-  individual IndividualProfile?      @relation(fields: [userId], references: [authId])
-  clicks     DiagnosisPathwayClick[]
+  individual        IndividualProfile?      @relation(fields: [userId], references: [authId])
+  clicks            DiagnosisPathwayClick[]
+  rediagnosisCoupon RediagnosisCoupon?
 
   @@index([userId])
   @@index([anonymousId])
   @@index([topPathwayId])
   @@index([createdAt])
   @@map("diagnosis_sessions")
+}
+
+// ========================================
+// [진단 경로] 비자 플래너 경로 관리 데이터
+// Diagnosis pathway: visa planner pathway configuration
+// ========================================
+model DiagnosisPathway {
+  id                     BigInt    @id @default(autoincrement()) @map("id")
+  pathwayId              String    @unique @map("pathway_id")
+  nameKo                 String    @map("name_ko")
+  nameEn                 String    @map("name_en")
+  pathwayType            String    @map("pathway_type")
+  ageMin                 Int       @map("age_min")
+  ageMax                 Int       @map("age_max")
+  minEducation           String    @map("min_education")
+  allowedNationalityType String    @map("allowed_nationality_type")
+  topikMin               Int       @default(0) @map("topik_min")
+  minFund                Int       @default(0) @map("min_fund")
+  requiresEthnicKorean   Boolean   @default(false) @map("requires_ethnic_korean")
+  visaChain              String    @map("visa_chain")
+  estimatedMonths        Int       @map("estimated_months")
+  estimatedCostWon       Int       @map("estimated_cost_won")
+  platformSupport        String    @map("platform_support")
+  baseScore              Int       @map("base_score")
+  note                   String    @db.Text
+  isActive               Boolean   @default(true) @map("is_active")
+  lastUpdatedAt          DateTime? @map("last_updated_at")
+  lastUpdatedReason      String?   @map("last_updated_reason") @db.Text
+  createdAt              DateTime  @default(now()) @map("created_at")
+  updatedAt              DateTime  @updatedAt @map("updated_at")
+
+  changelogEntries DiagnosisPathwayChangelog[]
+
+  @@index([isActive])
+  @@index([lastUpdatedAt])
+  @@map("diagnosis_pathways")
+}
+
+// ========================================
+// [진단 경로 변경 이력] 비자 플래너 경로 수정 로그
+// Diagnosis pathway changelog: pathway update history
+// ========================================
+model DiagnosisPathwayChangelog {
+  id           BigInt   @id @default(autoincrement()) @map("id")
+  pathwayId    String   @map("pathway_id")
+  fieldChanged String   @map("field_changed")
+  oldValue     String?  @map("old_value") @db.Text
+  newValue     String?  @map("new_value") @db.Text
+  reason       String   @db.Text
+  changedBy    String?  @map("changed_by")
+  changedAt    DateTime @default(now()) @map("changed_at")
+
+  pathway DiagnosisPathway @relation(fields: [pathwayId], references: [pathwayId], onDelete: Cascade)
+
+  @@index([pathwayId, changedAt])
+  @@index([changedBy])
+  @@map("diagnosis_pathway_changelogs")
 }
 
 // ========================================
@@ -1568,4 +1759,106 @@ model ScoreCalibrationLog {
 
   @@index([pathwayId, dimension])
   @@map("score_calibration_log")
+}
+
+// ========================================
+// [대학 순위] QS/THE 세계 대학 순위 참조 데이터
+// University ranking: QS/THE world ranking reference data
+// ========================================
+model UniversityRanking {
+  id               BigInt   @id @default(autoincrement())
+  universityName   String   @map("university_name")
+  universityNameEn String   @map("university_name_en")
+  country          String   @db.VarChar(3) // ISO 3166-1 alpha-3
+  qsRank           Int?     @map("qs_rank")
+  theRank          Int?     @map("the_rank")
+  rankTier         String   @map("rank_tier") // TOP50 / TOP100 / TOP200 / TOP300 / TOP500 / UNRANKED
+  bonusScore       Float    @map("bonus_score") // 0 ~ 8.0
+  updatedYear      Int      @map("updated_year")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@unique([universityName, country])
+  @@index([universityNameEn])
+  @@map("university_rankings")
+}
+
+// ========================================
+// [인접 전공-직종 매핑] 학력-경력 부분 일치 판정
+// Adjacent major-occupation mapping: partial alignment scoring
+// ========================================
+model AdjacentMajorOccupation {
+  id         BigInt @id @default(autoincrement())
+  categoryA  String @map("category_a") // IT_SW
+  categoryB  String @map("category_b") // ELEC
+  alignBonus Float  @map("align_bonus") // 2.5 (부분 일치 / partial match)
+
+  @@unique([categoryA, categoryB])
+  @@map("adjacent_major_occupation")
+}
+
+// ========================================
+// [비자 수입 참조] 비자 유형별 평균 연수입 (통계 기반)
+// Visa income reference: average annual income by visa type (statistics-based)
+// ========================================
+model VisaIncomeReference {
+  id              BigInt   @id @default(autoincrement())
+  visaCode        String   @unique @map("visa_code") // E-5, E-7-1, E-9 등
+  visaNameKo      String   @map("visa_name_ko")
+  avgAnnualIncome Int      @map("avg_annual_income") // 원 단위 / KRW
+  incomeSource    String   @map("income_source") // 출처 / Source
+  incomeNote      String?  @map("income_note")
+  updatedYear     Int      @map("updated_year")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("visa_income_references")
+}
+
+// ========================================
+// [재진단 쿠폰] 유료 플래너 결제 후 6개월 무료 재진단
+// Rediagnosis coupon: free re-diagnosis 6 months after premium purchase
+// ========================================
+model RediagnosisCoupon {
+  id                BigInt @id @default(autoincrement()) @map("coupon_id")
+  userId            String @map("user_id")
+  originalSessionId BigInt @unique @map("original_session_id")
+  couponCode        String @unique @map("coupon_code") // RDX-XXXXXX
+  status            String @default("ISSUED") @map("status")
+  // ISSUED → AVAILABLE → USED / EXPIRED / CANCELLED
+
+  issuedAt       DateTime  @default(now()) @map("issued_at")
+  availableAt    DateTime  @map("available_at") // 결제일 + 6개월
+  expiresAt      DateTime  @map("expires_at") // 결제일 + 12개월
+  usedAt         DateTime? @map("used_at")
+  usedSessionId  BigInt?   @map("used_session_id")
+  reminderSentAt DateTime? @map("reminder_sent_at") // 30일 전 알림 발송 시점
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  // 관계 / Relations
+  originalSession DiagnosisSession @relation(fields: [originalSessionId], references: [sessionId])
+
+  @@index([userId, status])
+  @@map("rediagnosis_coupons")
+}
+
+// ========================================
+// [플래너 환불] 비자 플래너 환불 처리 기록
+// Planner refund: visa planner refund tracking
+// ========================================
+model PlannerRefund {
+  id                BigInt   @id @default(autoincrement()) @map("refund_id")
+  sessionId         BigInt   @map("session_id")
+  userId            String   @map("user_id")
+  status            String   @map("status") // APPROVED / DENIED
+  reason            String   @map("reason") // RESULT_NOT_VIEWED / RESULT_VIEWED
+  stripeRefundId    String?  @map("stripe_refund_id")
+  refundAmountCents Int?     @map("refund_amount_cents") // USD cents (1000 = $10)
+  currency          String   @default("USD") @map("currency")
+  message           String?
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([sessionId])
+  @@map("planner_refunds")
 }
