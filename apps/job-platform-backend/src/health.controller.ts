@@ -1,4 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Res, HttpStatus } from '@nestjs/common';
+import { Response } from 'express';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { AuthPrismaService, RedisService } from 'libs/common/src';
@@ -24,7 +25,8 @@ export class HealthController {
     summary: 'Health check — DB/Redis 상태 확인 / Check service health',
   })
   @ApiResponse({ status: 200, description: 'Service is healthy.' })
-  async check() {
+  @ApiResponse({ status: 503, description: 'Service is degraded.' })
+  async check(@Res() res: Response) {
     const services: Record<string, string> = {};
 
     // PostgreSQL 연결 확인 / Check PostgreSQL connection
@@ -47,10 +49,14 @@ export class HealthController {
       (s) => s === 'connected',
     );
 
-    return {
+    const body = {
       status: allConnected ? 'OK' : 'DEGRADED',
       uptime: Math.floor((Date.now() - this.startedAt) / 1000),
       services,
     };
+
+    return res
+      .status(allConnected ? HttpStatus.OK : HttpStatus.SERVICE_UNAVAILABLE)
+      .json(body);
   }
 }

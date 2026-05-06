@@ -1,6 +1,7 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { AuthCronService } from './auth-cron.service';
 import {
   AuthPrismaService,
   GoogleStrategy,
@@ -8,6 +9,7 @@ import {
   SessionAuthGuard,
   RolesGuard,
   RedisService,
+  RedisLockService,
 } from 'libs/common/src';
 import { KakaoStrategy } from 'libs/common/src/common/strategies/kakao.strategy';
 import { FacebookStrategy } from 'libs/common/src/common/strategies/facebook.strategy';
@@ -22,6 +24,7 @@ import { AuthPlatformMiddleware } from './auth-platform.middleware';
   providers: [
     GenerateStoreToken,
     AuthService,
+    AuthCronService,
     GoogleStrategy,
     KakaoStrategy,
     FacebookStrategy,
@@ -31,6 +34,7 @@ import { AuthPlatformMiddleware } from './auth-platform.middleware';
     SessionAuthGuard,
     RolesGuard,
     RedisService,
+    RedisLockService,
   ],
   exports: [AuthService],
 })

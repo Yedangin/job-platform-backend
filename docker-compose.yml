@@ -35,6 +35,8 @@ services:
       start_period: 40s
     command: >
              sh -c "npx prisma db push --accept-data-loss --schema=./prisma/user/user.schema.prisma &&
+             npx prisma db push --accept-data-loss --schema=./prisma/payment/payment.schema.prisma &&
+             npx prisma db push --accept-data-loss --schema=./prisma/log/log.schema.prisma &&
              npx nest start auth-service &
              npx nest start job-platform-backend"
 
