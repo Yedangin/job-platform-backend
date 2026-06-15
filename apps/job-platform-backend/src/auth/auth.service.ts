@@ -297,7 +297,10 @@ export class AuthService implements OnModuleInit {
     const parsedBirthDate = new Date(`${birthDate}T00:00:00.000Z`);
     const adultCutoff = new Date();
     adultCutoff.setUTCFullYear(adultCutoff.getUTCFullYear() - 18);
-    if (Number.isNaN(parsedBirthDate.getTime()) || parsedBirthDate > adultCutoff) {
+    if (
+      Number.isNaN(parsedBirthDate.getTime()) ||
+      parsedBirthDate > adultCutoff
+    ) {
       throw new BadRequestException('만 18세 이상만 가입할 수 있습니다.');
     }
 
