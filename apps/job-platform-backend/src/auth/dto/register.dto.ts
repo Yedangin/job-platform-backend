@@ -1,5 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, MinLength, IsEnum } from 'class-validator';
+import {
+  Equals,
+  IsBoolean,
+  IsEmail,
+  IsString,
+  MinLength,
+  IsEnum,
+  IsOptional,
+  IsDateString,
+} from 'class-validator';
 
 export class RegisterDto {
   @ApiProperty({ example: 'user@example.com' })
@@ -15,6 +24,10 @@ export class RegisterDto {
   @IsString()
   fullName: string;
 
+  @ApiProperty({ example: '1995-01-20' })
+  @IsDateString()
+  birthDate: string;
+
   @ApiProperty({
     example: 'INDIVIDUAL',
     enum: ['INDIVIDUAL', 'CORPORATE'],
@@ -22,4 +35,31 @@ export class RegisterDto {
   })
   @IsEnum(['INDIVIDUAL', 'CORPORATE'])
   role: 'INDIVIDUAL' | 'CORPORATE';
+
+  @IsBoolean()
+  @Equals(true)
+  termsConsent: true;
+
+  @IsBoolean()
+  @Equals(true)
+  privacyConsent: true;
+
+  @IsBoolean()
+  @Equals(true)
+  internationalTransferConsent: true;
+
+  @IsBoolean()
+  @IsOptional()
+  marketingConsent?: boolean;
+
+  @IsBoolean()
+  @Equals(true)
+  ageConfirmed: true;
+
+  @IsString()
+  policyVersion: string;
+
+  @IsString()
+  @IsOptional()
+  consentChannel?: string;
 }

@@ -34,15 +34,20 @@ async function bootstrap() {
     /\/$/,
     '',
   );
+  const localDevOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:3002',
+    'http://localhost:8081',
+    'http://localhost:8082',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:8081',
+    'http://127.0.0.1:8082',
+  ];
   const isProduction = process.env.NODE_ENV === 'production';
   const allowedOrigins = isProduction
-    ? [clientUrl] // 프로덕션: CLIENT_URL만 허용 / Production: only CLIENT_URL
-    : [
-        clientUrl,
-        'http://localhost:3000',
-        'http://localhost:3001',
-        'http://127.0.0.1:3000',
-      ];
+    ? [clientUrl, ...localDevOrigins] // 로컬 운영 점검 포함 / include local dev origins for local ops
+    : [clientUrl, ...localDevOrigins];
 
   app.enableCors({
     origin: (origin, callback) => {

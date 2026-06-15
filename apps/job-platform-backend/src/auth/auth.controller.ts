@@ -109,9 +109,15 @@ export class AuthController {
     short: { ttl: 60000, limit: 5 },
     medium: { ttl: 300000, limit: 10 },
   })
-  async register(@Body() registerDto: RegisterDto) {
+  async register(@Body() registerDto: RegisterDto, @Request() req: any) {
+    const consentIp =
+      req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
     // ✅ [변경 2] firstValueFrom 없이 바로 함수를 호출합니다.
-    return await this.authService.register(registerDto);
+    return await this.authService.register({
+      ...registerDto,
+      consentIp,
+      consentUserAgent: req.headers['user-agent'],
+    });
   }
 
   // --- 2. OTP 발송 ---
@@ -347,6 +353,13 @@ export class AuthController {
   async getNotificationSettings(@Session() sessionId: string) {
     if (!sessionId) throw new UnauthorizedException('No session provided');
     return await this.authService.getNotificationSettings(sessionId);
+  }
+
+  @Get('my/consents')
+  @ApiOperation({ summary: 'Get my consent history' })
+  async getMyConsents(@Session() sessionId: string) {
+    if (!sessionId) throw new UnauthorizedException('No session provided');
+    return await this.authService.getMyConsents(sessionId);
   }
 
   // --- 12. 알림 설정 변경 / Update notification settings ---
@@ -602,6 +615,12 @@ export class AuthController {
       empCertDocPath?: string;
       empCertDocOrigName?: string;
       isCeoSelf?: boolean;
+      termsConsent: boolean;
+      privacyConsent: boolean;
+      internationalTransferConsent: boolean;
+      marketingConsent?: boolean;
+      policyVersion: string;
+      consentChannel?: string;
     },
   ) {
     if (!sessionId) throw new UnauthorizedException('No session provided');
@@ -612,6 +631,7 @@ export class AuthController {
       sessionId,
       body,
       clientIp,
+      req.headers['user-agent'],
     );
   }
 

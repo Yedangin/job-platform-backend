@@ -221,7 +221,15 @@ describe('AuthService', () => {
       email: 'new@example.com',
       password: 'Password123!',
       fullName: 'New User',
+      birthDate: '1995-01-20',
       role: 'INDIVIDUAL',
+      termsConsent: true,
+      privacyConsent: true,
+      internationalTransferConsent: true,
+      marketingConsent: false,
+      ageConfirmed: true,
+      policyVersion: '2026-03-02',
+      consentChannel: 'WEB_SIGNUP',
     };
 
     it('성공적으로 개인회원을 등록한다 / should register an individual user successfully', async () => {
@@ -271,6 +279,23 @@ describe('AuthService', () => {
       await expect(service.register(registerRequest)).rejects.toThrow(
         BadRequestException,
       );
+    });
+
+    it('필수 동의가 없으면 회원가입을 거부한다 / should reject registration without required consent', async () => {
+      await expect(
+        service.register({ ...registerRequest, termsConsent: false }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('만 18세 미만 회원가입을 거부한다 / should reject underage registration', async () => {
+      const nextYear = new Date().getUTCFullYear() + 1;
+
+      await expect(
+        service.register({
+          ...registerRequest,
+          birthDate: `${nextYear}-01-01`,
+        }),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('기업 회원 등록 시 환영 쿠폰을 발급한다 / should grant welcome coupons for corporate registration', async () => {

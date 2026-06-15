@@ -5,10 +5,10 @@
 // source: auth/auth.proto
 
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
-import { Observable } from "rxjs";
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
 
-export const protobufPackage = "auth";
+export const protobufPackage = 'auth';
 
 /**
  * -----------------------------
@@ -102,9 +102,19 @@ export interface SocialAuthResponse {
 /** Registration request message */
 export interface RegisterRequest {
   fullName: string;
+  birthDate: string;
   email: string;
   password: string;
   role?: string | undefined;
+  termsConsent: boolean;
+  privacyConsent: boolean;
+  internationalTransferConsent: boolean;
+  marketingConsent?: boolean | undefined;
+  ageConfirmed: boolean;
+  policyVersion: string;
+  consentChannel?: string | undefined;
+  consentIp?: string | undefined;
+  consentUserAgent?: string | undefined;
 }
 
 /** Login request message */
@@ -166,7 +176,7 @@ export interface VerifyOtpResponse {
   message: string;
 }
 
-export const AUTH_PACKAGE_NAME = "auth";
+export const AUTH_PACKAGE_NAME = 'auth';
 
 export interface AuthServiceClient {
   /** Registers a new user */
@@ -187,11 +197,15 @@ export interface AuthServiceClient {
 
   /** Password Reset for user */
 
-  resetPassword(request: ResetPasswordRequest): Observable<PasswordResetResponse>;
+  resetPassword(
+    request: ResetPasswordRequest,
+  ): Observable<PasswordResetResponse>;
 
   /** Reset Password Request for user */
 
-  passwordReset(request: PasswordResetRequest): Observable<PasswordResetResponse>;
+  passwordReset(
+    request: PasswordResetRequest,
+  ): Observable<PasswordResetResponse>;
 
   /** Social Login */
 
@@ -211,72 +225,115 @@ export interface AuthServiceController {
 
   register(
     request: RegisterRequest,
-  ): Promise<RegisterSuccessResponse> | Observable<RegisterSuccessResponse> | RegisterSuccessResponse;
+  ):
+    | Promise<RegisterSuccessResponse>
+    | Observable<RegisterSuccessResponse>
+    | RegisterSuccessResponse;
 
   /** Logs in an existing user */
 
-  login(request: LoginRequest): Promise<LoginSuccessResponse> | Observable<LoginSuccessResponse> | LoginSuccessResponse;
+  login(
+    request: LoginRequest,
+  ):
+    | Promise<LoginSuccessResponse>
+    | Observable<LoginSuccessResponse>
+    | LoginSuccessResponse;
 
   /** Retrieves the profile of the logged-in user */
 
-  getProfile(request: GetProfileRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
+  getProfile(
+    request: GetProfileRequest,
+  ): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 
   /** Logs out the current user */
 
   logout(
     request: LogoutRequest,
-  ): Promise<RegisterSuccessResponse> | Observable<RegisterSuccessResponse> | RegisterSuccessResponse;
+  ):
+    | Promise<RegisterSuccessResponse>
+    | Observable<RegisterSuccessResponse>
+    | RegisterSuccessResponse;
 
   /** Password Reset for user */
 
   resetPassword(
     request: ResetPasswordRequest,
-  ): Promise<PasswordResetResponse> | Observable<PasswordResetResponse> | PasswordResetResponse;
+  ):
+    | Promise<PasswordResetResponse>
+    | Observable<PasswordResetResponse>
+    | PasswordResetResponse;
 
   /** Reset Password Request for user */
 
   passwordReset(
     request: PasswordResetRequest,
-  ): Promise<PasswordResetResponse> | Observable<PasswordResetResponse> | PasswordResetResponse;
+  ):
+    | Promise<PasswordResetResponse>
+    | Observable<PasswordResetResponse>
+    | PasswordResetResponse;
 
   /** Social Login */
 
   socialLogin(
     request: SocialLoginRequest,
-  ): Promise<LoginSuccessResponse> | Observable<LoginSuccessResponse> | LoginSuccessResponse;
+  ):
+    | Promise<LoginSuccessResponse>
+    | Observable<LoginSuccessResponse>
+    | LoginSuccessResponse;
 
   /** Send Otp mail */
 
-  sendOtp(request: SendOtpRequest): Promise<SendOtpResponse> | Observable<SendOtpResponse> | SendOtpResponse;
+  sendOtp(
+    request: SendOtpRequest,
+  ): Promise<SendOtpResponse> | Observable<SendOtpResponse> | SendOtpResponse;
 
   /** Verifi Otp */
 
-  verifyOtp(request: VerifyOtpRequest): Promise<VerifyOtpResponse> | Observable<VerifyOtpResponse> | VerifyOtpResponse;
+  verifyOtp(
+    request: VerifyOtpRequest,
+  ):
+    | Promise<VerifyOtpResponse>
+    | Observable<VerifyOtpResponse>
+    | VerifyOtpResponse;
 }
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
-      "register",
-      "login",
-      "getProfile",
-      "logout",
-      "resetPassword",
-      "passwordReset",
-      "socialLogin",
-      "sendOtp",
-      "verifyOtp",
+      'register',
+      'login',
+      'getProfile',
+      'logout',
+      'resetPassword',
+      'passwordReset',
+      'socialLogin',
+      'sendOtp',
+      'verifyOtp',
     ];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcMethod('AuthService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("AuthService", method)(constructor.prototype[method], method, descriptor);
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(
+        constructor.prototype,
+        method,
+      );
+      GrpcStreamMethod('AuthService', method)(
+        constructor.prototype[method],
+        method,
+        descriptor,
+      );
     }
   };
 }
 
-export const AUTH_SERVICE_NAME = "AuthService";
+export const AUTH_SERVICE_NAME = 'AuthService';

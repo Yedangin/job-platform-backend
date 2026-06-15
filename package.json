@@ -32,6 +32,7 @@
     "prisma:generate": "npm run prisma:gen:job && npm run prisma:gen:log && npm run prisma:gen:notification && npm run prisma:gen:payment && npm run prisma:gen:user",
     "protoc:generate": "npx protoc --proto_path=./proto --ts_proto_out=./types/ ./proto/**/*proto --ts_proto_opt=nestJs=true",
     "seed:users": "node scripts/seed-users.js",
+    "launch:check": "bash scripts/launch-check.sh",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -93,7 +94,7 @@
     "@eslint/js": "^9.18.0",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
-    "@nestjs/testing": "^11.1.9",
+    "@nestjs/testing": "^11.1.26",
     "@swc/cli": "^0.6.0",
     "@swc/core": "^1.10.7",
     "@types/bcrypt": "^5.0.2",

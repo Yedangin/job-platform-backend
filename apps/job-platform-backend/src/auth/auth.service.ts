@@ -265,7 +265,41 @@ export class AuthService implements OnModuleInit {
 
   // --- 3. 회원가입 (★ 핵심 로직: 트랜잭션 + One Account Policy) ---
   async register(request: RegisterRequest): Promise<RegisterSuccessResponse> {
-    const { email, password, fullName, role } = request;
+    const {
+      email,
+      password,
+      fullName,
+      birthDate,
+      role,
+      termsConsent,
+      privacyConsent,
+      internationalTransferConsent,
+      marketingConsent = false,
+      ageConfirmed,
+      policyVersion,
+      consentChannel = 'WEB_SIGNUP',
+      consentIp,
+      consentUserAgent,
+    } = request;
+
+    if (
+      !termsConsent ||
+      !privacyConsent ||
+      !internationalTransferConsent ||
+      !ageConfirmed ||
+      !policyVersion
+    ) {
+      throw new BadRequestException(
+        '필수 동의 및 만 18세 이상 확인이 필요합니다.',
+      );
+    }
+
+    const parsedBirthDate = new Date(`${birthDate}T00:00:00.000Z`);
+    const adultCutoff = new Date();
+    adultCutoff.setUTCFullYear(adultCutoff.getUTCFullYear() - 18);
+    if (Number.isNaN(parsedBirthDate.getTime()) || parsedBirthDate > adultCutoff) {
+      throw new BadRequestException('만 18세 이상만 가입할 수 있습니다.');
+    }
 
     // 1. 인증 티켓 확인
     const isVerified = await this.redisService.get(`verified_ticket:${email}`);
@@ -327,6 +361,56 @@ export class AuthService implements OnModuleInit {
           },
         });
 
+        await prisma.consentRecord.createMany({
+          data: [
+            {
+              authId: newUser.id,
+              consentType: 'TERMS',
+              policyVersion,
+              granted: true,
+              channel: consentChannel,
+              ipAddress: consentIp,
+              userAgent: consentUserAgent,
+            },
+            {
+              authId: newUser.id,
+              consentType: 'PRIVACY',
+              policyVersion,
+              granted: true,
+              channel: consentChannel,
+              ipAddress: consentIp,
+              userAgent: consentUserAgent,
+            },
+            {
+              authId: newUser.id,
+              consentType: 'INTERNATIONAL_TRANSFER',
+              policyVersion,
+              granted: true,
+              channel: consentChannel,
+              ipAddress: consentIp,
+              userAgent: consentUserAgent,
+            },
+            {
+              authId: newUser.id,
+              consentType: 'AGE_18_CONFIRMED',
+              policyVersion,
+              granted: true,
+              channel: consentChannel,
+              ipAddress: consentIp,
+              userAgent: consentUserAgent,
+            },
+            {
+              authId: newUser.id,
+              consentType: 'MARKETING',
+              policyVersion,
+              granted: marketingConsent,
+              channel: consentChannel,
+              ipAddress: consentIp,
+              userAgent: consentUserAgent,
+            },
+          ],
+        });
+
         // 5-2. 프로필 테이블 초기 Row 생성
         if (finalUserType === UserType.INDIVIDUAL) {
           // 개인 회원: profiles_individual 생성 (필수 필드만)
@@ -335,7 +419,7 @@ export class AuthService implements OnModuleInit {
               authId: newUser.id,
               realName: fullName || '이름 미입력',
               nationality: 'UNKNOWN', // 임시값 (나중에 프로필 수정에서 입력)
-              birthDate: new Date('1900-01-01'), // 임시값
+              birthDate: parsedBirthDate,
               gender: 'M', // 임시값
               visaType: 'PENDING', // 임시값
               visaExpiryDate: new Date('2099-12-31'), // 임시값
@@ -1422,6 +1506,28 @@ export class AuthService implements OnModuleInit {
     };
   }
 
+  async getMyConsents(sessionId: string) {
+    const userId = await this.getSessionUserId(sessionId);
+    const records = await this.prisma.consentRecord.findMany({
+      where: { authId: userId },
+      orderBy: { consentedAt: 'desc' },
+      select: {
+        consentId: true,
+        consentType: true,
+        policyVersion: true,
+        granted: true,
+        channel: true,
+        consentedAt: true,
+        withdrawnAt: true,
+      },
+    });
+
+    return records.map(({ consentId, ...record }) => ({
+      ...record,
+      consentId: consentId.toString(),
+    }));
+  }
+
   // --- 14. 알림 설정 변경 / Update notification settings ---
   async updateNotificationSettings(
     sessionId: string,
@@ -1443,39 +1549,55 @@ export class AuthService implements OnModuleInit {
     const prevKakao = user.notifKakao;
     const prevMarketing = (user as any).marketingConsent ?? false;
 
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        notifSms: sms,
-        notifEmail: email,
-        notifKakao: kakao,
-        notifEnabledAt: hasAnyEnabled ? now : null,
-        // 채널별 타임스탬프: ON으로 바뀌면 현재 시각, OFF로 바뀌면 null
-        notifSmsEnabledAt: sms
-          ? !prevSms
-            ? now
-            : ((user as any).notifSmsEnabledAt ?? now)
-          : null,
-        notifEmailEnabledAt: email
-          ? !prevEmail
-            ? now
-            : ((user as any).notifEmailEnabledAt ?? now)
-          : null,
-        notifKakaoEnabledAt: kakao
-          ? !prevKakao
-            ? now
-            : ((user as any).notifKakaoEnabledAt ?? now)
-          : null,
-        // 마케팅 동의 / Marketing consent
-        ...(marketing !== undefined && {
-          marketingConsent: marketing,
-          marketingConsentAt: marketing
-            ? !prevMarketing
+    await this.prisma.$transaction(async (prisma) => {
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          notifSms: sms,
+          notifEmail: email,
+          notifKakao: kakao,
+          notifEnabledAt: hasAnyEnabled ? now : null,
+          // 채널별 타임스탬프: ON으로 바뀌면 현재 시각, OFF로 바뀌면 null
+          notifSmsEnabledAt: sms
+            ? !prevSms
               ? now
-              : ((user as any).marketingConsentAt ?? now)
+              : ((user as any).notifSmsEnabledAt ?? now)
             : null,
-        }),
-      } as any,
+          notifEmailEnabledAt: email
+            ? !prevEmail
+              ? now
+              : ((user as any).notifEmailEnabledAt ?? now)
+            : null,
+          notifKakaoEnabledAt: kakao
+            ? !prevKakao
+              ? now
+              : ((user as any).notifKakaoEnabledAt ?? now)
+            : null,
+          // 마케팅 동의 / Marketing consent
+          ...(marketing !== undefined && {
+            marketingConsent: marketing,
+            marketingConsentAt: marketing
+              ? !prevMarketing
+                ? now
+                : ((user as any).marketingConsentAt ?? now)
+              : null,
+          }),
+        } as any,
+      });
+
+      if (marketing !== undefined && marketing !== prevMarketing) {
+        await prisma.consentRecord.create({
+          data: {
+            authId: userId,
+            consentType: 'MARKETING',
+            policyVersion: '2026-03-02',
+            granted: marketing,
+            channel: 'WEB_NOTIFICATION_SETTINGS',
+            consentedAt: now,
+            withdrawnAt: marketing ? null : now,
+          },
+        });
+      }
     });
 
     await this.logActivity(
@@ -2085,8 +2207,15 @@ export class AuthService implements OnModuleInit {
       empCertDocPath?: string;
       empCertDocOrigName?: string;
       isCeoSelf?: boolean;
+      termsConsent: boolean;
+      privacyConsent: boolean;
+      internationalTransferConsent: boolean;
+      marketingConsent?: boolean;
+      policyVersion: string;
+      consentChannel?: string;
     },
     clientIp?: string,
+    userAgent?: string,
   ) {
     const userId = await this.getSessionUserId(sessionId);
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
@@ -2099,6 +2228,14 @@ export class AuthService implements OnModuleInit {
       where: { authId: userId },
     });
     if (!corp) throw new NotFoundException('기업 프로필을 찾을 수 없습니다.');
+    if (
+      !data.termsConsent ||
+      !data.privacyConsent ||
+      !data.internationalTransferConsent ||
+      !data.policyVersion
+    ) {
+      throw new BadRequestException('필수 약관 동의가 필요합니다.');
+    }
 
     // SUBMITTED 또는 APPROVED 상태에서는 재제출 불가
     if (corp.verificationStatus === 'SUBMITTED') {
@@ -2135,37 +2272,79 @@ export class AuthService implements OnModuleInit {
     const isCeoSelf = data.isCeoSelf === true;
     const verificationMethod = isCeoSelf ? 'CEO_MATCH' : 'DOCUMENT_MANUAL';
 
-    await this.prisma.corporateProfile.update({
-      where: { authId: userId },
-      data: {
-        bizRegNumber: data.bizRegNumber,
-        companyNameOfficial: data.companyNameOfficial,
-        ceoName: data.ceoName,
-        managerName: data.managerName,
-        managerPhone: data.managerPhone,
-        ksicCode: data.ksicCode || null,
-        addressRoad: data.addressRoad || null,
-        companySizeType: (data.companySizeType as any) || 'SME',
-        proofDocumentUrl: data.proofDocumentUrl || null,
-        // 서류 업로드 관련
-        bizRegDocPath: data.bizRegDocPath || null,
-        bizRegDocOrigName: data.bizRegDocOrigName || null,
-        empCertDocPath: data.empCertDocPath || null,
-        empCertDocOrigName: data.empCertDocOrigName || null,
-        // 대표자 본인 선언
-        isCeoSelf,
-        ceoSelfDeclaredAt: isCeoSelf ? new Date() : null,
-        ceoSelfDeclaredIp: isCeoSelf ? clientIp || null : null,
-        // OCR 결과
-        ocrVerified,
-        ocrExtractedBizNo,
-        // 인증 방법 및 상태
-        verificationMethod: verificationMethod as any,
-        verificationStatus: 'SUBMITTED',
-        submittedAt: new Date(),
-        lastRejectionReason: null,
-      },
-    });
+    await this.prisma.$transaction([
+      this.prisma.corporateProfile.update({
+        where: { authId: userId },
+        data: {
+          bizRegNumber: data.bizRegNumber,
+          companyNameOfficial: data.companyNameOfficial,
+          ceoName: data.ceoName,
+          managerName: data.managerName,
+          managerPhone: data.managerPhone,
+          ksicCode: data.ksicCode || null,
+          addressRoad: data.addressRoad || null,
+          companySizeType: (data.companySizeType as any) || 'SME',
+          proofDocumentUrl: data.proofDocumentUrl || null,
+          // 서류 업로드 관련
+          bizRegDocPath: data.bizRegDocPath || null,
+          bizRegDocOrigName: data.bizRegDocOrigName || null,
+          empCertDocPath: data.empCertDocPath || null,
+          empCertDocOrigName: data.empCertDocOrigName || null,
+          // 대표자 본인 선언
+          isCeoSelf,
+          ceoSelfDeclaredAt: isCeoSelf ? new Date() : null,
+          ceoSelfDeclaredIp: isCeoSelf ? clientIp || null : null,
+          // OCR 결과
+          ocrVerified,
+          ocrExtractedBizNo,
+          // 인증 방법 및 상태
+          verificationMethod: verificationMethod as any,
+          verificationStatus: 'SUBMITTED',
+          submittedAt: new Date(),
+          lastRejectionReason: null,
+        },
+      }),
+      this.prisma.consentRecord.createMany({
+        data: [
+          {
+            authId: userId,
+            consentType: 'TERMS',
+            policyVersion: data.policyVersion,
+            granted: true,
+            channel: data.consentChannel || 'WEB_CORPORATE_VERIFY',
+            ipAddress: clientIp,
+            userAgent,
+          },
+          {
+            authId: userId,
+            consentType: 'PRIVACY',
+            policyVersion: data.policyVersion,
+            granted: true,
+            channel: data.consentChannel || 'WEB_CORPORATE_VERIFY',
+            ipAddress: clientIp,
+            userAgent,
+          },
+          {
+            authId: userId,
+            consentType: 'INTERNATIONAL_TRANSFER',
+            policyVersion: data.policyVersion,
+            granted: true,
+            channel: data.consentChannel || 'WEB_CORPORATE_VERIFY',
+            ipAddress: clientIp,
+            userAgent,
+          },
+          {
+            authId: userId,
+            consentType: 'MARKETING',
+            policyVersion: data.policyVersion,
+            granted: data.marketingConsent === true,
+            channel: data.consentChannel || 'WEB_CORPORATE_VERIFY',
+            ipAddress: clientIp,
+            userAgent,
+          },
+        ],
+      }),
+    ]);
 
     // 활동 로그: 기업 인증 신청
     await this.logActivity(

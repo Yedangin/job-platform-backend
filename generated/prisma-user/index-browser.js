@@ -144,6 +144,19 @@ exports.Prisma.UserScalarFieldEnum = {
   marketingConsentAt: 'marketingConsentAt'
 };
 
+exports.Prisma.ConsentRecordScalarFieldEnum = {
+  consentId: 'consentId',
+  authId: 'authId',
+  consentType: 'consentType',
+  policyVersion: 'policyVersion',
+  granted: 'granted',
+  channel: 'channel',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  consentedAt: 'consentedAt',
+  withdrawnAt: 'withdrawnAt'
+};
+
 exports.Prisma.CorporateProfileScalarFieldEnum = {
   companyId: 'companyId',
   authId: 'authId',
@@ -1240,6 +1253,7 @@ exports.VisaVerifyStatus = exports.$Enums.VisaVerifyStatus = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  ConsentRecord: 'ConsentRecord',
   CorporateProfile: 'CorporateProfile',
   IndividualProfile: 'IndividualProfile',
   TalentAccessLog: 'TalentAccessLog',

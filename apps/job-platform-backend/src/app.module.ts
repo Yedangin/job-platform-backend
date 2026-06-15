@@ -44,6 +44,7 @@ import { PlatformConfigModule } from './platform-config/platform-config.module';
 import { VisaPlannerModule } from './visa-planner/visa-planner.module';
 import { TranslationModule } from './translation/translation.module';
 import { HealthController } from './health.controller';
+import { LaunchScopeGuard } from './common/launch-scope.guard';
 
 @Module({
   imports: [
@@ -135,6 +136,10 @@ import { HealthController } from './health.controller';
   ],
   controllers: [HealthController],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: LaunchScopeGuard,
+    },
     {
       provide: APP_GUARD,
       useClass: ThrottlerBehindProxyGuard,
