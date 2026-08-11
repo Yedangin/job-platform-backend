@@ -30,11 +30,17 @@ const priorities = ['speed', 'stability', 'cost', 'income'] as const;
 const plannerLanguages = ['en', 'ko', 'vi', 'th', 'fil', 'tl'] as const;
 
 export class DiagnosisV2RequestDto {
-  @ApiProperty({ description: 'Nationality code, ISO 3166-1 alpha-3', example: 'VNM' })
+  @ApiProperty({
+    description: 'Nationality code, ISO 3166-1 alpha-3',
+    example: 'VNM',
+  })
   @IsString()
   nationality: string;
 
-  @ApiPropertyOptional({ description: 'Current residence country code', example: 'VNM' })
+  @ApiPropertyOptional({
+    description: 'Current residence country code',
+    example: 'VNM',
+  })
   @IsOptional()
   @IsString()
   residenceCountry?: string;
@@ -45,12 +51,18 @@ export class DiagnosisV2RequestDto {
   @Max(70)
   age: number;
 
-  @ApiProperty({ description: 'Highest education level', enum: educationLevels })
+  @ApiProperty({
+    description: 'Highest education level',
+    enum: educationLevels,
+  })
   @IsString()
   @IsIn(educationLevels)
   educationLevel: string;
 
-  @ApiProperty({ description: 'Annual preparation fund, unit: 10,000 KRW', example: 500 })
+  @ApiProperty({
+    description: 'Annual preparation fund, unit: 10,000 KRW',
+    example: 500,
+  })
   @IsNumber()
   @Min(0)
   availableAnnualFund: number;
@@ -65,7 +77,11 @@ export class DiagnosisV2RequestDto {
   @IsIn(priorities)
   priorityPreference: string;
 
-  @ApiPropertyOptional({ description: 'Result language', enum: plannerLanguages, example: 'en' })
+  @ApiPropertyOptional({
+    description: 'Result language',
+    enum: plannerLanguages,
+    example: 'en',
+  })
   @IsOptional()
   @IsString()
   @IsIn(plannerLanguages)
@@ -101,7 +117,10 @@ export class DiagnosisV2RequestDto {
   @IsString()
   majorCategory?: string;
 
-  @ApiPropertyOptional({ description: 'Target occupation', example: 'software_developer' })
+  @ApiPropertyOptional({
+    description: 'Target occupation',
+    example: 'software_developer',
+  })
   @IsOptional()
   @IsString()
   targetOccupation?: string;
@@ -111,7 +130,10 @@ export class DiagnosisV2RequestDto {
   @IsBoolean()
   isEthnicKorean?: boolean;
 
-  @ApiPropertyOptional({ description: 'Current Korean visa, if any', example: 'D-2' })
+  @ApiPropertyOptional({
+    description: 'Current Korean visa, if any',
+    example: 'D-2',
+  })
   @IsOptional()
   @IsString()
   currentVisa?: string;
@@ -122,14 +144,19 @@ export class DiagnosisV2RequestDto {
   @Min(0)
   koreaStayMonths?: number;
 
-  @ApiPropertyOptional({ description: 'Whether degree documents are ready', example: true })
+  @ApiPropertyOptional({
+    description: 'Whether degree documents are ready',
+    example: true,
+  })
   @IsOptional()
   @IsBoolean()
   hasDegreeDocument?: boolean;
 }
 
 export class ClaimDiagnosisDto {
-  @ApiPropertyOptional({ description: 'Anonymous id from the browser that created the session' })
+  @ApiPropertyOptional({
+    description: 'Anonymous id from the browser that created the session',
+  })
   @IsOptional()
   @IsString()
   anonymousId?: string;

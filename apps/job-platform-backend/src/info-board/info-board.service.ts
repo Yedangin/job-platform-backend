@@ -72,7 +72,9 @@ export class InfoBoardService {
         isFeatured: true,
         bannerAssetId: { not: null },
         AND: [
-          { OR: [{ featuredStartAt: null }, { featuredStartAt: { lte: now } }] },
+          {
+            OR: [{ featuredStartAt: null }, { featuredStartAt: { lte: now } }],
+          },
           { OR: [{ featuredEndAt: null }, { featuredEndAt: { gt: now } }] },
           ...SUPPORTED_INFO_BOARD_LOCALES.map((locale) => ({
             translations: { some: { locale } },
@@ -90,11 +92,7 @@ export class InfoBoardService {
 
     return {
       items: items.map((post: any) =>
-        this.serializePost(
-          post,
-          query.locale ?? InfoBoardLocaleEnum.KO,
-          false,
-        ),
+        this.serializePost(post, query.locale ?? InfoBoardLocaleEnum.KO, false),
       ),
       total: items.length,
       limit,
@@ -110,11 +108,7 @@ export class InfoBoardService {
     });
     return {
       items: items.map((post: any) =>
-        this.serializePost(
-          post,
-          query.locale ?? InfoBoardLocaleEnum.KO,
-          true,
-        ),
+        this.serializePost(post, query.locale ?? InfoBoardLocaleEnum.KO, true),
       ),
       total: items.length,
       limit: 8,
@@ -224,7 +218,10 @@ export class InfoBoardService {
             postId: BigInt(item.id),
             action: 'REORDERED',
             previousState: this.featuredSnapshot(post),
-            nextState: this.featuredSnapshot({ ...post, featuredOrder: item.order }),
+            nextState: this.featuredSnapshot({
+              ...post,
+              featuredOrder: item.order,
+            }),
             actorId,
           },
         });
@@ -341,7 +338,10 @@ export class InfoBoardService {
       const bannerAssets = new Map(
         dto.bannerAssets.map((item) => [item.locale, BigInt(item.assetId)]),
       );
-      if (bannerAssets.size < 1 || bannerAssets.size > SUPPORTED_INFO_BOARD_LOCALES.length) {
+      if (
+        bannerAssets.size < 1 ||
+        bannerAssets.size > SUPPORTED_INFO_BOARD_LOCALES.length
+      ) {
         throw new BadRequestException(
           'Provide one base slider image and up to four locale overrides',
         );
@@ -350,10 +350,7 @@ export class InfoBoardService {
       const assets = await tx.infoBoardAsset.findMany({
         where: {
           id: { in: bannerAssetIds },
-          OR: [
-            { postId: BigInt(id) },
-            { postId: null, uploadedBy: actorId },
-          ],
+          OR: [{ postId: BigInt(id) }, { postId: null, uploadedBy: actorId }],
         },
       });
       if (
@@ -365,11 +362,9 @@ export class InfoBoardService {
         );
       }
 
-      const defaultBannerAssetId = (
-        bannerAssets.get(InfoBoardLocaleEnum.KO)
-        ?? bannerAssets.get(InfoBoardLocaleEnum.EN)
-        ?? bannerAssets.values().next().value
-      ) as bigint;
+      const defaultBannerAssetId = (bannerAssets.get(InfoBoardLocaleEnum.KO) ??
+        bannerAssets.get(InfoBoardLocaleEnum.EN) ??
+        bannerAssets.values().next().value) as bigint;
 
       const featured = this.resolveFeaturedData({
         audience: InfoBoardAudienceEnum.ALL,
@@ -852,11 +847,12 @@ export class InfoBoardService {
         await tx.infoBoardFeaturedAudit.create({
           data: {
             postId: BigInt(id),
-            action: !existing.isFeatured && result.isFeatured
-              ? 'ADDED'
-              : existing.isFeatured && !result.isFeatured
-                ? 'REMOVED'
-                : 'UPDATED',
+            action:
+              !existing.isFeatured && result.isFeatured
+                ? 'ADDED'
+                : existing.isFeatured && !result.isFeatured
+                  ? 'REMOVED'
+                  : 'UPDATED',
             previousState: previousFeatured,
             nextState: nextFeatured,
             actorId,
@@ -1254,9 +1250,11 @@ export class InfoBoardService {
     );
     const missing = SUPPORTED_INFO_BOARD_LOCALES.filter((locale) => {
       const translation = translationsByLocale.get(locale);
-      return !translation?.title?.trim()
-        || !translation?.summary?.trim()
-        || !translation?.content?.trim();
+      return (
+        !translation?.title?.trim() ||
+        !translation?.summary?.trim() ||
+        !translation?.content?.trim()
+      );
     });
     if (missing.length > 0) {
       throw new BadRequestException(
@@ -1354,15 +1352,20 @@ export class InfoBoardService {
     if (post.bannerAssetId) localizedBannerAssetIds.add(post.bannerAssetId);
     const bannerImages: Partial<Record<InfoBoardLocaleEnum, string>> =
       Object.fromEntries(
-      (post.featuredBanners ?? []).flatMap((item: any) => {
-        const asset = (post.assets ?? []).find(
-          (candidate: any) => candidate.id === item.assetId,
-        );
-        return asset && attachmentBaseUrl
-          ? [[item.locale, `${attachmentBaseUrl}/${Number(asset.id)}/content`]]
-          : [];
-      }),
-    );
+        (post.featuredBanners ?? []).flatMap((item: any) => {
+          const asset = (post.assets ?? []).find(
+            (candidate: any) => candidate.id === item.assetId,
+          );
+          return asset && attachmentBaseUrl
+            ? [
+                [
+                  item.locale,
+                  `${attachmentBaseUrl}/${Number(asset.id)}/content`,
+                ],
+              ]
+            : [];
+        }),
+      );
     const result: Record<string, unknown> = {
       id: Number(post.id),
       title: translation.title,
@@ -1396,9 +1399,10 @@ export class InfoBoardService {
     const bannerAsset = (post.assets ?? []).find(
       (asset: any) => asset.id === post.bannerAssetId,
     );
-    const legacyBannerImage = bannerAsset && attachmentBaseUrl
-      ? `${attachmentBaseUrl}/${Number(bannerAsset.id)}/content`
-      : post.thumbnail ?? null;
+    const legacyBannerImage =
+      bannerAsset && attachmentBaseUrl
+        ? `${attachmentBaseUrl}/${Number(bannerAsset.id)}/content`
+        : (post.thumbnail ?? null);
     result.bannerAssets = Object.fromEntries(
       (post.featuredBanners ?? []).map((item: any) => [
         item.locale,
@@ -1406,11 +1410,12 @@ export class InfoBoardService {
       ]),
     );
     result.bannerImages = bannerImages;
-    result.bannerImage = bannerImages[locale]
-      ?? bannerImages[InfoBoardLocaleEnum.EN]
-      ?? bannerImages[InfoBoardLocaleEnum.KO]
-      ?? Object.values(bannerImages)[0]
-      ?? legacyBannerImage;
+    result.bannerImage =
+      bannerImages[locale] ??
+      bannerImages[InfoBoardLocaleEnum.EN] ??
+      bannerImages[InfoBoardLocaleEnum.KO] ??
+      Object.values(bannerImages)[0] ??
+      legacyBannerImage;
     if (admin) {
       result.translations = post.translations ?? [];
       result.createdBy = post.createdBy;

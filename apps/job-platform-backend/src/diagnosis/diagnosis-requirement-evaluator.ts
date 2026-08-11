@@ -233,7 +233,9 @@ function currentEducation(input: RequirementInput, language: string) {
 }
 
 function unknownCurrent(language: string) {
-  return isKorean(language) ? '아직 입력·확인되지 않음' : 'Not entered or verified';
+  return isKorean(language)
+    ? '아직 입력·확인되지 않음'
+    : 'Not entered or verified';
 }
 
 function evaluateRule(
@@ -314,7 +316,8 @@ function evaluateRule(
     const kiipMet = kiip >= kiipMinimum;
     const exactlyMet = topik === topikMinimum || kiip === kiipMinimum;
     return {
-      status: topikMet || kiipMet ? (exactlyMet ? 'minimum_met' : 'met') : 'unmet',
+      status:
+        topikMet || kiipMet ? (exactlyMet ? 'minimum_met' : 'met') : 'unmet',
       currentValue: `TOPIK ${topik} / KIIP ${kiip}`,
       shortfall:
         topikMet || kiipMet
@@ -552,10 +555,7 @@ export function getRequirementCatalogAudit(): RequirementCatalogAudit {
     (sum, item) => sum + item.assistedCount,
     0,
   );
-  const manualCount = pathways.reduce(
-    (sum, item) => sum + item.manualCount,
-    0,
-  );
+  const manualCount = pathways.reduce((sum, item) => sum + item.manualCount, 0);
 
   return {
     version: catalog.version,
@@ -596,9 +596,7 @@ export function assessPathwayRequirements(
       title: isKorean(language) ? rule.titleKo : rule.titleEn,
       currentValue: evaluated.currentValue,
       requiredValue: isKorean(language) ? rule.requiredKo : rule.requiredEn,
-      explanation: isKorean(language)
-        ? rule.explanationKo
-        : rule.explanationEn,
+      explanation: isKorean(language) ? rule.explanationKo : rule.explanationEn,
       action: isKorean(language) ? rule.actionKo : rule.actionEn,
       sourceName: rule.sourceName,
       sourceUrl: rule.sourceUrl,
@@ -651,8 +649,7 @@ export function scoreRequirements(
   );
   const knownWeight = applicable.reduce(
     (sum, item) =>
-      sum +
-      (item.status === 'unknown' ? 0 : severityWeight[item.severity]),
+      sum + (item.status === 'unknown' ? 0 : severityWeight[item.severity]),
     0,
   );
   const required = applicable.filter((item) => item.severity === 'required');
@@ -678,7 +675,8 @@ export function scoreRequirements(
           : 'MINIMUMS_CONFIRMED';
 
   return {
-    score: totalWeight === 0 ? 0 : Math.round((matchedWeight / totalWeight) * 100),
+    score:
+      totalWeight === 0 ? 0 : Math.round((matchedWeight / totalWeight) * 100),
     completenessScore:
       totalWeight === 0 ? 0 : Math.round((knownWeight / totalWeight) * 100),
     status,

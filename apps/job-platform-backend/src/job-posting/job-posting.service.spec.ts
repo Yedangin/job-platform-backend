@@ -63,7 +63,9 @@ describe('JobPostingService review workflow', () => {
       },
       adminJobAction: { create: jest.fn() },
     };
-    db.$transaction = jest.fn(async (callback: (tx: typeof db) => unknown) => callback(db));
+    db.$transaction = jest.fn(async (callback: (tx: typeof db) => unknown) =>
+      callback(db),
+    );
     service = new JobPostingService(
       db,
       { keys: jest.fn().mockResolvedValue([]) } as any,
@@ -79,9 +81,9 @@ describe('JobPostingService review workflow', () => {
       verificationStatus: 'PENDING',
     });
 
-    await expect(service.submitJobPosting('company-user', '1')).rejects.toBeInstanceOf(
-      ForbiddenException,
-    );
+    await expect(
+      service.submitJobPosting('company-user', '1'),
+    ).rejects.toBeInstanceOf(ForbiddenException);
   });
 
   it('denies an owner action for another company posting', async () => {
@@ -89,23 +91,29 @@ describe('JobPostingService review workflow', () => {
       makeJob({ corporateId: BigInt(99) }),
     );
 
-    await expect(service.submitJobPosting('company-user', '1')).rejects.toBeInstanceOf(
-      ForbiddenException,
-    );
+    await expect(
+      service.submitJobPosting('company-user', '1'),
+    ).rejects.toBeInstanceOf(ForbiddenException);
   });
 
   it('submits only a draft or a rejected posting', async () => {
-    db.jobPosting.findUnique.mockResolvedValueOnce(makeJob({ status: 'ACTIVE' }));
-
-    await expect(service.submitJobPosting('company-user', '1')).rejects.toBeInstanceOf(
-      ConflictException,
+    db.jobPosting.findUnique.mockResolvedValueOnce(
+      makeJob({ status: 'ACTIVE' }),
     );
+
+    await expect(
+      service.submitJobPosting('company-user', '1'),
+    ).rejects.toBeInstanceOf(ConflictException);
   });
 
   it('moves a changed active posting back to review', async () => {
-    db.jobPosting.findUnique.mockResolvedValueOnce(makeJob({ status: 'ACTIVE' }));
+    db.jobPosting.findUnique.mockResolvedValueOnce(
+      makeJob({ status: 'ACTIVE' }),
+    );
 
-    await service.updateJobPosting('company-user', '1', { title: 'Updated title' });
+    await service.updateJobPosting('company-user', '1', {
+      title: 'Updated title',
+    });
 
     expect(db.jobPosting.update).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -117,9 +125,13 @@ describe('JobPostingService review workflow', () => {
   it('does not expose a non-active posting through the public detail lookup', async () => {
     db.jobPosting.findFirst.mockResolvedValueOnce(null);
 
-    await expect(service.getJobDetail('1')).rejects.toBeInstanceOf(NotFoundException);
+    await expect(service.getJobDetail('1')).rejects.toBeInstanceOf(
+      NotFoundException,
+    );
     expect(db.jobPosting.findFirst).toHaveBeenCalledWith(
-      expect.objectContaining({ where: expect.objectContaining({ status: 'ACTIVE' }) }),
+      expect.objectContaining({
+        where: expect.objectContaining({ status: 'ACTIVE' }),
+      }),
     );
   });
 
@@ -127,7 +139,9 @@ describe('JobPostingService review workflow', () => {
     await service.getJobListings({});
 
     expect(db.jobPosting.findMany).toHaveBeenCalledWith(
-      expect.objectContaining({ where: expect.objectContaining({ status: 'ACTIVE' }) }),
+      expect.objectContaining({
+        where: expect.objectContaining({ status: 'ACTIVE' }),
+      }),
     );
   });
 
@@ -140,9 +154,9 @@ describe('JobPostingService review workflow', () => {
       verificationStatus: 'REJECTED',
     });
 
-    await expect(service.unsuspendJobPosting('admin-user', '1')).rejects.toBeInstanceOf(
-      ForbiddenException,
-    );
+    await expect(
+      service.unsuspendJobPosting('admin-user', '1'),
+    ).rejects.toBeInstanceOf(ForbiddenException);
     expect(db.jobPosting.update).not.toHaveBeenCalled();
   });
 
@@ -151,7 +165,9 @@ describe('JobPostingService review workflow', () => {
       makeJob({ status: 'SUSPENDED', preSuspensionStatus: 'SUBMITTED_REVIEW' }),
     );
 
-    await expect(service.unsuspendJobPosting('admin-user', '1')).resolves.toMatchObject({
+    await expect(
+      service.unsuspendJobPosting('admin-user', '1'),
+    ).resolves.toMatchObject({
       status: 'SUBMITTED_REVIEW',
     });
     expect(db.jobPosting.update).toHaveBeenCalledWith(
@@ -162,71 +178,100 @@ describe('JobPostingService review workflow', () => {
   });
 
   it('approves a submitted posting with a conditional update and audit record', async () => {
-    db.jobPosting.findUnique.mockResolvedValueOnce(makeJob({ status: 'SUBMITTED_REVIEW' }));
+    db.jobPosting.findUnique.mockResolvedValueOnce(
+      makeJob({ status: 'SUBMITTED_REVIEW' }),
+    );
 
-    await expect(service.approveJobPosting('admin-user', '1')).resolves.toMatchObject({
+    await expect(
+      service.approveJobPosting('admin-user', '1'),
+    ).resolves.toMatchObject({
       status: 'ACTIVE',
     });
 
     expect(db.jobPosting.updateMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { id: BigInt(1), status: 'SUBMITTED_REVIEW' },
-        data: expect.objectContaining({ status: 'ACTIVE', reviewedBy: 'admin-user' }),
+        data: expect.objectContaining({
+          status: 'ACTIVE',
+          reviewedBy: 'admin-user',
+        }),
       }),
     );
     expect(db.adminJobAction.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ actionType: 'APPROVE', reason: 'Approved after review' }),
+        data: expect.objectContaining({
+          actionType: 'APPROVE',
+          reason: 'Approved after review',
+        }),
       }),
     );
   });
 
   it('rejects a submitted posting and records the rejection reason', async () => {
-    db.jobPosting.findUnique.mockResolvedValueOnce(makeJob({ status: 'SUBMITTED_REVIEW' }));
+    db.jobPosting.findUnique.mockResolvedValueOnce(
+      makeJob({ status: 'SUBMITTED_REVIEW' }),
+    );
 
-    await expect(service.rejectJobPosting('admin-user', '1', 'Missing required details')).resolves.toMatchObject({
+    await expect(
+      service.rejectJobPosting('admin-user', '1', 'Missing required details'),
+    ).resolves.toMatchObject({
       status: 'REJECTED',
       rejectionReason: 'Missing required details',
     });
     expect(db.adminJobAction.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({ actionType: 'REJECT', reason: 'Missing required details' }),
+        data: expect.objectContaining({
+          actionType: 'REJECT',
+          reason: 'Missing required details',
+        }),
       }),
     );
   });
 
   it('rejects an empty rejection reason before changing status', async () => {
-    db.jobPosting.findUnique.mockResolvedValueOnce(makeJob({ status: 'SUBMITTED_REVIEW' }));
-
-    await expect(service.rejectJobPosting('admin-user', '1', '   ')).rejects.toBeInstanceOf(
-      BadRequestException,
+    db.jobPosting.findUnique.mockResolvedValueOnce(
+      makeJob({ status: 'SUBMITTED_REVIEW' }),
     );
+
+    await expect(
+      service.rejectJobPosting('admin-user', '1', '   '),
+    ).rejects.toBeInstanceOf(BadRequestException);
     expect(db.jobPosting.updateMany).not.toHaveBeenCalled();
   });
 
   it('does not approve a posting outside submitted review', async () => {
-    db.jobPosting.findUnique.mockResolvedValueOnce(makeJob({ status: 'DRAFT' }));
-
-    await expect(service.approveJobPosting('admin-user', '1')).rejects.toBeInstanceOf(
-      ConflictException,
+    db.jobPosting.findUnique.mockResolvedValueOnce(
+      makeJob({ status: 'DRAFT' }),
     );
+
+    await expect(
+      service.approveJobPosting('admin-user', '1'),
+    ).rejects.toBeInstanceOf(ConflictException);
   });
 
   it('returns a conflict when a concurrent review decision wins the CAS update', async () => {
-    db.jobPosting.findUnique.mockResolvedValueOnce(makeJob({ status: 'SUBMITTED_REVIEW' }));
+    db.jobPosting.findUnique.mockResolvedValueOnce(
+      makeJob({ status: 'SUBMITTED_REVIEW' }),
+    );
     db.jobPosting.updateMany.mockResolvedValueOnce({ count: 0 });
 
-    await expect(service.approveJobPosting('admin-user', '1')).rejects.toBeInstanceOf(
-      ConflictException,
-    );
+    await expect(
+      service.approveJobPosting('admin-user', '1'),
+    ).rejects.toBeInstanceOf(ConflictException);
     expect(db.adminJobAction.create).not.toHaveBeenCalled();
   });
 
   it.each([
     ['getJobDetail', () => service.getJobDetail('not-a-number')],
     ['submitJobPosting', () => service.submitJobPosting('company-user', '0')],
-    ['approveJobPosting', () => service.approveJobPosting('admin-user', '9223372036854775808')],
-  ])('%s returns bad request for an invalid job id', async (_method, execute) => {
-    await expect(execute()).rejects.toBeInstanceOf(BadRequestException);
-  });
+    [
+      'approveJobPosting',
+      () => service.approveJobPosting('admin-user', '9223372036854775808'),
+    ],
+  ])(
+    '%s returns bad request for an invalid job id',
+    async (_method, execute) => {
+      await expect(execute()).rejects.toBeInstanceOf(BadRequestException);
+    },
+  );
 });

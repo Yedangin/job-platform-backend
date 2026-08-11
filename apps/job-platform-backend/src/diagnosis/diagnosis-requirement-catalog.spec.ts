@@ -50,12 +50,12 @@ describe('diagnosis requirement catalog integrity', () => {
   });
 
   it('keeps D-8-1 investment and D-8-4 technology-startup rules separate', () => {
-    expect(catalog.pathways['PW-011'].every((rule) => rule.stage === 'D-8-1')).toBe(
-      true,
-    );
-    expect(catalog.pathways['PW-016'].every((rule) => rule.stage === 'D-8-4')).toBe(
-      true,
-    );
+    expect(
+      catalog.pathways['PW-011'].every((rule) => rule.stage === 'D-8-1'),
+    ).toBe(true);
+    expect(
+      catalog.pathways['PW-016'].every((rule) => rule.stage === 'D-8-4'),
+    ).toBe(true);
   });
 
   it('links every rule to an HTTPS official-source host', () => {
@@ -65,7 +65,8 @@ describe('diagnosis requirement catalog integrity', () => {
         expect(url.protocol).toBe('https:');
         expect(
           officialHosts.some(
-            (host) => url.hostname === host || url.hostname.endsWith(`.${host}`),
+            (host) =>
+              url.hostname === host || url.hostname.endsWith(`.${host}`),
           ),
         ).toBe(true);
       }

@@ -1893,9 +1893,7 @@ export class AuthService implements OnModuleInit {
       });
 
       if (!validateResponse.ok) {
-        this.logger.error(
-          `[NTS Validate API] HTTP ${validateResponse.status}`,
-        );
+        this.logger.error(`[NTS Validate API] HTTP ${validateResponse.status}`);
         throw new InternalServerErrorException(
           '국세청 진위확인 API 호출에 실패했습니다.',
         );
@@ -2027,10 +2025,7 @@ export class AuthService implements OnModuleInit {
       .replace(/\\/g, '/');
 
     // multer가 originalname을 latin1로 디코딩하므로 UTF-8로 재변환
-    const decodedOriginalName = Buffer.from(
-      file.originalname,
-      'latin1',
-    )
+    const decodedOriginalName = Buffer.from(file.originalname, 'latin1')
       .toString('utf8')
       .replace(/[\r\n\0]/g, '_')
       .slice(0, 180);
@@ -2297,9 +2292,7 @@ export class AuthService implements OnModuleInit {
     let ocrExtractedBizNo: string | null = null;
     if (ownedBizRegDocPath) {
       try {
-        ocrExtractedBizNo = await this.ocrExtractBizNumber(
-          ownedBizRegDocPath,
-        );
+        ocrExtractedBizNo = await this.ocrExtractBizNumber(ownedBizRegDocPath);
         if (ocrExtractedBizNo) {
           const cleanInputBizNo = data.bizRegNumber.replace(/[^0-9]/g, '');
           ocrVerified = ocrExtractedBizNo === cleanInputBizNo;

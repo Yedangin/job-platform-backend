@@ -346,7 +346,8 @@ const PATHWAY_COPY: Record<
   'PW-011': {
     ko: 'D-8-1 법인투자 경로',
     en: 'D-8-1 Corporate Investment Path',
-    subtitleEn: 'Corporate investment route requiring capital, equity, and business evidence',
+    subtitleEn:
+      'Corporate investment route requiring capital, equity, and business evidence',
     subtitleKo: '투자금·의결권 지분·사업 실재성 증빙이 필요한 법인투자 경로',
     chain: ['D-8-1'],
     reasonEn:
@@ -356,12 +357,14 @@ const PATHWAY_COPY: Record<
   'PW-016': {
     ko: 'D-8-4 기술창업 경로',
     en: 'D-8-4 Technology Startup Path',
-    subtitleEn: 'Technology startup route based on education, OASIS points, or an accepted special track',
+    subtitleEn:
+      'Technology startup route based on education, OASIS points, or an accepted special track',
     subtitleKo: '학력·OASIS 점수 또는 인정 특례를 이용하는 기술창업 경로',
     chain: ['D-8-4'],
     reasonEn:
       'Requires a Korean technology-startup corporation and a verified OASIS or special-track qualification.',
-    reasonKo: '국내 기술창업 법인과 OASIS 또는 특례 자격을 별도로 검증해야 합니다.',
+    reasonKo:
+      '국내 기술창업 법인과 OASIS 또는 특례 자격을 별도로 검증해야 합니다.',
   },
   'PW-012': {
     ko: 'F-2-7 점수제 거주 경로',
@@ -451,9 +454,7 @@ export class DiagnosisV2EngineService {
         natInfo,
         language,
       );
-      const requirementSummary = summarizeRequirements(
-        requirementAssessments,
-      );
+      const requirementSummary = summarizeRequirements(requirementAssessments);
       const requirementScoring = scoreRequirements(requirementAssessments);
       const comparison = this.calculateScore(pw, input);
       const finalScore = Math.round(
@@ -934,11 +935,7 @@ export class DiagnosisV2EngineService {
 
     if (pw.pathwayId === 'PW-008') {
       const ageLimit = getH1AgeLimit(input.nationality);
-      if (
-        !ageLimit ||
-        input.age < ageLimit.min ||
-        input.age > ageLimit.max
-      ) {
+      if (!ageLimit || input.age < ageLimit.min || input.age > ageLimit.max) {
         return { pass: false, reason: 'h1_country_or_age' };
       }
     }
@@ -1108,10 +1105,7 @@ export class DiagnosisV2EngineService {
     return gaps;
   }
 
-  private generateRiskFlags(
-    pw: PathwayDef,
-    input: DiagnosisInput,
-  ) {
+  private generateRiskFlags(pw: PathwayDef, input: DiagnosisInput) {
     const riskFlags: string[] = [];
     if (pw.pathwayType === 'government')
       riskFlags.push('official_process_only');

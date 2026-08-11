@@ -78,9 +78,7 @@ describe('InfoBoardService', () => {
       },
     ],
     assets: [],
-    featuredBanners: [
-      { locale: 'ko', assetId: BigInt(7), postId: BigInt(1) },
-    ],
+    featuredBanners: [{ locale: 'ko', assetId: BigInt(7), postId: BigInt(1) }],
   };
 
   let db: any;
@@ -234,23 +232,25 @@ describe('InfoBoardService', () => {
       limit: 4,
     });
 
-    expect(db.infoBoard.findMany).toHaveBeenCalledWith(expect.objectContaining({
-      where: expect.objectContaining({
-        status: InfoBoardStatusEnum.PUBLISHED,
-        deletedAt: null,
-        audience: InfoBoardAudienceEnum.ALL,
-        isFeatured: true,
-        bannerAssetId: { not: null },
-        AND: expect.any(Array),
+    expect(db.infoBoard.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          status: InfoBoardStatusEnum.PUBLISHED,
+          deletedAt: null,
+          audience: InfoBoardAudienceEnum.ALL,
+          isFeatured: true,
+          bannerAssetId: { not: null },
+          AND: expect.any(Array),
+        }),
+        orderBy: [
+          { featuredOrder: 'asc' },
+          { publishedAt: 'desc' },
+          { createdAt: 'desc' },
+        ],
+        take: 4,
+        include: { translations: true, assets: true, featuredBanners: true },
       }),
-      orderBy: [
-        { featuredOrder: 'asc' },
-        { publishedAt: 'desc' },
-        { createdAt: 'desc' },
-      ],
-      take: 4,
-      include: { translations: true, assets: true, featuredBanners: true },
-    }));
+    );
     expect(result).toMatchObject({
       total: 1,
       limit: 4,
@@ -353,8 +353,18 @@ describe('InfoBoardService', () => {
 
     expect(translationService.translateTexts).toHaveBeenCalledTimes(2);
     expect(result.translations).toEqual([
-      { locale: 'en', title: 'en:제목', summary: 'en:요약', content: 'en:본문' },
-      { locale: 'vi', title: 'vi:제목', summary: 'vi:요약', content: 'vi:본문' },
+      {
+        locale: 'en',
+        title: 'en:제목',
+        summary: 'en:요약',
+        content: 'en:본문',
+      },
+      {
+        locale: 'vi',
+        title: 'vi:제목',
+        summary: 'vi:요약',
+        content: 'vi:본문',
+      },
     ]);
   });
 

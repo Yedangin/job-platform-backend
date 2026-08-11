@@ -521,7 +521,10 @@ export class IdentityVerificationService {
           'Identity verification URL configuration is invalid',
         );
       }
-      if (process.env.NODE_ENV === 'production' && parsed.protocol !== 'https:') {
+      if (
+        process.env.NODE_ENV === 'production' &&
+        parsed.protocol !== 'https:'
+      ) {
         throw new ServiceUnavailableException(
           'Identity verification URLs must use HTTPS in production',
         );
@@ -562,7 +565,9 @@ export class IdentityVerificationService {
   private stateMatches(expectedHash: string, state: string): boolean {
     const actual = Buffer.from(this.hashState(state), 'hex');
     const expected = Buffer.from(expectedHash, 'hex');
-    return actual.length === expected.length && timingSafeEqual(actual, expected);
+    return (
+      actual.length === expected.length && timingSafeEqual(actual, expected)
+    );
   }
 
   private normalizeName(value: string): string {

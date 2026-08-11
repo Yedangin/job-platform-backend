@@ -284,7 +284,9 @@ export class JobPostingService {
       throw new ConflictException('A posting under review cannot be changed');
     }
     if (job.status === 'SUSPENDED' || job.status === 'EXPIRED') {
-      throw new ConflictException('This posting cannot be edited in its current state');
+      throw new ConflictException(
+        'This posting cannot be edited in its current state',
+      );
     }
 
     const updateData: any = {};
@@ -376,7 +378,9 @@ export class JobPostingService {
   async submitJobPosting(userId: string, jobId: string) {
     const { corp, job } = await this.getApprovedOwnedJob(userId, jobId);
     if (!['DRAFT', 'REJECTED'].includes(job.status)) {
-      throw new ConflictException('Only DRAFT or REJECTED postings can be submitted');
+      throw new ConflictException(
+        'Only DRAFT or REJECTED postings can be submitted',
+      );
     }
 
     await this.assertPublishable(job);
@@ -419,7 +423,9 @@ export class JobPostingService {
         },
       });
       if (result.count !== 1) {
-        throw new ConflictException('This posting was already reviewed. Refresh and try again.');
+        throw new ConflictException(
+          'This posting was already reviewed. Refresh and try again.',
+        );
       }
 
       await tx.adminJobAction.create({
@@ -459,7 +465,9 @@ export class JobPostingService {
         },
       });
       if (result.count !== 1) {
-        throw new ConflictException('This posting was already reviewed. Refresh and try again.');
+        throw new ConflictException(
+          'This posting was already reviewed. Refresh and try again.',
+        );
       }
 
       await tx.adminJobAction.create({
@@ -481,7 +489,9 @@ export class JobPostingService {
   async closeJobPosting(userId: string, jobId: string) {
     const { job } = await this.getApprovedOwnedJob(userId, jobId);
     if (!['ACTIVE', 'SUBMITTED_REVIEW'].includes(job.status)) {
-      throw new ConflictException('Only active or submitted postings can be closed');
+      throw new ConflictException(
+        'Only active or submitted postings can be closed',
+      );
     }
 
     await this.prisma.jobPosting.update({
@@ -676,7 +686,9 @@ export class JobPostingService {
     });
     if (!job) throw new NotFoundException('Job posting not found');
     if (!['ACTIVE', 'SUBMITTED_REVIEW'].includes(String(job.status))) {
-      throw new ConflictException('Only active or submitted postings can be suspended');
+      throw new ConflictException(
+        'Only active or submitted postings can be suspended',
+      );
     }
 
     await (this.prisma as any).jobPosting.update({
@@ -907,10 +919,14 @@ export class JobPostingService {
       job.contactPhone,
     ];
     if (required.some((value) => !String(value || '').trim())) {
-      throw new BadRequestException('Complete all required job posting fields before submitting');
+      throw new BadRequestException(
+        'Complete all required job posting fields before submitting',
+      );
     }
     if (job.closingDate && new Date(job.closingDate) <= new Date()) {
-      throw new BadRequestException('The application deadline must be in the future');
+      throw new BadRequestException(
+        'The application deadline must be in the future',
+      );
     }
     if (job.boardType === 'PART_TIME' && !job.albaAttributes) {
       throw new BadRequestException('Part-time work conditions are required');
@@ -923,16 +939,22 @@ export class JobPostingService {
   private async revalidateVisaEvaluation(job: any, corp: any) {
     if (job.boardType !== 'FULL_TIME') {
       if (!String(job.allowedVisas || '').trim()) {
-        throw new BadRequestException('At least one permitted visa is required');
+        throw new BadRequestException(
+          'At least one permitted visa is required',
+        );
       }
       return {};
     }
 
     const savedInput = job.fulltimeVisaResult?.inputSummary;
     if (!savedInput?.occupationCode || !job.fulltimeAttributes) {
-      throw new BadRequestException('Run the full-time visa evaluation before submitting');
+      throw new BadRequestException(
+        'Run the full-time visa evaluation before submitting',
+      );
     }
-    const addressParts = String(job.displayAddress || '').trim().split(/\s+/);
+    const addressParts = String(job.displayAddress || '')
+      .trim()
+      .split(/\s+/);
     const result = await this.fulltimeVisaMatching.evaluateJob({
       jobInput: {
         occupationCode: savedInput.occupationCode,
@@ -947,7 +969,10 @@ export class JobPostingService {
           isDepopulationArea: Boolean(savedInput.isDepopulationArea),
         },
         companyInfo: {
-          totalEmployees: Math.max(1, corp.employeeCountKorean + corp.employeeCountForeign),
+          totalEmployees: Math.max(
+            1,
+            corp.employeeCountKorean + corp.employeeCountForeign,
+          ),
           foreignEmployeeCount: corp.employeeCountForeign,
         },
       },
@@ -962,18 +987,35 @@ export class JobPostingService {
       ...new Set(visas.map((visa: any) => visa.visaCode).filter(Boolean)),
     ];
     if (allowedVisas.length === 0) {
-      throw new BadRequestException('The current job details do not match a supported visa pathway');
+      throw new BadRequestException(
+        'The current job details do not match a supported visa pathway',
+      );
     }
     return { fulltimeVisaResult: result, allowedVisas: allowedVisas.join(',') };
   }
 
   private hasPublicationRelevantChange(data: any) {
     return [
-      'title', 'description', 'allowedVisas', 'minKoreanLevel', 'displayAddress',
-      'actualAddress', 'workIntensity', 'contactName', 'contactPhone', 'contactEmail',
-      'applicationMethod', 'externalUrl', 'externalEmail', 'interviewMethod',
-      'interviewPlace', 'employmentSubType', 'closingDate', 'albaAttributes',
-      'fulltimeAttributes', 'fulltimeVisaResult',
+      'title',
+      'description',
+      'allowedVisas',
+      'minKoreanLevel',
+      'displayAddress',
+      'actualAddress',
+      'workIntensity',
+      'contactName',
+      'contactPhone',
+      'contactEmail',
+      'applicationMethod',
+      'externalUrl',
+      'externalEmail',
+      'interviewMethod',
+      'interviewPlace',
+      'employmentSubType',
+      'closingDate',
+      'albaAttributes',
+      'fulltimeAttributes',
+      'fulltimeVisaResult',
     ].some((key) => data[key] !== undefined);
   }
 

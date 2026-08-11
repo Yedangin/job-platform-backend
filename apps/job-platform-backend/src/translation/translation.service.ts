@@ -59,9 +59,7 @@ export class TranslationService {
 
   isConfigured(): boolean {
     return Boolean(
-      this.subscriptionKey &&
-        this.endpoint &&
-        this.remoteTranslationAvailable,
+      this.subscriptionKey && this.endpoint && this.remoteTranslationAvailable,
     );
   }
 

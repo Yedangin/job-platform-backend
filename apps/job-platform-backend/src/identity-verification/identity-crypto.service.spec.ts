@@ -32,12 +32,8 @@ describe('IdentityCryptoService', () => {
     const crypto = service();
     const value = crypto.encrypt('verified-value', 'user-a:request-a:ci:v1');
 
-    expect(() =>
-      crypto.decrypt(value, 'user-b:request-a:ci:v1'),
-    ).toThrow();
-    expect(() =>
-      crypto.decrypt(value, 'user-a:request-a:di:v1'),
-    ).toThrow();
+    expect(() => crypto.decrypt(value, 'user-b:request-a:ci:v1')).toThrow();
+    expect(() => crypto.decrypt(value, 'user-a:request-a:di:v1')).toThrow();
   });
 
   it('creates deterministic keyed lookup hashes without exposing the CI', () => {
@@ -52,11 +48,15 @@ describe('IdentityCryptoService', () => {
 
   it('fails closed with missing or malformed encryption configuration', () => {
     expect(service().isConfigured()).toBe(true);
-    expect(service({ IDENTITY_DATA_KEY: 'not-a-key' }).isConfigured()).toBe(false);
+    expect(service({ IDENTITY_DATA_KEY: 'not-a-key' }).isConfigured()).toBe(
+      false,
+    );
     expect(() =>
       service({ IDENTITY_DATA_KEY: 'not-a-key' }).assertConfigured(),
     ).toThrow(/IDENTITY_DATA_KEY/);
-    expect(service({ IDENTITY_LOOKUP_PEPPER: 'short' }).isConfigured()).toBe(false);
+    expect(service({ IDENTITY_LOOKUP_PEPPER: 'short' }).isConfigured()).toBe(
+      false,
+    );
     expect(() =>
       service({ IDENTITY_LOOKUP_PEPPER: 'short' }).assertConfigured(),
     ).toThrow(/IDENTITY_LOOKUP_PEPPER/);

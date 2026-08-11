@@ -60,8 +60,7 @@ async function bootstrap() {
       }
     },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders:
-      'Authorization, Content-Type, Accept, Cookie, X-Session-Id',
+    allowedHeaders: 'Authorization, Content-Type, Accept, Cookie, X-Session-Id',
     exposedHeaders: 'Authorization',
     credentials: true,
   });

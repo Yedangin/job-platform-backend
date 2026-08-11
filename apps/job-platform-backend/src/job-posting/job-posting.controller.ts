@@ -142,7 +142,9 @@ export class JobPostingController {
   // Keep this dynamic route after every fixed /my/* route.
   @Get('my/:id')
   @Roles('CORPORATE', 'ADMIN', 'SUPERADMIN')
-  @ApiOperation({ summary: 'My job posting detail, including non-public statuses' })
+  @ApiOperation({
+    summary: 'My job posting detail, including non-public statuses',
+  })
   async getMyJobPosting(
     @CurrentSession() session: SessionData,
     @Param('id') id: string,

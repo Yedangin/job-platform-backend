@@ -29,12 +29,12 @@ describe('diagnosis requirement evaluator', () => {
       status: 'minimum_met',
       currentValue: '3,000,000원',
     });
-    expect(
-      assessments.find((item) => item.id === 'h1_language'),
-    ).toMatchObject({
-      status: 'not_applicable',
-      currentValue: 'TOPIK 0급 - 공통 필수 커트라인 아님',
-    });
+    expect(assessments.find((item) => item.id === 'h1_language')).toMatchObject(
+      {
+        status: 'not_applicable',
+        currentValue: 'TOPIK 0급 - 공통 필수 커트라인 아님',
+      },
+    );
     expect(
       assessments.find((item) => item.id === 'h1_insurance'),
     ).toMatchObject({ status: 'unknown' });
@@ -83,15 +83,8 @@ describe('diagnosis requirement evaluator', () => {
   });
 
   it('shows exact TOPIK and investment shortfalls when the input is below a cutline', () => {
-    const regional = assessPathwayRequirements(
-      'PW-013',
-      baseInput,
-      null,
-      'ko',
-    );
-    expect(
-      regional.find((item) => item.id === 'f2r_language'),
-    ).toMatchObject({
+    const regional = assessPathwayRequirements('PW-013', baseInput, null, 'ko');
+    expect(regional.find((item) => item.id === 'f2r_language')).toMatchObject({
       status: 'unmet',
       shortfall: 'TOPIK 4급까지 4단계 또는 KIIP 4단계까지 4단계 부족',
     });
@@ -116,7 +109,10 @@ describe('diagnosis requirement evaluator', () => {
     );
     expect(
       assessments.find((item) => item.id === 'e71_qualification'),
-    ).toMatchObject({ status: 'unmet', shortfall: '관련 경력 5년 경로 기준 5년 부족' });
+    ).toMatchObject({
+      status: 'unmet',
+      shortfall: '관련 경력 5년 경로 기준 5년 부족',
+    });
   });
 
   it('shows direct-study TOPIK and finance shortfalls instead of a generic match', () => {
@@ -130,15 +126,13 @@ describe('diagnosis requirement evaluator', () => {
     expect(
       assessments.find((item) => item.id === 'd2_education'),
     ).toMatchObject({ status: 'minimum_met' });
-    expect(
-      assessments.find((item) => item.id === 'd2_language'),
-    ).toMatchObject({
-      status: 'unmet',
-      shortfall: '최소 TOPIK 3급까지 3단계 부족',
-    });
-    expect(
-      assessments.find((item) => item.id === 'd2_funds'),
-    ).toMatchObject({
+    expect(assessments.find((item) => item.id === 'd2_language')).toMatchObject(
+      {
+        status: 'unmet',
+        shortfall: '최소 TOPIK 3급까지 3단계 부족',
+      },
+    );
+    expect(assessments.find((item) => item.id === 'd2_funds')).toMatchObject({
       status: 'unmet',
       shortfall: '비수도권 공개 기본선까지 13,000,000원 부족',
     });

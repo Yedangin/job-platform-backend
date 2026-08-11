@@ -95,13 +95,15 @@ describe('InfoBoardController authorization metadata', () => {
     expect(roles).toEqual(['INDIVIDUAL', 'MEMBER', 'ADMIN', 'SUPERADMIN']);
   });
 
-  it.each(['findAll', 'findOne', 'findFeatured', 'getAttachmentContent'] as const)(
-    '%s is explicitly public',
-    (handler) => {
-      const method = InfoBoardController.prototype[handler];
-      expect(Reflect.getMetadata(PUBLIC_KEY, method)).toBe(true);
-    },
-  );
+  it.each([
+    'findAll',
+    'findOne',
+    'findFeatured',
+    'getAttachmentContent',
+  ] as const)('%s is explicitly public', (handler) => {
+    const method = InfoBoardController.prototype[handler];
+    expect(Reflect.getMetadata(PUBLIC_KEY, method)).toBe(true);
+  });
 
   it('requires and transforms expectedVersion for update requests', async () => {
     const missing = await validate(

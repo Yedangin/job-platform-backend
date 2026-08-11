@@ -195,7 +195,10 @@ export class ResumeService {
 
       // ViewingCreditService has no safe per-use rollback contract. Holding the
       // profile lock prevents the supported withdrawal path from racing here.
-      const result = await this.viewingCreditService.useCredit(userId, resumeId);
+      const result = await this.viewingCreditService.useCredit(
+        userId,
+        resumeId,
+      );
 
       const resumeBeforeReturn = await tx.resume.findFirst({
         where: { id: BigInt(resumeId), ...this.visibleResumeWhere() },
@@ -346,8 +349,7 @@ export class ResumeService {
 
     const activeConsent = user.consentRecords[0];
     return {
-      isOpenToScout:
-        user.individual.isOpenToScout && Boolean(activeConsent),
+      isOpenToScout: user.individual.isOpenToScout && Boolean(activeConsent),
       consentVersion: activeConsent?.policyVersion ?? null,
       consentedAt: activeConsent?.consentedAt ?? null,
     };
@@ -653,7 +655,11 @@ export class ResumeService {
     );
     const logs = [...firstHistory.logs];
 
-    for (let historyPage = 2; historyPage <= firstHistory.pagination.totalPages; historyPage += 1) {
+    for (
+      let historyPage = 2;
+      historyPage <= firstHistory.pagination.totalPages;
+      historyPage += 1
+    ) {
       const nextHistory = await this.viewingCreditService.getViewingHistory(
         userId,
         historyPage,

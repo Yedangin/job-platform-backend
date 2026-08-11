@@ -54,12 +54,7 @@ export class IdentityVerificationController {
     @Ip() ipAddress: string,
     @Headers('user-agent') userAgent?: string,
   ) {
-    return this.service.start(
-      session.userId,
-      dto,
-      ipAddress,
-      userAgent,
-    );
+    return this.service.start(session.userId, dto, ipAddress, userAgent);
   }
 
   @Post('bridge-config')
@@ -68,7 +63,9 @@ export class IdentityVerificationController {
     short: { ttl: 60_000, limit: 5 },
     medium: { ttl: 600_000, limit: 20 },
   })
-  @ApiOperation({ summary: '앱 인증 브리지 구성 / Mobile bridge configuration' })
+  @ApiOperation({
+    summary: '앱 인증 브리지 구성 / Mobile bridge configuration',
+  })
   getBridgeConfiguration(@Body() dto: CompleteIdentityVerificationDto) {
     return this.service.getBridgeConfiguration(dto);
   }

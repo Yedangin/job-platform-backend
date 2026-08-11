@@ -256,9 +256,9 @@ describe('PaymentService', () => {
         throw new BadGatewayException('Payment channel is not configured');
       });
 
-      await expect(
-        service.createOrder('user-1', 'VIEW_10'),
-      ).rejects.toThrow(BadGatewayException);
+      await expect(service.createOrder('user-1', 'VIEW_10')).rejects.toThrow(
+        BadGatewayException,
+      );
       expect(mockPaymentPrisma.order.create).not.toHaveBeenCalled();
     });
 
@@ -574,7 +574,9 @@ describe('PaymentService', () => {
 
       const result = await service.cancelPayment(4, 'user-1', '부분 환불');
 
-      expect(result).toEqual(expect.objectContaining({ isPartialRefund: true }));
+      expect(result).toEqual(
+        expect.objectContaining({ isPartialRefund: true }),
+      );
       expect(mockPortoneService.cancelPayment).toHaveBeenCalledWith(
         'pay_partial',
         '부분 환불',

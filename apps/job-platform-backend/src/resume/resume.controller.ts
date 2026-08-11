@@ -87,16 +87,10 @@ export class ResumeController {
     description: '현재도 공개 동의가 활성화된 열람 이력만 반환합니다.',
   })
   @ApiQuery({ name: 'page', required: false })
-  async getViewed(
-    @Session() sessionId: string,
-    @Query('page') page?: string,
-  ) {
+  async getViewed(@Session() sessionId: string, @Query('page') page?: string) {
     if (!sessionId)
       throw new UnauthorizedException('로그인이 필요 / Login required');
-    return this.resumeService.getViewed(
-      sessionId,
-      parsePage(page),
-    );
+    return this.resumeService.getViewed(sessionId, parsePage(page));
   }
 
   @Get(':resumeId/detail')
@@ -154,10 +148,7 @@ export class ResumeController {
   ) {
     if (!sessionId)
       throw new UnauthorizedException('로그인 필요 / Login required');
-    return this.resumeService.getBookmarks(
-      sessionId,
-      parsePage(page),
-    );
+    return this.resumeService.getBookmarks(sessionId, parsePage(page));
   }
 
   @Get('bookmarks/ids')

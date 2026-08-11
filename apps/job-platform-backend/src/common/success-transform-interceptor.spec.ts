@@ -9,7 +9,9 @@ describe('SuccessTransformInterceptor', () => {
     const interceptor = new SuccessTransformInterceptor();
     const next = { handle: () => of({ value: 1 }) } as CallHandler;
 
-    await expect(lastValueFrom(interceptor.intercept(context, next))).resolves.toEqual({
+    await expect(
+      lastValueFrom(interceptor.intercept(context, next)),
+    ).resolves.toEqual({
       status: 'OK',
       data: { value: 1 },
     });
@@ -17,9 +19,13 @@ describe('SuccessTransformInterceptor', () => {
 
   it('passes StreamableFile through without JSON wrapping', async () => {
     const interceptor = new SuccessTransformInterceptor();
-    const file = new StreamableFile(Buffer.from('image'), { type: 'image/png' });
+    const file = new StreamableFile(Buffer.from('image'), {
+      type: 'image/png',
+    });
     const next = { handle: () => of(file) } as CallHandler;
 
-    await expect(lastValueFrom(interceptor.intercept(context, next))).resolves.toBe(file);
+    await expect(
+      lastValueFrom(interceptor.intercept(context, next)),
+    ).resolves.toBe(file);
   });
 });

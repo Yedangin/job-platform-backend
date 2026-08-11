@@ -18,15 +18,20 @@ describe('JobPostingController review and route metadata', () => {
     '%s is admin-only',
     (handler) => {
       const method = JobPostingController.prototype[handler];
-      expect(Reflect.getMetadata(GUARDS_METADATA, JobPostingController)).toEqual(
-        expect.arrayContaining([SessionAuthGuard, RolesGuard]),
-      );
-      expect(Reflect.getMetadata(ROLES_KEY, method)).toEqual(['ADMIN', 'SUPERADMIN']);
+      expect(
+        Reflect.getMetadata(GUARDS_METADATA, JobPostingController),
+      ).toEqual(expect.arrayContaining([SessionAuthGuard, RolesGuard]));
+      expect(Reflect.getMetadata(ROLES_KEY, method)).toEqual([
+        'ADMIN',
+        'SUPERADMIN',
+      ]);
     },
   );
 
   it('keeps fixed my routes ahead of the dynamic my/:id route', () => {
-    const methodOrder = Object.getOwnPropertyNames(JobPostingController.prototype);
+    const methodOrder = Object.getOwnPropertyNames(
+      JobPostingController.prototype,
+    );
     expect(methodOrder.indexOf('getMyScraps')).toBeLessThan(
       methodOrder.indexOf('getMyJobPosting'),
     );
@@ -34,6 +39,8 @@ describe('JobPostingController review and route metadata', () => {
 
   it('does not retain a corporate activation handler', () => {
     const legacyHandler = `${'activate'}JobPosting`;
-    expect((JobPostingController.prototype as any)[legacyHandler]).toBeUndefined();
+    expect(
+      (JobPostingController.prototype as any)[legacyHandler],
+    ).toBeUndefined();
   });
 });
