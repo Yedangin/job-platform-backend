@@ -233,9 +233,14 @@ export class JobEligibilityService {
     // 2. 1차 필터: allowedVisas에 사용자 비자코드 포함 + ACTIVE 상태
     // 2. Pre-filter: allowedVisas contains user's visa code + ACTIVE status
     const visaCode = userProfile.visaCode;
+    const now = new Date();
     const where: any = {
       status: 'ACTIVE',
       allowedVisas: { contains: visaCode },
+      AND: [
+        { OR: [{ closingDate: null }, { closingDate: { gt: now } }] },
+        { OR: [{ expiresAt: null }, { expiresAt: { gt: now } }] },
+      ],
     };
 
     if (query.boardType) {
@@ -399,7 +404,13 @@ export class JobEligibilityService {
       },
     });
 
-    if (!job || job.status === 'DRAFT') {
+    const now = new Date();
+    if (
+      !job ||
+      job.status !== 'ACTIVE' ||
+      (job.closingDate && new Date(job.closingDate) <= now) ||
+      (job.expiresAt && new Date(job.expiresAt) <= now)
+    ) {
       throw new NotFoundException(
         '공고를 찾을 수 없습니다 / Job posting not found',
       );

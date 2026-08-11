@@ -135,7 +135,7 @@
       "nameKo": "워킹홀리데이(H-1)",
       "nameEn": "Working Holiday",
       "pathwayType": "working_holiday",
-      "ageMin": 18, "ageMax": 30,
+      "ageMin": 18, "ageMax": 35,
       "minEducation": "high_school",
       "allowedNationalityType": "WH_18",
       "topikMin": 0,
@@ -146,7 +146,7 @@
       "estimatedCostWon": 300,
       "platformSupport": "info_only",
       "baseScore": 65,
-      "note": "18개 협정국, 최대 1년, 직종 자유"
+      "note": "2026/27 협정 30개 국가·지역, 국적별 연령·쿼터·활동제한 적용"
     },
     {
       "pathwayId": "PW-009",
@@ -186,8 +186,8 @@
     },
     {
       "pathwayId": "PW-011",
-      "nameKo": "D-8 투자비자(창업)",
-      "nameEn": "D-8 Investment (Startup)",
+      "nameKo": "D-8-1 법인투자",
+      "nameEn": "D-8-1 Corporate Investment",
       "pathwayType": "investment",
       "ageMin": 20, "ageMax": 65,
       "minEducation": "none",
@@ -195,12 +195,12 @@
       "topikMin": 0,
       "minFund": 10000,
       "requiresEthnicKorean": false,
-      "visaChain": "D-8",
+      "visaChain": "D-8-1",
       "estimatedMonths": 2,
       "estimatedCostWon": 10000,
       "platformSupport": "info_only",
       "baseScore": 20,
-      "note": "1억원+ 투자, 사업계획서 심사"
+      "note": "외국인 1인당 1억원 이상 투자, 원칙적으로 의결권 지분 10% 이상, 사업 실재성 심사"
     },
     {
       "pathwayId": "PW-012",
@@ -208,9 +208,9 @@
       "nameEn": "F-2-7 Points Residence",
       "pathwayType": "points_system",
       "ageMin": 18, "ageMax": 60,
-      "minEducation": "associate",
+      "minEducation": "none",
       "allowedNationalityType": "ALL",
-      "topikMin": 4,
+      "topikMin": 0,
       "minFund": 0,
       "requiresEthnicKorean": false,
       "visaChain": "F-2-7",
@@ -218,7 +218,7 @@
       "estimatedCostWon": 50,
       "platformSupport": "visa_processing",
       "baseScore": 35,
-      "note": "80점/170점 이상, 소득·학력·나이·한국어 종합"
+      "note": "고시상 대상유형 충족 후 총 80점 이상. TOPIK·학력은 독립 점수요소이며 일률적 필수 조합이 아님"
     },
     {
       "pathwayId": "PW-013",
@@ -262,7 +262,7 @@
       "nameEn": "F-4 Overseas Korean",
       "pathwayType": "ethnic_korean",
       "ageMin": 18, "ageMax": 65,
-      "minEducation": "associate",
+      "minEducation": "none",
       "allowedNationalityType": "DONGPO_ALL",
       "topikMin": 0,
       "minFund": 0,
@@ -272,7 +272,25 @@
       "estimatedCostWon": 50,
       "platformSupport": "visa_processing",
       "baseScore": 50,
-      "note": "동포+학사이상 또는 자격요건 충족"
+      "note": "재외동포 관계·국적상실·혈통 연결·신원·병역 관련 요건 확인"
+    },
+    {
+      "pathwayId": "PW-016",
+      "nameKo": "D-8-4 기술창업",
+      "nameEn": "D-8-4 Technology Startup",
+      "pathwayType": "investment",
+      "ageMin": 15, "ageMax": 70,
+      "minEducation": "bachelor",
+      "allowedNationalityType": "ALL",
+      "topikMin": 0,
+      "minFund": 0,
+      "requiresEthnicKorean": false,
+      "visaChain": "D-8-4",
+      "estimatedMonths": 3,
+      "estimatedCostWon": 500,
+      "platformSupport": "info_only",
+      "baseScore": 20,
+      "note": "국내 기술창업 법인과 OASIS 총 60점 이상·필수항목 1개 이상 또는 인정 특례"
     }
   ],
 
@@ -284,7 +302,7 @@
     "PW-005": {"18-22": 85, "23-25": 85, "26-30": 80, "31-35": 60, "36-40": 40, "41-45": 20, "46-50": 10, "51-55": 0, "56-60": 0, "61+": 0},
     "PW-006": {"18-22": 80, "23-25": 80, "26-30": 80, "31-35": 75, "36-40": 65, "41-45": 0, "46-50": 0, "51-55": 0, "56-60": 0, "61+": 0},
     "PW-007": {"18-22": 0, "23-25": 50, "26-30": 70, "31-35": 75, "36-40": 70, "41-45": 55, "46-50": 40, "51-55": 0, "56-60": 0, "61+": 0},
-    "PW-008": {"18-22": 90, "23-25": 90, "26-30": 85, "31-35": 0, "36-40": 0, "41-45": 0, "46-50": 0, "51-55": 0, "56-60": 0, "61+": 0},
+    "PW-008": {"18-22": 90, "23-25": 90, "26-30": 85, "31-35": 75, "36-40": 0, "41-45": 0, "46-50": 0, "51-55": 0, "56-60": 0, "61+": 0},
     "PW-009": {"18-22": 30, "23-25": 50, "26-30": 70, "31-35": 75, "36-40": 70, "41-45": 60, "46-50": 50, "51-55": 35, "56-60": 20, "61+": 10},
     "PW-010": {"18-22": 30, "23-25": 55, "26-30": 75, "31-35": 75, "36-40": 65, "41-45": 55, "46-50": 45, "51-55": 30, "56-60": 15, "61+": 5},
     "PW-011": {"18-22": 10, "23-25": 20, "26-30": 40, "31-35": 55, "36-40": 60, "41-45": 60, "46-50": 55, "51-55": 45, "56-60": 35, "61+": 20},
@@ -464,7 +482,7 @@
       {"order": 3, "monthFromStart": 2,  "type": "final_goal",         "nameKo": "D-8 비자 발급, 사업 운영 시작",     "visaStatus": "D-8",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "D-8비자발급",                "platformAction": "info_only"}
     ],
     "PW-012": [
-      {"order": 1, "monthFromStart": 0,  "type": "application",        "nameKo": "점수 산정 및 서류 준비",            "visaStatus": "E-7",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 300, "requirements": "80점이상+TOPIK4급+전문학사", "platformAction": "info_only"},
+      {"order": 1, "monthFromStart": 0,  "type": "application",        "nameKo": "대상유형 확인 및 공식 점수 산정",     "visaStatus": "E-7",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 300, "requirements": "고시상 대상유형+총점80점이상", "platformAction": "info_only"},
       {"order": 2, "monthFromStart": 1,  "type": "final_goal",         "nameKo": "F-2-7 거주비자 취득",              "visaStatus": "F-2-7", "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 300, "requirements": "점수제심사통과+비자발급",     "platformAction": "visa_processing"}
     ],
     "PW-013": [
@@ -472,9 +490,8 @@
       {"order": 2, "monthFromStart": 1,  "type": "final_goal",         "nameKo": "F-2-R 지역특화비자 취득",          "visaStatus": "F-2-R", "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 250, "requirements": "F-2-R비자발급",              "platformAction": "visa_processing"}
     ],
     "PW-014": [
-      {"order": 1, "monthFromStart": 0,  "type": "application",        "nameKo": "H-2 방문취업 비자 신청",           "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "동포증명+여권+대사관신청",   "platformAction": "info_only"},
-      {"order": 2, "monthFromStart": 1,  "type": "entry",              "nameKo": "한국 입국, 취업교육 이수",          "visaStatus": "H-2",   "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "H-2비자발급+취업교육",       "platformAction": "info_only"},
-      {"order": 3, "monthFromStart": 2,  "type": "final_goal",         "nameKo": "취업 시작(네거티브 리스트)",         "visaStatus": "H-2",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 250, "requirements": "취업교육이수+구직",           "platformAction": "alba_matching"}
+      {"order": 1, "monthFromStart": 0,  "type": "closed",             "nameKo": "H-2 신규 발급 중단 확인",           "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "2026-02-12 신규발급중단",      "platformAction": "info_only"},
+      {"order": 2, "monthFromStart": 0,  "type": "alternative",        "nameKo": "재외동포 F-4 통합 경로 확인",       "visaStatus": "F-4",   "canWorkPartTime": true,  "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "동포관계·국적·신원서류 확인",  "platformAction": "visa_processing"}
     ],
     "PW-015": [
       {"order": 1, "monthFromStart": 0,  "type": "application",        "nameKo": "F-4 재외동포 비자 신청",           "visaStatus": "none",  "canWorkPartTime": false, "weeklyHours": 0,  "estimatedMonthlyIncome": 0,   "requirements": "동포증명+전문학사이상학위",   "platformAction": "visa_processing"},

@@ -6,6 +6,10 @@ import {
   IsInt,
   IsBoolean,
   Min,
+  Max,
+  MaxLength,
+  Matches,
+  IsIn,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -20,15 +24,17 @@ export class CreateOrderDto {
   })
   @IsString()
   @IsNotEmpty()
+  @MaxLength(64)
+  @Matches(/^[A-Z0-9_]+$/)
   productCode: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: '연결할 공고 ID / Job posting ID to link',
     example: '12345',
   })
-  @IsOptional()
   @IsString()
-  jobPostingId?: string;
+  @Matches(/^[1-9]\d{0,17}$/)
+  jobPostingId: string;
 }
 
 // ========================================
@@ -41,6 +47,8 @@ export class VerifyPaymentDto {
   })
   @IsString()
   @IsNotEmpty()
+  @MaxLength(128)
+  @Matches(/^imp_[A-Za-z0-9_-]+$/)
   impUid: string;
 }
 
@@ -54,6 +62,7 @@ export class CancelOrderDto {
   })
   @IsOptional()
   @IsString()
+  @MaxLength(200)
   reason?: string;
 }
 
@@ -76,6 +85,7 @@ export class GetMyOrdersQueryDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
+  @Max(100)
   limit?: number;
 }
 
@@ -89,6 +99,7 @@ export class UpgradeToPremiumDto {
   })
   @IsString()
   @IsNotEmpty()
+  @Matches(/^[1-9]\d{0,17}$/)
   jobPostingId: string;
 }
 
@@ -102,6 +113,8 @@ export class ConfirmPremiumUpgradeDto {
   })
   @IsString()
   @IsNotEmpty()
+  @MaxLength(128)
+  @Matches(/^imp_[A-Za-z0-9_-]+$/)
   impUid: string;
 }
 
@@ -116,6 +129,7 @@ export class GetAllOrdersQueryDto {
   })
   @IsOptional()
   @IsString()
+  @IsIn(['PENDING', 'PAID', 'CANCELLED', 'REFUNDED', 'FAILED'])
   paymentStatus?: string;
 
   @ApiPropertyOptional({
@@ -124,6 +138,8 @@ export class GetAllOrdersQueryDto {
   })
   @IsOptional()
   @IsString()
+  @MaxLength(64)
+  @Matches(/^[A-Z0-9_]+$/)
   productCode?: string;
 
   @ApiPropertyOptional({ description: '페이지 번호 / Page number', default: 1 })
@@ -141,6 +157,7 @@ export class GetAllOrdersQueryDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
+  @Max(100)
   limit?: number;
 }
 
@@ -156,6 +173,7 @@ export class AdminGrantPremiumDto {
   @Type(() => Number)
   @IsInt()
   @Min(1)
+  @Max(365)
   days: number;
 
   @ApiPropertyOptional({
@@ -165,6 +183,7 @@ export class AdminGrantPremiumDto {
   })
   @IsOptional()
   @IsString()
+  @IsIn(['PARTNER_PROMO', 'NEW_SIGNUP', 'EVENT', 'CS_COMP', 'OTHER'])
   reason?: string;
 
   @ApiPropertyOptional({
@@ -173,6 +192,7 @@ export class AdminGrantPremiumDto {
   })
   @IsOptional()
   @IsString()
+  @MaxLength(500)
   memo?: string;
 
   @ApiPropertyOptional({
@@ -197,6 +217,7 @@ export class AdminRevokePremiumDto {
   })
   @IsString()
   @IsNotEmpty()
+  @IsIn(['VIOLATION', 'WRONG_GRANT', 'PROMO_END', 'CORP_REQUEST', 'OTHER'])
   reason: string;
 
   @ApiPropertyOptional({
@@ -205,6 +226,7 @@ export class AdminRevokePremiumDto {
   })
   @IsOptional()
   @IsString()
+  @MaxLength(500)
   memo?: string;
 
   @ApiPropertyOptional({
@@ -216,4 +238,30 @@ export class AdminRevokePremiumDto {
   @IsBoolean()
   @Type(() => Boolean)
   forceNoRefund?: boolean;
+}
+
+export class GetProductsQueryDto {
+  @ApiPropertyOptional({ enum: ['PART_TIME', 'FULL_TIME'] })
+  @IsOptional()
+  @IsIn(['PART_TIME', 'FULL_TIME'])
+  boardType?: string;
+}
+
+export class ProductCodeParamDto {
+  @IsString()
+  @MaxLength(64)
+  @Matches(/^[A-Z0-9_]+$/)
+  code: string;
+}
+
+export class OrderNoParamDto {
+  @IsString()
+  @Matches(/^ORD-\d{8}-[A-Z0-9]{5,32}$/)
+  orderNo: string;
+}
+
+export class JobIdParamDto {
+  @IsString()
+  @Matches(/^[1-9]\d{0,17}$/)
+  jobId: string;
 }

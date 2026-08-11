@@ -17,9 +17,10 @@ import { AppleStrategy } from 'libs/common/src/common/strategies/apple.strategy'
 import { GenerateStoreToken } from 'libs/common/src/common/helper/generate-store-token';
 import { PaymentModule } from '../payment/payment.module';
 import { AuthPlatformMiddleware } from './auth-platform.middleware';
+import { IdentityVerificationModule } from '../identity-verification/identity-verification.module';
 
 @Module({
-  imports: [PaymentModule],
+  imports: [PaymentModule, IdentityVerificationModule],
   controllers: [AuthController],
   providers: [
     GenerateStoreToken,

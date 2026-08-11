@@ -35,6 +35,7 @@ import {
 import { GenerateStoreToken } from 'libs/common/src/common/helper/generate-store-token';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import { CouponService } from '../payment/coupon.service';
+import { IdentityVerificationService } from '../identity-verification/identity-verification.service';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
@@ -47,6 +48,7 @@ export class AuthService implements OnModuleInit {
     private readonly generateToken: GenerateStoreToken,
     private readonly redisService: RedisService,
     private readonly couponService: CouponService,
+    private readonly identityVerificationService: IdentityVerificationService,
   ) {
     // ✅ AWS SES 설정
     this.sesClient = new SESClient({
@@ -265,7 +267,44 @@ export class AuthService implements OnModuleInit {
 
   // --- 3. 회원가입 (★ 핵심 로직: 트랜잭션 + One Account Policy) ---
   async register(request: RegisterRequest): Promise<RegisterSuccessResponse> {
-    const { email, password, fullName, role } = request;
+    const {
+      email,
+      password,
+      fullName,
+      birthDate,
+      role,
+      termsConsent,
+      privacyConsent,
+      internationalTransferConsent,
+      marketingConsent = false,
+      ageConfirmed,
+      policyVersion,
+      consentChannel = 'WEB_SIGNUP',
+      consentIp,
+      consentUserAgent,
+    } = request;
+
+    if (
+      !termsConsent ||
+      !privacyConsent ||
+      !internationalTransferConsent ||
+      !ageConfirmed ||
+      !policyVersion
+    ) {
+      throw new BadRequestException(
+        '필수 동의 및 만 18세 이상 확인이 필요합니다.',
+      );
+    }
+
+    const parsedBirthDate = new Date(`${birthDate}T00:00:00.000Z`);
+    const adultCutoff = new Date();
+    adultCutoff.setUTCFullYear(adultCutoff.getUTCFullYear() - 18);
+    if (
+      Number.isNaN(parsedBirthDate.getTime()) ||
+      parsedBirthDate > adultCutoff
+    ) {
+      throw new BadRequestException('만 18세 이상만 가입할 수 있습니다.');
+    }
 
     // 1. 인증 티켓 확인
     const isVerified = await this.redisService.get(`verified_ticket:${email}`);
@@ -327,6 +366,56 @@ export class AuthService implements OnModuleInit {
           },
         });
 
+        await prisma.consentRecord.createMany({
+          data: [
+            {
+              authId: newUser.id,
+              consentType: 'TERMS',
+              policyVersion,
+              granted: true,
+              channel: consentChannel,
+              ipAddress: consentIp,
+              userAgent: consentUserAgent,
+            },
+            {
+              authId: newUser.id,
+              consentType: 'PRIVACY',
+              policyVersion,
+              granted: true,
+              channel: consentChannel,
+              ipAddress: consentIp,
+              userAgent: consentUserAgent,
+            },
+            {
+              authId: newUser.id,
+              consentType: 'INTERNATIONAL_TRANSFER',
+              policyVersion,
+              granted: true,
+              channel: consentChannel,
+              ipAddress: consentIp,
+              userAgent: consentUserAgent,
+            },
+            {
+              authId: newUser.id,
+              consentType: 'AGE_18_CONFIRMED',
+              policyVersion,
+              granted: true,
+              channel: consentChannel,
+              ipAddress: consentIp,
+              userAgent: consentUserAgent,
+            },
+            {
+              authId: newUser.id,
+              consentType: 'MARKETING',
+              policyVersion,
+              granted: marketingConsent,
+              channel: consentChannel,
+              ipAddress: consentIp,
+              userAgent: consentUserAgent,
+            },
+          ],
+        });
+
         // 5-2. 프로필 테이블 초기 Row 생성
         if (finalUserType === UserType.INDIVIDUAL) {
           // 개인 회원: profiles_individual 생성 (필수 필드만)
@@ -335,7 +424,7 @@ export class AuthService implements OnModuleInit {
               authId: newUser.id,
               realName: fullName || '이름 미입력',
               nationality: 'UNKNOWN', // 임시값 (나중에 프로필 수정에서 입력)
-              birthDate: new Date('1900-01-01'), // 임시값
+              birthDate: parsedBirthDate,
               gender: 'M', // 임시값
               visaType: 'PENDING', // 임시값
               visaExpiryDate: new Date('2099-12-31'), // 임시값
@@ -1152,6 +1241,36 @@ export class AuthService implements OnModuleInit {
     }
   }
 
+  private validateOwnedCorporateDocumentPath(
+    userId: string,
+    filePath: string,
+    docType: 'bizReg' | 'empCert',
+  ): string {
+    const root = path.resolve(
+      process.cwd(),
+      'uploads',
+      'corporate-docs',
+      userId,
+      docType === 'bizReg' ? 'biz-reg' : 'emp-cert',
+    );
+    const candidate = path.resolve(process.cwd(), filePath);
+    const relativeToRoot = path.relative(root, candidate);
+    const extension = path.extname(candidate).toLowerCase();
+    if (
+      !relativeToRoot ||
+      relativeToRoot.startsWith('..') ||
+      path.isAbsolute(relativeToRoot) ||
+      !['.jpg', '.jpeg', '.png', '.pdf'].includes(extension) ||
+      !fs.existsSync(candidate) ||
+      !fs.statSync(candidate).isFile()
+    ) {
+      throw new BadRequestException(
+        '본인 계정으로 업로드한 유효한 서류를 선택해주세요 / Select a valid document uploaded by this account',
+      );
+    }
+    return path.relative(process.cwd(), candidate).replace(/\\/g, '/');
+  }
+
   // 인증된 사용자 ID를 세션에서 직접 추출하는 헬퍼
   // Helper to extract userId from Redis session directly
   private async getSessionUserId(sessionId: string): Promise<string> {
@@ -1349,8 +1468,12 @@ export class AuthService implements OnModuleInit {
       if (!user.corporate)
         throw new NotFoundException('Corporate profile not found');
       const updateData: Record<string, unknown> = {};
-      if (data.fullName !== undefined)
-        updateData['managerName'] = data.fullName.trim();
+      if (data.fullName !== undefined) {
+        const verifiedContact =
+          await this.identityVerificationService.getVerifiedContact(userId);
+        updateData['managerName'] =
+          verifiedContact?.name || data.fullName.trim();
+      }
       if (data.profileImageUrl !== undefined)
         updateData['logoImageUrl'] = data.profileImageUrl;
       await this.prisma.corporateProfile.update({
@@ -1372,14 +1495,20 @@ export class AuthService implements OnModuleInit {
     const deleteDate = new Date(now);
     deleteDate.setDate(deleteDate.getDate() + 90);
 
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        isActive: false,
-        deletedAt: now,
-        deleteScheduledAt: deleteDate,
-      },
-    });
+    await this.prisma.$transaction([
+      this.prisma.identityVerificationAttempt.deleteMany({
+        where: { authId: userId },
+      }),
+      this.prisma.verifiedIdentity.deleteMany({ where: { authId: userId } }),
+      this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          isActive: false,
+          deletedAt: now,
+          deleteScheduledAt: deleteDate,
+        },
+      }),
+    ]);
 
     // 세션 삭제
     await this.redisService.del(`session:${sessionId}`);
@@ -1422,6 +1551,28 @@ export class AuthService implements OnModuleInit {
     };
   }
 
+  async getMyConsents(sessionId: string) {
+    const userId = await this.getSessionUserId(sessionId);
+    const records = await this.prisma.consentRecord.findMany({
+      where: { authId: userId },
+      orderBy: { consentedAt: 'desc' },
+      select: {
+        consentId: true,
+        consentType: true,
+        policyVersion: true,
+        granted: true,
+        channel: true,
+        consentedAt: true,
+        withdrawnAt: true,
+      },
+    });
+
+    return records.map(({ consentId, ...record }) => ({
+      ...record,
+      consentId: consentId.toString(),
+    }));
+  }
+
   // --- 14. 알림 설정 변경 / Update notification settings ---
   async updateNotificationSettings(
     sessionId: string,
@@ -1443,39 +1594,55 @@ export class AuthService implements OnModuleInit {
     const prevKakao = user.notifKakao;
     const prevMarketing = (user as any).marketingConsent ?? false;
 
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        notifSms: sms,
-        notifEmail: email,
-        notifKakao: kakao,
-        notifEnabledAt: hasAnyEnabled ? now : null,
-        // 채널별 타임스탬프: ON으로 바뀌면 현재 시각, OFF로 바뀌면 null
-        notifSmsEnabledAt: sms
-          ? !prevSms
-            ? now
-            : ((user as any).notifSmsEnabledAt ?? now)
-          : null,
-        notifEmailEnabledAt: email
-          ? !prevEmail
-            ? now
-            : ((user as any).notifEmailEnabledAt ?? now)
-          : null,
-        notifKakaoEnabledAt: kakao
-          ? !prevKakao
-            ? now
-            : ((user as any).notifKakaoEnabledAt ?? now)
-          : null,
-        // 마케팅 동의 / Marketing consent
-        ...(marketing !== undefined && {
-          marketingConsent: marketing,
-          marketingConsentAt: marketing
-            ? !prevMarketing
+    await this.prisma.$transaction(async (prisma) => {
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          notifSms: sms,
+          notifEmail: email,
+          notifKakao: kakao,
+          notifEnabledAt: hasAnyEnabled ? now : null,
+          // 채널별 타임스탬프: ON으로 바뀌면 현재 시각, OFF로 바뀌면 null
+          notifSmsEnabledAt: sms
+            ? !prevSms
               ? now
-              : ((user as any).marketingConsentAt ?? now)
+              : ((user as any).notifSmsEnabledAt ?? now)
             : null,
-        }),
-      } as any,
+          notifEmailEnabledAt: email
+            ? !prevEmail
+              ? now
+              : ((user as any).notifEmailEnabledAt ?? now)
+            : null,
+          notifKakaoEnabledAt: kakao
+            ? !prevKakao
+              ? now
+              : ((user as any).notifKakaoEnabledAt ?? now)
+            : null,
+          // 마케팅 동의 / Marketing consent
+          ...(marketing !== undefined && {
+            marketingConsent: marketing,
+            marketingConsentAt: marketing
+              ? !prevMarketing
+                ? now
+                : ((user as any).marketingConsentAt ?? now)
+              : null,
+          }),
+        } as any,
+      });
+
+      if (marketing !== undefined && marketing !== prevMarketing) {
+        await prisma.consentRecord.create({
+          data: {
+            authId: userId,
+            consentType: 'MARKETING',
+            policyVersion: '2026-03-02',
+            granted: marketing,
+            channel: 'WEB_NOTIFICATION_SETTINGS',
+            consentedAt: now,
+            withdrawnAt: marketing ? null : now,
+          },
+        });
+      }
     });
 
     await this.logActivity(
@@ -1684,8 +1851,14 @@ export class AuthService implements OnModuleInit {
     if (!dto.ceoName?.trim()) {
       throw new BadRequestException('대표자 성명을 입력해주세요.');
     }
+    if (dto.ceoName.trim().length > 100) {
+      throw new BadRequestException('대표자 성명이 너무 깁니다.');
+    }
     if (!dto.companyName?.trim()) {
       throw new BadRequestException('기업명을 입력해주세요.');
+    }
+    if (dto.companyName.trim().length > 200) {
+      throw new BadRequestException('기업명이 너무 깁니다.');
     }
     const cleanDate = dto.openDate?.replace(/[^0-9]/g, '') || '';
     if (cleanDate.length !== 8) {
@@ -1696,7 +1869,10 @@ export class AuthService implements OnModuleInit {
 
     try {
       // Step 1: 진위확인 API (validate) - 사업자번호 + 대표자명 + 개업일자 + 상호 일치 확인
-      const validateUrl = `https://api.odcloud.kr/api/nts-businessman/v1/validate?serviceKey=${serviceKey}`;
+      const validateUrl = new URL(
+        'https://api.odcloud.kr/api/nts-businessman/v1/validate',
+      );
+      validateUrl.searchParams.set('serviceKey', serviceKey);
       const validateResponse = await fetch(validateUrl, {
         method: 'POST',
         headers: {
@@ -1713,14 +1889,12 @@ export class AuthService implements OnModuleInit {
             },
           ],
         }),
+        signal: AbortSignal.timeout(10_000),
       });
 
       if (!validateResponse.ok) {
-        const errorText = await validateResponse.text();
         this.logger.error(
-          '[NTS Validate API] HTTP 에러:',
-          validateResponse.status,
-          errorText,
+          `[NTS Validate API] HTTP ${validateResponse.status}`,
         );
         throw new InternalServerErrorException(
           '국세청 진위확인 API 호출에 실패했습니다.',
@@ -1728,10 +1902,6 @@ export class AuthService implements OnModuleInit {
       }
 
       const validateResult = await validateResponse.json();
-      this.logger.log(
-        '[NTS Validate API] 응답:',
-        JSON.stringify(validateResult, null, 2),
-      );
 
       const validateData = validateResult.data?.[0];
       if (!validateData) {
@@ -1756,7 +1926,10 @@ export class AuthService implements OnModuleInit {
       }
 
       // Step 2: 휴폐업 상태조회 API (status) - 계속사업자인지 확인
-      const statusUrl = `https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=${serviceKey}`;
+      const statusUrl = new URL(
+        'https://api.odcloud.kr/api/nts-businessman/v1/status',
+      );
+      statusUrl.searchParams.set('serviceKey', serviceKey);
       const statusResponse = await fetch(statusUrl, {
         method: 'POST',
         headers: {
@@ -1764,25 +1937,17 @@ export class AuthService implements OnModuleInit {
           accept: 'application/json',
         },
         body: JSON.stringify({ b_no: [cleanNumber] }),
+        signal: AbortSignal.timeout(10_000),
       });
 
       if (!statusResponse.ok) {
-        const errorText = await statusResponse.text();
-        this.logger.error(
-          '[NTS Status API] HTTP 에러:',
-          statusResponse.status,
-          errorText,
-        );
+        this.logger.error(`[NTS Status API] HTTP ${statusResponse.status}`);
         throw new InternalServerErrorException(
           '국세청 상태조회 API 호출에 실패했습니다.',
         );
       }
 
       const statusResult = await statusResponse.json();
-      this.logger.log(
-        '[NTS Status API] 응답:',
-        JSON.stringify(statusResult, null, 2),
-      );
 
       const statusData = statusResult.data?.[0];
       if (!statusData) {
@@ -1819,7 +1984,7 @@ export class AuthService implements OnModuleInit {
       ) {
         throw error;
       }
-      this.logger.error('[NTS API] 네트워크 에러:', error);
+      this.logger.error('[NTS API] request failed');
       throw new InternalServerErrorException(
         '국세청 API 연동 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
       );
@@ -1865,7 +2030,10 @@ export class AuthService implements OnModuleInit {
     const decodedOriginalName = Buffer.from(
       file.originalname,
       'latin1',
-    ).toString('utf8');
+    )
+      .toString('utf8')
+      .replace(/[\r\n\0]/g, '_')
+      .slice(0, 180);
 
     // 활동 로그: 서류 업로드
     await this.logActivity(
@@ -1874,7 +2042,7 @@ export class AuthService implements OnModuleInit {
       null,
       null,
       'CORPORATE_DOC_UPLOAD',
-      `${docType === 'bizReg' ? '사업자등록증' : '재직증명서'} 업로드: ${decodedOriginalName}`,
+      `${docType === 'bizReg' ? '사업자등록증' : '재직증명서'} 업로드 완료`,
     );
 
     return {
@@ -1889,7 +2057,7 @@ export class AuthService implements OnModuleInit {
     const ext = path.extname(filePath).toLowerCase();
     // PDF는 OCR 불가 → 스킵
     if (ext === '.pdf') {
-      this.logger.log('[OCR] PDF 파일은 OCR 스킵:', filePath);
+      this.logger.debug('[OCR] PDF file skipped');
       return null;
     }
 
@@ -1898,7 +2066,7 @@ export class AuthService implements OnModuleInit {
       : path.join(process.cwd(), filePath);
 
     if (!fs.existsSync(absolutePath)) {
-      this.logger.error('[OCR] 파일이 존재하지 않음:', absolutePath);
+      this.logger.error('[OCR] document file not found');
       return null;
     }
 
@@ -1910,7 +2078,6 @@ export class AuthService implements OnModuleInit {
           '0123456789-가나다라마바사아자차카타파하등록번호사업자법인 \n',
       } as any);
       const text = result.data.text;
-      this.logger.log('[OCR] 추출된 전체 텍스트:', text);
 
       // 줄 단위로 분석하여 사업자등록번호 찾기
       const lines = text.split('\n');
@@ -1933,20 +2100,12 @@ export class AuthService implements OnModuleInit {
           );
           if (dashMatch) {
             bizNumber = dashMatch[1] + dashMatch[2] + dashMatch[3];
-            this.logger.log(
-              '[OCR] 등록번호 키워드 + 대시 패턴 매칭:',
-              bizNumber,
-            );
             break;
           }
           // 같은 줄에 10자리 숫자
           const plainMatch = line.match(/(\d{3})\s*(\d{2})\s*(\d{5})/);
           if (plainMatch) {
             bizNumber = plainMatch[1] + plainMatch[2] + plainMatch[3];
-            this.logger.log(
-              '[OCR] 등록번호 키워드 + 연속숫자 매칭:',
-              bizNumber,
-            );
             break;
           }
           // 다음 줄에서 번호 찾기 (등록번호: \n 485-86-03274 형태)
@@ -1955,20 +2114,12 @@ export class AuthService implements OnModuleInit {
           );
           if (nextDashMatch) {
             bizNumber = nextDashMatch[1] + nextDashMatch[2] + nextDashMatch[3];
-            this.logger.log(
-              '[OCR] 등록번호 키워드(다음줄) + 대시 패턴 매칭:',
-              bizNumber,
-            );
             break;
           }
           const nextPlainMatch = nextLine.match(/(\d{3})\s*(\d{2})\s*(\d{5})/);
           if (nextPlainMatch) {
             bizNumber =
               nextPlainMatch[1] + nextPlainMatch[2] + nextPlainMatch[3];
-            this.logger.log(
-              '[OCR] 등록번호 키워드(다음줄) + 연속숫자 매칭:',
-              bizNumber,
-            );
             break;
           }
         }
@@ -1989,10 +2140,6 @@ export class AuthService implements OnModuleInit {
           );
           if (!/법인/.test(preceding)) {
             bizNumber = m[1] + m[2] + m[3];
-            this.logger.log(
-              '[OCR] 전체텍스트 대시 패턴 매칭 (법인 제외):',
-              bizNumber,
-            );
             break;
           }
         }
@@ -2008,7 +2155,6 @@ export class AuthService implements OnModuleInit {
           const pm = tl.match(/(\d{10})/);
           if (pm) {
             bizNumber = pm[1];
-            this.logger.log('[OCR] 상단 10자리 연속숫자 매칭:', bizNumber);
             break;
           }
         }
@@ -2038,6 +2184,9 @@ export class AuthService implements OnModuleInit {
     });
     if (!corp) throw new NotFoundException('기업 프로필을 찾을 수 없습니다.');
 
+    const identity =
+      await this.identityVerificationService.getVerifiedIdentitySummary(userId);
+
     return {
       verificationStatus: corp.verificationStatus,
       isBizVerified: corp.isBizVerified,
@@ -2064,6 +2213,7 @@ export class AuthService implements OnModuleInit {
       isCeoSelf: corp.isCeoSelf,
       ocrVerified: corp.ocrVerified,
       ocrExtractedBizNo: corp.ocrExtractedBizNo,
+      identityVerification: identity,
     };
   }
 
@@ -2085,8 +2235,15 @@ export class AuthService implements OnModuleInit {
       empCertDocPath?: string;
       empCertDocOrigName?: string;
       isCeoSelf?: boolean;
+      termsConsent: boolean;
+      privacyConsent: boolean;
+      internationalTransferConsent: boolean;
+      marketingConsent?: boolean;
+      policyVersion: string;
+      consentChannel?: string;
     },
     clientIp?: string,
+    userAgent?: string,
   ) {
     const userId = await this.getSessionUserId(sessionId);
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
@@ -2099,6 +2256,14 @@ export class AuthService implements OnModuleInit {
       where: { authId: userId },
     });
     if (!corp) throw new NotFoundException('기업 프로필을 찾을 수 없습니다.');
+    if (
+      !data.termsConsent ||
+      !data.privacyConsent ||
+      !data.internationalTransferConsent ||
+      !data.policyVersion
+    ) {
+      throw new BadRequestException('필수 약관 동의가 필요합니다.');
+    }
 
     // SUBMITTED 또는 APPROVED 상태에서는 재제출 불가
     if (corp.verificationStatus === 'SUBMITTED') {
@@ -2108,21 +2273,37 @@ export class AuthService implements OnModuleInit {
       throw new UnauthorizedException('이미 인증이 완료되었습니다.');
     }
 
+    if (!data.bizRegDocPath) {
+      throw new BadRequestException(
+        '사업자등록증을 제출해야 합니다 / Business registration document is required',
+      );
+    }
+    const ownedBizRegDocPath = this.validateOwnedCorporateDocumentPath(
+      userId,
+      data.bizRegDocPath,
+      'bizReg',
+    );
+    const ownedEmpCertDocPath = data.empCertDocPath
+      ? this.validateOwnedCorporateDocumentPath(
+          userId,
+          data.empCertDocPath,
+          'empCert',
+        )
+      : null;
+
     // OCR 검증 (사업자등록증 이미지가 있는 경우) — 실패해도 인증 제출은 진행
     // OCR verification (if biz reg image exists) — failure does not block submission
     let ocrVerified = false;
     let ocrExtractedBizNo: string | null = null;
-    if (data.bizRegDocPath) {
+    if (ownedBizRegDocPath) {
       try {
-        ocrExtractedBizNo = await this.ocrExtractBizNumber(data.bizRegDocPath);
+        ocrExtractedBizNo = await this.ocrExtractBizNumber(
+          ownedBizRegDocPath,
+        );
         if (ocrExtractedBizNo) {
           const cleanInputBizNo = data.bizRegNumber.replace(/[^0-9]/g, '');
           ocrVerified = ocrExtractedBizNo === cleanInputBizNo;
-          this.logger.log('[OCR 검증]', {
-            extracted: ocrExtractedBizNo,
-            input: cleanInputBizNo,
-            match: ocrVerified,
-          });
+          this.logger.log(`[OCR 검증] match=${ocrVerified}`);
         }
       } catch (ocrError) {
         this.logger.warn(
@@ -2131,41 +2312,107 @@ export class AuthService implements OnModuleInit {
       }
     }
 
-    // verificationMethod 결정
-    const isCeoSelf = data.isCeoSelf === true;
+    const verifiedContact =
+      await this.identityVerificationService.getVerifiedContact(userId);
+    if (!verifiedContact) {
+      throw new BadRequestException(
+        '담당자 휴대폰 본인인증을 먼저 완료해주세요 / Complete manager identity verification first',
+      );
+    }
+
+    // 대표자 여부는 브라우저 선언값이 아니라 다날 인증 실명과 대표자명으로 확정한다.
+    const requestedCeoSelf = data.isCeoSelf === true;
+    const identityMatchesCeo =
+      await this.identityVerificationService.hasVerifiedNameMatch(
+        userId,
+        data.ceoName,
+      );
+    if (requestedCeoSelf && !identityMatchesCeo) {
+      throw new BadRequestException(
+        '본인인증 이름과 대표자명이 일치하지 않습니다 / Verified name does not match the representative',
+      );
+    }
+    const isCeoSelf = requestedCeoSelf && identityMatchesCeo;
+    if (!isCeoSelf && !ownedEmpCertDocPath) {
+      throw new BadRequestException(
+        '담당자는 재직증명서를 제출해야 합니다 / Employment certificate is required for managers',
+      );
+    }
     const verificationMethod = isCeoSelf ? 'CEO_MATCH' : 'DOCUMENT_MANUAL';
 
-    await this.prisma.corporateProfile.update({
-      where: { authId: userId },
-      data: {
-        bizRegNumber: data.bizRegNumber,
-        companyNameOfficial: data.companyNameOfficial,
-        ceoName: data.ceoName,
-        managerName: data.managerName,
-        managerPhone: data.managerPhone,
-        ksicCode: data.ksicCode || null,
-        addressRoad: data.addressRoad || null,
-        companySizeType: (data.companySizeType as any) || 'SME',
-        proofDocumentUrl: data.proofDocumentUrl || null,
-        // 서류 업로드 관련
-        bizRegDocPath: data.bizRegDocPath || null,
-        bizRegDocOrigName: data.bizRegDocOrigName || null,
-        empCertDocPath: data.empCertDocPath || null,
-        empCertDocOrigName: data.empCertDocOrigName || null,
-        // 대표자 본인 선언
-        isCeoSelf,
-        ceoSelfDeclaredAt: isCeoSelf ? new Date() : null,
-        ceoSelfDeclaredIp: isCeoSelf ? clientIp || null : null,
-        // OCR 결과
-        ocrVerified,
-        ocrExtractedBizNo,
-        // 인증 방법 및 상태
-        verificationMethod: verificationMethod as any,
-        verificationStatus: 'SUBMITTED',
-        submittedAt: new Date(),
-        lastRejectionReason: null,
-      },
-    });
+    await this.prisma.$transaction([
+      this.prisma.corporateProfile.update({
+        where: { authId: userId },
+        data: {
+          bizRegNumber: data.bizRegNumber,
+          companyNameOfficial: data.companyNameOfficial,
+          ceoName: data.ceoName,
+          managerName: verifiedContact.name,
+          managerPhone: verifiedContact.phone || data.managerPhone,
+          ksicCode: data.ksicCode || null,
+          addressRoad: data.addressRoad || null,
+          companySizeType: (data.companySizeType as any) || 'SME',
+          proofDocumentUrl: data.proofDocumentUrl || null,
+          // 서류 업로드 관련
+          bizRegDocPath: ownedBizRegDocPath,
+          bizRegDocOrigName: data.bizRegDocOrigName || null,
+          empCertDocPath: ownedEmpCertDocPath,
+          empCertDocOrigName: data.empCertDocOrigName || null,
+          // 대표자 본인 선언
+          isCeoSelf,
+          ceoSelfDeclaredAt: isCeoSelf ? new Date() : null,
+          ceoSelfDeclaredIp: isCeoSelf ? clientIp || null : null,
+          // OCR 결과
+          ocrVerified,
+          ocrExtractedBizNo,
+          // 인증 방법 및 상태
+          verificationMethod: verificationMethod as any,
+          verificationStatus: 'SUBMITTED',
+          submittedAt: new Date(),
+          lastRejectionReason: null,
+        },
+      }),
+      this.prisma.consentRecord.createMany({
+        data: [
+          {
+            authId: userId,
+            consentType: 'TERMS',
+            policyVersion: data.policyVersion,
+            granted: true,
+            channel: data.consentChannel || 'WEB_CORPORATE_VERIFY',
+            ipAddress: clientIp,
+            userAgent,
+          },
+          {
+            authId: userId,
+            consentType: 'PRIVACY',
+            policyVersion: data.policyVersion,
+            granted: true,
+            channel: data.consentChannel || 'WEB_CORPORATE_VERIFY',
+            ipAddress: clientIp,
+            userAgent,
+          },
+          {
+            authId: userId,
+            consentType: 'INTERNATIONAL_TRANSFER',
+            policyVersion: data.policyVersion,
+            granted: true,
+            channel: data.consentChannel || 'WEB_CORPORATE_VERIFY',
+            ipAddress: clientIp,
+            userAgent,
+          },
+          {
+            authId: userId,
+            consentType: 'MARKETING',
+            policyVersion: data.policyVersion,
+            granted: data.marketingConsent === true,
+            channel: data.consentChannel || 'WEB_CORPORATE_VERIFY',
+            ipAddress: clientIp,
+            userAgent,
+          },
+        ],
+      }),
+    ]);
 
     // 활동 로그: 기업 인증 신청
     await this.logActivity(

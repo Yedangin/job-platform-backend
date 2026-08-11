@@ -9,9 +9,9 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "windows", "darwin-arm64", "debian-openssl-3.0.x"]
-  output   = "../../generated/prisma-payment"
+  output        = "../../generated/prisma-payment"
 }
 
 // ==========================================================
@@ -27,7 +27,7 @@ model Product {
   price       Int             @map("price")
   description String?         @map("description")
   isActive    Boolean         @default(true) @map("is_active")
-  metadata    String?         @db.Text @map("metadata")
+  metadata    String?         @map("metadata") @db.Text
   createdAt   DateTime        @default(now()) @map("created_at")
   updatedAt   DateTime        @updatedAt @map("updated_at")
 
@@ -48,22 +48,30 @@ enum ProductCategory {
 // [Order] Payment unit
 // ==========================================================
 model Order {
-  id             Int         @id @default(autoincrement()) @map("order_id")
-  orderNo        String      @unique @map("order_no")
-  userId         String      @map("user_id")
-  productId      Int         @map("product_id")
-  product        Product     @relation(fields: [productId], references: [id])
-  targetJobId    BigInt?     @map("target_job_id")
-  quantity       Int         @default(1) @map("quantity")
-  totalAmount    Int         @map("total_amount")
-  originalAmount Int         @map("original_amount")
-  couponId       Int?        @map("coupon_id")
-  coupon         Coupon?     @relation(fields: [couponId], references: [id])
-  status         OrderStatus @default(PENDING) @map("status")
+  id                   Int               @id @default(autoincrement()) @map("order_id")
+  orderNo              String            @unique @map("order_no")
+  userId               String            @map("user_id")
+  productId            Int               @map("product_id")
+  product              Product           @relation(fields: [productId], references: [id])
+  targetJobId          BigInt?           @map("target_job_id")
+  quantity             Int               @default(1) @map("quantity")
+  totalAmount          Int               @map("total_amount")
+  originalAmount       Int               @map("original_amount")
+  couponId             Int?              @map("coupon_id")
+  coupon               Coupon?           @relation(fields: [couponId], references: [id])
+  status               OrderStatus       @default(PENDING) @map("status")
+  currency             String            @default("KRW") @map("currency")
+  fulfillmentStatus    FulfillmentStatus @default(PENDING) @map("fulfillment_status")
+  fulfillmentAttempts  Int               @default(0) @map("fulfillment_attempts")
+  fulfillmentStartedAt DateTime?         @map("fulfillment_started_at")
+  fulfilledAt          DateTime?         @map("fulfilled_at")
+  fulfillmentError     String?           @map("fulfillment_error") @db.Text
 
-  payment   Payment?
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  payment       Payment?
+  couponUsage   CouponUsage?
+  viewingCredit ViewingCredit?
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
 
   @@index([userId])
   @@index([status])
@@ -80,28 +88,43 @@ enum OrderStatus {
   FAILED
 }
 
+enum FulfillmentStatus {
+  PENDING
+  PROCESSING
+  FULFILLED
+  FAILED
+  ROLLBACK_PROCESSING
+  ROLLED_BACK
+}
+
 // ==========================================================
 // [결제] 포트원 V2 연동 상세
 // [Payment] PortOne V2 integration details
 // ==========================================================
 model Payment {
-  id                Int           @id @default(autoincrement()) @map("payment_id")
-  orderId           Int           @unique @map("order_id")
-  order             Order         @relation(fields: [orderId], references: [id])
-  portonePaymentId  String        @unique @map("portone_payment_id")
-  method            PaymentMethod @map("method")
-  status            PaymentStatus @default(PENDING) @map("status")
-  paidAmount        Int?          @map("paid_amount")
-  paidAt            DateTime?     @map("paid_at")
-  receiptUrl        String?       @map("receipt_url")
-  cardInfo          String?       @db.Text @map("card_info")
-  cancelledAmount   Int?          @map("cancelled_amount")
-  cancelledAt       DateTime?     @map("cancelled_at")
-  cancelReason      String?       @map("cancel_reason")
-  webhookData       String?       @db.Text @map("webhook_data")
-  failReason        String?       @map("fail_reason")
-  createdAt         DateTime      @default(now()) @map("created_at")
-  updatedAt         DateTime      @updatedAt @map("updated_at")
+  id               Int           @id @default(autoincrement()) @map("payment_id")
+  orderId          Int           @unique @map("order_id")
+  order            Order         @relation(fields: [orderId], references: [id])
+  portonePaymentId String        @unique @map("portone_payment_id")
+  method           PaymentMethod @default(UNKNOWN) @map("method")
+  status           PaymentStatus @default(PENDING) @map("status")
+  storeId          String        @map("store_id")
+  currency         String        @default("KRW") @map("currency")
+  transactionId    String?       @map("transaction_id")
+  paidAmount       Int?          @map("paid_amount")
+  paidAt           DateTime?     @map("paid_at")
+  receiptUrl       String?       @map("receipt_url")
+  cardInfo         String?       @map("card_info") @db.Text
+  cancelledAmount  Int?          @map("cancelled_amount")
+  cancelledAt      DateTime?     @map("cancelled_at")
+  cancelReason     String?       @map("cancel_reason")
+  webhookData      String?       @map("webhook_data") @db.Text
+  failReason       String?       @map("fail_reason")
+  lastSyncedAt     DateTime?     @map("last_synced_at")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+
+  cancellations PaymentCancellation[]
 
   @@index([portonePaymentId])
   @@map("payments")
@@ -113,6 +136,14 @@ enum PaymentMethod {
   VIRTUAL_ACCOUNT
   EASY_PAY
   TRANSFER
+  MOBILE
+  GIFT_CERTIFICATE
+  CONVENIENCE_STORE
+  PAYPAL
+  ALIPAY
+  CRYPTO
+  FREE
+  UNKNOWN
 }
 
 // 결제 상태 / Payment status
@@ -120,8 +151,61 @@ enum PaymentStatus {
   PENDING
   PAID
   FAILED
+  CANCELLATION_PENDING
   CANCELLED
   PARTIAL_CANCELLED
+}
+
+model PaymentCancellation {
+  id                    String                    @id @default(uuid()) @map("cancellation_id")
+  paymentId             Int                       @map("payment_id")
+  payment               Payment                   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  idempotencyKey        String                    @unique @map("idempotency_key")
+  portoneCancellationId String?                   @unique @map("portone_cancellation_id")
+  amount                Int                       @map("amount")
+  reason                String                    @map("reason")
+  status                PaymentCancellationStatus @default(PROCESSING) @map("status")
+  previousPaymentStatus PaymentStatus             @map("previous_payment_status")
+  requestedAt           DateTime                  @default(now()) @map("requested_at")
+  completedAt           DateTime?                 @map("completed_at")
+  lastError             String?                   @map("last_error") @db.Text
+  createdAt             DateTime                  @default(now()) @map("created_at")
+  updatedAt             DateTime                  @updatedAt @map("updated_at")
+
+  @@index([paymentId, status])
+  @@map("payment_cancellations")
+}
+
+enum PaymentCancellationStatus {
+  PROCESSING
+  REQUESTED
+  SUCCEEDED
+  FAILED
+}
+
+model PaymentWebhookEvent {
+  id           String                  @id @map("webhook_id")
+  eventType    String                  @map("event_type")
+  paymentId    String?                 @map("portone_payment_id")
+  payloadHash  String                  @map("payload_hash")
+  status       WebhookProcessingStatus @default(PROCESSING) @map("status")
+  attemptCount Int                     @default(1) @map("attempt_count")
+  lockedUntil  DateTime                @map("locked_until")
+  receivedAt   DateTime                @default(now()) @map("received_at")
+  processedAt  DateTime?               @map("processed_at")
+  lastError    String?                 @map("last_error") @db.Text
+  createdAt    DateTime                @default(now()) @map("created_at")
+  updatedAt    DateTime                @updatedAt @map("updated_at")
+
+  @@index([status, lockedUntil])
+  @@index([paymentId])
+  @@map("payment_webhook_events")
+}
+
+enum WebhookProcessingStatus {
+  PROCESSING
+  PROCESSED
+  FAILED
 }
 
 // ==========================================================
@@ -166,6 +250,8 @@ model CouponUsage {
   couponId Int      @map("coupon_id")
   coupon   Coupon   @relation(fields: [couponId], references: [id])
   userId   String   @map("user_id")
+  orderId  Int?     @unique @map("order_id")
+  order    Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
   usedAt   DateTime @default(now()) @map("used_at")
 
   @@index([couponId])
@@ -183,6 +269,8 @@ model ViewingCredit {
   totalCredits Int      @map("total_credits")
   usedCredits  Int      @default(0) @map("used_credits")
   source       String   @map("source")
+  orderId      Int?     @unique @map("order_id")
+  order        Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
   expiresAt    DateTime @map("expires_at")
   createdAt    DateTime @default(now()) @map("created_at")
 
@@ -201,6 +289,7 @@ model ViewingLog {
   creditId Int?     @map("credit_id")
   viewedAt DateTime @default(now()) @map("viewed_at")
 
+  @@unique([userId, resumeId])
   @@index([userId])
   @@index([resumeId])
   @@map("viewing_logs")

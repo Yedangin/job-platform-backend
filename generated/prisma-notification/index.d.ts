@@ -40,7 +40,40 @@ export namespace $Enums {
   PROMOTION: 'PROMOTION',
   EMAIL_VERIFICATION: 'EMAIL_VERIFICATION',
   FINANCIAL_ALERT: 'FINANCIAL_ALERT',
-  STATUS_ALERT: 'STATUS_ALERT'
+  STATUS_ALERT: 'STATUS_ALERT',
+  CORP_VERIFY_SUBMITTED: 'CORP_VERIFY_SUBMITTED',
+  CORP_VERIFY_APPROVED: 'CORP_VERIFY_APPROVED',
+  CORP_VERIFY_REJECTED: 'CORP_VERIFY_REJECTED',
+  CORP_VERIFY_NEW_ADMIN: 'CORP_VERIFY_NEW_ADMIN',
+  CORP_VERIFY_SLA_ADMIN: 'CORP_VERIFY_SLA_ADMIN',
+  VISA_VERIFY_APPROVED: 'VISA_VERIFY_APPROVED',
+  VISA_VERIFY_REJECTED: 'VISA_VERIFY_REJECTED',
+  PROFILE_REMINDER: 'PROFILE_REMINDER',
+  PROFILE_COMPLETE: 'PROFILE_COMPLETE',
+  VISA_VERIFY_REMINDER: 'VISA_VERIFY_REMINDER',
+  VISA_EXPIRY_WARNING: 'VISA_EXPIRY_WARNING',
+  COUPON_ACTIVATED: 'COUPON_ACTIVATED',
+  COUPON_EXPIRY_WARNING: 'COUPON_EXPIRY_WARNING',
+  PLANNER_PAYMENT_CONFIRM: 'PLANNER_PAYMENT_CONFIRM',
+  RESUME_VIEWED: 'RESUME_VIEWED',
+  SCOUT_CONSENT: 'SCOUT_CONSENT',
+  JOB_ACTIVATED: 'JOB_ACTIVATED',
+  JOB_EXPIRY_WARNING: 'JOB_EXPIRY_WARNING',
+  JOB_SUSPENDED: 'JOB_SUSPENDED',
+  JOB_UNSUSPENDED: 'JOB_UNSUSPENDED',
+  NEW_APPLICANT: 'NEW_APPLICANT',
+  DOCUMENT_PASSED: 'DOCUMENT_PASSED',
+  INTERVIEW_CONFIRMED: 'INTERVIEW_CONFIRMED',
+  INTERVIEW_REMINDER: 'INTERVIEW_REMINDER',
+  FINAL_ACCEPTED: 'FINAL_ACCEPTED',
+  HIRING_REJECTED: 'HIRING_REJECTED',
+  APPLICATION_CANCELLED: 'APPLICATION_CANCELLED',
+  APPLICATION_EXPIRED: 'APPLICATION_EXPIRED',
+  SUPPORT_REPLIED: 'SUPPORT_REPLIED',
+  PREMIUM_EXPIRY_WARNING: 'PREMIUM_EXPIRY_WARNING',
+  PREMIUM_REMOVED: 'PREMIUM_REMOVED',
+  GENERAL_COUPON_ISSUED: 'GENERAL_COUPON_ISSUED',
+  GENERAL_COUPON_EXPIRY: 'GENERAL_COUPON_EXPIRY'
 };
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
@@ -57,9 +90,11 @@ export type NotificationStatus = (typeof NotificationStatus)[keyof typeof Notifi
 
 
 export const NotificationChannel: {
+  PLATFORM: 'PLATFORM',
   EMAIL: 'EMAIL',
   PUSH: 'PUSH',
-  BOTH: 'BOTH'
+  BOTH: 'BOTH',
+  ALL: 'ALL'
 };
 
 export type NotificationChannel = (typeof NotificationChannel)[keyof typeof NotificationChannel]
@@ -1145,6 +1180,11 @@ export namespace Prisma {
     channel: $Enums.NotificationChannel | null
     readAt: Date | null
     errorMessage: string | null
+    eventCode: string | null
+    templateCode: string | null
+    channelsSent: string | null
+    scheduledAt: Date | null
+    deepLink: string | null
   }
 
   export type NotificationMaxAggregateOutputType = {
@@ -1168,6 +1208,11 @@ export namespace Prisma {
     channel: $Enums.NotificationChannel | null
     readAt: Date | null
     errorMessage: string | null
+    eventCode: string | null
+    templateCode: string | null
+    channelsSent: string | null
+    scheduledAt: Date | null
+    deepLink: string | null
   }
 
   export type NotificationCountAggregateOutputType = {
@@ -1191,6 +1236,11 @@ export namespace Prisma {
     channel: number
     readAt: number
     errorMessage: number
+    eventCode: number
+    templateCode: number
+    channelsSent: number
+    scheduledAt: number
+    deepLink: number
     _all: number
   }
 
@@ -1228,6 +1278,11 @@ export namespace Prisma {
     channel?: true
     readAt?: true
     errorMessage?: true
+    eventCode?: true
+    templateCode?: true
+    channelsSent?: true
+    scheduledAt?: true
+    deepLink?: true
   }
 
   export type NotificationMaxAggregateInputType = {
@@ -1251,6 +1306,11 @@ export namespace Prisma {
     channel?: true
     readAt?: true
     errorMessage?: true
+    eventCode?: true
+    templateCode?: true
+    channelsSent?: true
+    scheduledAt?: true
+    deepLink?: true
   }
 
   export type NotificationCountAggregateInputType = {
@@ -1274,6 +1334,11 @@ export namespace Prisma {
     channel?: true
     readAt?: true
     errorMessage?: true
+    eventCode?: true
+    templateCode?: true
+    channelsSent?: true
+    scheduledAt?: true
+    deepLink?: true
     _all?: true
   }
 
@@ -1384,6 +1449,11 @@ export namespace Prisma {
     channel: $Enums.NotificationChannel
     readAt: Date | null
     errorMessage: string | null
+    eventCode: string | null
+    templateCode: string | null
+    channelsSent: string | null
+    scheduledAt: Date | null
+    deepLink: string | null
     _count: NotificationCountAggregateOutputType | null
     _avg: NotificationAvgAggregateOutputType | null
     _sum: NotificationSumAggregateOutputType | null
@@ -1426,6 +1496,11 @@ export namespace Prisma {
     channel?: boolean
     readAt?: boolean
     errorMessage?: boolean
+    eventCode?: boolean
+    templateCode?: boolean
+    channelsSent?: boolean
+    scheduledAt?: boolean
+    deepLink?: boolean
   }, ExtArgs["result"]["notification"]>
 
   export type NotificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1449,6 +1524,11 @@ export namespace Prisma {
     channel?: boolean
     readAt?: boolean
     errorMessage?: boolean
+    eventCode?: boolean
+    templateCode?: boolean
+    channelsSent?: boolean
+    scheduledAt?: boolean
+    deepLink?: boolean
   }, ExtArgs["result"]["notification"]>
 
   export type NotificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1472,6 +1552,11 @@ export namespace Prisma {
     channel?: boolean
     readAt?: boolean
     errorMessage?: boolean
+    eventCode?: boolean
+    templateCode?: boolean
+    channelsSent?: boolean
+    scheduledAt?: boolean
+    deepLink?: boolean
   }, ExtArgs["result"]["notification"]>
 
   export type NotificationSelectScalar = {
@@ -1495,9 +1580,14 @@ export namespace Prisma {
     channel?: boolean
     readAt?: boolean
     errorMessage?: boolean
+    eventCode?: boolean
+    templateCode?: boolean
+    channelsSent?: boolean
+    scheduledAt?: boolean
+    deepLink?: boolean
   }
 
-  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "email" | "subject" | "content" | "notificationType" | "status" | "priority" | "attempts" | "maxAttempts" | "metadata" | "isRead" | "relatedInterviewId" | "relatedJobPostId" | "createdAt" | "sendedAt" | "failedAt" | "channel" | "readAt" | "errorMessage", ExtArgs["result"]["notification"]>
+  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "email" | "subject" | "content" | "notificationType" | "status" | "priority" | "attempts" | "maxAttempts" | "metadata" | "isRead" | "relatedInterviewId" | "relatedJobPostId" | "createdAt" | "sendedAt" | "failedAt" | "channel" | "readAt" | "errorMessage" | "eventCode" | "templateCode" | "channelsSent" | "scheduledAt" | "deepLink", ExtArgs["result"]["notification"]>
 
   export type $NotificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Notification"
@@ -1523,6 +1613,11 @@ export namespace Prisma {
       channel: $Enums.NotificationChannel
       readAt: Date | null
       errorMessage: string | null
+      eventCode: string | null
+      templateCode: string | null
+      channelsSent: string | null
+      scheduledAt: Date | null
+      deepLink: string | null
     }, ExtArgs["result"]["notification"]>
     composites: {}
   }
@@ -1966,6 +2061,11 @@ export namespace Prisma {
     readonly channel: FieldRef<"Notification", 'NotificationChannel'>
     readonly readAt: FieldRef<"Notification", 'DateTime'>
     readonly errorMessage: FieldRef<"Notification", 'String'>
+    readonly eventCode: FieldRef<"Notification", 'String'>
+    readonly templateCode: FieldRef<"Notification", 'String'>
+    readonly channelsSent: FieldRef<"Notification", 'String'>
+    readonly scheduledAt: FieldRef<"Notification", 'DateTime'>
+    readonly deepLink: FieldRef<"Notification", 'String'>
   }
     
 
@@ -4369,7 +4469,12 @@ export namespace Prisma {
     failedAt: 'failedAt',
     channel: 'channel',
     readAt: 'readAt',
-    errorMessage: 'errorMessage'
+    errorMessage: 'errorMessage',
+    eventCode: 'eventCode',
+    templateCode: 'templateCode',
+    channelsSent: 'channelsSent',
+    scheduledAt: 'scheduledAt',
+    deepLink: 'deepLink'
   };
 
   export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
@@ -4559,6 +4664,11 @@ export namespace Prisma {
     channel?: EnumNotificationChannelFilter<"Notification"> | $Enums.NotificationChannel
     readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
     errorMessage?: StringNullableFilter<"Notification"> | string | null
+    eventCode?: StringNullableFilter<"Notification"> | string | null
+    templateCode?: StringNullableFilter<"Notification"> | string | null
+    channelsSent?: StringNullableFilter<"Notification"> | string | null
+    scheduledAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    deepLink?: StringNullableFilter<"Notification"> | string | null
   }
 
   export type NotificationOrderByWithRelationInput = {
@@ -4582,6 +4692,11 @@ export namespace Prisma {
     channel?: SortOrder
     readAt?: SortOrderInput | SortOrder
     errorMessage?: SortOrderInput | SortOrder
+    eventCode?: SortOrderInput | SortOrder
+    templateCode?: SortOrderInput | SortOrder
+    channelsSent?: SortOrderInput | SortOrder
+    scheduledAt?: SortOrderInput | SortOrder
+    deepLink?: SortOrderInput | SortOrder
   }
 
   export type NotificationWhereUniqueInput = Prisma.AtLeast<{
@@ -4608,6 +4723,11 @@ export namespace Prisma {
     channel?: EnumNotificationChannelFilter<"Notification"> | $Enums.NotificationChannel
     readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
     errorMessage?: StringNullableFilter<"Notification"> | string | null
+    eventCode?: StringNullableFilter<"Notification"> | string | null
+    templateCode?: StringNullableFilter<"Notification"> | string | null
+    channelsSent?: StringNullableFilter<"Notification"> | string | null
+    scheduledAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    deepLink?: StringNullableFilter<"Notification"> | string | null
   }, "id">
 
   export type NotificationOrderByWithAggregationInput = {
@@ -4631,6 +4751,11 @@ export namespace Prisma {
     channel?: SortOrder
     readAt?: SortOrderInput | SortOrder
     errorMessage?: SortOrderInput | SortOrder
+    eventCode?: SortOrderInput | SortOrder
+    templateCode?: SortOrderInput | SortOrder
+    channelsSent?: SortOrderInput | SortOrder
+    scheduledAt?: SortOrderInput | SortOrder
+    deepLink?: SortOrderInput | SortOrder
     _count?: NotificationCountOrderByAggregateInput
     _avg?: NotificationAvgOrderByAggregateInput
     _max?: NotificationMaxOrderByAggregateInput
@@ -4662,6 +4787,11 @@ export namespace Prisma {
     channel?: EnumNotificationChannelWithAggregatesFilter<"Notification"> | $Enums.NotificationChannel
     readAt?: DateTimeNullableWithAggregatesFilter<"Notification"> | Date | string | null
     errorMessage?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+    eventCode?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+    templateCode?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+    channelsSent?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+    scheduledAt?: DateTimeNullableWithAggregatesFilter<"Notification"> | Date | string | null
+    deepLink?: StringNullableWithAggregatesFilter<"Notification"> | string | null
   }
 
   export type ChatWhereInput = {
@@ -4794,6 +4924,11 @@ export namespace Prisma {
     channel?: $Enums.NotificationChannel
     readAt?: Date | string | null
     errorMessage?: string | null
+    eventCode?: string | null
+    templateCode?: string | null
+    channelsSent?: string | null
+    scheduledAt?: Date | string | null
+    deepLink?: string | null
   }
 
   export type NotificationUncheckedCreateInput = {
@@ -4817,6 +4952,11 @@ export namespace Prisma {
     channel?: $Enums.NotificationChannel
     readAt?: Date | string | null
     errorMessage?: string | null
+    eventCode?: string | null
+    templateCode?: string | null
+    channelsSent?: string | null
+    scheduledAt?: Date | string | null
+    deepLink?: string | null
   }
 
   export type NotificationUpdateInput = {
@@ -4840,6 +4980,11 @@ export namespace Prisma {
     channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    eventCode?: NullableStringFieldUpdateOperationsInput | string | null
+    templateCode?: NullableStringFieldUpdateOperationsInput | string | null
+    channelsSent?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deepLink?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type NotificationUncheckedUpdateInput = {
@@ -4863,6 +5008,11 @@ export namespace Prisma {
     channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    eventCode?: NullableStringFieldUpdateOperationsInput | string | null
+    templateCode?: NullableStringFieldUpdateOperationsInput | string | null
+    channelsSent?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deepLink?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type NotificationCreateManyInput = {
@@ -4886,6 +5036,11 @@ export namespace Prisma {
     channel?: $Enums.NotificationChannel
     readAt?: Date | string | null
     errorMessage?: string | null
+    eventCode?: string | null
+    templateCode?: string | null
+    channelsSent?: string | null
+    scheduledAt?: Date | string | null
+    deepLink?: string | null
   }
 
   export type NotificationUpdateManyMutationInput = {
@@ -4909,6 +5064,11 @@ export namespace Prisma {
     channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    eventCode?: NullableStringFieldUpdateOperationsInput | string | null
+    templateCode?: NullableStringFieldUpdateOperationsInput | string | null
+    channelsSent?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deepLink?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type NotificationUncheckedUpdateManyInput = {
@@ -4932,6 +5092,11 @@ export namespace Prisma {
     channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     errorMessage?: NullableStringFieldUpdateOperationsInput | string | null
+    eventCode?: NullableStringFieldUpdateOperationsInput | string | null
+    templateCode?: NullableStringFieldUpdateOperationsInput | string | null
+    channelsSent?: NullableStringFieldUpdateOperationsInput | string | null
+    scheduledAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deepLink?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ChatCreateInput = {
@@ -5168,6 +5333,11 @@ export namespace Prisma {
     channel?: SortOrder
     readAt?: SortOrder
     errorMessage?: SortOrder
+    eventCode?: SortOrder
+    templateCode?: SortOrder
+    channelsSent?: SortOrder
+    scheduledAt?: SortOrder
+    deepLink?: SortOrder
   }
 
   export type NotificationAvgOrderByAggregateInput = {
@@ -5197,6 +5367,11 @@ export namespace Prisma {
     channel?: SortOrder
     readAt?: SortOrder
     errorMessage?: SortOrder
+    eventCode?: SortOrder
+    templateCode?: SortOrder
+    channelsSent?: SortOrder
+    scheduledAt?: SortOrder
+    deepLink?: SortOrder
   }
 
   export type NotificationMinOrderByAggregateInput = {
@@ -5220,6 +5395,11 @@ export namespace Prisma {
     channel?: SortOrder
     readAt?: SortOrder
     errorMessage?: SortOrder
+    eventCode?: SortOrder
+    templateCode?: SortOrder
+    channelsSent?: SortOrder
+    scheduledAt?: SortOrder
+    deepLink?: SortOrder
   }
 
   export type NotificationSumOrderByAggregateInput = {

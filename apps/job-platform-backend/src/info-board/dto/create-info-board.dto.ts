@@ -1,37 +1,179 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  ArrayUnique,
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsInt,
+  IsISO8601,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Max,
+  MaxLength,
+  Min,
+  ValidateNested,
+} from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  InfoBoardAudienceEnum,
+  InfoBoardBannerThemeEnum,
+  InfoBoardLocaleEnum,
+  InfoBoardStatusEnum,
+  InfoCategoryEnum,
+} from './info-board.enums';
 
-/**
- * 정보 게시판 카테고리 / Info board categories
- */
-export enum InfoCategoryEnum {
-  VISA_INFO = 'VISA_INFO',
-  EDUCATION = 'EDUCATION',
-  LIVING_TIPS = 'LIVING_TIPS',
-  POLICY_LAW = 'POLICY_LAW',
-  ANNOUNCEMENTS = 'ANNOUNCEMENTS',
-}
+export {
+  InfoBoardAudienceEnum,
+  InfoBoardBannerThemeEnum,
+  InfoBoardLocaleEnum,
+  InfoBoardStatusEnum,
+  InfoCategoryEnum,
+} from './info-board.enums';
 
-/**
- * 게시글 생성 DTO / Create info board post DTO
- */
-export class CreateInfoBoardDto {
-  @ApiProperty({ description: '게시글 제목 / Post title' })
-  @IsNotEmpty()
+export class InfoBoardTranslationDto {
+  @ApiProperty({ enum: InfoBoardLocaleEnum })
+  @IsEnum(InfoBoardLocaleEnum)
+  locale: InfoBoardLocaleEnum;
+
+  @ApiProperty({ maxLength: 200 })
   @IsString()
+  @IsNotEmpty()
+  @MaxLength(200)
   title: string;
 
-  @ApiProperty({ description: '게시글 내용 / Post content' })
-  @IsNotEmpty()
+  @ApiPropertyOptional({ maxLength: 500 })
+  @IsOptional()
   @IsString()
-  content: string;
+  @MaxLength(500)
+  summary?: string;
 
-  @ApiProperty({ enum: InfoCategoryEnum, description: '카테고리 / Category' })
+  @ApiProperty({ description: 'Plain text only', maxLength: 100000 })
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100000)
+  content: string;
+}
+
+export class CreateInfoBoardDto {
+  @ApiPropertyOptional({
+    description: 'Legacy Korean title. Use translations for new clients.',
+    maxLength: 200,
+  })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(200)
+  title?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Legacy Korean plain-text content. Use translations for new clients.',
+    maxLength: 100000,
+  })
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100000)
+  content?: string;
+
+  @ApiProperty({ enum: InfoCategoryEnum })
   @IsEnum(InfoCategoryEnum)
   category: InfoCategoryEnum;
 
-  @ApiProperty({ required: false, description: '썸네일 URL / Thumbnail URL' })
+  @ApiPropertyOptional({
+    description: 'Legacy external thumbnail. HTTPS URLs only.',
+    maxLength: 2048,
+  })
   @IsOptional()
-  @IsString()
+  @IsUrl(
+    {
+      protocols: ['https'],
+      require_protocol: true,
+      require_valid_protocol: true,
+    },
+    { message: 'thumbnail must be a valid HTTPS URL' },
+  )
+  @MaxLength(2048)
   thumbnail?: string;
+
+  @ApiPropertyOptional({ enum: InfoBoardStatusEnum, default: 'DRAFT' })
+  @IsOptional()
+  @IsEnum(InfoBoardStatusEnum)
+  status?: InfoBoardStatusEnum;
+
+  @ApiPropertyOptional({ enum: InfoBoardAudienceEnum, default: 'ALL' })
+  @IsOptional()
+  @IsEnum(InfoBoardAudienceEnum)
+  audience?: InfoBoardAudienceEnum;
+
+  @ApiPropertyOptional({ default: false })
+  @IsOptional()
+  @IsBoolean()
+  isPinned?: boolean;
+
+  @ApiPropertyOptional({ default: false })
+  @IsOptional()
+  @IsBoolean()
+  isFeatured?: boolean;
+
+  @ApiPropertyOptional({ minimum: 1, maximum: 8 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(8)
+  featuredOrder?: number;
+
+  @ApiPropertyOptional({ enum: InfoBoardBannerThemeEnum, default: 'BRAND' })
+  @IsOptional()
+  @IsEnum(InfoBoardBannerThemeEnum)
+  bannerTheme?: InfoBoardBannerThemeEnum;
+
+  @ApiPropertyOptional({ minimum: 1 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  bannerAssetId?: number;
+
+  @ApiPropertyOptional({ description: 'ISO 8601 slider exposure start time' })
+  @IsOptional()
+  @IsISO8601({ strict: true })
+  featuredStartAt?: string;
+
+  @ApiPropertyOptional({ description: 'ISO 8601 slider exposure end time' })
+  @IsOptional()
+  @IsISO8601({ strict: true })
+  featuredEndAt?: string;
+
+  @ApiPropertyOptional({
+    description: 'ISO 8601 timestamp; required for SCHEDULED',
+  })
+  @IsOptional()
+  @IsISO8601({ strict: true })
+  scheduledAt?: string;
+
+  @ApiPropertyOptional({ type: [InfoBoardTranslationDto] })
+  @IsOptional()
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(5)
+  @ArrayUnique((translation: InfoBoardTranslationDto) => translation.locale)
+  @ValidateNested({ each: true })
+  @Type(() => InfoBoardTranslationDto)
+  translations?: InfoBoardTranslationDto[];
+
+  @ApiPropertyOptional({ type: [Number], maxItems: 20 })
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(20)
+  @IsInt({ each: true })
+  @Min(1, { each: true })
+  @Max(Number.MAX_SAFE_INTEGER, { each: true })
+  @Type(() => Number)
+  attachmentIds?: number[];
 }

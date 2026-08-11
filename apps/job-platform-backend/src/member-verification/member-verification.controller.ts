@@ -30,6 +30,7 @@ import {
   ApiOperation,
   ApiParam,
   ApiTags,
+  ApiExcludeController,
 } from '@nestjs/swagger';
 import { firstValueFrom } from 'rxjs';
 import { CurrentSession } from 'libs/common/src/common/decorator/current-session.decorator';
@@ -40,9 +41,13 @@ import {
   SessionAuthGuard,
   SessionData,
 } from 'libs/common/src';
+import { LegacyMemberVerificationDisabledGuard } from './legacy-member-verification-disabled.guard';
 
+@ApiExcludeController()
 @ApiTags('Member-Verification')
 @Controller('member-verification')
+@UseGuards(LegacyMemberVerificationDisabledGuard, SessionAuthGuard, RolesGuard)
+@Roles('ADMIN', 'SUPERADMIN')
 export class MemberVerificationController implements OnModuleInit {
   private memberSerice: MemberVerificationServiceClient;
   constructor(
@@ -89,8 +94,6 @@ export class MemberVerificationController implements OnModuleInit {
   }
 
   @Patch(':id')
-  @UseGuards(SessionAuthGuard, RolesGuard)
-  @Roles('ADMIN', 'SUPERADMIN')
   @ApiOperation({ summary: 'Update member identity verification' })
   @ApiParam({ name: 'id', description: 'Verification record ID' })
   @ApiOkResponse({

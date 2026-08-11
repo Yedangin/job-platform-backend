@@ -8,6 +8,18 @@ import {
 import { Reflector } from '@nestjs/core';
 import { isPublic } from '../decorator/public.decorator';
 
+interface CsrfRequest {
+  method?: string;
+  headers?: {
+    origin?: unknown;
+    referer?: unknown;
+    authorization?: unknown;
+  };
+  cookies?: {
+    sessionId?: unknown;
+  };
+}
+
 // CSRF 검증 제외 데코레이터 키 / CSRF skip decorator key
 export const SKIP_CSRF_KEY = 'skipCsrf';
 
@@ -27,18 +39,72 @@ export class CsrfGuard implements CanActivate {
   private readonly logger = new Logger(CsrfGuard.name);
 
   // 허용 Origin 목록 / Allowed origins
-  private readonly allowedOrigins: string[];
+  private readonly allowedOrigins: ReadonlySet<string>;
 
   constructor(private readonly reflector: Reflector) {
-    const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
-    this.allowedOrigins = [
-      clientUrl,
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost:3002',
-      'http://jobchaja.com',
+    const allowLocalOrigins = ['development', 'test'].includes(
+      process.env.NODE_ENV ?? '',
+    );
+    const configuredOrigins = [
+      process.env.CLIENT_URL,
       'https://jobchaja.com',
+      ...(allowLocalOrigins
+        ? [
+            'http://localhost:3000',
+            'http://localhost:3001',
+            'http://localhost:3002',
+            'http://localhost:8081',
+            'http://localhost:8082',
+            'http://127.0.0.1:8081',
+            'http://127.0.0.1:8082',
+          ]
+        : []),
     ];
+
+    this.allowedOrigins = new Set(
+      configuredOrigins
+        .map((value) => this.normalizeAllowedOrigin(value, allowLocalOrigins))
+        .filter((value): value is string => value !== null),
+    );
+  }
+
+  private normalizeAllowedOrigin(
+    value: string | undefined,
+    allowLocalOrigins: boolean,
+  ): string | null {
+    if (!value) return null;
+
+    try {
+      const url = new URL(value);
+      if (!['http:', 'https:'].includes(url.protocol)) return null;
+
+      const hostname = url.hostname.toLowerCase();
+      const isLoopback =
+        hostname === 'localhost' ||
+        hostname === '127.0.0.1' ||
+        hostname === '[::1]';
+
+      // Only explicit local/test environments may use loopback or plain HTTP.
+      if (!allowLocalOrigins && (isLoopback || url.protocol !== 'https:')) {
+        return null;
+      }
+
+      return url.origin;
+    } catch {
+      return null;
+    }
+  }
+
+  private parseRequestOrigin(value: unknown): string | null {
+    if (typeof value !== 'string' || value.length === 0) return null;
+
+    try {
+      const url = new URL(value);
+      if (!['http:', 'https:'].includes(url.protocol)) return null;
+      return url.origin;
+    } catch {
+      return null;
+    }
   }
 
   canActivate(context: ExecutionContext): boolean {
@@ -53,8 +119,8 @@ export class CsrfGuard implements CanActivate {
     ]);
     if (skipCsrf) return true;
 
-    const request = context.switchToHttp().getRequest();
-    const method = request.method?.toUpperCase();
+    const request = context.switchToHttp().getRequest<CsrfRequest>();
+    const method = request.method?.toUpperCase() ?? '';
 
     // 안전한 메서드는 항상 통과 / Safe methods always pass
     if (['GET', 'HEAD', 'OPTIONS'].includes(method)) {
@@ -71,7 +137,7 @@ export class CsrfGuard implements CanActivate {
       // JWT Bearer 토큰(header.payload.signature)만 직접 API 호출로 간주
       // Only JWT Bearer tokens (3-part dot-separated) bypass CSRF — session UUIDs do not
       const authHeader = request.headers?.authorization;
-      if (authHeader?.startsWith('Bearer ')) {
+      if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
         const token = authHeader.slice(7);
         const isJwt = token.split('.').length === 3;
         if (isJwt) return true;
@@ -95,13 +161,13 @@ export class CsrfGuard implements CanActivate {
     // Origin 또는 Referer가 허용 목록에 있는지 확인
     // Check if Origin or Referer is in allowed list
     const checkValue = origin || referer || '';
-    const isAllowed = this.allowedOrigins.some((allowed) =>
-      checkValue.startsWith(allowed),
-    );
+    const requestOrigin = this.parseRequestOrigin(checkValue);
+    const isAllowed =
+      requestOrigin !== null && this.allowedOrigins.has(requestOrigin);
 
     if (!isAllowed) {
       this.logger.warn(
-        `[CSRF 차단] 허용되지 않은 Origin: ${checkValue} / [CSRF blocked] Unauthorized Origin`,
+        `[CSRF 차단] 허용되지 않은 Origin: ${requestOrigin ?? '[invalid origin]'} / [CSRF blocked] Unauthorized Origin`,
       );
       throw new ForbiddenException(
         '허용되지 않은 요청 출처입니다. / Unauthorized request origin.',

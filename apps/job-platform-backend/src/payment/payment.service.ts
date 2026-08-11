@@ -4,15 +4,17 @@ import {
   BadRequestException,
   NotFoundException,
   ConflictException,
-  UnauthorizedException,
+  ForbiddenException,
+  BadGatewayException,
 } from '@nestjs/common';
 import { PaymentPrismaService } from 'libs/common/src';
 import { AuthPrismaService } from 'libs/common/src';
-import { Prisma } from 'generated/prisma-payment';
-import { PortoneService } from './portone.service';
+import type { Prisma } from 'generated/prisma-payment';
+import { PortonePaymentResponse, PortoneService } from './portone.service';
 import { ProductService } from './product.service';
 import { CouponService } from './coupon.service';
 import { ViewingCreditService } from './viewing-credit.service';
+import { createHash, randomUUID } from 'crypto';
 
 /**
  * 상위노출(프리미엄) 상품 코드 판별 헬퍼
@@ -55,6 +57,12 @@ export class PaymentService {
   ) {
     // 상품 조회 (활성 상품만) / Get active product
     const product = await this.productService.findActiveByCode(productCode);
+    if (!Number.isSafeInteger(product.price) || product.price <= 0) {
+      throw new BadRequestException(
+        '상품 가격 설정이 올바르지 않습니다 / Product price configuration is invalid',
+      );
+    }
+    await this.validateTargetJobOwnership(userId, product.code, targetJobId);
 
     // 쿠폰 검증 + 할인 계산 / Validate coupon + calculate discount
     let couponId: number | null = null;
@@ -77,16 +85,40 @@ export class PaymentService {
         },
         product.price,
       );
+      if (
+        !Number.isSafeInteger(discount) ||
+        discount < 0 ||
+        discount > product.price
+      ) {
+        throw new BadRequestException(
+          '쿠폰 할인 설정이 올바르지 않습니다 / Coupon discount configuration is invalid',
+        );
+      }
       couponId = coupon.id;
     }
 
     const originalAmount = product.price;
     const totalAmount = Math.max(0, originalAmount - discount);
+    if (totalAmount <= 0) {
+      throw new BadRequestException(
+        '0원 주문은 결제창에서 처리할 수 없습니다 / Zero-value orders require a free-grant flow',
+      );
+    }
 
-    // 주문번호 생성: ORD-YYYYMMDD-XXXXX / Generate order number
+    // 서버가 주문번호와 결제 ID를 함께 선점한다. 브라우저가 paymentId를 만들면
+    // 동일 금액의 다른 결제를 주문에 붙일 수 있으므로 허용하지 않는다.
     const orderNo = this.generateOrderNo();
+    const portonePaymentId = `pay_${randomUUID().replace(/-/g, '')}`;
+    const currency = 'KRW';
+    const storeId = this.portoneService.getStoreId();
+    // Fail before writing a pending order when the browser channel is not ready.
+    const checkout = this.portoneService.getCheckoutConfig(
+      portonePaymentId,
+      product.name,
+      totalAmount,
+      currency,
+    );
 
-    // 주문 생성 / Create order
     const order = await this.paymentPrisma.order.create({
       data: {
         orderNo,
@@ -98,8 +130,18 @@ export class PaymentService {
         originalAmount,
         couponId,
         status: 'PENDING',
+        currency,
+        payment: {
+          create: {
+            portonePaymentId,
+            storeId,
+            currency,
+            status: 'PENDING',
+            method: 'UNKNOWN',
+          },
+        },
       },
-      include: { product: true },
+      include: { product: true, payment: true },
     });
 
     this.logger.log(
@@ -114,6 +156,7 @@ export class PaymentService {
       discount,
       productName: product.name,
       productNameEn: product.nameEn,
+      checkout,
     };
   }
 
@@ -123,7 +166,7 @@ export class PaymentService {
   async confirmPayment(
     orderId: number,
     portonePaymentId: string,
-    userId?: string,
+    userId: string,
   ) {
     // 주문 조회 / Get order
     const order = await this.paymentPrisma.order.findUnique({
@@ -138,75 +181,249 @@ export class PaymentService {
     }
 
     // 소유권 검증 (IDOR 방지) / Ownership check (prevent IDOR)
-    if (userId && order.userId !== userId) {
-      throw new UnauthorizedException(
+    if (order.userId !== userId) {
+      throw new ForbiddenException(
         '본인의 주문만 확인할 수 있습니다 / Can only confirm your own orders',
       );
     }
 
-    if (order.status !== 'PENDING') {
-      throw new ConflictException(
-        `이미 처리된 주문입니다 / Order already processed: status=${order.status}`,
+    if (!order.payment || order.payment.portonePaymentId !== portonePaymentId) {
+      throw new BadRequestException(
+        '결제 ID가 주문에 발급된 값과 일치하지 않습니다 / Payment ID does not belong to this order',
       );
     }
 
-    if (order.payment) {
+    if (order.status === 'PAID' && order.payment.status === 'PAID') {
+      await this.fulfillPaidOrder(order.id);
+      return this.buildPaidOrderResponse(order);
+    }
+
+    if (order.status !== 'PENDING' || order.payment.status !== 'PENDING') {
       throw new ConflictException(
-        `이미 결제 정보가 등록된 주문입니다 / Payment already exists for this order`,
+        `처리할 수 없는 주문 상태입니다 / Invalid order state: order=${order.status}, payment=${order.payment.status}`,
       );
     }
 
-    // 포트원 결제 검증 / Verify with PortOne
     const portonePayment = await this.portoneService.verifyPayment(
       portonePaymentId,
-      order.totalAmount,
+      {
+        amount: order.totalAmount,
+        currency: order.currency,
+        requirePaid: true,
+      },
     );
-
-    // 결제 수단 매핑 / Map payment method
-    const method = this.mapPaymentMethod(portonePayment.method?.type);
-
-    // 트랜잭션: Payment 생성 + Order 상태 변경 + 쿠폰 사용 기록
-    // Transaction: Create Payment + Update Order + Record coupon usage
-    const [payment] = await this.paymentPrisma.$transaction([
-      this.paymentPrisma.payment.create({
-        data: {
-          orderId: order.id,
-          portonePaymentId,
-          method,
-          status: 'PAID',
-          paidAmount: portonePayment.amount.total,
-          paidAt: portonePayment.paidAt
-            ? new Date(portonePayment.paidAt)
-            : new Date(),
-          receiptUrl: portonePayment.receiptUrl || null,
-          cardInfo: portonePayment.method?.card
-            ? JSON.stringify(portonePayment.method.card)
-            : null,
-        },
-      }),
-      this.paymentPrisma.order.update({
-        where: { id: order.id },
-        data: { status: 'PAID' },
-      }),
-    ]);
-
-    // 쿠폰 사용 기록 / Record coupon usage
-    if (order.couponId) {
-      await this.couponService.recordUsage(order.couponId, order.userId);
-    }
-
-    // 상품 효과 적용 / Apply product effect
-    await this.applyProductEffect(order);
+    await this.persistPaidPayment(order.id, portonePayment);
+    await this.fulfillPaidOrder(order.id);
 
     this.logger.log(
-      `[Payment] 결제 확인 완료: orderId=${orderId}, portonePaymentId=${portonePaymentId}`,
+      `[Payment] 결제 확인 완료: orderId=${orderId}, payment=${this.maskPaymentId(portonePaymentId)}`,
     );
 
+    return this.buildPaidOrderResponse(order, portonePayment.amount.total);
+  }
+
+  private async validateTargetJobOwnership(
+    userId: string,
+    productCode: string,
+    targetJobId?: number,
+  ): Promise<void> {
+    const requiresTarget =
+      isPremiumProduct(productCode) ||
+      ['JOB_EXTENSION', 'BUMP_UP', 'URGENT_BADGE', 'FEATURED'].includes(
+        productCode,
+      );
+
+    if (!requiresTarget) {
+      if (targetJobId !== undefined) {
+        throw new BadRequestException(
+          '이 상품에는 대상 공고를 지정할 수 없습니다 / Target job is not valid for this product',
+        );
+      }
+      return;
+    }
+    if (!Number.isSafeInteger(targetJobId) || (targetJobId ?? 0) <= 0) {
+      throw new BadRequestException(
+        '대상 공고가 필요합니다 / A target job posting is required',
+      );
+    }
+
+    const corporate = await this.authPrisma.corporateProfile.findUnique({
+      where: { authId: userId },
+      select: { companyId: true },
+    });
+    if (!corporate) {
+      throw new ForbiddenException(
+        '기업회원만 공고 상품을 구매할 수 있습니다 / Corporate account required',
+      );
+    }
+    const job = await this.authPrisma.jobPosting.findUnique({
+      where: { id: BigInt(targetJobId!) },
+      select: { corporateId: true },
+    });
+    if (!job || job.corporateId !== corporate.companyId) {
+      throw new ForbiddenException(
+        '본인 기업의 공고만 결제할 수 있습니다 / Target job is not owned by this company',
+      );
+    }
+  }
+
+  private async persistPaidPayment(
+    orderId: number,
+    portonePayment: PortonePaymentResponse,
+  ): Promise<void> {
+    const paidAt = portonePayment.paidAt
+      ? new Date(portonePayment.paidAt)
+      : new Date();
+    const cardInfo = this.buildSafeMethodMetadata(portonePayment);
+
+    await this.paymentPrisma.$transaction(async (tx) => {
+      const transitioned = await tx.payment.updateMany({
+        where: {
+          orderId,
+          portonePaymentId: portonePayment.id,
+          status: { in: ['PENDING', 'FAILED'] },
+        },
+        data: {
+          method: this.mapPaymentMethod(portonePayment.method?.type),
+          status: 'PAID',
+          transactionId: portonePayment.transactionId ?? null,
+          paidAmount: portonePayment.amount.total,
+          paidAt,
+          receiptUrl: portonePayment.receiptUrl ?? null,
+          cardInfo,
+          failReason: null,
+          lastSyncedAt: new Date(),
+        },
+      });
+
+      if (transitioned.count === 0) {
+        const existing = await tx.payment.findUnique({ where: { orderId } });
+        if (
+          existing?.status === 'PAID' &&
+          existing.portonePaymentId === portonePayment.id &&
+          existing.paidAmount === portonePayment.amount.total
+        ) {
+          return;
+        }
+        throw new ConflictException(
+          '결제 상태가 동시에 변경되었습니다 / Payment state changed concurrently',
+        );
+      }
+
+      const orderTransition = await tx.order.updateMany({
+        where: { id: orderId, status: { in: ['PENDING', 'FAILED'] } },
+        data: { status: 'PAID' },
+      });
+      if (orderTransition.count !== 1) {
+        throw new ConflictException(
+          '주문 상태가 동시에 변경되었습니다 / Order state changed concurrently',
+        );
+      }
+    });
+  }
+
+  private async fulfillPaidOrder(orderId: number): Promise<void> {
+    const staleBefore = new Date(Date.now() - 5 * 60 * 1000);
+    const claim = await this.paymentPrisma.order.updateMany({
+      where: {
+        id: orderId,
+        status: 'PAID',
+        OR: [
+          { fulfillmentStatus: 'PENDING' },
+          { fulfillmentStatus: 'FAILED' },
+          {
+            fulfillmentStatus: 'PROCESSING',
+            fulfillmentStartedAt: { lt: staleBefore },
+          },
+        ],
+      },
+      data: {
+        fulfillmentStatus: 'PROCESSING',
+        fulfillmentStartedAt: new Date(),
+        fulfillmentAttempts: { increment: 1 },
+        fulfillmentError: null,
+      },
+    });
+
+    if (claim.count === 0) {
+      const current = await this.paymentPrisma.order.findUnique({
+        where: { id: orderId },
+        select: { fulfillmentStatus: true },
+      });
+      if (
+        current?.fulfillmentStatus === 'FULFILLED' ||
+        current?.fulfillmentStatus === 'PROCESSING'
+      ) {
+        return;
+      }
+      throw new ConflictException(
+        '상품 지급 상태를 확인할 수 없습니다 / Fulfillment is not available',
+      );
+    }
+
+    const order = await this.paymentPrisma.order.findUnique({
+      where: { id: orderId },
+      include: { product: true, payment: true, coupon: true },
+    });
+    if (!order?.payment || order.payment.status !== 'PAID') {
+      throw new ConflictException(
+        '결제 완료 상태가 아닙니다 / Payment is not in PAID state',
+      );
+    }
+
+    try {
+      if (order.couponId) {
+        await this.couponService.recordUsage(
+          order.couponId,
+          order.userId,
+          order.id,
+        );
+      }
+      await this.applyProductEffect(order);
+      await this.paymentPrisma.order.update({
+        where: { id: order.id },
+        data: {
+          fulfillmentStatus: 'FULFILLED',
+          fulfilledAt: new Date(),
+          fulfillmentError: null,
+        },
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message.slice(0, 1000) : 'Unknown error';
+      await this.paymentPrisma.order.updateMany({
+        where: { id: order.id, fulfillmentStatus: 'PROCESSING' },
+        data: { fulfillmentStatus: 'FAILED', fulfillmentError: message },
+      });
+      throw error;
+    }
+  }
+
+  private buildSafeMethodMetadata(
+    payment: PortonePaymentResponse,
+  ): string | null {
+    if (!payment.method) return null;
+    const metadata = {
+      type: payment.method.type,
+      provider: payment.method.provider,
+      card: payment.method.card
+        ? {
+            publisher: payment.method.card.publisher,
+            issuer: payment.method.card.issuer,
+            brand: payment.method.card.brand,
+            type: payment.method.card.type,
+          }
+        : undefined,
+    };
+    return JSON.stringify(metadata);
+  }
+
+  private buildPaidOrderResponse(order: any, paidAmount?: number) {
     return {
       orderId: order.id,
       orderNo: order.orderNo,
       status: 'PAID',
-      paidAmount: portonePayment.amount.total,
+      paidAmount: paidAmount ?? order.payment?.paidAmount ?? order.totalAmount,
       productName: order.product.name,
     };
   }
@@ -324,6 +541,7 @@ export class PaymentService {
             credits,
             product.code,
             validDays,
+            order.id,
           );
           break;
         }
@@ -388,7 +606,16 @@ export class PaymentService {
    * - 즉시 적용 상품 24시간 초과 / Instant-effect product after 24h
    */
   async cancelPayment(orderId: number, userId: string, reason: string) {
-    // 주문 조회 (쿠폰 포함) / Get order with coupon
+    const normalizedReason = reason?.trim();
+    if (
+      typeof normalizedReason !== 'string' ||
+      normalizedReason.length < 2 ||
+      normalizedReason.length > 200
+    ) {
+      throw new BadRequestException(
+        '취소 사유는 2~200자로 입력해주세요 / Cancellation reason must be 2-200 characters',
+      );
+    }
     const order = await this.paymentPrisma.order.findUnique({
       where: { id: orderId },
       include: { product: true, payment: true, coupon: true },
@@ -399,14 +626,8 @@ export class PaymentService {
     }
 
     if (order.userId !== userId) {
-      throw new BadRequestException(
+      throw new ForbiddenException(
         '본인 주문만 취소 가능합니다 / Can only cancel your own orders',
-      );
-    }
-
-    if (order.status !== 'PAID') {
-      throw new BadRequestException(
-        '결제 완료된 주문만 취소 가능합니다 / Only paid orders can be cancelled',
       );
     }
 
@@ -416,7 +637,49 @@ export class PaymentService {
       );
     }
 
-    // 1. 취소 기간 검증 (7일 이내) / Validate cancellation period (within 7 days)
+    const succeededCancellation =
+      await this.paymentPrisma.paymentCancellation.findFirst({
+        where: { paymentId: order.payment.id, status: 'SUCCEEDED' },
+        orderBy: { createdAt: 'desc' },
+      });
+    if (succeededCancellation) {
+      const refundInfo = await this.calculateRefundAmount(order);
+      await this.rollbackFulfilledOrder(order, refundInfo);
+      return this.buildCancellationResponse(
+        order,
+        succeededCancellation.amount,
+        refundInfo,
+        'REFUNDED',
+      );
+    }
+
+    const activeCancellation =
+      await this.paymentPrisma.paymentCancellation.findFirst({
+        where: {
+          paymentId: order.payment.id,
+          status: { in: ['PROCESSING', 'REQUESTED'] },
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+    if (activeCancellation) {
+      const refundInfo = await this.calculateRefundAmount(order);
+      return this.processCancellation(order, activeCancellation, refundInfo);
+    }
+
+    if (
+      order.status !== 'PAID' ||
+      !['PAID', 'PARTIAL_CANCELLED'].includes(order.payment.status)
+    ) {
+      throw new BadRequestException(
+        '결제 완료된 주문만 취소 가능합니다 / Only paid orders can be cancelled',
+      );
+    }
+    if (order.fulfillmentStatus === 'PROCESSING') {
+      throw new ConflictException(
+        '상품 지급 처리 중에는 취소할 수 없습니다 / Fulfillment is still processing',
+      );
+    }
+
     const paidAt = order.payment.paidAt;
     if (paidAt) {
       const daysSincePaid =
@@ -437,57 +700,289 @@ export class PaymentService {
 
     const refundAmount = refundInfo.refundAmount;
     const paidAmount = order.payment.paidAmount ?? order.totalAmount;
-    const isPartialRefund = refundAmount < paidAmount;
+    if (refundAmount <= 0 || refundAmount > paidAmount) {
+      throw new BadRequestException('환불 금액 계산 결과가 올바르지 않습니다');
+    }
 
-    this.logger.log(
-      `[Payment] 취소 처리 시작: orderId=${orderId}, refundAmount=${refundAmount}, isPartial=${isPartialRefund}, usedValue=${refundInfo.usedValue}`,
-    );
+    const cancellationId = randomUUID();
+    const cancellation = await this.paymentPrisma.$transaction(async (tx) => {
+      const claimed = await tx.payment.updateMany({
+        where: {
+          id: order.payment!.id,
+          status: { in: ['PAID', 'PARTIAL_CANCELLED'] },
+        },
+        data: { status: 'CANCELLATION_PENDING' },
+      });
+      if (claimed.count !== 1) {
+        throw new ConflictException(
+          '다른 취소 요청이 처리 중입니다 / Another cancellation is in progress',
+        );
+      }
+      return tx.paymentCancellation.create({
+        data: {
+          id: cancellationId,
+          paymentId: order.payment!.id,
+          idempotencyKey: `cancel_${cancellationId.replace(/-/g, '')}`,
+          amount: refundAmount,
+          reason: normalizedReason,
+          previousPaymentStatus: order.payment!.status,
+          status: 'PROCESSING',
+        },
+      });
+    });
 
-    // 3. 포트원 취소 호출 (부분 취소 또는 전액 취소)
-    //    Call PortOne cancel (partial or full)
-    await this.portoneService.cancelPayment(
-      order.payment.portonePaymentId,
-      reason,
-      isPartialRefund ? refundAmount : undefined, // undefined = 전액 취소 / full cancel
-    );
+    return this.processCancellation(order, cancellation, refundInfo);
+  }
 
-    // 4. DB 업데이트 / Update DB
-    //    부분 취소 시: payment=PARTIAL_CANCELLED, order=PAID(유지) / Partial: keep order PAID
-    //    전액 취소 시: payment=CANCELLED, order=CANCELLED / Full: cancel both
-    const paymentStatus = isPartialRefund ? 'PARTIAL_CANCELLED' : 'CANCELLED';
-    const orderStatus = isPartialRefund ? 'PAID' : 'CANCELLED';
+  async cancelPaymentAsAdmin(orderId: number, reason: string) {
+    const order = await this.paymentPrisma.order.findUnique({
+      where: { id: orderId },
+      select: { userId: true },
+    });
+    if (!order) {
+      throw new NotFoundException('주문을 찾을 수 없습니다 / Order not found');
+    }
+    return this.cancelPayment(orderId, order.userId, reason);
+  }
+
+  private async processCancellation(
+    order: Prisma.OrderGetPayload<{
+      include: { product: true; payment: true; coupon: true };
+    }>,
+    cancellation: Prisma.PaymentCancellationGetPayload<object>,
+    refundInfo: {
+      canRefund: boolean;
+      reason?: string;
+      refundAmount: number;
+      usedValue: number;
+      usedDescription: string;
+    },
+  ) {
+    if (!order.payment) {
+      throw new ConflictException('결제 정보가 없습니다');
+    }
+
+    let result;
+    try {
+      const paidAmount = order.payment.paidAmount ?? order.totalAmount;
+      const alreadyCancelled = order.payment.cancelledAmount ?? 0;
+      const currentCancellableAmount = paidAmount - alreadyCancelled;
+      if (currentCancellableAmount <= 0) {
+        throw new ConflictException('취소 가능한 결제 잔액이 없습니다');
+      }
+      const isPartial = cancellation.amount < currentCancellableAmount;
+      result = await this.portoneService.cancelPayment(
+        order.payment.portonePaymentId,
+        cancellation.reason,
+        isPartial ? cancellation.amount : undefined,
+        cancellation.idempotencyKey,
+        currentCancellableAmount,
+      );
+    } catch (error) {
+      await this.paymentPrisma.paymentCancellation.update({
+        where: { id: cancellation.id },
+        data: {
+          status: 'PROCESSING',
+          lastError:
+            'PortOne cancellation result is uncertain; retry with the same idempotency key',
+        },
+      });
+      throw error;
+    }
+
+    if (result.status === 'REQUESTED') {
+      await this.paymentPrisma.paymentCancellation.update({
+        where: { id: cancellation.id },
+        data: {
+          status: 'REQUESTED',
+          portoneCancellationId: result.id,
+          lastError: null,
+        },
+      });
+      return {
+        orderId: order.id,
+        status: 'CANCELLATION_PENDING',
+        refundAmount: cancellation.amount,
+      };
+    }
+
+    if (result.status !== 'SUCCEEDED') {
+      await this.paymentPrisma.$transaction([
+        this.paymentPrisma.paymentCancellation.update({
+          where: { id: cancellation.id },
+          data: {
+            status: 'FAILED',
+            portoneCancellationId: result.id,
+            completedAt: new Date(),
+            lastError: 'PortOne reported cancellation failure',
+          },
+        }),
+        this.paymentPrisma.payment.update({
+          where: { id: order.payment.id },
+          data: { status: cancellation.previousPaymentStatus },
+        }),
+      ]);
+      throw new BadGatewayException('결제사에서 취소 요청을 거절했습니다');
+    }
+
+    if (result.cancelledAmount !== cancellation.amount) {
+      await this.paymentPrisma.paymentCancellation.update({
+        where: { id: cancellation.id },
+        data: {
+          portoneCancellationId: result.id,
+          lastError:
+            'Cancellation amount mismatch; awaiting webhook reconciliation',
+        },
+      });
+      throw new BadGatewayException(
+        '결제사 취소 금액 확인이 필요합니다. 자동 재처리됩니다',
+      );
+    }
+
+    const paidAmount = order.payment.paidAmount ?? order.totalAmount;
+    const cumulativeCancelledAmount =
+      (order.payment.cancelledAmount ?? 0) + cancellation.amount;
+    const paymentStatus =
+      cumulativeCancelledAmount < paidAmount
+        ? 'PARTIAL_CANCELLED'
+        : 'CANCELLED';
+    const cancelledAt = result.cancelledAt
+      ? new Date(result.cancelledAt)
+      : new Date();
 
     await this.paymentPrisma.$transaction([
+      this.paymentPrisma.paymentCancellation.update({
+        where: { id: cancellation.id },
+        data: {
+          status: 'SUCCEEDED',
+          portoneCancellationId: result.id,
+          completedAt: cancelledAt,
+          lastError: null,
+        },
+      }),
       this.paymentPrisma.payment.update({
         where: { id: order.payment.id },
         data: {
           status: paymentStatus,
-          cancelledAmount: refundAmount,
-          cancelledAt: new Date(),
-          cancelReason: reason,
+          cancelledAmount: cumulativeCancelledAmount,
+          cancelledAt,
+          cancelReason: cancellation.reason,
+          lastSyncedAt: new Date(),
         },
       }),
       this.paymentPrisma.order.update({
         where: { id: order.id },
-        data: { status: orderStatus },
+        data: { status: 'REFUNDED' },
       }),
     ]);
 
-    // 5. 상품 효과 롤백 (부분 환불 정보 전달)
-    //    Rollback product effect with partial refund support
-    await this.rollbackProductEffectWithRefund(order, refundInfo);
-
-    this.logger.log(
-      `[Payment] 결제 취소 완료: orderId=${orderId}, refundAmount=${refundAmount}, isPartial=${isPartialRefund}`,
+    await this.rollbackFulfilledOrder(order, refundInfo);
+    return this.buildCancellationResponse(
+      order,
+      cancellation.amount,
+      refundInfo,
+      'REFUNDED',
     );
+  }
 
+  private async rollbackFulfilledOrder(
+    order: Prisma.OrderGetPayload<{
+      include: { product: true; payment: true; coupon: true };
+    }>,
+    refundInfo: {
+      canRefund: boolean;
+      reason?: string;
+      refundAmount: number;
+      usedValue: number;
+      usedDescription: string;
+    },
+  ): Promise<void> {
+    if (order.fulfillmentStatus === 'ROLLED_BACK') return;
+    if (order.fulfillmentStatus === 'PENDING') {
+      await this.paymentPrisma.order.updateMany({
+        where: { id: order.id, fulfillmentStatus: 'PENDING' },
+        data: {
+          fulfillmentStatus: 'ROLLED_BACK',
+          fulfillmentError: null,
+        },
+      });
+      return;
+    }
+
+    const staleBefore = new Date(Date.now() - 5 * 60 * 1000);
+    const claimed = await this.paymentPrisma.order.updateMany({
+      where: {
+        id: order.id,
+        OR: [
+          { fulfillmentStatus: 'FULFILLED' },
+          { fulfillmentStatus: 'FAILED' },
+          {
+            fulfillmentStatus: 'ROLLBACK_PROCESSING',
+            fulfillmentStartedAt: { lt: staleBefore },
+          },
+        ],
+      },
+      data: {
+        fulfillmentStatus: 'ROLLBACK_PROCESSING',
+        fulfillmentStartedAt: new Date(),
+        fulfillmentAttempts: { increment: 1 },
+        fulfillmentError: null,
+      },
+    });
+    if (claimed.count === 0) {
+      const current = await this.paymentPrisma.order.findUnique({
+        where: { id: order.id },
+        select: { fulfillmentStatus: true },
+      });
+      if (current?.fulfillmentStatus === 'ROLLED_BACK') return;
+      throw new ConflictException(
+        '상품 환불 후처리가 진행 중입니다 / Refund fulfillment is already processing',
+      );
+    }
+
+    try {
+      await this.rollbackProductEffectWithRefund(order, refundInfo);
+      await this.paymentPrisma.order.updateMany({
+        where: { id: order.id, fulfillmentStatus: 'ROLLBACK_PROCESSING' },
+        data: {
+          fulfillmentStatus: 'ROLLED_BACK',
+          fulfillmentError: null,
+        },
+      });
+    } catch (error) {
+      await this.paymentPrisma.order.updateMany({
+        where: { id: order.id, fulfillmentStatus: 'ROLLBACK_PROCESSING' },
+        data: {
+          fulfillmentStatus: 'FAILED',
+          fulfillmentError:
+            error instanceof Error
+              ? error.message.slice(0, 1000)
+              : 'Refund fulfillment failed',
+        },
+      });
+      throw error;
+    }
+  }
+
+  private buildCancellationResponse(
+    order: {
+      id: number;
+      totalAmount: number;
+      couponId: number | null;
+      payment: any;
+    },
+    refundAmount: number,
+    refundInfo: { usedValue: number; usedDescription: string },
+    status: string,
+  ) {
+    const paidAmount = order.payment?.paidAmount ?? order.totalAmount;
+    const isPartialRefund = refundAmount < paidAmount;
     return {
-      orderId,
-      status: orderStatus,
+      orderId: order.id,
+      status,
       refundAmount,
       usedValue: refundInfo.usedValue,
       isPartialRefund,
-      reason,
       refundMessage: isPartialRefund
         ? `사용한 ${refundInfo.usedDescription} 제외 후 ${refundAmount.toLocaleString()}원 환불됩니다. (3~5 영업일 소요)`
         : `${refundAmount.toLocaleString()}원 전액 환불됩니다. (3~5 영업일 소요)`,
@@ -595,6 +1090,7 @@ export class PaymentService {
           await this.viewingCreditService.calculateCreditRefund(
             order.userId,
             product.code,
+            order.id,
           );
 
         // 레코드 자체가 없으면 전액 환불 (이미 롤백됐거나 오류 상황)
@@ -706,6 +1202,7 @@ export class PaymentService {
           await this.viewingCreditService.calculateCreditRefund(
             order.userId,
             product.code,
+            order.id,
           );
         if (refundData.creditId) {
           await this.viewingCreditService.executeRefund(
@@ -849,7 +1346,7 @@ export class PaymentService {
   // ================================================
 
   /** 주문 상세 / Order detail */
-  async getOrder(orderId: number, userId?: string) {
+  async getOrder(orderId: number, userId: string) {
     const order = await this.paymentPrisma.order.findUnique({
       where: { id: orderId },
       include: { product: true, payment: true, coupon: true },
@@ -858,16 +1355,20 @@ export class PaymentService {
       throw new NotFoundException(`주문을 찾을 수 없습니다 / Order not found`);
     }
     // 소유권 검증 (IDOR 방지) / Ownership check (prevent IDOR)
-    if (userId && order.userId !== userId) {
-      throw new UnauthorizedException(
+    if (order.userId !== userId) {
+      throw new ForbiddenException(
         '본인의 주문만 조회할 수 있습니다 / Can only view your own orders',
       );
     }
-    return order;
+    return this.serializeCustomerOrder(order);
   }
 
   /** 내 주문 목록 / My orders */
   async getMyOrders(userId: string, page = 1, limit = 20) {
+    page = Number.isSafeInteger(page) && page > 0 ? page : 1;
+    limit = Number.isSafeInteger(limit)
+      ? Math.min(Math.max(limit, 1), 100)
+      : 20;
     const skip = (page - 1) * limit;
     const [orders, total] = await Promise.all([
       this.paymentPrisma.order.findMany({
@@ -881,7 +1382,7 @@ export class PaymentService {
     ]);
 
     return {
-      orders,
+      orders: orders.map((order) => this.serializeCustomerOrder(order)),
       pagination: {
         page,
         limit,
@@ -891,106 +1392,261 @@ export class PaymentService {
     };
   }
 
+  private serializeCustomerOrder(order: any) {
+    return {
+      id: order.id,
+      orderNo: order.orderNo,
+      product: order.product,
+      targetJobId: order.targetJobId,
+      quantity: order.quantity,
+      totalAmount: order.totalAmount,
+      originalAmount: order.originalAmount,
+      currency: order.currency,
+      status: order.status,
+      fulfillmentStatus: order.fulfillmentStatus,
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
+      payment: order.payment
+        ? {
+            method: order.payment.method,
+            status: order.payment.status,
+            paidAmount: order.payment.paidAmount,
+            paidAt: order.payment.paidAt,
+            receiptUrl: order.payment.receiptUrl,
+            cancelledAmount: order.payment.cancelledAmount,
+            cancelledAt: order.payment.cancelledAt,
+          }
+        : null,
+    };
+  }
+
   // ================================================
   // 웹훅 처리 / Webhook processing
   // ================================================
 
-  /** 웹훅에서 결제 확정 / Confirm payment from webhook */
-  async handleWebhookPaid(portonePaymentId: string, webhookData: any) {
-    // 기존 Payment 찾기 / Find existing payment
-    let payment = await this.paymentPrisma.payment.findUnique({
-      where: { portonePaymentId },
-      include: { order: { include: { product: true } } },
+  async beginWebhookEvent(input: {
+    webhookId: string;
+    eventType: string;
+    paymentId?: string;
+    rawBody: string;
+  }): Promise<'PROCESS' | 'DUPLICATE' | 'BUSY'> {
+    const payloadHash = createHash('sha256')
+      .update(input.rawBody)
+      .digest('hex');
+    const lockedUntil = new Date(Date.now() + 30_000);
+    try {
+      await this.paymentPrisma.paymentWebhookEvent.create({
+        data: {
+          id: input.webhookId,
+          eventType: input.eventType,
+          paymentId: input.paymentId ?? null,
+          payloadHash,
+          status: 'PROCESSING',
+          lockedUntil,
+        },
+      });
+      return 'PROCESS';
+    } catch (error) {
+      if ((error as { code?: string })?.code !== 'P2002') {
+        throw error;
+      }
+    }
+
+    const existing = await this.paymentPrisma.paymentWebhookEvent.findUnique({
+      where: { id: input.webhookId },
+    });
+    if (!existing || existing.payloadHash !== payloadHash) {
+      throw new BadRequestException('웹훅 ID와 본문이 일치하지 않습니다');
+    }
+    if (existing.status === 'PROCESSED') return 'DUPLICATE';
+    if (existing.status === 'PROCESSING' && existing.lockedUntil > new Date()) {
+      return 'BUSY';
+    }
+
+    const reclaimed = await this.paymentPrisma.paymentWebhookEvent.updateMany({
+      where: {
+        id: input.webhookId,
+        payloadHash,
+        status: { in: ['PROCESSING', 'FAILED'] },
+        lockedUntil: { lte: new Date() },
+      },
+      data: {
+        status: 'PROCESSING',
+        lockedUntil,
+        attemptCount: { increment: 1 },
+        lastError: null,
+      },
+    });
+    return reclaimed.count === 1 ? 'PROCESS' : 'BUSY';
+  }
+
+  async completeWebhookEvent(webhookId: string): Promise<void> {
+    await this.paymentPrisma.paymentWebhookEvent.update({
+      where: { id: webhookId },
+      data: {
+        status: 'PROCESSED',
+        processedAt: new Date(),
+        lockedUntil: new Date(),
+        lastError: null,
+      },
+    });
+  }
+
+  async failWebhookEvent(webhookId: string): Promise<void> {
+    await this.paymentPrisma.paymentWebhookEvent.updateMany({
+      where: { id: webhookId, status: 'PROCESSING' },
+      data: {
+        status: 'FAILED',
+        lockedUntil: new Date(),
+        lastError: 'Processing failed; safe to retry',
+      },
+    });
+  }
+
+  async synchronizePaymentFromWebhook(
+    remote: PortonePaymentResponse,
+    event: { webhookId: string; eventType: string },
+  ): Promise<'SYNCED' | 'IGNORED'> {
+    const payment = await this.paymentPrisma.payment.findUnique({
+      where: { portonePaymentId: remote.id },
+      include: {
+        order: { include: { product: true, coupon: true, payment: true } },
+        cancellations: {
+          where: { status: { in: ['PROCESSING', 'REQUESTED'] } },
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
+      },
+    });
+    if (!payment) {
+      this.logger.warn(
+        `Ignoring PortOne webhook for an unknown payment (${this.maskPaymentId(remote.id)})`,
+      );
+      return 'IGNORED';
+    }
+
+    this.portoneService.validatePayment(remote, {
+      paymentId: payment.portonePaymentId,
+      amount: payment.order.totalAmount,
+      currency: payment.order.currency,
+      requirePaid: false,
+    });
+    const webhookSummary = JSON.stringify({
+      webhookId: event.webhookId,
+      eventType: event.eventType,
     });
 
-    if (payment) {
-      // 이미 PAID면 스킵 / Skip if already PAID
-      if (payment.status === 'PAID') {
-        this.logger.log(
-          `[Webhook] 이미 결제 확인됨 (중복 웹훅): ${portonePaymentId}`,
-        );
-        return;
-      }
-
-      // 웹훅 데이터 저장 + 상태 업데이트 / Save webhook data + update status
-      await this.paymentPrisma.$transaction([
-        this.paymentPrisma.payment.update({
+    switch (remote.status) {
+      case 'PAID':
+        await this.persistPaidPayment(payment.orderId, remote);
+        await this.paymentPrisma.payment.update({
           where: { id: payment.id },
-          data: {
-            status: 'PAID',
-            webhookData: JSON.stringify(webhookData),
-            paidAt: new Date(),
-          },
-        }),
-        this.paymentPrisma.order.update({
-          where: { id: payment.orderId },
-          data: { status: 'PAID' },
-        }),
-      ]);
+          data: { webhookData: webhookSummary },
+        });
+        await this.fulfillPaidOrder(payment.orderId);
+        return 'SYNCED';
 
-      // 상품 효과 적용 / Apply product effect
-      await this.applyProductEffect(payment.order);
-    } else {
-      // confirmPayment보다 웹훅이 먼저 도착한 경우 — 웹훅 데이터만 기록
-      // Webhook arrived before confirmPayment — just log
-      this.logger.warn(
-        `[Webhook] Payment 레코드 없음 (confirmPayment 미호출): ${portonePaymentId}`,
-      );
+      case 'CANCELLED':
+      case 'PARTIAL_CANCELLED':
+        await this.synchronizeCancelledPayment(payment, remote, webhookSummary);
+        return 'SYNCED';
+
+      case 'FAILED':
+        await this.paymentPrisma.$transaction([
+          this.paymentPrisma.payment.updateMany({
+            where: { id: payment.id, status: 'PENDING' },
+            data: {
+              status: 'FAILED',
+              failReason: 'PortOne reported payment failure',
+              webhookData: webhookSummary,
+              lastSyncedAt: new Date(),
+            },
+          }),
+          this.paymentPrisma.order.updateMany({
+            where: { id: payment.orderId, status: 'PENDING' },
+            data: { status: 'FAILED' },
+          }),
+        ]);
+        return 'SYNCED';
+
+      default:
+        await this.paymentPrisma.payment.update({
+          where: { id: payment.id },
+          data: { webhookData: webhookSummary, lastSyncedAt: new Date() },
+        });
+        return 'SYNCED';
     }
   }
 
-  /** 웹훅에서 결제 취소 / Handle cancelled from webhook */
-  async handleWebhookCancelled(portonePaymentId: string, webhookData: any) {
-    const payment = await this.paymentPrisma.payment.findUnique({
-      where: { portonePaymentId },
-      include: { order: { include: { product: true } } },
-    });
+  private async synchronizeCancelledPayment(
+    payment: any,
+    remote: PortonePaymentResponse,
+    webhookSummary: string,
+  ): Promise<void> {
+    const paidAmount = payment.paidAmount ?? payment.order.totalAmount;
+    const cancelledAmount =
+      remote.amount.cancelled ??
+      (remote.status === 'CANCELLED'
+        ? paidAmount
+        : (payment.cancelledAmount ?? 0));
+    if (
+      !Number.isSafeInteger(cancelledAmount) ||
+      cancelledAmount <= 0 ||
+      cancelledAmount > paidAmount
+    ) {
+      throw new BadRequestException('결제사 취소 금액이 올바르지 않습니다');
+    }
 
-    if (!payment) return;
-
-    await this.paymentPrisma.$transaction([
+    const paymentStatus =
+      cancelledAmount < paidAmount ? 'PARTIAL_CANCELLED' : 'CANCELLED';
+    const cancelledAt = remote.cancelledAt
+      ? new Date(remote.cancelledAt)
+      : new Date();
+    const activeCancellation = payment.cancellations?.[0];
+    const operations: Prisma.PrismaPromise<any>[] = [
       this.paymentPrisma.payment.update({
         where: { id: payment.id },
         data: {
-          status: 'CANCELLED',
-          cancelledAt: new Date(),
-          webhookData: JSON.stringify(webhookData),
+          status: paymentStatus,
+          cancelledAmount,
+          cancelledAt,
+          webhookData: webhookSummary,
+          lastSyncedAt: new Date(),
         },
       }),
       this.paymentPrisma.order.update({
         where: { id: payment.orderId },
-        data: { status: 'CANCELLED' },
-      }),
-    ]);
-
-    await this.rollbackProductEffect(payment.order);
-    this.logger.log(`[Webhook] 결제 취소 처리: ${portonePaymentId}`);
-  }
-
-  /** 웹훅에서 결제 실패 / Handle failed from webhook */
-  async handleWebhookFailed(portonePaymentId: string, webhookData: any) {
-    const payment = await this.paymentPrisma.payment.findUnique({
-      where: { portonePaymentId },
-    });
-
-    if (!payment) return;
-
-    await this.paymentPrisma.$transaction([
-      this.paymentPrisma.payment.update({
-        where: { id: payment.id },
         data: {
-          status: 'FAILED',
-          failReason: webhookData?.reason || 'Unknown',
-          webhookData: JSON.stringify(webhookData),
+          status: payment.paidAmount ? 'REFUNDED' : 'CANCELLED',
         },
       }),
-      this.paymentPrisma.order.update({
-        where: { id: payment.orderId },
-        data: { status: 'FAILED' },
-      }),
-    ]);
+    ];
+    if (
+      activeCancellation &&
+      ['PROCESSING', 'REQUESTED'].includes(activeCancellation.status)
+    ) {
+      operations.push(
+        this.paymentPrisma.paymentCancellation.update({
+          where: { id: activeCancellation.id },
+          data: {
+            status: 'SUCCEEDED',
+            amount: cancelledAmount,
+            portoneCancellationId:
+              remote.cancellations?.at(-1)?.id ??
+              activeCancellation.portoneCancellationId,
+            completedAt: cancelledAt,
+            lastError: null,
+          },
+        }),
+      );
+    }
+    await this.paymentPrisma.$transaction(operations);
 
-    this.logger.log(`[Webhook] 결제 실패 처리: ${portonePaymentId}`);
+    if (payment.paidAmount) {
+      const refundInfo = await this.calculateRefundAmount(payment.order);
+      refundInfo.refundAmount = cancelledAmount;
+      await this.rollbackFulfilledOrder(payment.order, refundInfo);
+    }
   }
 
   // ================================================
@@ -1001,25 +1657,57 @@ export class PaymentService {
   private generateOrderNo(): string {
     const now = new Date();
     const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
-    const random = Math.random().toString(36).substring(2, 7).toUpperCase();
+    const random = randomUUID().replace(/-/g, '').slice(0, 12).toUpperCase();
     return `ORD-${dateStr}-${random}`;
   }
 
   /** 결제 수단 매핑 / Map payment method */
   private mapPaymentMethod(
     type?: string,
-  ): 'CARD' | 'VIRTUAL_ACCOUNT' | 'EASY_PAY' | 'TRANSFER' {
-    switch (type) {
+  ):
+    | 'CARD'
+    | 'VIRTUAL_ACCOUNT'
+    | 'EASY_PAY'
+    | 'TRANSFER'
+    | 'MOBILE'
+    | 'GIFT_CERTIFICATE'
+    | 'CONVENIENCE_STORE'
+    | 'PAYPAL'
+    | 'ALIPAY'
+    | 'CRYPTO'
+    | 'UNKNOWN' {
+    switch (type?.toUpperCase()) {
+      case 'CARD':
       case 'Card':
         return 'CARD';
+      case 'VIRTUAL_ACCOUNT':
       case 'VirtualAccount':
         return 'VIRTUAL_ACCOUNT';
+      case 'EASY_PAY':
       case 'EasyPay':
         return 'EASY_PAY';
+      case 'TRANSFER':
       case 'Transfer':
         return 'TRANSFER';
+      case 'MOBILE':
+        return 'MOBILE';
+      case 'GIFT_CERTIFICATE':
+        return 'GIFT_CERTIFICATE';
+      case 'CONVENIENCE_STORE':
+        return 'CONVENIENCE_STORE';
+      case 'PAYPAL':
+        return 'PAYPAL';
+      case 'ALIPAY':
+        return 'ALIPAY';
+      case 'CRYPTO':
+        return 'CRYPTO';
       default:
-        return 'CARD';
+        return 'UNKNOWN';
     }
+  }
+
+  private maskPaymentId(paymentId: string): string {
+    if (paymentId.length <= 8) return '***';
+    return `${paymentId.slice(0, 4)}...${paymentId.slice(-4)}`;
   }
 }

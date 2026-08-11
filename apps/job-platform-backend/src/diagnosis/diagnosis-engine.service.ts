@@ -179,7 +179,8 @@ export class DiagnosisEngineService {
         scoreBreakdown: breakdown.scoreBreakdown,
         feasibilityLabel: label,
         estimatedMonths: pw.estimatedMonths,
-        estimatedCostWon: pw.estimatedCostWon,
+        // The policy matrix stores costs in 10,000 KRW units.
+        estimatedCostWon: pw.estimatedCostWon * 10_000,
         visaChain: pw.visaChain,
         platformSupport: pw.platformSupport,
         milestones,

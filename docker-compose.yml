@@ -34,11 +34,7 @@ services:
       retries: 3
       start_period: 40s
     command: >
-             sh -c "npx prisma db push --accept-data-loss --schema=./prisma/user/user.schema.prisma &&
-             npx prisma db push --accept-data-loss --schema=./prisma/payment/payment.schema.prisma &&
-             npx prisma db push --accept-data-loss --schema=./prisma/log/log.schema.prisma &&
-             npx nest start auth-service &
-             npx nest start job-platform-backend"
+             node dist/apps/job-platform-backend/main
 
   postgres:
     image: postgres:15-alpine
@@ -52,6 +48,7 @@ services:
       - "5433:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ./init-databases.sql:/docker-entrypoint-initdb.d/init.sql
 
   mongodb:
     image: mongo:6
@@ -114,8 +111,7 @@ services:
       - notification-postgres
       - redis
     command: >
-             sh -c "npx prisma db push --accept-data-loss --schema=./prisma/notification/notification.schema.prisma &&
-             npx nest start notification-service"
+             node dist/apps/notification-service/main
 
 volumes:
   postgres-data:

@@ -15,6 +15,8 @@ export enum TierType {
 
 export enum PostStatus {
   DRAFT = 'DRAFT',
+  SUBMITTED_REVIEW = 'SUBMITTED_REVIEW',
+  REJECTED = 'REJECTED',
   ACTIVE = 'ACTIVE',
   CLOSED = 'CLOSED',
   EXPIRED = 'EXPIRED',

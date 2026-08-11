@@ -26,6 +26,13 @@ export class RequestLogInterceptor implements NestInterceptor {
     'accessToken',
     'refreshToken',
     'sessionId',
+    'ci',
+    'di',
+    'phone',
+    'mobile',
+    'birth',
+    'identityVerificationId',
+    'state',
   ];
 
   constructor(private readonly loggingService: LoggingService) {}
@@ -89,9 +96,13 @@ export class RequestLogInterceptor implements NestInterceptor {
       const params = new URLSearchParams(query);
       for (const key of params.keys()) {
         if (
-          RequestLogInterceptor.SENSITIVE_KEYS.some((sk) =>
-            key.toLowerCase().includes(sk.toLowerCase()),
-          )
+          RequestLogInterceptor.SENSITIVE_KEYS.some((sk) => {
+            const normalizedKey = key.toLowerCase();
+            const normalizedSensitiveKey = sk.toLowerCase();
+            return normalizedSensitiveKey.length <= 2
+              ? normalizedKey === normalizedSensitiveKey
+              : normalizedKey.includes(normalizedSensitiveKey);
+          })
         ) {
           params.set(key, '***');
         }

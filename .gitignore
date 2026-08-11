@@ -42,6 +42,9 @@ lerna-debug.log*
 .env.production.local
 .env.local
 
+# Local MongoDB replica-set authentication key
+mongo-keyfile
+
 # temp directory
 .temp
 .tmp

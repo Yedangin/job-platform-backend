@@ -10,7 +10,7 @@
  *     Announced by August 5 each year, effective January 1 of the following year
  *   - 수습 3개월 이내: 최저임금의 90% 적용 가능 (1년 이상 근로계약 체결 시)
  *     Probation within 3 months: 90% of minimum wage applicable (for contracts of 1+ year)
- * @lastVerified  2026-02-23
+ * @lastVerified  2026-08-07
  */
 
 /**
@@ -61,17 +61,13 @@ export const MINIMUM_WAGE_TABLE: ReadonlyArray<MinimumWageData> = [
     legalBasis: '최저임금법 제10조, 고용노동부 고시 제2024-XX호',
   },
   {
-    // TODO: 2026년 최저임금 확정 시 업데이트 필요
-    // TODO: Update when 2026 minimum wage is confirmed
-    // 현재 2025년 값을 임시 적용 (placeholder)
-    // Currently using 2025 value as placeholder
     year: 2026,
-    hourlyWage: 10_030,
-    dailyWage: 10_030 * 8,
-    monthlyWage: 10_030 * 209,
+    hourlyWage: 10_320,
+    dailyWage: 10_320 * 8, // 82,560원
+    monthlyWage: 10_320 * 209, // 2,156,880원
     effectiveFrom: '2026-01-01',
     effectiveTo: '2026-12-31',
-    legalBasis: '최저임금법 제10조 (2026년 고시 미발표 — placeholder)',
+    legalBasis: '최저임금법 제10조, 고용노동부 고시 제2025-47호',
   },
 ];
 

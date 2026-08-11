@@ -9,6 +9,7 @@ jest.mock('libs/common/src', () => {
   return {
     PaymentPrismaService: _PaymentPrismaService,
     AuthPrismaService: _AuthPrismaService,
+    SkipCsrf: () => () => undefined,
   };
 });
 
@@ -24,6 +25,7 @@ describe('PortoneWebhookController', () => {
   // 테스트용 웹훅 시크릿 (base64) / Test webhook secret
   const rawSecret = Buffer.from('test-webhook-secret-key-1234');
   const webhookSecret = `whsec_${rawSecret.toString('base64')}`;
+  const storeId = 'store-1234567890abcdef';
 
   /**
    * 유효한 서명 생성 헬퍼 / Generate valid signature helper
@@ -66,12 +68,14 @@ describe('PortoneWebhookController', () => {
   beforeEach(async () => {
     mockPortoneService = {
       getPayment: jest.fn(),
+      getStoreId: jest.fn().mockReturnValue(storeId),
     };
 
     mockPaymentService = {
-      handleWebhookPaid: jest.fn().mockResolvedValue(undefined),
-      handleWebhookCancelled: jest.fn().mockResolvedValue(undefined),
-      handleWebhookFailed: jest.fn().mockResolvedValue(undefined),
+      beginWebhookEvent: jest.fn().mockResolvedValue('PROCESS'),
+      completeWebhookEvent: jest.fn().mockResolvedValue(undefined),
+      failWebhookEvent: jest.fn().mockResolvedValue(undefined),
+      synchronizePaymentFromWebhook: jest.fn().mockResolvedValue('SYNCED'),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -82,6 +86,7 @@ describe('PortoneWebhookController', () => {
           useValue: {
             get: jest.fn((key: string, fallback?: string) => {
               if (key === 'PORTONE_WEBHOOK_SECRET') return webhookSecret;
+              if (key === 'NODE_ENV') return 'test';
               return fallback;
             }),
           },
@@ -101,7 +106,7 @@ describe('PortoneWebhookController', () => {
     it('유효한 서명 → 200 / should accept valid signature', async () => {
       const body = JSON.stringify({
         type: 'Transaction.Paid',
-        data: { paymentId: 'pay_123' },
+        data: { paymentId: 'pay_123', storeId },
       });
       const webhookId = 'msg_test123';
       const timestamp = String(Math.floor(Date.now() / 1000));
@@ -126,7 +131,7 @@ describe('PortoneWebhookController', () => {
     it('잘못된 서명 → 400 / should reject invalid signature', async () => {
       const body = JSON.stringify({
         type: 'Transaction.Paid',
-        data: { paymentId: 'pay_123' },
+        data: { paymentId: 'pay_123', storeId },
       });
       const webhookId = 'msg_test123';
       const timestamp = String(Math.floor(Date.now() / 1000));
@@ -151,7 +156,7 @@ describe('PortoneWebhookController', () => {
     it('만료된 타임스탬프 → 400 / should reject expired timestamp', async () => {
       const body = JSON.stringify({
         type: 'Transaction.Paid',
-        data: { paymentId: 'pay_123' },
+        data: { paymentId: 'pay_123', storeId },
       });
       const webhookId = 'msg_test456';
       // 10분 전 타임스탬프 (5분 허용 초과)
@@ -172,7 +177,7 @@ describe('PortoneWebhookController', () => {
         signature,
       );
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Timestamp expired' });
+      expect(res.json).toHaveBeenCalledWith({ error: 'Invalid timestamp' });
     });
   });
 
@@ -183,7 +188,7 @@ describe('PortoneWebhookController', () => {
     it('정상 결제 웹훅 처리 / should handle paid webhook', async () => {
       const body = JSON.stringify({
         type: 'Transaction.Paid',
-        data: { paymentId: 'pay_123' },
+        data: { paymentId: 'pay_123', storeId },
       });
       const webhookId = 'msg_paid1';
       const timestamp = String(Math.floor(Date.now() / 1000));
@@ -201,10 +206,12 @@ describe('PortoneWebhookController', () => {
       const res = createMockRes();
 
       await controller.handleWebhook(req, res, webhookId, timestamp, signature);
-      expect(mockPaymentService.handleWebhookPaid).toHaveBeenCalledWith(
-        'pay_123',
-        expect.objectContaining({ paymentId: 'pay_123' }),
-      );
+      expect(
+        mockPaymentService.synchronizePaymentFromWebhook,
+      ).toHaveBeenCalledWith(expect.objectContaining({ status: 'PAID' }), {
+        webhookId,
+        eventType: 'Transaction.Paid',
+      });
       expect(res.status).toHaveBeenCalledWith(200);
     });
   });
@@ -216,7 +223,7 @@ describe('PortoneWebhookController', () => {
     it('취소 웹훅 처리 / should handle cancelled webhook', async () => {
       const body = JSON.stringify({
         type: 'Transaction.Cancelled',
-        data: { paymentId: 'pay_789' },
+        data: { paymentId: 'pay_789', storeId },
       });
       const webhookId = 'msg_cancel1';
       const timestamp = String(Math.floor(Date.now() / 1000));
@@ -233,10 +240,12 @@ describe('PortoneWebhookController', () => {
       const res = createMockRes();
 
       await controller.handleWebhook(req, res, webhookId, timestamp, signature);
-      expect(mockPaymentService.handleWebhookCancelled).toHaveBeenCalledWith(
-        'pay_789',
-        expect.objectContaining({ paymentId: 'pay_789' }),
-      );
+      expect(
+        mockPaymentService.synchronizePaymentFromWebhook,
+      ).toHaveBeenCalledWith(expect.objectContaining({ status: 'CANCELLED' }), {
+        webhookId,
+        eventType: 'Transaction.Cancelled',
+      });
       expect(res.status).toHaveBeenCalledWith(200);
     });
   });
@@ -248,7 +257,7 @@ describe('PortoneWebhookController', () => {
     it('실패 웹훅 처리 / should handle failed webhook', async () => {
       const body = JSON.stringify({
         type: 'Transaction.Failed',
-        data: { paymentId: 'pay_fail1' },
+        data: { paymentId: 'pay_fail1', storeId },
       });
       const webhookId = 'msg_fail1';
       const timestamp = String(Math.floor(Date.now() / 1000));
@@ -265,13 +274,12 @@ describe('PortoneWebhookController', () => {
       const res = createMockRes();
 
       await controller.handleWebhook(req, res, webhookId, timestamp, signature);
-      expect(mockPaymentService.handleWebhookFailed).toHaveBeenCalledWith(
-        'pay_fail1',
-        expect.objectContaining({
-          paymentId: 'pay_fail1',
-          reason: 'FAILED',
-        }),
-      );
+      expect(
+        mockPaymentService.synchronizePaymentFromWebhook,
+      ).toHaveBeenCalledWith(expect.objectContaining({ status: 'FAILED' }), {
+        webhookId,
+        eventType: 'Transaction.Failed',
+      });
       expect(res.status).toHaveBeenCalledWith(200);
     });
   });
@@ -280,10 +288,85 @@ describe('PortoneWebhookController', () => {
   // 엣지 케이스 / Edge cases
   // ================================================
   describe('Edge cases', () => {
-    it('paymentId 없으면 무시하고 200 / should return 200 when no paymentId', async () => {
+    it('raw body가 없으면 서명 검증을 거부한다', async () => {
+      const res = createMockRes();
+      await controller.handleWebhook(
+        { body: {} } as any,
+        res,
+        'msg_no_raw',
+        String(Math.floor(Date.now() / 1000)),
+        'v1,unused',
+      );
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(mockPaymentService.beginWebhookEvent).not.toHaveBeenCalled();
+    });
+
+    it('서명된 잘못된 JSON은 400으로 종료 / should reject signed malformed JSON', async () => {
+      const body = '{"type":"Transaction.Paid"';
+      const webhookId = 'msg_bad_json';
+      const timestamp = String(Math.floor(Date.now() / 1000));
+      const res = createMockRes();
+
+      await controller.handleWebhook(
+        { rawBody: Buffer.from(body) } as any,
+        res,
+        webhookId,
+        timestamp,
+        generateValidSignature(webhookId, timestamp, body),
+      );
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ error: 'Invalid JSON payload' });
+      expect(mockPaymentService.beginWebhookEvent).not.toHaveBeenCalled();
+    });
+
+    it('영속 처리 완료된 웹훅은 API 재조회 없이 200 처리한다', async () => {
       const body = JSON.stringify({
         type: 'Transaction.Paid',
-        data: {},
+        data: { paymentId: 'pay_duplicate', storeId },
+      });
+      const webhookId = 'msg_duplicate';
+      const timestamp = String(Math.floor(Date.now() / 1000));
+      mockPaymentService.beginWebhookEvent.mockResolvedValue('DUPLICATE');
+      const res = createMockRes();
+
+      await controller.handleWebhook(
+        { rawBody: Buffer.from(body), body: JSON.parse(body) } as any,
+        res,
+        webhookId,
+        timestamp,
+        generateValidSignature(webhookId, timestamp, body),
+      );
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(mockPortoneService.getPayment).not.toHaveBeenCalled();
+    });
+
+    it('다른 Store의 서명된 웹훅도 거부한다', async () => {
+      const body = JSON.stringify({
+        type: 'Transaction.Paid',
+        data: { paymentId: 'pay_wrong_store', storeId: 'store-attacker' },
+      });
+      const webhookId = 'msg_wrong_store';
+      const timestamp = String(Math.floor(Date.now() / 1000));
+      const res = createMockRes();
+
+      await controller.handleWebhook(
+        { rawBody: Buffer.from(body), body: JSON.parse(body) } as any,
+        res,
+        webhookId,
+        timestamp,
+        generateValidSignature(webhookId, timestamp, body),
+      );
+
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(mockPaymentService.beginWebhookEvent).not.toHaveBeenCalled();
+    });
+
+    it('Transaction paymentId가 없으면 400 / should reject missing paymentId', async () => {
+      const body = JSON.stringify({
+        type: 'Transaction.Paid',
+        data: { storeId },
       });
       const webhookId = 'msg_noid';
       const timestamp = String(Math.floor(Date.now() / 1000));
@@ -296,14 +379,16 @@ describe('PortoneWebhookController', () => {
       const res = createMockRes();
 
       await controller.handleWebhook(req, res, webhookId, timestamp, signature);
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(mockPaymentService.handleWebhookPaid).not.toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(
+        mockPaymentService.synchronizePaymentFromWebhook,
+      ).not.toHaveBeenCalled();
     });
 
     it('포트원 조회 실패 → 500 / should return 500 on PortOne lookup failure', async () => {
       const body = JSON.stringify({
         type: 'Transaction.Paid',
-        data: { paymentId: 'pay_err' },
+        data: { paymentId: 'pay_err', storeId },
       });
       const webhookId = 'msg_err';
       const timestamp = String(Math.floor(Date.now() / 1000));
@@ -322,8 +407,30 @@ describe('PortoneWebhookController', () => {
       await controller.handleWebhook(req, res, webhookId, timestamp, signature);
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
-        error: 'Failed to verify payment',
+        error: 'Internal error',
       });
+      expect(mockPaymentService.failWebhookEvent).toHaveBeenCalledWith(
+        webhookId,
+      );
     });
+  });
+
+  it('운영 환경에서 잘못된 웹훅 키는 시작 즉시 거부 / should fail fast for an invalid production webhook secret', () => {
+    const config = {
+      get: jest.fn((key: string, fallback?: string) => {
+        if (key === 'NODE_ENV') return 'production';
+        if (key === 'PORTONE_WEBHOOK_SECRET') return 'replace-me';
+        return fallback;
+      }),
+    };
+
+    expect(
+      () =>
+        new PortoneWebhookController(
+          config as any,
+          mockPortoneService,
+          mockPaymentService,
+        ),
+    ).toThrow('Invalid production PORTONE_WEBHOOK_SECRET');
   });
 });

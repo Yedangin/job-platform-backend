@@ -8,8 +8,9 @@ datasource logDB {
 }
 
 generator logClient {
-  provider = "prisma-client-js"
-  output   = "../../generated/prisma-log"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows", "darwin-arm64", "debian-openssl-3.0.x"]
+  output        = "../../generated/prisma-log"
 }
 
 // ========================================
@@ -110,4 +111,59 @@ model ChangeLog {
   @@index([tableName])
   @@index([createdAt])
   @@map("change_logs")
+}
+
+// ========================================
+// [법령 변경] 법령/정책 변경 관리
+// Law amendment — regulation/policy change management
+// 상태 전이: DETECTED → REVIEWING → APPROVED → STAGING → APPLIED | REJECTED
+// ========================================
+model LawAmendment {
+  id                String             @id @default(auto()) @map("_id") @logDB.ObjectId
+  title             String // 변경 제목 / Amendment title
+  source            String // 출처 / Source (법령정보센터, 출입국외국인청 등)
+  sourceUrl         String?            @map("source_url") // 원문 URL / Source URL
+  detectedAt        DateTime           @default(now()) @map("detected_at") // 감지일 / Detection date
+  effectiveDate     DateTime           @map("effective_date") // 시행일 / Effective date
+  status            String             @default("DETECTED") // DETECTED, REVIEWING, APPROVED, STAGING, APPLIED, REJECTED
+  affectedVisaCodes String[]           @map("affected_visa_codes") // 영향 비자 코드 / ["E-7", "E-9"]
+  changeSummary     String             @map("change_summary") @logDB.String // JSON: 변경 요약 / Change summary
+  changeDetails     String             @map("change_details") @logDB.String // JSON: 변경 상세 / Change details
+  impactAnalysis    String?            @map("impact_analysis") @logDB.String // JSON: 영향 분석 결과 / Impact analysis result
+  reviewedBy        String?            @map("reviewed_by") // 검토 관리자 ID / Reviewing admin ID
+  reviewedAt        DateTime?          @map("reviewed_at") // 검토일 / Review date
+  appliedAt         DateTime?          @map("applied_at") // 적용일 / Applied date
+  rejectedAt        DateTime?          @map("rejected_at") // 반려일 / Rejected date
+  rejectionReason   String?            @map("rejection_reason") // 반려 사유 / Rejection reason
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  items             LawAmendmentItem[]
+
+  @@index([status])
+  @@index([effectiveDate])
+  @@index([createdAt])
+  @@map("law_amendments")
+}
+
+// ========================================
+// [법령 변경 항목] 개별 변경 사항 (테이블/레코드/액션/전후 데이터)
+// Law amendment item — individual change entry (table/record/action/before-after)
+// ========================================
+model LawAmendmentItem {
+  id          String       @id @default(auto()) @map("_id") @logDB.ObjectId
+  amendmentId String       @map("amendment_id") @logDB.ObjectId
+  amendment   LawAmendment @relation(fields: [amendmentId], references: [id])
+  targetTable String       @map("target_table") // "VisaType", "VisaJobCode", "VisaWorkCondition", "VisaRule"
+  targetId    String?      @map("target_id") // 대상 레코드 ID / Target record ID
+  action      String // "CREATE", "UPDATE", "DELETE"
+  beforeData  String?      @map("before_data") @logDB.String // JSON: 변경 전 데이터 / Before data
+  afterData   String       @map("after_data") @logDB.String // JSON: 변경 후 데이터 / After data
+  isApplied   Boolean      @default(false) @map("is_applied") // 적용 여부 / Applied flag
+  appliedAt   DateTime?    @map("applied_at") // 적용일 / Applied date
+  createdAt   DateTime     @default(now()) @map("created_at")
+
+  @@index([amendmentId])
+  @@index([targetTable])
+  @@index([isApplied])
+  @@map("law_amendment_items")
 }

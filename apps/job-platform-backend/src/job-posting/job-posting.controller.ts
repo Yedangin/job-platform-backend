@@ -32,7 +32,7 @@ import { JobScrapService } from './job-scrap.service';
 import {
   CreateJobPostingDto,
   UpdateJobPostingDto,
-  ActivateJobPostingDto,
+  RejectJobPostingDto,
   SuspendJobPostingDto,
   GetJobListingsQueryDto,
   GetMyJobPostingsQueryDto,
@@ -139,6 +139,17 @@ export class JobPostingController {
     );
   }
 
+  // Keep this dynamic route after every fixed /my/* route.
+  @Get('my/:id')
+  @Roles('CORPORATE', 'ADMIN', 'SUPERADMIN')
+  @ApiOperation({ summary: 'My job posting detail, including non-public statuses' })
+  async getMyJobPosting(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+  ) {
+    return this.jobPostingService.getMyJobPosting(session.userId, id);
+  }
+
   @Get('visa-suggest/for-company')
   @Roles('CORPORATE', 'ADMIN')
   @ApiOperation({ summary: '비자 추천 / Visa suggestions for company' })
@@ -175,7 +186,7 @@ export class JobPostingController {
   // ========================================
 
   @Get('admin/all')
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiOperation({ summary: '전체 공고 관리 / Admin: all postings' })
   @ApiResponse({ status: 200, description: 'Paginated admin job postings' })
   async getAllJobPostings(@Query() query: GetAdminJobPostingsQueryDto) {
@@ -190,7 +201,7 @@ export class JobPostingController {
   }
 
   @Post('admin/:id/suspend')
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiOperation({ summary: '공고 중지 / Admin: suspend posting' })
   @ApiParam({ name: 'id', description: 'Job posting ID' })
   @ApiResponse({ status: 200, description: 'Posting suspended' })
@@ -207,7 +218,7 @@ export class JobPostingController {
   }
 
   @Post('admin/:id/unsuspend')
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'SUPERADMIN')
   @ApiOperation({ summary: '공고 중지 해제 / Admin: unsuspend posting' })
   @ApiParam({ name: 'id', description: 'Job posting ID' })
   @ApiResponse({ status: 200, description: 'Posting unsuspended' })
@@ -216,6 +227,31 @@ export class JobPostingController {
     @Param('id') id: string,
   ) {
     return this.jobPostingService.unsuspendJobPosting(session.userId, id);
+  }
+
+  @Post('admin/:id/approve')
+  @Roles('ADMIN', 'SUPERADMIN')
+  @ApiOperation({ summary: 'Approve a submitted job posting' })
+  async approveJobPosting(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+  ) {
+    return this.jobPostingService.approveJobPosting(session.userId, id);
+  }
+
+  @Post('admin/:id/reject')
+  @Roles('ADMIN', 'SUPERADMIN')
+  @ApiOperation({ summary: 'Reject a submitted job posting' })
+  async rejectJobPosting(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+    @Body() dto: RejectJobPostingDto,
+  ) {
+    return this.jobPostingService.rejectJobPosting(
+      session.userId,
+      id,
+      dto.reason,
+    );
   }
 
   // ========================================
@@ -236,6 +272,16 @@ export class JobPostingController {
     @Body() dto: CreateJobPostingDto,
   ) {
     return this.jobPostingService.createJobPosting(session.userId, dto);
+  }
+
+  @Post(':id/submit')
+  @Roles('CORPORATE')
+  @ApiOperation({ summary: 'Submit a draft job posting for admin review' })
+  async submitJobPosting(
+    @CurrentSession() session: SessionData,
+    @Param('id') id: string,
+  ) {
+    return this.jobPostingService.submitJobPosting(session.userId, id);
   }
 
   // ========================================
@@ -291,23 +337,6 @@ export class JobPostingController {
     @Param('id') id: string,
   ) {
     return this.jobPostingService.deleteJobPosting(session.userId, id);
-  }
-
-  @Post(':id/activate')
-  @Roles('CORPORATE', 'ADMIN')
-  @ApiOperation({ summary: '공고 활성화 / Activate job posting' })
-  @ApiParam({ name: 'id', description: 'Job posting ID' })
-  @ApiResponse({ status: 200, description: 'Job posting activated' })
-  async activateJobPosting(
-    @CurrentSession() session: SessionData,
-    @Param('id') id: string,
-    @Body() dto: ActivateJobPostingDto,
-  ) {
-    return this.jobPostingService.activateJobPosting(
-      session.userId,
-      id,
-      dto.orderId,
-    );
   }
 
   @Post(':id/close')

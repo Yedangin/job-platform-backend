@@ -145,6 +145,12 @@ exports.Prisma.OrderScalarFieldEnum = {
   originalAmount: 'originalAmount',
   couponId: 'couponId',
   status: 'status',
+  currency: 'currency',
+  fulfillmentStatus: 'fulfillmentStatus',
+  fulfillmentAttempts: 'fulfillmentAttempts',
+  fulfillmentStartedAt: 'fulfillmentStartedAt',
+  fulfilledAt: 'fulfilledAt',
+  fulfillmentError: 'fulfillmentError',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -155,6 +161,9 @@ exports.Prisma.PaymentScalarFieldEnum = {
   portonePaymentId: 'portonePaymentId',
   method: 'method',
   status: 'status',
+  storeId: 'storeId',
+  currency: 'currency',
+  transactionId: 'transactionId',
   paidAmount: 'paidAmount',
   paidAt: 'paidAt',
   receiptUrl: 'receiptUrl',
@@ -164,6 +173,38 @@ exports.Prisma.PaymentScalarFieldEnum = {
   cancelReason: 'cancelReason',
   webhookData: 'webhookData',
   failReason: 'failReason',
+  lastSyncedAt: 'lastSyncedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PaymentCancellationScalarFieldEnum = {
+  id: 'id',
+  paymentId: 'paymentId',
+  idempotencyKey: 'idempotencyKey',
+  portoneCancellationId: 'portoneCancellationId',
+  amount: 'amount',
+  reason: 'reason',
+  status: 'status',
+  previousPaymentStatus: 'previousPaymentStatus',
+  requestedAt: 'requestedAt',
+  completedAt: 'completedAt',
+  lastError: 'lastError',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PaymentWebhookEventScalarFieldEnum = {
+  id: 'id',
+  eventType: 'eventType',
+  paymentId: 'paymentId',
+  payloadHash: 'payloadHash',
+  status: 'status',
+  attemptCount: 'attemptCount',
+  lockedUntil: 'lockedUntil',
+  receivedAt: 'receivedAt',
+  processedAt: 'processedAt',
+  lastError: 'lastError',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -189,6 +230,7 @@ exports.Prisma.CouponUsageScalarFieldEnum = {
   id: 'id',
   couponId: 'couponId',
   userId: 'userId',
+  orderId: 'orderId',
   usedAt: 'usedAt'
 };
 
@@ -198,6 +240,7 @@ exports.Prisma.ViewingCreditScalarFieldEnum = {
   totalCredits: 'totalCredits',
   usedCredits: 'usedCredits',
   source: 'source',
+  orderId: 'orderId',
   expiresAt: 'expiresAt',
   createdAt: 'createdAt'
 };
@@ -238,19 +281,50 @@ exports.OrderStatus = exports.$Enums.OrderStatus = {
   FAILED: 'FAILED'
 };
 
+exports.FulfillmentStatus = exports.$Enums.FulfillmentStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  FULFILLED: 'FULFILLED',
+  FAILED: 'FAILED',
+  ROLLBACK_PROCESSING: 'ROLLBACK_PROCESSING',
+  ROLLED_BACK: 'ROLLED_BACK'
+};
+
 exports.PaymentMethod = exports.$Enums.PaymentMethod = {
   CARD: 'CARD',
   VIRTUAL_ACCOUNT: 'VIRTUAL_ACCOUNT',
   EASY_PAY: 'EASY_PAY',
-  TRANSFER: 'TRANSFER'
+  TRANSFER: 'TRANSFER',
+  MOBILE: 'MOBILE',
+  GIFT_CERTIFICATE: 'GIFT_CERTIFICATE',
+  CONVENIENCE_STORE: 'CONVENIENCE_STORE',
+  PAYPAL: 'PAYPAL',
+  ALIPAY: 'ALIPAY',
+  CRYPTO: 'CRYPTO',
+  FREE: 'FREE',
+  UNKNOWN: 'UNKNOWN'
 };
 
 exports.PaymentStatus = exports.$Enums.PaymentStatus = {
   PENDING: 'PENDING',
   PAID: 'PAID',
   FAILED: 'FAILED',
+  CANCELLATION_PENDING: 'CANCELLATION_PENDING',
   CANCELLED: 'CANCELLED',
   PARTIAL_CANCELLED: 'PARTIAL_CANCELLED'
+};
+
+exports.PaymentCancellationStatus = exports.$Enums.PaymentCancellationStatus = {
+  PROCESSING: 'PROCESSING',
+  REQUESTED: 'REQUESTED',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED'
+};
+
+exports.WebhookProcessingStatus = exports.$Enums.WebhookProcessingStatus = {
+  PROCESSING: 'PROCESSING',
+  PROCESSED: 'PROCESSED',
+  FAILED: 'FAILED'
 };
 
 exports.CouponType = exports.$Enums.CouponType = {
@@ -263,6 +337,8 @@ exports.Prisma.ModelName = {
   Product: 'Product',
   Order: 'Order',
   Payment: 'Payment',
+  PaymentCancellation: 'PaymentCancellation',
+  PaymentWebhookEvent: 'PaymentWebhookEvent',
   Coupon: 'Coupon',
   CouponUsage: 'CouponUsage',
   ViewingCredit: 'ViewingCredit',

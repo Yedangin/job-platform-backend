@@ -43,14 +43,16 @@ import { InfoBoardModule } from './info-board/info-board.module';
 import { PlatformConfigModule } from './platform-config/platform-config.module';
 import { VisaPlannerModule } from './visa-planner/visa-planner.module';
 import { TranslationModule } from './translation/translation.module';
+import { VisaJourneyModule } from './visa-journey/visa-journey.module';
 import { HealthController } from './health.controller';
+import { LaunchScopeGuard } from './common/launch-scope.guard';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: ['.env.local', '.env'],
       cache: true,
       validate: (config: Record<string, unknown>) => {
         const required = [
@@ -151,9 +153,14 @@ import { HealthController } from './health.controller';
     PlatformConfigModule,
     VisaPlannerModule,
     TranslationModule,
+    VisaJourneyModule,
   ],
   controllers: [HealthController],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: LaunchScopeGuard,
+    },
     {
       provide: APP_GUARD,
       useClass: ThrottlerBehindProxyGuard,

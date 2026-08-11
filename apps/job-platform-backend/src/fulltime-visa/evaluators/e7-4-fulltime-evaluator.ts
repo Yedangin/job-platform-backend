@@ -3,8 +3,8 @@
  * E-7-4 숙련기능인력 비자 정규직 평가기
  * E-7-4 Skilled Worker Visa Fulltime Evaluator
  *
- * E-7-4 핵심: E-9/H-2 단순노무 업종에서 4년 이상 체류한 외국인의 전환 비자.
- * E-7-4 core: Transition visa for foreigners with 4+ years stay in E-9/H-2 simple labor occupations.
+ * E-7-4 핵심: E-9/E-10/H-2 체류자가 최근 10년 중 4년 이상 체류 후 전환하는 점수제 비자.
+ * E-7-4 core: Points-based transition after 4+ years in E-9/E-10/H-2 during the last 10 years.
  *
  * [E-7-4 요건 / E-7-4 Requirements]
  * ① 대상: E-9/H-2 단순노무 업종에 종사했던 외국인
@@ -13,8 +13,8 @@
  *    Stay requirement: 4+ years legal stay within last 10 years
  * ③ 점수 요건: 200점 이상 (학력, 경력, 한국어, 기술자격 등)
  *    Points requirement: 200+ points (education, experience, Korean, technical qualifications, etc.)
- * ④ 최소 연봉: 2025년 기준 26,000,000원 (법무부 고정금액)
- *    Minimum salary: 26,000,000 KRW (2025 MOJ fixed amount)
+ * ④ 최소 연봉: 2026년 기준 26,000,000원 (업종 특례는 별도 확인)
+ *    Minimum salary: 26,000,000 KRW in 2026 (sector exceptions require review)
  * ⑤ 업종 제한: E-9/H-2 허용 업종 (단순노무 직종)
  *    Occupation restriction: E-9/H-2 allowed occupations (simple labor)
  *
@@ -192,10 +192,10 @@ export class E74FulltimeEvaluator implements IFulltimeVisaEvaluator {
     }
 
     // ====================================================================
-    // 체류 요건 충족 시 eligible (점수는 별도 확인)
-    // If stay requirement met → eligible (points checked separately)
+    // 점수가 확인된 경우에만 eligible. 미입력은 conditional을 유지한다.
+    // Only a verified score may become eligible; missing points stay conditional.
     // ====================================================================
-    result.status = 'eligible';
+    result.status = e74Score === undefined ? 'conditional' : 'eligible';
     result.conditions = result.conditions.filter(
       (c) => !c.includes('최근 10년간') && !c.includes('점수제'),
     );

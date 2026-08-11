@@ -11,7 +11,9 @@ import {
   Body,
   Param,
   Query,
+  ParseIntPipe,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -21,13 +23,28 @@ import {
   ApiQuery,
   ApiParam,
 } from '@nestjs/swagger';
-import { Session } from 'libs/common/src';
+import { Session, SessionAuthGuard } from 'libs/common/src';
 import { ResumeService } from './resume.service';
 import { CreateResumeDto } from './dto/create-resume.dto';
 import { UpdateResumeDto } from './dto/update-resume.dto';
+import { UpdateScoutVisibilityDto } from './dto/update-scout-visibility.dto';
+
+function parsePage(value?: string): number {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : 1;
+}
+
+function parseTopikLevel(value?: string): number | undefined {
+  if (value === undefined || value === '') return undefined;
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed >= 0 && parsed <= 6
+    ? parsed
+    : undefined;
+}
 
 @ApiTags('Resume / 이력서')
 @Controller('resumes')
+@UseGuards(SessionAuthGuard)
 export class ResumeController {
   constructor(private readonly resumeService: ResumeService) {}
 
@@ -57,11 +74,29 @@ export class ResumeController {
       throw new UnauthorizedException('로그인 필요 / Login required');
     return this.resumeService.search(sessionId, {
       nationality,
-      topikLevel: topikLevel ? parseInt(topikLevel) : undefined,
+      topikLevel: parseTopikLevel(topikLevel),
       jobType,
       region,
-      page: page ? parseInt(page) : 1,
+      page: parsePage(page),
     });
+  }
+
+  @Get('viewed')
+  @ApiOperation({
+    summary: '최근 열람 인재 / Recently viewed talents',
+    description: '현재도 공개 동의가 활성화된 열람 이력만 반환합니다.',
+  })
+  @ApiQuery({ name: 'page', required: false })
+  async getViewed(
+    @Session() sessionId: string,
+    @Query('page') page?: string,
+  ) {
+    if (!sessionId)
+      throw new UnauthorizedException('로그인이 필요 / Login required');
+    return this.resumeService.getViewed(
+      sessionId,
+      parsePage(page),
+    );
   }
 
   @Get(':resumeId/detail')
@@ -78,11 +113,11 @@ export class ResumeController {
   })
   async viewDetail(
     @Session() sessionId: string,
-    @Param('resumeId') resumeId: string,
+    @Param('resumeId', ParseIntPipe) resumeId: number,
   ) {
     if (!sessionId)
       throw new UnauthorizedException('로그인 필요 / Login required');
-    return this.resumeService.viewDetail(sessionId, parseInt(resumeId));
+    return this.resumeService.viewDetail(sessionId, resumeId);
   }
 
   @Get(':resumeId/check-access')
@@ -94,11 +129,11 @@ export class ResumeController {
   @ApiResponse({ status: 200, description: '접근 상태 / Access status' })
   async checkAccess(
     @Session() sessionId: string,
-    @Param('resumeId') resumeId: string,
+    @Param('resumeId', ParseIntPipe) resumeId: number,
   ) {
     if (!sessionId)
       throw new UnauthorizedException('로그인 필요 / Login required');
-    return this.resumeService.checkAccess(sessionId, parseInt(resumeId));
+    return this.resumeService.checkAccess(sessionId, resumeId);
   }
 
   // ──── 북마크 / Bookmark ────
@@ -121,7 +156,7 @@ export class ResumeController {
       throw new UnauthorizedException('로그인 필요 / Login required');
     return this.resumeService.getBookmarks(
       sessionId,
-      page ? parseInt(page) : 1,
+      parsePage(page),
     );
   }
 
@@ -150,11 +185,11 @@ export class ResumeController {
   })
   async addBookmark(
     @Session() sessionId: string,
-    @Param('resumeId') resumeId: string,
+    @Param('resumeId', ParseIntPipe) resumeId: number,
   ) {
     if (!sessionId)
       throw new UnauthorizedException('로그인 필요 / Login required');
-    return this.resumeService.addBookmark(sessionId, parseInt(resumeId));
+    return this.resumeService.addBookmark(sessionId, resumeId);
   }
 
   @Delete(':resumeId/bookmark')
@@ -169,11 +204,11 @@ export class ResumeController {
   })
   async removeBookmark(
     @Session() sessionId: string,
-    @Param('resumeId') resumeId: string,
+    @Param('resumeId', ParseIntPipe) resumeId: number,
   ) {
     if (!sessionId)
       throw new UnauthorizedException('로그인 필요 / Login required');
-    return this.resumeService.removeBookmark(sessionId, parseInt(resumeId));
+    return this.resumeService.removeBookmark(sessionId, resumeId);
   }
 
   @Get(':resumeId/is-bookmarked')
@@ -185,11 +220,11 @@ export class ResumeController {
   @ApiResponse({ status: 200, description: '북마크 상태 / Bookmark status' })
   async isBookmarked(
     @Session() sessionId: string,
-    @Param('resumeId') resumeId: string,
+    @Param('resumeId', ParseIntPipe) resumeId: number,
   ) {
     if (!sessionId)
       throw new UnauthorizedException('로그인 필요 / Login required');
-    return this.resumeService.isBookmarked(sessionId, parseInt(resumeId));
+    return this.resumeService.isBookmarked(sessionId, resumeId);
   }
 
   // ──── 개인 CRUD / Personal CRUD ────
@@ -225,6 +260,29 @@ export class ResumeController {
     if (!sessionId)
       throw new UnauthorizedException('로그인 필요 / Login required');
     return this.resumeService.getMyResume(sessionId);
+  }
+
+  @Get('me/scout-visibility')
+  @ApiOperation({
+    summary: '인재채용관 공개 상태 / Get talent-pool visibility',
+  })
+  async getScoutVisibility(@Session() sessionId: string) {
+    if (!sessionId)
+      throw new UnauthorizedException('로그인 필요 / Login required');
+    return this.resumeService.getScoutVisibility(sessionId);
+  }
+
+  @Put('me/scout-visibility')
+  @ApiOperation({
+    summary: '인재채용관 공개 동의 변경 / Update talent-pool visibility',
+  })
+  async updateScoutVisibility(
+    @Session() sessionId: string,
+    @Body() dto: UpdateScoutVisibilityDto,
+  ) {
+    if (!sessionId)
+      throw new UnauthorizedException('로그인 필요 / Login required');
+    return this.resumeService.updateScoutVisibility(sessionId, dto);
   }
 
   @Put('me')

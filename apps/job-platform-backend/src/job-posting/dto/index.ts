@@ -2,7 +2,7 @@ export * from './alba-attributes.dto';
 export * from './fulltime-attributes.dto';
 export * from './create-job-posting.dto';
 export * from './update-job-posting.dto';
-export * from './activate-job-posting.dto';
+export * from './reject-job-posting.dto';
 export * from './suspend-job-posting.dto';
 export * from './get-job-listings-query.dto';
 export * from './get-my-job-postings-query.dto';

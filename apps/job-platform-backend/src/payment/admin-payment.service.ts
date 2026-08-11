@@ -8,10 +8,9 @@ import {
   Injectable,
   Logger,
   NotFoundException,
-  BadRequestException,
 } from '@nestjs/common';
 import { PaymentPrismaService } from 'libs/common/src';
-import { PortoneService } from './portone.service';
+import { PaymentService } from './payment.service';
 
 @Injectable()
 export class AdminPaymentService {
@@ -19,7 +18,7 @@ export class AdminPaymentService {
 
   constructor(
     private readonly paymentPrisma: PaymentPrismaService,
-    private readonly portoneService: PortoneService,
+    private readonly paymentService: PaymentService,
   ) {}
 
   // ──── 주문 관리 / Order management ────
@@ -80,54 +79,12 @@ export class AdminPaymentService {
    * 어드민 환불 처리 / Admin refund
    */
   async cancelOrder(orderId: number, reason: string) {
-    const order = await this.paymentPrisma.order.findUnique({
-      where: { id: orderId },
-      include: { payment: true },
-    });
-    if (!order)
-      throw new NotFoundException('주문을 찾을 수 없습니다 / Order not found');
-    if (order.status === 'CANCELLED') {
-      throw new BadRequestException(
-        '이미 취소된 주문입니다 / Already cancelled',
-      );
-    }
-
-    // 포트원 환불 요청 / Request PortOne refund
-    if (order.payment && order.payment.portonePaymentId) {
-      try {
-        await this.portoneService.cancelPayment(
-          order.payment.portonePaymentId,
-          reason,
-        );
-      } catch (err) {
-        this.logger.error(
-          `[AdminPayment] 포트원 환불 실패: orderId=${orderId}`,
-          err,
-        );
-      }
-    }
-
-    // 주문 상태 업데이트 / Update order status
-    await this.paymentPrisma.order.update({
-      where: { id: orderId },
-      data: { status: 'CANCELLED' },
-    });
-
-    if (order.payment) {
-      await this.paymentPrisma.payment.update({
-        where: { id: order.payment.id },
-        data: {
-          status: 'CANCELLED',
-          cancelledAt: new Date(),
-          cancelReason: reason,
-        },
-      });
-    }
-
-    this.logger.log(
-      `[AdminPayment] 주문 환불: orderId=${orderId}, reason=${reason}`,
+    const result = await this.paymentService.cancelPaymentAsAdmin(
+      orderId,
+      reason,
     );
-    return { success: true, orderId };
+    this.logger.log(`[AdminPayment] 주문 환불 처리: orderId=${orderId}`);
+    return result;
   }
 
   // ──── 결제 통계 / Payment stats ────

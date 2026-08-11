@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -11,9 +12,14 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiQuery, ApiParam } from '@nestjs/swagger';
 import { Session } from 'libs/common/src';
-import { RedisService, SessionData } from 'libs/common/src';
-import { DiagnosisEngineService } from './diagnosis-engine.service';
-import { DiagnosisRequestDto, TrackClickDto } from './dto/diagnosis.dto';
+import { RedisService } from 'libs/common/src';
+import { DiagnosisV2EngineService } from './diagnosis-v2-engine.service';
+import { getRequirementCatalogAudit } from './diagnosis-requirement-evaluator';
+import {
+  ClaimDiagnosisDto,
+  DiagnosisV2RequestDto,
+  TrackClickDto,
+} from './dto/diagnosis-v2.dto';
 
 /**
  * 비자 진단 엔진 컨트롤러 / Visa Diagnosis Engine Controller
@@ -24,7 +30,7 @@ import { DiagnosisRequestDto, TrackClickDto } from './dto/diagnosis.dto';
 @Controller('api/diagnosis')
 export class DiagnosisController {
   constructor(
-    private readonly diagnosisEngine: DiagnosisEngineService,
+    private readonly diagnosisEngine: DiagnosisV2EngineService,
     private readonly redisService: RedisService,
   ) {}
 
@@ -55,6 +61,21 @@ export class DiagnosisController {
     return JSON.parse(sd).userId;
   }
 
+  private parseDiagnosisSessionId(value: string): bigint {
+    if (!/^\d+$/.test(value)) {
+      throw new BadRequestException(
+        '잘못된 진단 세션 ID입니다 / Invalid diagnosis session ID',
+      );
+    }
+    const parsed = BigInt(value);
+    if (parsed <= 0n || parsed > 9_223_372_036_854_775_807n) {
+      throw new BadRequestException(
+        '잘못된 진단 세션 ID입니다 / Invalid diagnosis session ID',
+      );
+    }
+    return parsed;
+  }
+
   // ============================================================
   // 1. POST /api/diagnosis — 진단 실행 / Run diagnosis
   // ============================================================
@@ -68,10 +89,18 @@ export class DiagnosisController {
   async runDiagnosis(
     @Session() sessionId: string,
     @Headers('x-anonymous-id') anonymousId: string,
-    @Body() dto: DiagnosisRequestDto,
+    @Body() dto: DiagnosisV2RequestDto,
   ) {
     const userId = await this.getUserIdOptional(sessionId);
     return await this.diagnosisEngine.diagnose(dto, userId, anonymousId);
+  }
+
+  @Get('policy-coverage')
+  @ApiOperation({
+    summary: '비자 플래너 규칙 구현 범위 조회 / Get planner rule coverage',
+  })
+  getPolicyCoverage() {
+    return getRequirementCatalogAudit();
   }
 
   // ============================================================
@@ -128,7 +157,7 @@ export class DiagnosisController {
     @Param('sessionId') diagnosisSessionId: string,
   ) {
     const userId = await this.getUserIdOptional(sessionCookieId);
-    const sessionIdBigint = BigInt(diagnosisSessionId);
+    const sessionIdBigint = this.parseDiagnosisSessionId(diagnosisSessionId);
     const session = await this.diagnosisEngine.getSession(
       sessionIdBigint,
       userId,
@@ -154,16 +183,45 @@ export class DiagnosisController {
     type: String,
   })
   async trackClick(
+    @Session() sessionCookieId: string,
+    @Headers('x-anonymous-id') anonymousId: string,
     @Param('sessionId') diagnosisSessionId: string,
     @Body() dto: TrackClickDto,
   ) {
-    const sessionIdBigint = BigInt(diagnosisSessionId);
+    const userId = await this.getUserIdOptional(sessionCookieId);
+    const sessionIdBigint = this.parseDiagnosisSessionId(diagnosisSessionId);
     await this.diagnosisEngine.trackClick(
       sessionIdBigint,
       dto.pathwayId,
       dto.rankPosition,
       dto.actionType,
+      userId,
+      anonymousId,
     );
     return { success: true };
+  }
+
+  @Post(':sessionId/claim')
+  @ApiOperation({
+    summary:
+      '로그인 후 익명 진단 결과 저장 / Claim an anonymous diagnosis after login',
+  })
+  @ApiParam({
+    name: 'sessionId',
+    description: 'Diagnosis session ID',
+    type: String,
+  })
+  async claimSession(
+    @Session() sessionCookieId: string,
+    @Headers('x-anonymous-id') anonymousIdHeader: string,
+    @Param('sessionId') diagnosisSessionId: string,
+    @Body() dto: ClaimDiagnosisDto,
+  ) {
+    const userId = await this.requireAuth(sessionCookieId);
+    return await this.diagnosisEngine.claimSession(
+      this.parseDiagnosisSessionId(diagnosisSessionId),
+      userId,
+      dto.anonymousId || anonymousIdHeader,
+    );
   }
 }

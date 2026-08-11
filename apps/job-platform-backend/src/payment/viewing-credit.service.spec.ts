@@ -23,6 +23,7 @@ describe('ViewingCreditService', () => {
         findMany: jest.fn(),
         findFirst: jest.fn(),
         update: jest.fn(),
+        updateMany: jest.fn(),
         delete: jest.fn(),
       },
       viewingLog: {
@@ -31,8 +32,13 @@ describe('ViewingCreditService', () => {
         create: jest.fn(),
         count: jest.fn(),
       },
-      $transaction: jest.fn((arr) => Promise.resolve(arr.map(() => ({})))),
+      $transaction: jest.fn(async (input) =>
+        typeof input === 'function'
+          ? input(mockPaymentPrisma)
+          : Promise.all(input),
+      ),
     };
+    mockPaymentPrisma.viewingCredit.updateMany.mockResolvedValue({ count: 1 });
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -139,7 +145,8 @@ describe('ViewingCreditService', () => {
 
       const result = await service.useCredit('user-1', 100);
       expect(result.success).toBe(true);
-      expect(mockPaymentPrisma.$transaction).not.toHaveBeenCalled();
+      expect(mockPaymentPrisma.viewingCredit.updateMany).not.toHaveBeenCalled();
+      expect(mockPaymentPrisma.viewingLog.create).not.toHaveBeenCalled();
     });
 
     it('열람권 부족 시 에러 / should throw when insufficient credits', async () => {
@@ -151,6 +158,21 @@ describe('ViewingCreditService', () => {
       await expect(service.useCredit('user-1', 200)).rejects.toThrow(
         BadRequestException,
       );
+    });
+
+    it('동시 차감에 진 요청을 거부 / should reject a lost concurrent deduction', async () => {
+      mockPaymentPrisma.viewingLog.findFirst.mockResolvedValue(null);
+      mockPaymentPrisma.viewingCredit.findMany.mockResolvedValue([
+        { id: 1, totalCredits: 1, usedCredits: 0, expiresAt: futureDate },
+      ]);
+      mockPaymentPrisma.viewingCredit.updateMany.mockResolvedValue({
+        count: 0,
+      });
+
+      await expect(service.useCredit('user-1', 201)).rejects.toThrow(
+        BadRequestException,
+      );
+      expect(mockPaymentPrisma.viewingLog.create).not.toHaveBeenCalled();
     });
   });
 

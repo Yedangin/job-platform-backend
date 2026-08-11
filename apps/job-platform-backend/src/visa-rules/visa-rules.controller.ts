@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -15,6 +16,7 @@ import { VisaRulesService } from './visa-rules.service';
 import { RuleEngineService, EvaluateVisaInput } from './rule-engine.service';
 import { PointCalculatorService } from './evaluators/point-calculator.service';
 import { AuthPrismaService, RedisService, SessionData } from 'libs/common/src';
+import { VisaPolicyEvaluationService } from './visa-policy-evaluation.service';
 
 @ApiTags('Visa Rules')
 @Controller('visa-rules')
@@ -25,6 +27,7 @@ export class VisaRulesController {
     private readonly pointCalculator: PointCalculatorService,
     private readonly prisma: AuthPrismaService,
     private readonly redisService: RedisService,
+    private readonly policyEvaluation: VisaPolicyEvaluationService,
   ) {}
 
   // --- 헬퍼: 세션에서 Admin 확인 ---
@@ -56,7 +59,7 @@ export class VisaRulesController {
     @Body() input: EvaluateVisaInput,
   ) {
     await this.requireAuth(sessionId);
-    return await this.ruleEngine.evaluateVisaEligibility(input, true);
+    return this.policyEvaluation.evaluate(input);
   }
 
   @Post('test-evaluate')
@@ -173,35 +176,45 @@ export class VisaRulesController {
   }
 
   @Post('rules')
-  @ApiOperation({ summary: 'Create rule' })
-  async createRule(@Session() sessionId: string, @Body() body: any) {
-    const adminId = await this.requireAdmin(sessionId);
-    return await this.visaRulesService.createRule(body, adminId);
+  @ApiOperation({ summary: 'Deprecated: use a policy release rule draft' })
+  async createRule(@Session() sessionId: string, @Body() body: unknown) {
+    await this.requireAdmin(sessionId);
+    void body;
+    throw new BadRequestException(
+      '규칙은 정책 스튜디오의 DRAFT 릴리스 안에서만 생성할 수 있습니다.',
+    );
   }
 
   @Put('rules/:id')
-  @ApiOperation({ summary: 'Update rule (creates new version)' })
+  @ApiOperation({ summary: 'Deprecated: create a new policy release version' })
   async updateRule(
     @Session() sessionId: string,
     @Param('id') id: string,
-    @Body() body: any,
+    @Body() body: unknown,
   ) {
-    const adminId = await this.requireAdmin(sessionId);
-    return await this.visaRulesService.updateRule(id, body, adminId);
+    await this.requireAdmin(sessionId);
+    void body;
+    throw new BadRequestException(
+      `규칙 ${id}은 직접 수정할 수 없습니다. 새 정책 릴리스 버전을 생성하세요.`,
+    );
   }
 
   @Delete('rules/:id')
   @ApiOperation({ summary: 'Deactivate rule' })
   async deactivateRule(@Session() sessionId: string, @Param('id') id: string) {
-    const adminId = await this.requireAdmin(sessionId);
-    return await this.visaRulesService.deactivateRule(id, adminId);
+    await this.requireAdmin(sessionId);
+    throw new BadRequestException(
+      `규칙 ${id}은 직접 비활성화할 수 없습니다. 정책 릴리스 또는 롤백 절차를 사용하세요.`,
+    );
   }
 
   @Post('rules/:id/activate')
   @ApiOperation({ summary: 'Activate a DRAFT rule' })
   async activateRule(@Session() sessionId: string, @Param('id') id: string) {
-    const adminId = await this.requireAdmin(sessionId);
-    return await this.visaRulesService.activateDraftRule(id, adminId);
+    await this.requireAdmin(sessionId);
+    throw new BadRequestException(
+      `규칙 ${id}은 직접 활성화할 수 없습니다. 검토·승인된 정책 릴리스를 사용하세요.`,
+    );
   }
 
   @Get('rules/:id/versions')
@@ -317,7 +330,7 @@ export class VisaRulesController {
     @Body() input: EvaluateVisaInput,
   ) {
     await this.requireAuth(sessionId);
-    return await this.ruleEngine.evaluateVisaEligibility(input, true);
+    return this.policyEvaluation.evaluate(input);
   }
 
   @Post('calculate-points')

@@ -144,6 +144,19 @@ exports.Prisma.UserScalarFieldEnum = {
   marketingConsentAt: 'marketingConsentAt'
 };
 
+exports.Prisma.ConsentRecordScalarFieldEnum = {
+  consentId: 'consentId',
+  authId: 'authId',
+  consentType: 'consentType',
+  policyVersion: 'policyVersion',
+  granted: 'granted',
+  channel: 'channel',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  consentedAt: 'consentedAt',
+  withdrawnAt: 'withdrawnAt'
+};
+
 exports.Prisma.CorporateProfileScalarFieldEnum = {
   companyId: 'companyId',
   authId: 'authId',
@@ -338,6 +351,107 @@ exports.Prisma.InfoBoardScalarFieldEnum = {
   content: 'content',
   category: 'category',
   thumbnail: 'thumbnail',
+  status: 'status',
+  audience: 'audience',
+  isPinned: 'isPinned',
+  isFeatured: 'isFeatured',
+  featuredOrder: 'featuredOrder',
+  bannerTheme: 'bannerTheme',
+  featuredStartAt: 'featuredStartAt',
+  featuredEndAt: 'featuredEndAt',
+  bannerAssetId: 'bannerAssetId',
+  scheduledAt: 'scheduledAt',
+  publishedAt: 'publishedAt',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy',
+  deletedAt: 'deletedAt',
+  deletedBy: 'deletedBy',
+  viewCount: 'viewCount',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.IdentityVerificationAttemptScalarFieldEnum = {
+  attemptId: 'attemptId',
+  authId: 'authId',
+  provider: 'provider',
+  purpose: 'purpose',
+  providerVerificationId: 'providerVerificationId',
+  stateHash: 'stateHash',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  verifiedAt: 'verifiedAt',
+  consumedAt: 'consumedAt',
+  failureCode: 'failureCode',
+  requesterIpHash: 'requesterIpHash',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VerifiedIdentityScalarFieldEnum = {
+  verifiedIdentityId: 'verifiedIdentityId',
+  authId: 'authId',
+  provider: 'provider',
+  purpose: 'purpose',
+  providerVerificationId: 'providerVerificationId',
+  ciCiphertext: 'ciCiphertext',
+  ciIv: 'ciIv',
+  ciTag: 'ciTag',
+  ciLookupHash: 'ciLookupHash',
+  diCiphertext: 'diCiphertext',
+  diIv: 'diIv',
+  diTag: 'diTag',
+  diLookupHash: 'diLookupHash',
+  nameCiphertext: 'nameCiphertext',
+  nameIv: 'nameIv',
+  nameTag: 'nameTag',
+  phoneCiphertext: 'phoneCiphertext',
+  phoneIv: 'phoneIv',
+  phoneTag: 'phoneTag',
+  keyVersion: 'keyVersion',
+  verifiedAt: 'verifiedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.InfoBoardFeaturedAuditScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  action: 'action',
+  previousState: 'previousState',
+  nextState: 'nextState',
+  actorId: 'actorId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.InfoBoardTranslationScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  locale: 'locale',
+  title: 'title',
+  summary: 'summary',
+  content: 'content',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.InfoBoardAssetScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  storageKey: 'storageKey',
+  originalName: 'originalName',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  uploadedBy: 'uploadedBy',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.InfoBoardFeaturedBannerScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  locale: 'locale',
+  assetId: 'assetId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -406,7 +520,8 @@ exports.Prisma.VisaRuleScalarFieldEnum = {
   createdBy: 'createdBy',
   updatedBy: 'updatedBy',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  policyReleaseId: 'policyReleaseId'
 };
 
 exports.Prisma.PolicyChangeScalarFieldEnum = {
@@ -450,7 +565,15 @@ exports.Prisma.VisaEvaluationLogScalarFieldEnum = {
   blockedVisas: 'blockedVisas',
   appliedRuleIds: 'appliedRuleIds',
   evaluatedAt: 'evaluatedAt',
-  durationMs: 'durationMs'
+  durationMs: 'durationMs',
+  outcome: 'outcome',
+  engineVersion: 'engineVersion',
+  policyReleaseId: 'policyReleaseId',
+  policyVersion: 'policyVersion',
+  policyHash: 'policyHash',
+  policyAsOf: 'policyAsOf',
+  policyEffectiveFrom: 'policyEffectiveFrom',
+  policyReviewedAt: 'policyReviewedAt'
 };
 
 exports.Prisma.OccupationCodeScalarFieldEnum = {
@@ -677,6 +800,10 @@ exports.Prisma.JobPostingScalarFieldEnum = {
   workContentImg: 'workContentImg',
   status: 'status',
   closingDate: 'closingDate',
+  submittedForReviewAt: 'submittedForReviewAt',
+  reviewedAt: 'reviewedAt',
+  reviewedBy: 'reviewedBy',
+  rejectionReason: 'rejectionReason',
   allowedVisas: 'allowedVisas',
   minKoreanLevel: 'minKoreanLevel',
   displayAddress: 'displayAddress',
@@ -704,6 +831,7 @@ exports.Prisma.JobPostingScalarFieldEnum = {
   suspendedAt: 'suspendedAt',
   suspendReason: 'suspendReason',
   suspendedBy: 'suspendedBy',
+  preSuspensionStatus: 'preSuspensionStatus',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   isPremium: 'isPremium',
@@ -975,6 +1103,148 @@ exports.Prisma.PlannerRefundScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.VisaPolicyReleaseScalarFieldEnum = {
+  id: 'id',
+  domain: 'domain',
+  name: 'name',
+  version: 'version',
+  contentHash: 'contentHash',
+  status: 'status',
+  publishedAt: 'publishedAt',
+  effectiveFrom: 'effectiveFrom',
+  effectiveTo: 'effectiveTo',
+  reviewedAt: 'reviewedAt',
+  reviewedBy: 'reviewedBy',
+  approvedAt: 'approvedAt',
+  approvedBy: 'approvedBy',
+  activatedAt: 'activatedAt',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VisaPathwayDefinitionScalarFieldEnum = {
+  id: 'id',
+  policyReleaseId: 'policyReleaseId',
+  currentVisaCode: 'currentVisaCode',
+  targetVisaCode: 'targetVisaCode',
+  name: 'name',
+  locale: 'locale',
+  version: 'version',
+  status: 'status',
+  definition: 'definition',
+  createdBy: 'createdBy',
+  updatedBy: 'updatedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VisaJourneyScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  currentVisaCode: 'currentVisaCode',
+  targetVisaCode: 'targetVisaCode',
+  targetPathwayName: 'targetPathwayName',
+  locale: 'locale',
+  currentStage: 'currentStage',
+  targetApplicationDate: 'targetApplicationDate',
+  policyReleaseId: 'policyReleaseId',
+  policyFreshness: 'policyFreshness',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VisaJourneyAssessmentScalarFieldEnum = {
+  id: 'id',
+  journeyId: 'journeyId',
+  outcome: 'outcome',
+  inputSnapshot: 'inputSnapshot',
+  outputSnapshot: 'outputSnapshot',
+  requirements: 'requirements',
+  missingInputs: 'missingInputs',
+  appliedRuleIds: 'appliedRuleIds',
+  appliedRuleVersions: 'appliedRuleVersions',
+  engineVersion: 'engineVersion',
+  policyReleaseId: 'policyReleaseId',
+  policyVersion: 'policyVersion',
+  policyHash: 'policyHash',
+  policyAsOf: 'policyAsOf',
+  policyEffectiveFrom: 'policyEffectiveFrom',
+  policyReviewedAt: 'policyReviewedAt',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.VisaJourneyItemScalarFieldEnum = {
+  id: 'id',
+  journeyId: 'journeyId',
+  kind: 'kind',
+  sourceKey: 'sourceKey',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  assignee: 'assignee',
+  dueAt: 'dueAt',
+  sortOrder: 'sortOrder',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VisaExpertCaseScalarFieldEnum = {
+  id: 'id',
+  journeyId: 'journeyId',
+  serviceType: 'serviceType',
+  status: 'status',
+  question: 'question',
+  consentToShare: 'consentToShare',
+  consentedAt: 'consentedAt',
+  assignedExpertId: 'assignedExpertId',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VisaExpertCredentialScalarFieldEnum = {
+  id: 'id',
+  expertId: 'expertId',
+  qualificationType: 'qualificationType',
+  qualificationNumberMasked: 'qualificationNumberMasked',
+  businessFilingVerifiedAt: 'businessFilingVerifiedAt',
+  immigrationAgencyRegistrationVerifiedAt: 'immigrationAgencyRegistrationVerifiedAt',
+  validUntil: 'validUntil',
+  status: 'status',
+  verifiedBy: 'verifiedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VisaJourneyAuditEventScalarFieldEnum = {
+  id: 'id',
+  journeyId: 'journeyId',
+  eventType: 'eventType',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  beforeSnapshot: 'beforeSnapshot',
+  afterSnapshot: 'afterSnapshot',
+  actorId: 'actorId',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.VisaPolicyChangeAuditScalarFieldEnum = {
+  id: 'id',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  ruleId: 'ruleId',
+  policyReleaseId: 'policyReleaseId',
+  action: 'action',
+  beforeSnapshot: 'beforeSnapshot',
+  afterSnapshot: 'afterSnapshot',
+  changeReason: 'changeReason',
+  actorId: 'actorId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1089,9 +1359,48 @@ exports.TicketStatus = exports.$Enums.TicketStatus = {
 exports.InfoCategory = exports.$Enums.InfoCategory = {
   VISA_INFO: 'VISA_INFO',
   EDUCATION: 'EDUCATION',
+  EXAM: 'EXAM',
+  TRAINING: 'TRAINING',
+  EVENTS: 'EVENTS',
   LIVING_TIPS: 'LIVING_TIPS',
   POLICY_LAW: 'POLICY_LAW',
   ANNOUNCEMENTS: 'ANNOUNCEMENTS'
+};
+
+exports.InfoBoardStatus = exports.$Enums.InfoBoardStatus = {
+  DRAFT: 'DRAFT',
+  SCHEDULED: 'SCHEDULED',
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.InfoBoardAudience = exports.$Enums.InfoBoardAudience = {
+  ALL: 'ALL',
+  WORKER: 'WORKER',
+  COMPANY: 'COMPANY'
+};
+
+exports.InfoBoardBannerTheme = exports.$Enums.InfoBoardBannerTheme = {
+  BRAND: 'BRAND',
+  CHARCOAL: 'CHARCOAL',
+  GREEN: 'GREEN',
+  AMBER: 'AMBER',
+  RED: 'RED'
+};
+
+exports.IdentityProvider = exports.$Enums.IdentityProvider = {
+  PORTONE_DANAL: 'PORTONE_DANAL'
+};
+
+exports.IdentityPurpose = exports.$Enums.IdentityPurpose = {
+  CORPORATE_MANAGER: 'CORPORATE_MANAGER'
+};
+
+exports.IdentityAttemptStatus = exports.$Enums.IdentityAttemptStatus = {
+  READY: 'READY',
+  VERIFIED: 'VERIFIED',
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED'
 };
 
 exports.EmploymentLevel = exports.$Enums.EmploymentLevel = {
@@ -1159,6 +1468,8 @@ exports.PaymentStatus = exports.$Enums.PaymentStatus = {
 
 exports.PostStatus = exports.$Enums.PostStatus = {
   DRAFT: 'DRAFT',
+  SUBMITTED_REVIEW: 'SUBMITTED_REVIEW',
+  REJECTED: 'REJECTED',
   ACTIVE: 'ACTIVE',
   CLOSED: 'CLOSED',
   EXPIRED: 'EXPIRED',
@@ -1216,6 +1527,8 @@ exports.ActorType = exports.$Enums.ActorType = {
 };
 
 exports.AdminActionType = exports.$Enums.AdminActionType = {
+  APPROVE: 'APPROVE',
+  REJECT: 'REJECT',
   SUSPEND: 'SUSPEND',
   UNSUSPEND: 'UNSUSPEND',
   FORCE_CLOSE: 'FORCE_CLOSE',
@@ -1238,8 +1551,100 @@ exports.VisaVerifyStatus = exports.$Enums.VisaVerifyStatus = {
   REJECTED: 'REJECTED'
 };
 
+exports.VisaPolicyReleaseStatus = exports.$Enums.VisaPolicyReleaseStatus = {
+  DRAFT: 'DRAFT',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  APPROVED: 'APPROVED',
+  SCHEDULED: 'SCHEDULED',
+  ACTIVE: 'ACTIVE',
+  SUPERSEDED: 'SUPERSEDED',
+  WITHDRAWN: 'WITHDRAWN'
+};
+
+exports.VisaPathwayStatus = exports.$Enums.VisaPathwayStatus = {
+  DRAFT: 'DRAFT',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  APPROVED: 'APPROVED',
+  ACTIVE: 'ACTIVE',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.VisaJourneyStage = exports.$Enums.VisaJourneyStage = {
+  ASSESSMENT: 'ASSESSMENT',
+  CONDITION_ROADMAP: 'CONDITION_ROADMAP',
+  EVIDENCE_PREPARATION: 'EVIDENCE_PREPARATION',
+  SELF_PROCEDURE: 'SELF_PROCEDURE',
+  EXPERT_SUPPORT: 'EXPERT_SUPPORT',
+  COMPLETED: 'COMPLETED'
+};
+
+exports.VisaPolicyFreshness = exports.$Enums.VisaPolicyFreshness = {
+  CURRENT: 'CURRENT',
+  UPCOMING_CHANGE: 'UPCOMING_CHANGE',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  STALE: 'STALE',
+  MISSING: 'MISSING',
+  CONFLICT: 'CONFLICT'
+};
+
+exports.VisaAssessmentOutcome = exports.$Enums.VisaAssessmentOutcome = {
+  ELIGIBLE: 'ELIGIBLE',
+  CONDITIONAL: 'CONDITIONAL',
+  INELIGIBLE: 'INELIGIBLE',
+  INSUFFICIENT_DATA: 'INSUFFICIENT_DATA',
+  REVIEW_REQUIRED: 'REVIEW_REQUIRED'
+};
+
+exports.VisaJourneyItemKind = exports.$Enums.VisaJourneyItemKind = {
+  GAP_ACTION: 'GAP_ACTION',
+  EVIDENCE: 'EVIDENCE',
+  PROCEDURE: 'PROCEDURE'
+};
+
+exports.VisaJourneyItemStatus = exports.$Enums.VisaJourneyItemStatus = {
+  TODO: 'TODO',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  BLOCKED: 'BLOCKED',
+  NOT_APPLICABLE: 'NOT_APPLICABLE'
+};
+
+exports.VisaExpertServiceType = exports.$Enums.VisaExpertServiceType = {
+  CONSULTATION: 'CONSULTATION',
+  DOCUMENT_REVIEW: 'DOCUMENT_REVIEW',
+  APPLICATION_AGENCY: 'APPLICATION_AGENCY'
+};
+
+exports.VisaExpertCaseStatus = exports.$Enums.VisaExpertCaseStatus = {
+  REQUESTED: 'REQUESTED',
+  ASSIGNED: 'ASSIGNED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  WAITING_FOR_USER: 'WAITING_FOR_USER',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.VisaExpertCredentialStatus = exports.$Enums.VisaExpertCredentialStatus = {
+  PENDING: 'PENDING',
+  VERIFIED: 'VERIFIED',
+  SUSPENDED: 'SUSPENDED',
+  EXPIRED: 'EXPIRED'
+};
+
+exports.VisaPolicyAuditAction = exports.$Enums.VisaPolicyAuditAction = {
+  CREATED: 'CREATED',
+  UPDATED: 'UPDATED',
+  SUBMITTED_FOR_REVIEW: 'SUBMITTED_FOR_REVIEW',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  ACTIVATED: 'ACTIVATED',
+  SUPERSEDED: 'SUPERSEDED',
+  WITHDRAWN: 'WITHDRAWN'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
+  ConsentRecord: 'ConsentRecord',
   CorporateProfile: 'CorporateProfile',
   IndividualProfile: 'IndividualProfile',
   TalentAccessLog: 'TalentAccessLog',
@@ -1250,6 +1655,12 @@ exports.Prisma.ModelName = {
   SupportTicket: 'SupportTicket',
   ActivityLog: 'ActivityLog',
   InfoBoard: 'InfoBoard',
+  IdentityVerificationAttempt: 'IdentityVerificationAttempt',
+  VerifiedIdentity: 'VerifiedIdentity',
+  InfoBoardFeaturedAudit: 'InfoBoardFeaturedAudit',
+  InfoBoardTranslation: 'InfoBoardTranslation',
+  InfoBoardAsset: 'InfoBoardAsset',
+  InfoBoardFeaturedBanner: 'InfoBoardFeaturedBanner',
   VisaType: 'VisaType',
   IndustryCode: 'IndustryCode',
   VisaRule: 'VisaRule',
@@ -1291,7 +1702,16 @@ exports.Prisma.ModelName = {
   AdjacentMajorOccupation: 'AdjacentMajorOccupation',
   VisaIncomeReference: 'VisaIncomeReference',
   RediagnosisCoupon: 'RediagnosisCoupon',
-  PlannerRefund: 'PlannerRefund'
+  PlannerRefund: 'PlannerRefund',
+  VisaPolicyRelease: 'VisaPolicyRelease',
+  VisaPathwayDefinition: 'VisaPathwayDefinition',
+  VisaJourney: 'VisaJourney',
+  VisaJourneyAssessment: 'VisaJourneyAssessment',
+  VisaJourneyItem: 'VisaJourneyItem',
+  VisaExpertCase: 'VisaExpertCase',
+  VisaExpertCredential: 'VisaExpertCredential',
+  VisaJourneyAuditEvent: 'VisaJourneyAuditEvent',
+  VisaPolicyChangeAudit: 'VisaPolicyChangeAudit'
 };
 
 /**

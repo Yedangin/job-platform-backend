@@ -7,6 +7,7 @@ import {
   Query,
   ParseIntPipe,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import {
@@ -53,7 +54,24 @@ export class PaymentController {
       throw new UnauthorizedException(
         '세션이 만료되었습니다 / Session expired',
       );
-    const session: SessionData = JSON.parse(sd);
+    let session: SessionData;
+    try {
+      session = JSON.parse(sd) as SessionData;
+    } catch {
+      throw new UnauthorizedException(
+        '유효하지 않은 세션입니다 / Invalid session',
+      );
+    }
+    if (!session.userId) {
+      throw new UnauthorizedException(
+        '유효하지 않은 세션입니다 / Invalid session',
+      );
+    }
+    if (session.role !== 'CORPORATE') {
+      throw new ForbiddenException(
+        '기업회원만 결제 기능을 이용할 수 있습니다 / Corporate account required',
+      );
+    }
     return session.userId;
   }
 
@@ -135,21 +153,6 @@ export class PaymentController {
   }
 
   // ================================================
-  // 주문 상세 / Order detail
-  // ================================================
-
-  @Get('orders/:id')
-  @ApiOperation({ summary: '주문 상세 / Order detail' })
-  async getOrder(
-    @Session() sessionId: string,
-    @Param('id', ParseIntPipe) id: number,
-  ) {
-    const userId = await this.getUserId(sessionId);
-    // 소유권 검증 포함 조회 / Get order with ownership validation
-    return this.paymentService.getOrder(id, userId);
-  }
-
-  // ================================================
   // 내 주문 목록 / My orders
   // ================================================
 
@@ -168,6 +171,22 @@ export class PaymentController {
       page ? parseInt(page) : 1,
       limit ? parseInt(limit) : 20,
     );
+  }
+
+  // ================================================
+  // 주문 상세 / Order detail
+  // 정적 /orders/my 라우트보다 뒤에 두어 :id 충돌을 방지한다.
+  // ================================================
+
+  @Get('orders/:id')
+  @ApiOperation({ summary: '주문 상세 / Order detail' })
+  async getOrder(
+    @Session() sessionId: string,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    const userId = await this.getUserId(sessionId);
+    // 소유권 검증 포함 조회 / Get order with ownership validation
+    return this.paymentService.getOrder(id, userId);
   }
 
   // ================================================

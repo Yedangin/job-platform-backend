@@ -37,6 +37,8 @@ export interface MojFixedSalaryStandards {
   e72: number;
   /** E-7-3 일반기능인력 최소 연봉 / E-7-3 General skilled minimum annual salary */
   e73: number;
+  /** E-7-4 숙련기능인력 최소 연봉 / E-7-4 Skilled worker minimum annual salary */
+  e74: number;
   /** 적용 시작일 / Effective from */
   effectiveFrom: string;
   /** 적용 종료일 / Effective to */
@@ -91,6 +93,7 @@ export const GNI_TABLE: ReadonlyArray<GniData> = [
       e71: 34_400_000, // E-7-1 전문인력 / Professional
       e72: 25_150_000, // E-7-2 준전문인력 (시급 10,030원 × 209h × 12개월) / Semi-professional
       e73: 25_150_000, // E-7-3 일반기능인력 (시급 10,030원 × 209h × 12개월) / General skilled
+      e74: 26_000_000, // E-7-4 숙련기능인력 / Skilled worker
       effectiveFrom: '2025-04-01',
       effectiveTo: '2025-12-31', // 법무부공고 2025-106호 유효기간
     },
@@ -110,6 +113,7 @@ export const GNI_TABLE: ReadonlyArray<GniData> = [
       e71: 31_120_000, // E-7-1 전문인력 / Professional (법무부공고 2025-406호)
       e72: 25_890_000, // E-7-2 준전문인력 (최저임금 연동, 시급 10,320원) / Semi-professional
       e73: 25_890_000, // E-7-3 일반기능인력 (최저임금 연동, 시급 10,320원) / General skilled
+      e74: 26_000_000, // E-7-4 숙련기능인력 / Skilled worker
       effectiveFrom: '2026-02-01',
       effectiveTo: '2026-12-31',
     },
@@ -169,12 +173,12 @@ export function getGniByYear(year: number): GniData | undefined {
  * - 법무부공고 2025-106호 (2025.4.1~2025.12.31)
  * - 법무부공고 2025-406호 (2026.2.1~2026.12.31)
  *
- * @param e7Subtype E-7 하위 유형 / E-7 subtype ('E-7-1' | 'E-7-2' | 'E-7-3')
+ * @param e7Subtype E-7 하위 유형 / E-7 subtype ('E-7-1' | 'E-7-2' | 'E-7-3' | 'E-7-4')
  * @param referenceDate 기준 날짜 (optional, 기본값: 현재) / Reference date
  * @returns 최소 연봉 (원) / Minimum annual salary (KRW)
  */
 export function getCurrentE7MinSalary(
-  e7Subtype: 'E-7-1' | 'E-7-2' | 'E-7-3',
+  e7Subtype: 'E-7-1' | 'E-7-2' | 'E-7-3' | 'E-7-4',
   referenceDate?: Date,
 ): number {
   const date = referenceDate ?? new Date();
@@ -193,6 +197,8 @@ export function getCurrentE7MinSalary(
           return gni.mojFixedSalary.e72;
         case 'E-7-3':
           return gni.mojFixedSalary.e73;
+        case 'E-7-4':
+          return gni.mojFixedSalary.e74;
       }
     }
   }
@@ -207,6 +213,10 @@ export function getCurrentE7MinSalary(
       // E-7-2/3는 최저임금 연동이므로, 고정금액이 없으면 GNI × 80% 사용
       // E-7-2/3 are minimum wage-based; if no fixed amount, use GNI × 80% as fallback
       return gni.e71MinSalary;
+    case 'E-7-4':
+      throw new Error(
+        `E-7-4 고정 임금기준 적용기간이 아닙니다: ${dateStr} / No E-7-4 fixed salary rule for ${dateStr}`,
+      );
   }
 }
 

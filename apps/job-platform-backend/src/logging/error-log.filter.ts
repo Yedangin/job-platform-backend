@@ -80,7 +80,7 @@ export class ErrorLogFilter implements ExceptionFilter {
     // Mask sensitive data in stack trace
     if (stack) {
       stack = stack.replace(
-        /(password|token|secret|authorization)[:=]\s*[^\s,}]*/gi,
+        /\b(password|token|secret|authorization|accessToken|refreshToken|sessionId|identityVerificationId|state|ci|di|phoneNumber)[:=]\s*[^\s,}]*/gi,
         '$1=***',
       );
     }

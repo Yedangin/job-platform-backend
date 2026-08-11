@@ -103,16 +103,42 @@ export class CouponService {
   /**
    * 쿠폰 사용 기록 / Record coupon usage
    */
-  async recordUsage(couponId: number, userId: string) {
-    await this.paymentPrisma.$transaction([
-      this.paymentPrisma.couponUsage.create({
-        data: { couponId, userId },
-      }),
-      this.paymentPrisma.coupon.update({
-        where: { id: couponId },
-        data: { usedCount: { increment: 1 } },
-      }),
-    ]);
+  async recordUsage(couponId: number, userId: string, orderId?: number) {
+    if (orderId) {
+      const existing = await this.paymentPrisma.couponUsage.findUnique({
+        where: { orderId },
+      });
+      if (existing) {
+        if (existing.couponId !== couponId || existing.userId !== userId) {
+          throw new BadRequestException(
+            '주문 쿠폰 사용 기록이 일치하지 않습니다 / Coupon usage integrity mismatch',
+          );
+        }
+        return;
+      }
+    }
+
+    try {
+      await this.paymentPrisma.$transaction([
+        this.paymentPrisma.couponUsage.create({
+          data: { couponId, userId, orderId: orderId ?? null },
+        }),
+        this.paymentPrisma.coupon.update({
+          where: { id: couponId },
+          data: { usedCount: { increment: 1 } },
+        }),
+      ]);
+    } catch (error) {
+      if (orderId) {
+        const raced = await this.paymentPrisma.couponUsage.findUnique({
+          where: { orderId },
+        });
+        if (raced?.couponId === couponId && raced.userId === userId) {
+          return;
+        }
+      }
+      throw error;
+    }
   }
 
   /**

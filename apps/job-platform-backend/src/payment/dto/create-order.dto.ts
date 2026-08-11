@@ -1,5 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsNumber } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsInt,
+  Matches,
+  MaxLength,
+  Min,
+} from 'class-validator';
 
 /**
  * 주문 생성 DTO / Create order DTO
@@ -10,6 +17,8 @@ export class CreateOrderDto {
     example: 'JOB_PREMIUM',
   })
   @IsString()
+  @MaxLength(64)
+  @Matches(/^[A-Z0-9_]+$/)
   productCode: string;
 
   @ApiPropertyOptional({
@@ -18,7 +27,8 @@ export class CreateOrderDto {
     example: 1,
   })
   @IsOptional()
-  @IsNumber()
+  @IsInt()
+  @Min(1)
   targetJobId?: number;
 
   @ApiPropertyOptional({
@@ -27,5 +37,7 @@ export class CreateOrderDto {
   })
   @IsOptional()
   @IsString()
+  @MaxLength(64)
+  @Matches(/^[A-Za-z0-9_-]+$/)
   couponCode?: string;
 }

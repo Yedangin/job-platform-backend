@@ -33,6 +33,10 @@ import {
   GetAllOrdersQueryDto,
   AdminGrantPremiumDto,
   AdminRevokePremiumDto,
+  GetProductsQueryDto,
+  ProductCodeParamDto,
+  OrderNoParamDto,
+  JobIdParamDto,
 } from './dto';
 
 @ApiTags('Job Payments')
@@ -53,8 +57,8 @@ export class JobPaymentController {
       '상품 목록 조회 / List payment products (Standard 0원, Premium 50,000원)',
   })
   @ApiResponse({ status: 200, description: 'List of available products' })
-  async getProducts(@Query('boardType') boardType?: string) {
-    return this.jobPaymentService.getProducts(boardType);
+  async getProducts(@Query() query: GetProductsQueryDto) {
+    return this.jobPaymentService.getProducts(query.boardType);
   }
 
   @Public()
@@ -63,8 +67,8 @@ export class JobPaymentController {
   @ApiParam({ name: 'code', description: 'Product code (e.g. STANDARD_ALBA)' })
   @ApiResponse({ status: 200, description: 'Product detail' })
   @ApiResponse({ status: 404, description: 'Product not found' })
-  async getProductByCode(@Param('code') code: string) {
-    return this.jobPaymentService.getProductByCode(code);
+  async getProductByCode(@Param() params: ProductCodeParamDto) {
+    return this.jobPaymentService.getProductByCode(params.code);
   }
 
   // ========================================
@@ -72,7 +76,7 @@ export class JobPaymentController {
   // ========================================
 
   @Get('orders/my')
-  @Roles('CORPORATE', 'ADMIN')
+  @Roles('CORPORATE')
   @ApiOperation({ summary: '내 주문 내역 / My order history' })
   @ApiResponse({ status: 200, description: 'Paginated order history' })
   async getMyOrders(
@@ -86,7 +90,7 @@ export class JobPaymentController {
   }
 
   @Post('orders')
-  @Roles('CORPORATE', 'ADMIN')
+  @Roles('CORPORATE')
   @ApiOperation({
     summary: '주문 생성 / Create order (price snapshot captured)',
   })
@@ -107,7 +111,7 @@ export class JobPaymentController {
   }
 
   @Post('orders/:orderNo/verify')
-  @Roles('CORPORATE', 'ADMIN')
+  @Roles('CORPORATE')
   @ApiOperation({
     summary: '결제 검증 / Verify payment via PortOne callback',
   })
@@ -127,16 +131,20 @@ export class JobPaymentController {
   @ApiResponse({ status: 404, description: 'Order not found' })
   async verifyPayment(
     @CurrentSession() session: SessionData,
-    @Param('orderNo') orderNo: string,
+    @Param() params: OrderNoParamDto,
     @Body() dto: VerifyPaymentDto,
   ) {
-    return this.jobPaymentService.verifyPayment(session.userId, orderNo, {
-      impUid: dto.impUid,
-    });
+    return this.jobPaymentService.verifyPayment(
+      session.userId,
+      params.orderNo,
+      {
+        impUid: dto.impUid,
+      },
+    );
   }
 
   @Post('orders/:orderNo/cancel')
-  @Roles('CORPORATE', 'ADMIN')
+  @Roles('CORPORATE')
   @ApiOperation({ summary: '주문 취소 / Cancel order' })
   @ApiParam({ name: 'orderNo', description: 'Order number' })
   @ApiResponse({ status: 200, description: 'Order cancelled' })
@@ -144,18 +152,18 @@ export class JobPaymentController {
   @ApiResponse({ status: 404, description: 'Order not found' })
   async cancelOrder(
     @CurrentSession() session: SessionData,
-    @Param('orderNo') orderNo: string,
+    @Param() params: OrderNoParamDto,
     @Body() dto: CancelOrderDto,
   ) {
     return this.jobPaymentService.cancelOrder(
       session.userId,
-      orderNo,
+      params.orderNo,
       dto.reason,
     );
   }
 
   @Post('upgrade-to-premium')
-  @Roles('CORPORATE', 'ADMIN')
+  @Roles('CORPORATE')
   @ApiOperation({
     summary: '프리미엄 업그레이드 시작 / Start premium upgrade for a posting',
   })
@@ -185,7 +193,7 @@ export class JobPaymentController {
   }
 
   @Post('upgrade-to-premium/:orderNo/confirm')
-  @Roles('CORPORATE', 'ADMIN')
+  @Roles('CORPORATE')
   @ApiOperation({
     summary: '프리미엄 업그레이드 확정 / Confirm premium upgrade after payment',
   })
@@ -205,12 +213,12 @@ export class JobPaymentController {
   @ApiResponse({ status: 404, description: 'Order not found' })
   async confirmPremiumUpgrade(
     @CurrentSession() session: SessionData,
-    @Param('orderNo') orderNo: string,
+    @Param() params: OrderNoParamDto,
     @Body() dto: ConfirmPremiumUpgradeDto,
   ) {
     return this.jobPaymentService.confirmPremiumUpgrade(
       session.userId,
-      orderNo,
+      params.orderNo,
       { impUid: dto.impUid },
     );
   }
@@ -254,12 +262,12 @@ export class JobPaymentController {
   @ApiResponse({ status: 404, description: 'Job posting not found' })
   async grantPremium(
     @CurrentSession() session: SessionData,
-    @Param('jobId') jobId: string,
+    @Param() params: JobIdParamDto,
     @Body() dto: AdminGrantPremiumDto,
   ) {
     return this.jobPaymentService.adminGrantPremium(
       session.userId,
-      jobId,
+      params.jobId,
       dto.days,
       {
         reason: dto.reason,
@@ -284,14 +292,18 @@ export class JobPaymentController {
   @ApiResponse({ status: 404, description: 'Job posting not found' })
   async revokePremium(
     @CurrentSession() session: SessionData,
-    @Param('jobId') jobId: string,
+    @Param() params: JobIdParamDto,
     @Body() dto: AdminRevokePremiumDto,
   ) {
-    return this.jobPaymentService.adminRevokePremium(session.userId, jobId, {
-      reason: dto.reason,
-      memo: dto.memo,
-      forceNoRefund: dto.forceNoRefund,
-    });
+    return this.jobPaymentService.adminRevokePremium(
+      session.userId,
+      params.jobId,
+      {
+        reason: dto.reason,
+        memo: dto.memo,
+        forceNoRefund: dto.forceNoRefund,
+      },
+    );
   }
 
   @Get('admin/premium-history/:jobId')
@@ -306,7 +318,7 @@ export class JobPaymentController {
     description: 'Premium history with admin actions and payment records',
   })
   @ApiResponse({ status: 404, description: 'Job posting not found' })
-  async getPremiumHistory(@Param('jobId') jobId: string) {
-    return this.jobPaymentService.getPremiumHistory(jobId);
+  async getPremiumHistory(@Param() params: JobIdParamDto) {
+    return this.jobPaymentService.getPremiumHistory(params.jobId);
   }
 }

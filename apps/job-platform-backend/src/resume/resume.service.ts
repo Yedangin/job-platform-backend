@@ -8,11 +8,13 @@ import {
   NotFoundException,
   ConflictException,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { AuthPrismaService, RedisService, SessionData } from 'libs/common/src';
 import { ViewingCreditService } from '../payment/viewing-credit.service';
 import { CreateResumeDto } from './dto/create-resume.dto';
 import { UpdateResumeDto } from './dto/update-resume.dto';
+import { Prisma } from '../../../../generated/prisma-user';
 
 @Injectable()
 export class ResumeService {
@@ -39,6 +41,56 @@ export class ResumeService {
     return session.userId;
   }
 
+  /**
+   * 인재채용관은 승인된 기업회원만 사용할 수 있습니다.
+   * Talent-pool APIs are restricted to approved corporate accounts.
+   */
+  private async getApprovedCorporateUserId(sessionId: string): Promise<string> {
+    const userId = await this.getUserIdFromSession(sessionId);
+    const user = await this.authPrisma.user.findUnique({
+      where: { id: userId },
+      include: { corporate: true },
+    });
+
+    if (
+      !user ||
+      !user.isActive ||
+      user.deletedAt ||
+      user.userType !== 'CORPORATE' ||
+      user.corporate?.verificationStatus !== 'APPROVED'
+    ) {
+      throw new ForbiddenException(
+        '승인된 기업회원만 인재채용관을 이용할 수 있습니다 / Only approved corporate accounts can access the talent pool',
+      );
+    }
+
+    return userId;
+  }
+
+  /**
+   * 공개 토글만으로는 부족하며, 버전이 기록된 명시적 동의가 함께 있어야 합니다.
+   * A resume is discoverable only with both the profile flag and active consent.
+   */
+  private visibleResumeWhere(): Prisma.ResumeWhereInput {
+    return {
+      isComplete: true,
+      user: {
+        is: {
+          isActive: true,
+          deletedAt: null,
+          individual: { is: { isOpenToScout: true } },
+          consentRecords: {
+            some: {
+              consentType: 'TALENT_POOL_DISCLOSURE',
+              granted: true,
+              withdrawnAt: null,
+            },
+          },
+        },
+      },
+    };
+  }
+
   // ──── 인재 검색 (기업용) / Talent search for corporate ────
 
   /**
@@ -55,15 +107,24 @@ export class ResumeService {
       page?: number;
     },
   ) {
-    const userId = await this.getUserIdFromSession(sessionId);
-    const page = filters.page || 1;
+    await this.getApprovedCorporateUserId(sessionId);
+    const page =
+      Number.isInteger(filters.page) && (filters.page ?? 0) > 0
+        ? filters.page!
+        : 1;
     const limit = 20;
     const skip = (page - 1) * limit;
 
     // 필터 구성 / Build where clause
-    const where: any = { isComplete: true };
+    const where: Prisma.ResumeWhereInput = this.visibleResumeWhere();
     if (filters.nationality) where.nationality = filters.nationality;
-    if (filters.topikLevel) where.topikLevel = { gte: filters.topikLevel };
+    if (
+      Number.isInteger(filters.topikLevel) &&
+      (filters.topikLevel ?? -1) >= 0 &&
+      (filters.topikLevel ?? 7) <= 6
+    ) {
+      where.topikLevel = { gte: filters.topikLevel };
+    }
     if (filters.jobType) where.preferredJobTypes = { has: filters.jobType };
     if (filters.region) where.preferredRegions = { has: filters.region };
 
@@ -105,37 +166,74 @@ export class ResumeService {
    * View talent detail — deducts 1 credit, returns full resume
    */
   async viewDetail(sessionId: string, resumeId: number) {
-    const userId = await this.getUserIdFromSession(sessionId);
+    const userId = await this.getApprovedCorporateUserId(sessionId);
 
-    // 이력서 존재 확인 / Check resume exists
-    const resume = await this.authPrisma.resume.findFirst({
-      where: { id: BigInt(resumeId) },
-    });
-    if (!resume) {
-      throw new NotFoundException(
-        '이력서를 찾을 수 없습니다 / Resume not found',
+    return this.authPrisma.$transaction(async (tx) => {
+      const initialResume = await tx.resume.findFirst({
+        where: { id: BigInt(resumeId), ...this.visibleResumeWhere() },
+      });
+      if (!initialResume) {
+        throw new NotFoundException(
+          '이력서를 찾을 수 없습니다 / Resume not found',
+        );
+      }
+
+      // Visibility updates lock this same profile row first. Acquiring the lock
+      // here serializes consent withdrawal with credit use across the two DBs.
+      await tx.$queryRaw(
+        Prisma.sql`SELECT "auth_id" FROM "profiles_individual" WHERE "auth_id" = ${initialResume.userId} FOR UPDATE`,
       );
-    }
 
-    // 열람권 차감 (이미 열람한 경우 차감 없음)
-    // Deduct credit (no deduction if already viewed)
-    const result = await this.viewingCreditService.useCredit(userId, resumeId);
+      const resumeBeforeCharge = await tx.resume.findFirst({
+        where: { id: BigInt(resumeId), ...this.visibleResumeWhere() },
+      });
+      if (!resumeBeforeCharge) {
+        throw new NotFoundException(
+          '공개가 철회된 이력서입니다 / Resume disclosure withdrawn',
+        );
+      }
 
-    this.logger.log(
-      `[Resume] 인재 열람: userId=${userId}, resumeId=${resumeId}, remaining=${result.remainingCredits}`,
-    );
+      // ViewingCreditService has no safe per-use rollback contract. Holding the
+      // profile lock prevents the supported withdrawal path from racing here.
+      const result = await this.viewingCreditService.useCredit(userId, resumeId);
 
-    return {
-      ...this.formatResponse(resume),
-      remainingCredits: result.remainingCredits,
-    };
+      const resumeBeforeReturn = await tx.resume.findFirst({
+        where: { id: BigInt(resumeId), ...this.visibleResumeWhere() },
+      });
+      if (!resumeBeforeReturn) {
+        this.logger.error(
+          `[Resume] 공개 최종 검증 실패: userId=${userId}, resumeId=${resumeId}. 상세 반환 차단; 개별 차감 보상 API 없음`,
+        );
+        throw new NotFoundException(
+          '공개가 철회된 이력서입니다 / Resume disclosure withdrawn',
+        );
+      }
+
+      this.logger.log(
+        `[Resume] 인재 열람: userId=${userId}, resumeId=${resumeId}, remaining=${result.remainingCredits}`,
+      );
+
+      return {
+        ...this.formatResponse(resumeBeforeReturn),
+        remainingCredits: result.remainingCredits,
+      };
+    });
   }
 
   /**
    * 열람 가능 여부 확인 / Check viewing access
    */
   async checkAccess(sessionId: string, resumeId: number) {
-    const userId = await this.getUserIdFromSession(sessionId);
+    const userId = await this.getApprovedCorporateUserId(sessionId);
+    const visibleResume = await this.authPrisma.resume.findFirst({
+      where: { id: BigInt(resumeId), ...this.visibleResumeWhere() },
+      select: { id: true },
+    });
+    if (!visibleResume) {
+      throw new NotFoundException(
+        '공개 중인 이력서를 찾을 수 없습니다 / Public resume not found',
+      );
+    }
     const remaining =
       await this.viewingCreditService.getRemainingCredits(userId);
 
@@ -220,6 +318,97 @@ export class ResumeService {
   }
 
   /**
+   * 인재채용관 공개 상태 조회 / Get talent-pool disclosure state.
+   */
+  async getScoutVisibility(sessionId: string) {
+    const userId = await this.getUserIdFromSession(sessionId);
+    const user = await this.authPrisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        individual: true,
+        consentRecords: {
+          where: {
+            consentType: 'TALENT_POOL_DISCLOSURE',
+            granted: true,
+            withdrawnAt: null,
+          },
+          orderBy: { consentedAt: 'desc' },
+          take: 1,
+        },
+      },
+    });
+
+    if (!user || user.userType !== 'INDIVIDUAL' || !user.individual) {
+      throw new ForbiddenException(
+        '개인회원만 공개 설정을 변경할 수 있습니다 / Only individual accounts can manage resume visibility',
+      );
+    }
+
+    const activeConsent = user.consentRecords[0];
+    return {
+      isOpenToScout:
+        user.individual.isOpenToScout && Boolean(activeConsent),
+      consentVersion: activeConsent?.policyVersion ?? null,
+      consentedAt: activeConsent?.consentedAt ?? null,
+    };
+  }
+
+  /**
+   * 명시적 동의를 기록하고 공개 여부를 갱신합니다.
+   * Record versioned consent and update the discoverability flag atomically.
+   */
+  async updateScoutVisibility(
+    sessionId: string,
+    data: { isOpenToScout: boolean; consentVersion: string },
+  ) {
+    const userId = await this.getUserIdFromSession(sessionId);
+    const user = await this.authPrisma.user.findUnique({
+      where: { id: userId },
+      include: { individual: true },
+    });
+
+    if (!user || user.userType !== 'INDIVIDUAL' || !user.individual) {
+      throw new ForbiddenException(
+        '개인회원만 공개 설정을 변경할 수 있습니다 / Only individual accounts can manage resume visibility',
+      );
+    }
+
+    const now = new Date();
+    await this.authPrisma.$transaction(async (tx) => {
+      // Updating the profile first serializes concurrent visibility changes for
+      // the same user before a new active consent record is created.
+      await tx.individualProfile.update({
+        where: { authId: userId },
+        data: { isOpenToScout: data.isOpenToScout },
+      });
+      await tx.consentRecord.updateMany({
+        where: {
+          authId: userId,
+          consentType: 'TALENT_POOL_DISCLOSURE',
+          withdrawnAt: null,
+        },
+        data: { withdrawnAt: now },
+      });
+      await tx.consentRecord.create({
+        data: {
+          authId: userId,
+          consentType: 'TALENT_POOL_DISCLOSURE',
+          policyVersion: data.consentVersion,
+          granted: data.isOpenToScout,
+          channel: 'WEB',
+          withdrawnAt: data.isOpenToScout ? null : now,
+        },
+      });
+    });
+
+    return {
+      isOpenToScout: data.isOpenToScout,
+      consentVersion: data.consentVersion,
+      consentedAt: now,
+    };
+  }
+
+  /**
    * 이력서 수정 / Update my resume
    */
   async update(sessionId: string, dto: UpdateResumeDto) {
@@ -297,11 +486,11 @@ export class ResumeService {
    * 인재 북마크 추가 / Add talent bookmark
    */
   async addBookmark(sessionId: string, resumeId: number) {
-    const userId = await this.getUserIdFromSession(sessionId);
+    const userId = await this.getApprovedCorporateUserId(sessionId);
 
     // 이력서 존재 확인 / Check resume exists
     const resume = await this.authPrisma.resume.findFirst({
-      where: { id: BigInt(resumeId) },
+      where: { id: BigInt(resumeId), ...this.visibleResumeWhere() },
     });
     if (!resume) {
       throw new NotFoundException(
@@ -344,7 +533,7 @@ export class ResumeService {
    * 인재 북마크 제거 / Remove talent bookmark
    */
   async removeBookmark(sessionId: string, resumeId: number) {
-    const userId = await this.getUserIdFromSession(sessionId);
+    const userId = await this.getApprovedCorporateUserId(sessionId);
 
     await this.authPrisma.talentBookmark.deleteMany({
       where: { resumeId: BigInt(resumeId), userId },
@@ -360,19 +549,28 @@ export class ResumeService {
    * 북마크 목록 조회 / Get bookmarked talents
    */
   async getBookmarks(sessionId: string, page: number = 1) {
-    const userId = await this.getUserIdFromSession(sessionId);
+    const userId = await this.getApprovedCorporateUserId(sessionId);
+    page = Number.isInteger(page) && page > 0 ? page : 1;
     const limit = 20;
     const skip = (page - 1) * limit;
 
     const [bookmarks, total] = await Promise.all([
       this.authPrisma.talentBookmark.findMany({
-        where: { userId },
+        where: {
+          userId,
+          resume: { is: this.visibleResumeWhere() },
+        },
         include: { resume: true },
         orderBy: { createdAt: 'desc' },
         skip,
         take: limit,
       }),
-      this.authPrisma.talentBookmark.count({ where: { userId } }),
+      this.authPrisma.talentBookmark.count({
+        where: {
+          userId,
+          resume: { is: this.visibleResumeWhere() },
+        },
+      }),
     ]);
 
     return {
@@ -403,7 +601,17 @@ export class ResumeService {
    * 북마크 여부 확인 / Check if bookmarked
    */
   async isBookmarked(sessionId: string, resumeId: number) {
-    const userId = await this.getUserIdFromSession(sessionId);
+    const userId = await this.getApprovedCorporateUserId(sessionId);
+
+    const resume = await this.authPrisma.resume.findFirst({
+      where: { id: BigInt(resumeId), ...this.visibleResumeWhere() },
+      select: { id: true },
+    });
+    if (!resume) {
+      throw new NotFoundException(
+        '공개 중인 이력서를 찾을 수 없습니다 / Public resume not found',
+      );
+    }
 
     const bookmark = await this.authPrisma.talentBookmark.findUnique({
       where: { resumeId_userId: { resumeId: BigInt(resumeId), userId } },
@@ -417,14 +625,83 @@ export class ResumeService {
    * Get bookmarked resume IDs (for displaying bookmark status in search results)
    */
   async getBookmarkedIds(sessionId: string): Promise<number[]> {
-    const userId = await this.getUserIdFromSession(sessionId);
+    const userId = await this.getApprovedCorporateUserId(sessionId);
 
     const bookmarks = await this.authPrisma.talentBookmark.findMany({
-      where: { userId },
+      where: {
+        userId,
+        resume: { is: this.visibleResumeWhere() },
+      },
       select: { resumeId: true },
     });
 
     return bookmarks.map((b) => Number(b.resumeId));
+  }
+
+  /**
+   * 공개 상태가 유지되는 열람 이력만 반환합니다.
+   * Return viewed resumes that are still actively disclosed.
+   */
+  async getViewed(sessionId: string, page: number = 1) {
+    const userId = await this.getApprovedCorporateUserId(sessionId);
+    const limit = 20;
+    const historyPageSize = 1000;
+    const firstHistory = await this.viewingCreditService.getViewingHistory(
+      userId,
+      1,
+      historyPageSize,
+    );
+    const logs = [...firstHistory.logs];
+
+    for (let historyPage = 2; historyPage <= firstHistory.pagination.totalPages; historyPage += 1) {
+      const nextHistory = await this.viewingCreditService.getViewingHistory(
+        userId,
+        historyPage,
+        historyPageSize,
+      );
+      logs.push(...nextHistory.logs);
+    }
+
+    const resumeIds = logs.map((log) => BigInt(log.resumeId));
+    const resumes = resumeIds.length
+      ? await this.authPrisma.resume.findMany({
+          where: {
+            id: { in: resumeIds },
+            ...this.visibleResumeWhere(),
+          },
+        })
+      : [];
+    const resumeById = new Map(
+      resumes.map((resume) => [Number(resume.id), resume]),
+    );
+    const visibleLogs = logs.filter((log) => resumeById.has(log.resumeId));
+    const safePage = Number.isInteger(page) && page > 0 ? page : 1;
+    const start = (safePage - 1) * limit;
+
+    return {
+      talents: visibleLogs.slice(start, start + limit).map((log) => {
+        const resume = resumeById.get(log.resumeId)!;
+        return {
+          resumeId: Number(resume.id),
+          nationality: resume.nationality,
+          topikLevel: resume.topikLevel,
+          kiipLevel: resume.kiipLevel,
+          preferredJobTypes: resume.preferredJobTypes,
+          preferredRegions: resume.preferredRegions,
+          workExperienceCount: Array.isArray(resume.workExperiences)
+            ? (resume.workExperiences as any[]).length
+            : 0,
+          viewedAt: log.viewedAt,
+          updatedAt: resume.updatedAt,
+        };
+      }),
+      pagination: {
+        page: safePage,
+        limit,
+        total: visibleLogs.length,
+        totalPages: Math.ceil(visibleLogs.length / limit),
+      },
+    };
   }
 
   // ──── 헬퍼 / Helpers ────

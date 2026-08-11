@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsString, Matches } from 'class-validator';
 
 /**
  * 결제 확인 DTO / Confirm payment DTO
@@ -12,5 +12,6 @@ export class ConfirmPaymentDto {
     example: 'payment_1234567890',
   })
   @IsString()
+  @Matches(/^[A-Za-z0-9_-]{16,64}$/)
   portonePaymentId: string;
 }

@@ -22,6 +22,7 @@ class MockAuthPrismaService {}
 jest.mock('libs/common/src', () => ({
   PaymentPrismaService: MockPaymentPrismaService,
   AuthPrismaService: MockAuthPrismaService,
+  SkipCsrf: () => () => undefined,
 }));
 
 import { PaymentService } from './payment.service';
@@ -73,14 +74,36 @@ describe('E2E 시나리오 1: 프리미엄 업그레이드 / Premium upgrade', (
 
   beforeEach(async () => {
     mockPaymentPrisma = {
-      order: { create: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
-      payment: { create: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
-      $transaction: jest.fn((arr) => Promise.resolve(arr.map(() => ({})))),
+      order: {
+        create: jest.fn(),
+        findUnique: jest.fn(),
+        update: jest.fn().mockResolvedValue({}),
+        updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+      },
+      payment: {
+        create: jest.fn(),
+        findUnique: jest.fn(),
+        update: jest.fn(),
+        updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+      },
+      $transaction: jest.fn(async (input) =>
+        typeof input === 'function'
+          ? input(mockPaymentPrisma)
+          : Promise.all(input),
+      ),
     };
     mockAuthPrisma = {
+      corporateProfile: {
+        findUnique: jest.fn().mockResolvedValue({ companyId: BigInt(7) }),
+      },
       jobPosting: { findUnique: jest.fn(), update: jest.fn() },
     };
     mockPortoneService = {
+      getStoreId: jest.fn().mockReturnValue('store-e2e12345678'),
+      getCheckoutConfig: jest.fn().mockReturnValue({
+        storeId: 'store-e2e12345678',
+        channelKey: 'channel-key-e2e12345678',
+      }),
       getPayment: jest.fn(),
       verifyPayment: jest.fn(),
       cancelPayment: jest.fn(),
@@ -112,6 +135,17 @@ describe('E2E 시나리오 1: 프리미엄 업그레이드 / Premium upgrade', (
   });
 
   it('공고 → 주문 → 결제 → 프리미엄 업그레이드 전체 플로우 / Full premium upgrade flow', async () => {
+    mockAuthPrisma.jobPosting.findUnique.mockResolvedValue({
+      id: BigInt(42),
+      corporateId: BigInt(7),
+      boardType: 'FULL_TIME',
+      tierType: 'STANDARD',
+      premiumStartAt: null,
+      premiumEndAt: null,
+      expiresAt: null,
+      upgradedAt: null,
+    });
+
     // STEP 1: 주문 생성 / Create order
     mockProductService.findActiveByCode.mockResolvedValue(PRODUCTS.JOB_PREMIUM);
     mockPaymentPrisma.order.create.mockResolvedValue({
@@ -131,35 +165,50 @@ describe('E2E 시나리오 1: 프리미엄 업그레이드 / Premium upgrade', (
     expect(order.productName).toBe('프리미엄 공고');
 
     // STEP 2: 결제 확인 / Confirm payment
-    mockPaymentPrisma.order.findUnique.mockResolvedValue({
+    const pendingOrder = {
       id: 1,
       orderNo: 'ORD-20260214-PREM1',
       userId: 'biz-user-1',
       status: 'PENDING',
       totalAmount: 50000,
+      currency: 'KRW',
       couponId: null,
-      payment: null,
+      fulfillmentStatus: 'PENDING',
+      payment: {
+        id: 1,
+        portonePaymentId: 'portone_prem_1',
+        status: 'PENDING',
+      },
       product: PRODUCTS.JOB_PREMIUM,
       targetJobId: BigInt(42),
-    });
+    };
+    mockPaymentPrisma.order.findUnique
+      .mockResolvedValueOnce(pendingOrder)
+      .mockResolvedValueOnce({
+        ...pendingOrder,
+        status: 'PAID',
+        payment: {
+          ...pendingOrder.payment,
+          status: 'PAID',
+          paidAmount: 50000,
+        },
+      });
     mockPortoneService.verifyPayment.mockResolvedValue({
+      id: 'portone_prem_1',
+      storeId: 'store-e2e12345678',
       status: 'PAID',
-      amount: { total: 50000 },
+      currency: 'KRW',
+      amount: { total: 50000, paid: 50000 },
       method: { type: 'Card', card: { name: '신한카드' } },
       paidAt: '2026-02-14T12:00:00Z',
     });
-    mockPaymentPrisma.$transaction.mockResolvedValue([
-      { id: 1, portonePaymentId: 'portone_prem_1', status: 'PAID' },
-      { id: 1, status: 'PAID' },
-    ]);
-    mockAuthPrisma.jobPosting.findUnique.mockResolvedValue({
-      id: BigInt(42),
-      boardType: 'FULL_TIME',
-      tierType: 'STANDARD',
-    });
     mockAuthPrisma.jobPosting.update.mockResolvedValue({});
 
-    const confirm = await paymentService.confirmPayment(1, 'portone_prem_1');
+    const confirm = await paymentService.confirmPayment(
+      1,
+      'portone_prem_1',
+      'biz-user-1',
+    );
     expect(confirm.status).toBe('PAID');
 
     // STEP 3: 프리미엄 업그레이드 확인 / Verify premium upgrade
@@ -198,22 +247,44 @@ describe('E2E 시나리오 2: 인재 열람 / Talent viewing', () => {
 
   beforeEach(async () => {
     mockPaymentPrisma = {
-      order: { create: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
-      payment: { create: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
+      order: {
+        create: jest.fn(),
+        findUnique: jest.fn(),
+        update: jest.fn().mockResolvedValue({}),
+        updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+      },
+      payment: {
+        create: jest.fn(),
+        findUnique: jest.fn(),
+        update: jest.fn(),
+        updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+      },
       viewingCredit: {
         create: jest.fn(),
+        upsert: jest.fn(),
         findMany: jest.fn(),
         findFirst: jest.fn(),
         update: jest.fn(),
+        updateMany: jest.fn().mockResolvedValue({ count: 1 }),
         delete: jest.fn(),
       },
       viewingLog: { findFirst: jest.fn(), create: jest.fn() },
-      $transaction: jest.fn((arr) => Promise.resolve(arr.map(() => ({})))),
+      $transaction: jest.fn(async (input) =>
+        typeof input === 'function'
+          ? input(mockPaymentPrisma)
+          : Promise.all(input),
+      ),
     };
     mockAuthPrisma = {
+      corporateProfile: { findUnique: jest.fn() },
       jobPosting: { findUnique: jest.fn(), update: jest.fn() },
     };
     mockPortoneService = {
+      getStoreId: jest.fn().mockReturnValue('store-e2e12345678'),
+      getCheckoutConfig: jest.fn().mockReturnValue({
+        storeId: 'store-e2e12345678',
+        channelKey: 'channel-key-e2e12345678',
+      }),
       getPayment: jest.fn(),
       verifyPayment: jest.fn(),
       cancelPayment: jest.fn(),
@@ -259,39 +330,63 @@ describe('E2E 시나리오 2: 인재 열람 / Talent viewing', () => {
     await paymentService.createOrder('biz-user-2', 'VIEW_30');
 
     // STEP 2: 결제 확인 → 크레딧 부여 / Confirm → grant credits
-    mockPaymentPrisma.order.findUnique.mockResolvedValue({
+    const pendingOrder = {
       id: 10,
+      orderNo: 'ORD-20260214-VIEW1',
       userId: 'biz-user-2',
       status: 'PENDING',
       totalAmount: 60000,
+      currency: 'KRW',
       couponId: null,
-      payment: null,
+      fulfillmentStatus: 'PENDING',
+      payment: {
+        id: 10,
+        portonePaymentId: 'portone_view_1',
+        status: 'PENDING',
+      },
       product: PRODUCTS.VIEW_30,
       targetJobId: null,
-    });
+    };
+    mockPaymentPrisma.order.findUnique
+      .mockResolvedValueOnce(pendingOrder)
+      .mockResolvedValueOnce({
+        ...pendingOrder,
+        status: 'PAID',
+        payment: {
+          ...pendingOrder.payment,
+          status: 'PAID',
+          paidAmount: 60000,
+        },
+      });
     mockPortoneService.verifyPayment.mockResolvedValue({
+      id: 'portone_view_1',
+      storeId: 'store-e2e12345678',
       status: 'PAID',
-      amount: { total: 60000 },
+      currency: 'KRW',
+      amount: { total: 60000, paid: 60000 },
       method: { type: 'Card' },
+      paidAt: '2026-02-14T12:00:00Z',
     });
-    mockPaymentPrisma.$transaction.mockResolvedValue([{}, {}]);
-    mockPaymentPrisma.viewingCredit.create.mockResolvedValue({
+    mockPaymentPrisma.viewingCredit.upsert.mockResolvedValue({
       id: 1,
       totalCredits: 30,
       usedCredits: 0,
       source: 'VIEW_30',
     });
 
-    await paymentService.confirmPayment(10, 'portone_view_1');
+    await paymentService.confirmPayment(10, 'portone_view_1', 'biz-user-2');
 
     // 크레딧 부여 확인 / Verify credit grant
-    expect(mockPaymentPrisma.viewingCredit.create).toHaveBeenCalledWith({
-      data: expect.objectContaining({
+    expect(mockPaymentPrisma.viewingCredit.upsert).toHaveBeenCalledWith({
+      where: { orderId: 10 },
+      create: expect.objectContaining({
         userId: 'biz-user-2',
         totalCredits: 30,
         usedCredits: 0,
         source: 'VIEW_30',
+        orderId: 10,
       }),
+      update: { source: 'VIEW_30' },
     });
 
     // STEP 3: 열람권 1건 사용 / Use 1 credit
@@ -389,10 +484,15 @@ describe('E2E 시나리오 3: 쿠폰 / Coupons', () => {
         findMany: jest.fn(),
         findFirst: jest.fn(),
         update: jest.fn(),
+        updateMany: jest.fn().mockResolvedValue({ count: 1 }),
         delete: jest.fn(),
       },
       viewingLog: { findFirst: jest.fn(), create: jest.fn() },
-      $transaction: jest.fn((arr) => Promise.resolve(arr.map(() => ({})))),
+      $transaction: jest.fn(async (input) =>
+        typeof input === 'function'
+          ? input(mockPaymentPrisma)
+          : Promise.all(input),
+      ),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -512,14 +612,36 @@ describe('E2E 시나리오 4: 환불 / Refund', () => {
 
   beforeEach(async () => {
     mockPaymentPrisma = {
-      order: { create: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
-      payment: { create: jest.fn(), findUnique: jest.fn(), update: jest.fn() },
-      $transaction: jest.fn((arr) => Promise.resolve(arr.map(() => ({})))),
+      order: {
+        create: jest.fn(),
+        findUnique: jest.fn(),
+        update: jest.fn().mockResolvedValue({}),
+        updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+      },
+      payment: {
+        create: jest.fn(),
+        findUnique: jest.fn(),
+        update: jest.fn(),
+        updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+      },
+      paymentCancellation: {
+        findFirst: jest.fn().mockResolvedValue(null),
+        create: jest.fn().mockImplementation(async ({ data }) => data),
+        update: jest.fn().mockResolvedValue({}),
+      },
+      $transaction: jest.fn(async (input) =>
+        typeof input === 'function'
+          ? input(mockPaymentPrisma)
+          : Promise.all(input),
+      ),
     };
     mockAuthPrisma = {
+      corporateProfile: { findUnique: jest.fn() },
       jobPosting: { findUnique: jest.fn(), update: jest.fn() },
     };
     mockPortoneService = {
+      getStoreId: jest.fn(),
+      getCheckoutConfig: jest.fn(),
       getPayment: jest.fn(),
       verifyPayment: jest.fn(),
       cancelPayment: jest.fn(),
@@ -542,7 +664,12 @@ describe('E2E 시나리오 4: 환불 / Refund', () => {
         },
         {
           provide: ViewingCreditService,
-          useValue: { grantCredits: jest.fn(), rollbackCredits: jest.fn() },
+          useValue: {
+            grantCredits: jest.fn(),
+            rollbackCredits: jest.fn(),
+            calculateCreditRefund: jest.fn(),
+            executeRefund: jest.fn(),
+          },
         },
       ],
     }).compile();
@@ -557,21 +684,29 @@ describe('E2E 시나리오 4: 환불 / Refund', () => {
       userId: 'biz-user-3',
       status: 'PAID',
       totalAmount: 50000,
+      couponId: null,
+      fulfillmentStatus: 'FULFILLED',
       product: PRODUCTS.JOB_PREMIUM,
       payment: {
         id: 5,
         portonePaymentId: 'portone_refund_1',
+        status: 'PAID',
         paidAmount: 50000,
+        paidAt: new Date(),
       },
       targetJobId: BigInt(99),
     };
 
     mockPaymentPrisma.order.findUnique.mockResolvedValue(paidOrder);
     mockPortoneService.cancelPayment.mockResolvedValue({
-      status: 'CANCELLED',
+      id: 'cancel_refund_1',
+      status: 'SUCCEEDED',
       cancelledAmount: 50000,
     });
-    mockPaymentPrisma.$transaction.mockResolvedValue([{}, {}]);
+    mockAuthPrisma.jobPosting.findUnique.mockResolvedValue({
+      id: BigInt(99),
+      upgradedAt: null,
+    });
     mockAuthPrisma.jobPosting.update.mockResolvedValue({});
 
     // 환불 실행 / Execute refund
@@ -580,12 +715,15 @@ describe('E2E 시나리오 4: 환불 / Refund', () => {
       'biz-user-3',
       '서비스 불만족',
     );
-    expect(result.status).toBe('CANCELLED');
+    expect(result.status).toBe('REFUNDED');
 
     // 포트원 환불 호출 확인 / Verify PortOne cancel called
     expect(mockPortoneService.cancelPayment).toHaveBeenCalledWith(
       'portone_refund_1',
       '서비스 불만족',
+      undefined,
+      expect.stringMatching(/^cancel_[a-f0-9]{32}$/),
+      50000,
     );
 
     // tier 롤백 확인 / Verify tier rollback
@@ -630,11 +768,15 @@ describe('E2E 시나리오 5: 웹훅 / Webhook', () => {
   }
 
   beforeEach(async () => {
-    mockPortoneService = { getPayment: jest.fn() };
+    mockPortoneService = {
+      getStoreId: jest.fn().mockReturnValue('store-e2e12345678'),
+      getPayment: jest.fn(),
+    };
     mockPaymentService = {
-      handleWebhookPaid: jest.fn().mockResolvedValue(undefined),
-      handleWebhookCancelled: jest.fn().mockResolvedValue(undefined),
-      handleWebhookFailed: jest.fn().mockResolvedValue(undefined),
+      beginWebhookEvent: jest.fn().mockResolvedValue('PROCESS'),
+      synchronizePaymentFromWebhook: jest.fn().mockResolvedValue('SYNCED'),
+      completeWebhookEvent: jest.fn().mockResolvedValue(undefined),
+      failWebhookEvent: jest.fn().mockResolvedValue(undefined),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -657,31 +799,49 @@ describe('E2E 시나리오 5: 웹훅 / Webhook', () => {
     controller = module.get<PortoneWebhookController>(PortoneWebhookController);
   });
 
-  it('유효 서명 Transaction.Paid → handleWebhookPaid 호출 / Valid signature → paid handler called', async () => {
+  it('유효 서명 Transaction.Paid → API 재조회·동기화 / Valid signature → API re-fetch and sync', async () => {
     const body = JSON.stringify({
       type: 'Transaction.Paid',
-      data: { paymentId: 'portone_wh_1' },
+      data: {
+        paymentId: 'portone_wh_1',
+        storeId: 'store-e2e12345678',
+      },
     });
     const ts = String(Math.floor(Date.now() / 1000));
     const sig = generateSignature('msg_e2e_1', ts, body);
 
-    mockPortoneService.getPayment.mockResolvedValue({ status: 'PAID' });
+    const remotePayment = {
+      id: 'portone_wh_1',
+      storeId: 'store-e2e12345678',
+      status: 'PAID',
+      currency: 'KRW',
+      amount: { total: 50000, paid: 50000 },
+    };
+    mockPortoneService.getPayment.mockResolvedValue(remotePayment);
 
     const req: any = { rawBody: Buffer.from(body), body: JSON.parse(body) };
     const res = mockRes();
 
     await controller.handleWebhook(req, res, 'msg_e2e_1', ts, sig);
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(mockPaymentService.handleWebhookPaid).toHaveBeenCalledWith(
-      'portone_wh_1',
-      expect.objectContaining({ paymentId: 'portone_wh_1' }),
+    expect(
+      mockPaymentService.synchronizePaymentFromWebhook,
+    ).toHaveBeenCalledWith(remotePayment, {
+      webhookId: 'msg_e2e_1',
+      eventType: 'Transaction.Paid',
+    });
+    expect(mockPaymentService.completeWebhookEvent).toHaveBeenCalledWith(
+      'msg_e2e_1',
     );
   });
 
   it('잘못된 서명 → 400 거부 / Invalid signature → 400 rejected', async () => {
     const body = JSON.stringify({
       type: 'Transaction.Paid',
-      data: { paymentId: 'portone_wh_2' },
+      data: {
+        paymentId: 'portone_wh_2',
+        storeId: 'store-e2e12345678',
+      },
     });
     const ts = String(Math.floor(Date.now() / 1000));
 
@@ -690,6 +850,6 @@ describe('E2E 시나리오 5: 웹훅 / Webhook', () => {
 
     await controller.handleWebhook(req, res, 'msg_e2e_2', ts, 'v1,FAKE_SIG');
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(mockPaymentService.handleWebhookPaid).not.toHaveBeenCalled();
+    expect(mockPaymentService.beginWebhookEvent).not.toHaveBeenCalled();
   });
 });

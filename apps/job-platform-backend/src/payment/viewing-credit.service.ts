@@ -22,19 +22,26 @@ export class ViewingCreditService {
     credits: number,
     source: string,
     validDays: number,
+    orderId?: number,
   ) {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + validDays);
 
-    const record = await this.paymentPrisma.viewingCredit.create({
-      data: {
-        userId,
-        totalCredits: credits,
-        usedCredits: 0,
-        source,
-        expiresAt,
-      },
-    });
+    const data = {
+      userId,
+      totalCredits: credits,
+      usedCredits: 0,
+      source,
+      expiresAt,
+      orderId: orderId ?? null,
+    };
+    const record = orderId
+      ? await this.paymentPrisma.viewingCredit.upsert({
+          where: { orderId },
+          create: data,
+          update: { source },
+        })
+      : await this.paymentPrisma.viewingCredit.create({ data });
 
     this.logger.log(
       `[ViewingCredit] 열람권 부여: userId=${userId}, credits=${credits}, source=${source}, expiresAt=${expiresAt.toISOString()}`,
@@ -103,10 +110,18 @@ export class ViewingCreditService {
       }
 
       // 차감 + 기록 (같은 트랜잭션 내) / Deduct and log (within same transaction)
-      await tx.viewingCredit.update({
-        where: { id: availableCredit.id },
+      const deducted = await tx.viewingCredit.updateMany({
+        where: {
+          id: availableCredit.id,
+          usedCredits: { lt: availableCredit.totalCredits },
+        },
         data: { usedCredits: { increment: 1 } },
       });
+      if (deducted.count !== 1) {
+        throw new BadRequestException(
+          '열람권이 다른 요청에서 사용되었습니다. 다시 시도해 주세요 / Viewing credit was used concurrently; please retry',
+        );
+      }
       await tx.viewingLog.create({
         data: {
           userId,
@@ -206,9 +221,9 @@ export class ViewingCreditService {
    * @deprecated Full-delete approach causes over-refund when credits are partially used.
    * New code should use calculateCreditRefund + executeRefund combination instead.
    */
-  async rollbackCredits(userId: string, source: string) {
+  async rollbackCredits(userId: string, source: string, orderId?: number) {
     const credit = await this.paymentPrisma.viewingCredit.findFirst({
-      where: { userId, source },
+      where: orderId ? { orderId, userId } : { userId, source },
       orderBy: { createdAt: 'desc' },
     });
     if (credit) {
@@ -235,6 +250,7 @@ export class ViewingCreditService {
   async calculateCreditRefund(
     userId: string,
     source: string,
+    orderId?: number,
   ): Promise<{
     creditId: number;
     totalCredits: number;
@@ -243,7 +259,7 @@ export class ViewingCreditService {
     canFullRefund: boolean;
   }> {
     const credit = await this.paymentPrisma.viewingCredit.findFirst({
-      where: { userId, source },
+      where: orderId ? { orderId, userId } : { userId, source },
       orderBy: { createdAt: 'desc' },
     });
 

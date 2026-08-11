@@ -5,12 +5,14 @@ import {
   NotFoundException,
   BadRequestException,
   ForbiddenException,
+  ConflictException,
 } from '@nestjs/common';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import { createHash } from 'crypto';
 import { AuthPrismaService, RedisService } from 'libs/common/src';
 import { CouponService } from '../payment/coupon.service';
+import { FulltimeVisaMatchingService } from '../fulltime-visa/services/fulltime-visa-matching.service';
 
 @Injectable()
 export class JobPostingService {
@@ -22,6 +24,7 @@ export class JobPostingService {
     private readonly redis: RedisService,
     private readonly couponService: CouponService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
+    private readonly fulltimeVisaMatching: FulltimeVisaMatchingService,
   ) {}
 
   // ========================================
@@ -60,8 +63,13 @@ export class JobPostingService {
     const limit = query.limit || 20;
     const skip = (page - 1) * limit;
 
+    const now = new Date();
     const where: Record<string, unknown> = {
       status: 'ACTIVE',
+      AND: [
+        { OR: [{ closingDate: null }, { closingDate: { gt: now } }] },
+        { OR: [{ expiresAt: null }, { expiresAt: { gt: now } }] },
+      ],
     };
 
     if (query.boardType) {
@@ -131,15 +139,24 @@ export class JobPostingService {
   // 공고 상세 (공개)
   // ========================================
   async getJobDetail(jobId: string, viewerIp?: string) {
-    const job = await this.prisma.jobPosting.findUnique({
-      where: { id: BigInt(jobId) },
+    const parsedJobId = this.parseJobId(jobId);
+    const now = new Date();
+    const job = await this.prisma.jobPosting.findFirst({
+      where: {
+        id: parsedJobId,
+        status: 'ACTIVE',
+        AND: [
+          { OR: [{ closingDate: null }, { closingDate: { gt: now } }] },
+          { OR: [{ expiresAt: null }, { expiresAt: { gt: now } }] },
+        ],
+      },
       include: {
         albaAttributes: true,
         fulltimeAttributes: true,
       },
     });
 
-    if (!job || job.status === 'DRAFT') {
+    if (!job) {
       throw new NotFoundException('Job posting not found');
     }
 
@@ -150,7 +167,7 @@ export class JobPostingService {
       if (!alreadyViewed) {
         await this.redis.set(viewKey, '1', 3600);
         await this.prisma.jobPosting.update({
-          where: { id: BigInt(jobId) },
+          where: { id: parsedJobId },
           data: { viewCount: { increment: 1 } },
         });
       }
@@ -261,7 +278,14 @@ export class JobPostingService {
   // 공고 수정 (기업회원, 소유자)
   // ========================================
   async updateJobPosting(userId: string, jobId: string, data: any) {
-    const job = await this.getOwnedJob(userId, jobId);
+    const { job } = await this.getApprovedOwnedJob(userId, jobId);
+
+    if (String(job.status) === 'SUBMITTED_REVIEW') {
+      throw new ConflictException('A posting under review cannot be changed');
+    }
+    if (job.status === 'SUSPENDED' || job.status === 'EXPIRED') {
+      throw new ConflictException('This posting cannot be edited in its current state');
+    }
 
     const updateData: any = {};
     if (data.title !== undefined) updateData.title = data.title;
@@ -304,72 +328,164 @@ export class JobPostingService {
     if (data.workContentImg !== undefined)
       updateData.workContentImg = data.workContentImg;
 
-    await this.prisma.jobPosting.update({
-      where: { id: BigInt(jobId) },
+    const significantChange = this.hasPublicationRelevantChange(data);
+    if (String(job.status) === 'ACTIVE' && significantChange) {
+      updateData.status = 'SUBMITTED_REVIEW';
+      updateData.submittedForReviewAt = new Date();
+      updateData.reviewedAt = null;
+      updateData.reviewedBy = null;
+      updateData.rejectionReason = null;
+    }
+
+    await (this.prisma as any).jobPosting.update({
+      where: { id: job.id },
       data: updateData,
     });
 
     // alba/fulltime attributes 업데이트
     if (data.albaAttributes && job.boardType === 'PART_TIME') {
       await this.prisma.jobAttributesAlba.upsert({
-        where: { jobId: BigInt(jobId) },
+        where: { jobId: job.id },
         update: data.albaAttributes,
-        create: { jobId: BigInt(jobId), ...data.albaAttributes },
+        create: { jobId: job.id, ...data.albaAttributes },
       });
     }
     if (data.fulltimeAttributes && job.boardType === 'FULL_TIME') {
       await this.prisma.jobAttributesFulltime.upsert({
-        where: { jobId: BigInt(jobId) },
+        where: { jobId: job.id },
         update: data.fulltimeAttributes,
-        create: { jobId: BigInt(jobId), ...data.fulltimeAttributes },
+        create: { jobId: job.id, ...data.fulltimeAttributes },
       });
     }
 
     // 공고 수정 후 목록 캐시 무효화 / Invalidate listing cache after update
     await this.invalidateListingCache();
 
-    return { success: true };
+    return {
+      success: true,
+      status:
+        String(job.status) === 'ACTIVE' && significantChange
+          ? 'SUBMITTED_REVIEW'
+          : job.status,
+    };
   }
 
   // ========================================
   // 공고 활성화 (결제 완료 후)
   // ========================================
-  async activateJobPosting(userId: string, jobId: string, orderId?: string) {
-    const job = await this.getOwnedJob(userId, jobId);
-
-    if (job.status !== 'DRAFT') {
-      throw new BadRequestException('Only DRAFT postings can be activated');
+  async submitJobPosting(userId: string, jobId: string) {
+    const { corp, job } = await this.getApprovedOwnedJob(userId, jobId);
+    if (!['DRAFT', 'REJECTED'].includes(job.status)) {
+      throw new ConflictException('Only DRAFT or REJECTED postings can be submitted');
     }
 
-    // 정규직(FULL_TIME)인 경우만 비자 매칭 결과 확인 (알바는 정적 비자 목록 사용)
-    // Only check visa matching for FULL_TIME (PART_TIME uses static visa list)
-    if (job.boardType === 'FULL_TIME' && !job.fulltimeVisaResult) {
-      throw new BadRequestException(
-        '비자 매칭이 완료되지 않았습니다. 공고 게시 전 비자 매칭을 먼저 실행하세요 / Visa matching not completed. Run visa evaluation before publishing.',
-      );
-    }
-
-    const updateData: any = { status: 'ACTIVE' };
-    if (orderId) {
-      updateData.orderId = BigInt(orderId);
-    }
-
-    await this.prisma.jobPosting.update({
-      where: { id: BigInt(jobId) },
-      data: updateData,
+    await this.assertPublishable(job);
+    const visaUpdate = await this.revalidateVisaEvaluation(job, corp);
+    await (this.prisma as any).jobPosting.update({
+      where: { id: job.id },
+      data: {
+        status: 'SUBMITTED_REVIEW',
+        submittedForReviewAt: new Date(),
+        reviewedAt: null,
+        reviewedBy: null,
+        rejectionReason: null,
+        ...visaUpdate,
+      },
     });
+    await this.invalidateListingCache();
+    return { success: true, status: 'SUBMITTED_REVIEW' };
+  }
 
+  async approveJobPosting(adminId: string, jobId: string) {
+    const job = await this.getReviewableJob(jobId);
+    if (String(job.status) !== 'SUBMITTED_REVIEW') {
+      throw new ConflictException('Only submitted postings can be approved');
+    }
+    const corp = await this.getApprovedCorporateByCompanyId(job.corporateId);
+    await this.assertPublishable(job);
+    const visaUpdate = await this.revalidateVisaEvaluation(job, corp);
+    const parsedJobId = this.parseJobId(jobId);
+    const reviewedAt = new Date();
+
+    await (this.prisma as any).$transaction(async (tx: any) => {
+      const result = await tx.jobPosting.updateMany({
+        where: { id: parsedJobId, status: 'SUBMITTED_REVIEW' },
+        data: {
+          status: 'ACTIVE',
+          reviewedAt,
+          reviewedBy: adminId,
+          rejectionReason: null,
+          ...visaUpdate,
+        },
+      });
+      if (result.count !== 1) {
+        throw new ConflictException('This posting was already reviewed. Refresh and try again.');
+      }
+
+      await tx.adminJobAction.create({
+        data: {
+          jobId: parsedJobId,
+          adminId,
+          actionType: 'APPROVE',
+          reason: 'Approved after review',
+        },
+      });
+    });
+    await this.invalidateListingCache();
     return { success: true, status: 'ACTIVE' };
+  }
+
+  async rejectJobPosting(adminId: string, jobId: string, reason: string) {
+    const job = await this.getReviewableJob(jobId);
+    if (String(job.status) !== 'SUBMITTED_REVIEW') {
+      throw new ConflictException('Only submitted postings can be rejected');
+    }
+    await this.getApprovedCorporateByCompanyId(job.corporateId);
+    const rejectionReason = reason?.trim();
+    if (!rejectionReason) {
+      throw new BadRequestException('A rejection reason is required');
+    }
+    const parsedJobId = this.parseJobId(jobId);
+    const reviewedAt = new Date();
+
+    await (this.prisma as any).$transaction(async (tx: any) => {
+      const result = await tx.jobPosting.updateMany({
+        where: { id: parsedJobId, status: 'SUBMITTED_REVIEW' },
+        data: {
+          status: 'REJECTED',
+          reviewedAt,
+          reviewedBy: adminId,
+          rejectionReason,
+        },
+      });
+      if (result.count !== 1) {
+        throw new ConflictException('This posting was already reviewed. Refresh and try again.');
+      }
+
+      await tx.adminJobAction.create({
+        data: {
+          jobId: parsedJobId,
+          adminId,
+          actionType: 'REJECT',
+          reason: rejectionReason,
+        },
+      });
+    });
+    await this.invalidateListingCache();
+    return { success: true, status: 'REJECTED', rejectionReason };
   }
 
   // ========================================
   // 공고 마감
   // ========================================
   async closeJobPosting(userId: string, jobId: string) {
-    await this.getOwnedJob(userId, jobId);
+    const { job } = await this.getApprovedOwnedJob(userId, jobId);
+    if (!['ACTIVE', 'SUBMITTED_REVIEW'].includes(job.status)) {
+      throw new ConflictException('Only active or submitted postings can be closed');
+    }
 
     await this.prisma.jobPosting.update({
-      where: { id: BigInt(jobId) },
+      where: { id: job.id },
       data: { status: 'CLOSED' },
     });
 
@@ -413,6 +529,19 @@ export class JobPostingService {
       limit,
       totalPages: Math.ceil(total / limit),
     };
+  }
+
+  async getMyJobPosting(userId: string, jobId: string) {
+    const job = await this.getOwnedJob(userId, jobId);
+    const corp = await this.prisma.corporateProfile.findUnique({
+      where: { authId: userId },
+    });
+    const detail = await this.prisma.jobPosting.findUnique({
+      where: { id: job.id },
+      include: { albaAttributes: true, fulltimeAttributes: true },
+    });
+    if (!detail) throw new NotFoundException('Job posting not found');
+    return this.formatJobPosting(detail, corp || undefined);
   }
 
   // ========================================
@@ -541,24 +670,29 @@ export class JobPostingService {
   // Admin: 공고 중지
   // ========================================
   async suspendJobPosting(adminId: string, jobId: string, reason: string) {
+    const parsedJobId = this.parseJobId(jobId);
     const job = await this.prisma.jobPosting.findUnique({
-      where: { id: BigInt(jobId) },
+      where: { id: parsedJobId },
     });
     if (!job) throw new NotFoundException('Job posting not found');
+    if (!['ACTIVE', 'SUBMITTED_REVIEW'].includes(String(job.status))) {
+      throw new ConflictException('Only active or submitted postings can be suspended');
+    }
 
-    await this.prisma.jobPosting.update({
-      where: { id: BigInt(jobId) },
+    await (this.prisma as any).jobPosting.update({
+      where: { id: parsedJobId },
       data: {
         status: 'SUSPENDED',
         suspendedAt: new Date(),
         suspendReason: reason,
         suspendedBy: adminId,
+        preSuspensionStatus: job.status,
       },
     });
 
     await this.prisma.adminJobAction.create({
       data: {
-        jobId: BigInt(jobId),
+        jobId: parsedJobId,
         adminId,
         actionType: 'SUSPEND',
         reason,
@@ -572,25 +706,40 @@ export class JobPostingService {
   // Admin: 공고 중지 해제
   // ========================================
   async unsuspendJobPosting(adminId: string, jobId: string) {
-    await this.prisma.jobPosting.update({
-      where: { id: BigInt(jobId) },
+    const job = await this.getReviewableJob(jobId);
+    if (String(job.status) !== 'SUSPENDED') {
+      throw new ConflictException('Only suspended postings can be restored');
+    }
+    const corp = await this.getApprovedCorporateByCompanyId(job.corporateId);
+    await this.assertPublishable(job);
+    const visaUpdate = await this.revalidateVisaEvaluation(job, corp);
+    const restoreStatus =
+      String((job as any).preSuspensionStatus) === 'ACTIVE'
+        ? 'ACTIVE'
+        : 'SUBMITTED_REVIEW';
+
+    await (this.prisma as any).jobPosting.update({
+      where: { id: job.id },
       data: {
-        status: 'ACTIVE',
+        status: restoreStatus,
         suspendedAt: null,
         suspendReason: null,
         suspendedBy: null,
+        preSuspensionStatus: null,
+        ...visaUpdate,
       },
     });
 
     await this.prisma.adminJobAction.create({
       data: {
-        jobId: BigInt(jobId),
+        jobId: job.id,
         adminId,
         actionType: 'UNSUSPEND',
       },
     });
 
-    return { success: true };
+    await this.invalidateListingCache();
+    return { success: true, status: restoreStatus };
   }
 
   // ========================================
@@ -599,15 +748,15 @@ export class JobPostingService {
   async deleteJobPosting(userId: string, jobId: string) {
     const job = await this.getOwnedJob(userId, jobId);
 
-    if (job.status === 'DRAFT') {
+    if (['DRAFT', 'REJECTED'].includes(job.status)) {
       // DRAFT는 하드 삭제
       await this.prisma.jobPosting.delete({
-        where: { id: BigInt(jobId) },
+        where: { id: job.id },
       });
     } else {
       // 나머지는 CLOSED 처리
       await this.prisma.jobPosting.update({
-        where: { id: BigInt(jobId) },
+        where: { id: job.id },
         data: { status: 'CLOSED' },
       });
     }
@@ -629,7 +778,7 @@ export class JobPostingService {
     }
 
     await this.prisma.jobPosting.update({
-      where: { id: BigInt(jobId) },
+      where: { id: job.id },
       data: { bumpedAt: new Date() },
     });
 
@@ -647,7 +796,7 @@ export class JobPostingService {
     }
 
     await this.prisma.jobPosting.update({
-      where: { id: BigInt(jobId) },
+      where: { id: job.id },
       data: { isUrgent: !job.isUrgent },
     });
 
@@ -675,19 +824,157 @@ export class JobPostingService {
   }
 
   private async getOwnedJob(userId: string, jobId: string) {
+    const parsedJobId = this.parseJobId(jobId);
     const corp = await this.prisma.corporateProfile.findUnique({
       where: { authId: userId },
     });
     if (!corp) throw new ForbiddenException('Corporate profile required');
 
     const job = await this.prisma.jobPosting.findUnique({
-      where: { id: BigInt(jobId) },
+      where: { id: parsedJobId },
     });
     if (!job) throw new NotFoundException('Job posting not found');
     if (job.corporateId !== corp.companyId) {
       throw new ForbiddenException('Not the owner of this posting');
     }
     return job;
+  }
+
+  private async getApprovedOwnedJob(userId: string, jobId: string) {
+    const parsedJobId = this.parseJobId(jobId);
+    const corp = await this.getApprovedCorporateForUser(userId);
+    const job = await this.prisma.jobPosting.findUnique({
+      where: { id: parsedJobId },
+      include: { albaAttributes: true, fulltimeAttributes: true },
+    });
+    if (!job) throw new NotFoundException('Job posting not found');
+    if (job.corporateId !== corp.companyId) {
+      throw new ForbiddenException('Not the owner of this posting');
+    }
+    return { corp, job };
+  }
+
+  private async getApprovedCorporateForUser(userId: string) {
+    const corp = await this.prisma.corporateProfile.findUnique({
+      where: { authId: userId },
+    });
+    if (!corp || corp.verificationStatus !== 'APPROVED') {
+      throw new ForbiddenException('An approved corporate profile is required');
+    }
+    return corp;
+  }
+
+  private async getApprovedCorporateByCompanyId(companyId: bigint) {
+    const corp = await this.prisma.corporateProfile.findUnique({
+      where: { companyId },
+    });
+    if (!corp || corp.verificationStatus !== 'APPROVED') {
+      throw new ForbiddenException('The posting company is no longer approved');
+    }
+    return corp;
+  }
+
+  private async getReviewableJob(jobId: string) {
+    const parsedJobId = this.parseJobId(jobId);
+    const job = await this.prisma.jobPosting.findUnique({
+      where: { id: parsedJobId },
+      include: { albaAttributes: true, fulltimeAttributes: true },
+    });
+    if (!job) throw new NotFoundException('Job posting not found');
+    return job;
+  }
+
+  private parseJobId(jobId: string): bigint {
+    if (typeof jobId !== 'string' || !/^[1-9]\d*$/.test(jobId)) {
+      throw new BadRequestException('Invalid job posting id');
+    }
+
+    const parsed = BigInt(jobId);
+    if (parsed > 9_223_372_036_854_775_807n) {
+      throw new BadRequestException('Invalid job posting id');
+    }
+    return parsed;
+  }
+
+  private async assertPublishable(job: any) {
+    const required = [
+      job.title,
+      job.description,
+      job.allowedVisas,
+      job.displayAddress,
+      job.actualAddress,
+      job.contactName,
+      job.contactPhone,
+    ];
+    if (required.some((value) => !String(value || '').trim())) {
+      throw new BadRequestException('Complete all required job posting fields before submitting');
+    }
+    if (job.closingDate && new Date(job.closingDate) <= new Date()) {
+      throw new BadRequestException('The application deadline must be in the future');
+    }
+    if (job.boardType === 'PART_TIME' && !job.albaAttributes) {
+      throw new BadRequestException('Part-time work conditions are required');
+    }
+    if (job.boardType === 'FULL_TIME' && !job.fulltimeAttributes) {
+      throw new BadRequestException('Full-time work conditions are required');
+    }
+  }
+
+  private async revalidateVisaEvaluation(job: any, corp: any) {
+    if (job.boardType !== 'FULL_TIME') {
+      if (!String(job.allowedVisas || '').trim()) {
+        throw new BadRequestException('At least one permitted visa is required');
+      }
+      return {};
+    }
+
+    const savedInput = job.fulltimeVisaResult?.inputSummary;
+    if (!savedInput?.occupationCode || !job.fulltimeAttributes) {
+      throw new BadRequestException('Run the full-time visa evaluation before submitting');
+    }
+    const addressParts = String(job.displayAddress || '').trim().split(/\s+/);
+    const result = await this.fulltimeVisaMatching.evaluateJob({
+      jobInput: {
+        occupationCode: savedInput.occupationCode,
+        salaryMin: job.fulltimeAttributes.salaryMin,
+        salaryMax: job.fulltimeAttributes.salaryMax,
+        experienceLevel: job.fulltimeAttributes.experienceLevel,
+        educationLevel: job.fulltimeAttributes.educationLevel,
+        overseasHireWilling: Boolean(savedInput.overseasHireWilling),
+        workAddress: {
+          sido: addressParts[0] || 'Korea',
+          sigungu: addressParts[1] || addressParts[0] || 'Korea',
+          isDepopulationArea: Boolean(savedInput.isDepopulationArea),
+        },
+        companyInfo: {
+          totalEmployees: Math.max(1, corp.employeeCountKorean + corp.employeeCountForeign),
+          foreignEmployeeCount: corp.employeeCountForeign,
+        },
+      },
+    } as any);
+    const visas = ['immediate', 'sponsor', 'transition', 'transfer'].flatMap(
+      (track) => [
+        ...(((result as any)[track]?.eligible || []) as any[]),
+        ...(((result as any)[track]?.conditional || []) as any[]),
+      ],
+    );
+    const allowedVisas = [
+      ...new Set(visas.map((visa: any) => visa.visaCode).filter(Boolean)),
+    ];
+    if (allowedVisas.length === 0) {
+      throw new BadRequestException('The current job details do not match a supported visa pathway');
+    }
+    return { fulltimeVisaResult: result, allowedVisas: allowedVisas.join(',') };
+  }
+
+  private hasPublicationRelevantChange(data: any) {
+    return [
+      'title', 'description', 'allowedVisas', 'minKoreanLevel', 'displayAddress',
+      'actualAddress', 'workIntensity', 'contactName', 'contactPhone', 'contactEmail',
+      'applicationMethod', 'externalUrl', 'externalEmail', 'interviewMethod',
+      'interviewPlace', 'employmentSubType', 'closingDate', 'albaAttributes',
+      'fulltimeAttributes', 'fulltimeVisaResult',
+    ].some((key) => data[key] !== undefined);
   }
 
   private formatJobPosting(item: any, corp?: any) {
@@ -702,6 +989,10 @@ export class JobPostingService {
       workContentImg: item.workContentImg,
       status: item.status,
       closingDate: item.closingDate,
+      submittedForReviewAt: item.submittedForReviewAt,
+      reviewedAt: item.reviewedAt,
+      reviewedBy: item.reviewedBy,
+      rejectionReason: item.rejectionReason,
       allowedVisas: item.allowedVisas,
       minKoreanLevel: item.minKoreanLevel,
       displayAddress: item.displayAddress,
